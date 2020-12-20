@@ -11,4 +11,4 @@ See here: https://www.raspberrypi.org/forums/viewtopic.php?t=269749 , and https:
 
 2. Booted Ubuntu, Setup Username and Password
 
-3. ``sudo apt-get install net-tools''
+3. `sudo apt-get install net-tools`
