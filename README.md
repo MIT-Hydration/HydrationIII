@@ -9,4 +9,6 @@ Steps that I did (you may need slightly different steps based on OS/hardware):
 1. Wrote Ubuntu Desktop 20.10 (RPI 4/400) 64-bit to a 128 Mb flash drive, using RPi Imager for Mac. 
 See here: https://www.raspberrypi.org/forums/viewtopic.php?t=269749 , and https://ubuntu.com/download/raspberry-pi
 
-2.
+2. Booted Ubuntu, Setup Username and Password
+
+3. ``sudo apt-get install net-tools''
