@@ -12,3 +12,4 @@ See here: https://www.raspberrypi.org/forums/viewtopic.php?t=269749 , and https:
 2. Booted Ubuntu, Setup Username and Password
 
 3. `sudo apt-get install net-tools`
+4. `gsettings set org.gnome.Vino require-encryption false` was required for VNC connection to work for screensharing when collaborting using a mac
