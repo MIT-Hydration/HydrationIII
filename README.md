@@ -16,5 +16,7 @@ See here: https://www.raspberrypi.org/forums/viewtopic.php?t=269749 , and https:
 
 # Install GRPC
 Following guide here: https://grpc.io/docs/languages/python/quickstart/
-5. `sudo apt install python3-pip` to get pip
-6. `pip install grpcio`
+
+1. `sudo apt install python3-pip` to get pip
+2. `pip install grpcio`
+3. `pip install grpcio-tools`
