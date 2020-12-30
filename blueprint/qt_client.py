@@ -3,7 +3,6 @@ from urllib.request import urlopen
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-
 class DownloadThread(QtCore.QThread):
 
     data_downloaded = QtCore.pyqtSignal(object)
@@ -13,9 +12,11 @@ class DownloadThread(QtCore.QThread):
         self.url = url
 
     def run(self):
-        info = urlopen(self.url).info()
+        try:
+            info = urlopen(self.url).info()   
+        except:
+            info = f"Error opening URL: {self.url}"
         self.data_downloaded.emit('%s\n%s' % (self.url, info))
-
 
 class MainWindow(QtWidgets.QWidget):
     def __init__(self):
@@ -29,7 +30,7 @@ class MainWindow(QtWidgets.QWidget):
         self.setLayout(layout)
 
     def start_download(self):
-        urls = ['http://google.com', #'http://twitter.com', 'http://yandex.ru',
+        urls = ['http://google.com', 'http://twitter.com', 'http://yandex.ru',
                 'http://stackoverflow.com/', 'http://www.youtube.com/'
                 ]
         self.threads = []
@@ -42,7 +43,6 @@ class MainWindow(QtWidgets.QWidget):
     def on_data_ready(self, data):
         print(data)
         self.list_widget.addItem(data)
-
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
