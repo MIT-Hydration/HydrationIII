@@ -25,10 +25,47 @@ Following guide here: https://grpc.io/docs/languages/python/quickstart/
 I get the following versions in my mac
 
 `protoc --version`
-
 `libprotoc 3.14.0`
 
 `python3 -m grpc_tools.protoc --version`
-
 `libprotoc 3.13.0`
 
+# Firewall setting in the Raspberry Pi
+
+I needed to have the following settings to allow port 50051 on the raspberry pi.
+
+```
+hydration@mit-hydration-prakash-rpi-00:~/github/demo-end-to-end-2021$ sudo ufw status verbose
+[sudo] password for hydration: 
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), disabled (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+22/tcp                     ALLOW IN    Anywhere                  
+50051                      ALLOW IN    Anywhere                  
+50051/tcp                  ALLOW IN    Anywhere                  
+22/tcp (v6)                ALLOW IN    Anywhere (v6)             
+50051 (v6)                 ALLOW IN    Anywhere (v6)             
+50051/tcp (v6)             ALLOW IN    Anywhere (v6)             
+
+50051                      ALLOW OUT   Anywhere                  
+50051/tcp                  ALLOW OUT   Anywhere                  
+50051/udp                  ALLOW OUT   Anywhere                  
+50051 (v6)                 ALLOW OUT   Anywhere (v6)             
+50051/tcp (v6)             ALLOW OUT   Anywhere (v6)             
+50051/udp (v6)             ALLOW OUT   Anywhere (v6)
+```
+
+## Commands
+
+`sudo ufw allow in 50051/tcp`
+`sudo ufw allow out 50051/tcp`
+
+
+## Relevant documentation
+
+`https://grpc.github.io/grpc/python/grpc.html`
+`http://manpages.ubuntu.com/manpages/xenial/en/man8/ufw.8.html`
