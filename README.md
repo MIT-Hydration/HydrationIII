@@ -69,3 +69,11 @@ To                         Action      From
 
 `https://grpc.github.io/grpc/python/grpc.html`
 `http://manpages.ubuntu.com/manpages/xenial/en/man8/ufw.8.html`
+
+## Starting with Qt5
+
+Starting from example code here: 
+`https://stackoverflow.com/questions/9957195/updating-gui-elements-in-multithreaded-pyqt`
+
+Needed to install the following modules and small code modifications:
+`python3 -m pip install pyqt5`
