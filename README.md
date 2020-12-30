@@ -14,9 +14,21 @@ See here: https://www.raspberrypi.org/forums/viewtopic.php?t=269749 , and https:
 3. `sudo apt-get install net-tools`
 4. `gsettings set org.gnome.Vino require-encryption false` was required for VNC connection to work for screensharing when collaborting using a mac
 
-# Install GRPC
+# Install GRPC in MAC
 Following guide here: https://grpc.io/docs/languages/python/quickstart/
 
 1. `sudo apt install python3-pip` to get pip
 2. `pip install grpcio`
 3. `pip install grpcio-tools`
+
+# Versions 
+I get the following versions in my mac
+
+`protoc --version`
+
+`libprotoc 3.14.0`
+
+`python3 -m grpc_tools.protoc --version`
+
+`libprotoc 3.13.0`
+
