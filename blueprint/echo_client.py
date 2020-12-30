@@ -8,7 +8,7 @@ from .generated import echo_pb2_grpc
 
 
 def run():
-    with grpc.insecure_channel('localhost:50051') as channel:
+    with grpc.insecure_channel('192.168.1.182:50051') as channel:
         stub = echo_pb2_grpc.EchoStub(channel)
         response = stub.Reply(echo_pb2.EchoRequest(message='Hello World!'))
     print("Echo client received: " + response.message)
