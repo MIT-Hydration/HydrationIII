@@ -68,7 +68,7 @@ grpc-gen:
 			--python_out=./$(MODULE)/generated \
 			--grpc_python_out=./$(MODULE)/generated \
 			./$(MODULE)/proto/*.proto
-	@sed -i -E 's/^import.*_pb2/from . \0/' ./$(MODULE)/generated/*.py
+	@sed -i -E 's/^\(import.*_pb2\)/from . \1/' ./$(MODULE)/generated/*.py
 
 cluster:
 	@if [ $$(kind get clusters | wc -l) = 0 ]; then \

@@ -8,7 +8,11 @@ import grpc
 from .generated import echo_pb2
 from .generated import echo_pb2_grpc
 
+
 from PyQt5 import QtCore, QtGui, QtWidgets
+from QLed import QLed
+
+RPI_IP_ADDRESS_PORT = '96.237.232.240:50051'
 
 class DownloadThread(QtCore.QThread):
 
@@ -25,6 +29,25 @@ class DownloadThread(QtCore.QThread):
             info = f"Error opening URL: {self.url}"
         self.data_downloaded.emit('%s\n%s' % (self.url, info))
 
+
+class RPiHeartBeat(QtCore.QThread):
+    heartbeat_done = QtCore.pyqtSignal(object)
+
+    def __init__(self, echo_text):
+        QtCore.QThread.__init__(self)
+        self.echo_text = echo_text
+
+    def run(self):
+        global RPI_IP_ADDRESS_PORT
+        try:
+            with grpc.insecure_channel(RPI_IP_ADDRESS_PORT) as channel:
+                stub = echo_pb2_grpc.EchoStub(channel)
+                response = stub.Reply(echo_pb2.EchoRequest(message=self.echo_text))
+                info = "Echo client received: " + response.message   
+        except:
+            info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}"
+        self.echo_done.emit(f'Response from {RPI_IP_ADDRESS_PORT}\n{info}')
+
 class RPiServerThread(QtCore.QThread):
     echo_done = QtCore.pyqtSignal(object)
 
@@ -33,15 +56,15 @@ class RPiServerThread(QtCore.QThread):
         self.echo_text = echo_text
 
     def run(self):
-        IP_ADDRESS = '96.237.232.240:50051'
+        global RPI_IP_ADDRESS_PORT
         try:
-            with grpc.insecure_channel(IP_ADDRESS) as channel:
+            with grpc.insecure_channel(RPI_IP_ADDRESS_PORT) as channel:
                 stub = echo_pb2_grpc.EchoStub(channel)
                 response = stub.Reply(echo_pb2.EchoRequest(message=self.echo_text))
                 info = "Echo client received: " + response.message   
         except:
-            info = f"Error connecting to RPi Server at: {IP_ADDRESS}"
-        self.echo_done.emit(f'Response from {IP_ADDRESS}\n{info}')
+            info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}"
+        self.echo_done.emit(f'Response from {RPI_IP_ADDRESS_PORT}\n{info}')
 
 class MainWindow(QtWidgets.QWidget):
     def __init__(self):
@@ -52,7 +75,17 @@ class MainWindow(QtWidgets.QWidget):
         self.echo_textedit = QtWidgets.QTextEdit("Change the text and test!!!")
         self.button.clicked.connect(self.start_download)
         self.echo_button.clicked.connect(self.start_echo)
+
+        self._led=QLed(self, onColour=QLed.Green, shape=QLed.Circle)
+        self._led.value=False
+
+        status_layout = QtWidgets.QHBoxLayout()
+        status_layout.addWidget(self._led)
+        status_layout.addWidget(QtWidgets.QLabel("Mission Control Status"))
+        status_layout.addStretch(1)
+        
         layout = QtWidgets.QVBoxLayout()
+        layout.addLayout(status_layout)
         layout.addWidget(self.button)
         layout.addWidget(self.echo_button)
         layout.addWidget(self.echo_textedit)

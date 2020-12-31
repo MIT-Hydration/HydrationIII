@@ -77,3 +77,8 @@ Starting from example code here:
 
 Needed to install the following modules and small code modifications:
 `python3 -m pip install pyqt5`
+
+## Starting a more "mission control" like UI
+
+Installing LED component: `https://github.com/jazzycamel/QLed`
+`python3 -m pip install QLed`
