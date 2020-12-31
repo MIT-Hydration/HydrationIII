@@ -1,0 +1,16 @@
+syntax = "proto3";
+package mission_control;
+
+// The request message containing the user's message.
+message HeartBeatRequest {
+}
+
+// The response message containing the original message.
+message HeartBeatReply {
+}
+
+// The MissionControl service definition.
+service MissionControl {
+  // Echo back reply.
+  rpc Reply (HeartBeatRequest) returns (HeartBeatReply) {}
+}
