@@ -17,36 +17,36 @@ enum CommandReport {
 }
 
 message HeartBeatRequest {
-    float request_timestamp = 1;
+    uint64 request_timestamp = 1;
 }
 
 message HeartBeatReply {
-    float timestamp = 1;
-    float request_timestamp = 2;
+    uint64 timestamp = 1;
+    uint64 request_timestamp = 2;
     bool drill_subsystem_online = 3;
     bool heater_sussystem_online = 4;
     SystemMode mode = 5;
 }
 
 message DrillSensorsStatusRequest {
-    float request_timestamp = 1;
+    uint64 request_timestamp = 1;
 }
 
 message DrillSensorsStatusResponse {
-    float timestamp = 1;
-    float request_timestamp = 2;
+    uint64 timestamp = 1;
+    uint64 request_timestamp = 2;
     bool drill_on = 3;
     float tachometer = 4;
 }
 
 message DrillCommandRequest {
-    float request_timestamp = 1;
+    uint64 request_timestamp = 1;
     bool drill_on = 2;
 }
 
 message DrillCommandResponse {
-    float timestamp = 1;
-    float request_timestamp = 2;
+    uint64 timestamp = 1;
+    uint64 request_timestamp = 2;
     CommandReport status = 3;
 }
 

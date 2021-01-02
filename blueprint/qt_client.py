@@ -44,9 +44,9 @@ class RPiHeartBeat(QtCore.QThread):
         
     def run(self):
         global RPI_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
-        hb_received = False
+        response = None
         try:
-            timestamp = time.time()
+            timestamp = int(time.time()*1000)
             with grpc.insecure_channel(RPI_IP_ADDRESS_PORT) as channel:
                 stub = mission_control_pb2_grpc.MissionControlStub(channel)
                 response = stub.HeartBeat (
@@ -54,13 +54,12 @@ class RPiHeartBeat(QtCore.QThread):
                     timeout = GRPC_CALL_TIMEOUT )
                 print("Mission Control RPi HeartBeat received at: " + str(datetime.now()))
                 print(response)
-                hb_received = True
-                rtt_time = int((timestamp - request_timestamp)*1000)
-                self.rtt_label.setText(f"{rtt_time} [ms]")
+        
         except Exception as e:
             info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
-        self.heartbeat_done.emit(hb_received)
+            
+        self.heartbeat_done.emit(response)
 
 class RPiServerThread(QtCore.QThread):
     echo_done = QtCore.pyqtSignal(object)
@@ -176,9 +175,12 @@ class MainWindow(QtWidgets.QWidget):
         self.threads.append(client_thread)
         client_thread.start()
 
-    def on_heartbeat_received(self, hb_recevied):
-        if (hb_recevied):
+    def on_heartbeat_received(self, response):
+        if (response != None):
             self.mission_control_led.value = True
+            rtt_time = response.timestamp - response.request_timestamp
+            self.rtt_label.setText(f"{rtt_time} [ms]")
+            
         else:
             self.mission_control_led.value = False
 

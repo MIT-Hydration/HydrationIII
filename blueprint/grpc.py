@@ -11,9 +11,8 @@ class Echoer(echo_pb2_grpc.EchoServicer):
 class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
     def HeartBeat(self, request, context):
-        request_timestamp = request.request_timestamp
-        timestamp = time.time()
+        timestamp = int(time.time()*1000)
         return mission_control_pb2.HeartBeatReply(
-            request_timestamp = request_timestamp,
+            request_timestamp = request.request_timestamp,
             timestamp = timestamp,
             mode = mission_control_pb2.READY)

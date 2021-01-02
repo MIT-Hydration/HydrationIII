@@ -6,6 +6,9 @@ https://docs.google.com/drawings/d/1QRMFYuSZM9tMgI91pgGa5nRd84Z5f_WUibL6J7ogIU0/
 
 # Running
 
+## Generate ProtoBuf Interface Files
+`make grpc-gen`
+
 ## Client
 
 ### Main QT GUI Client
