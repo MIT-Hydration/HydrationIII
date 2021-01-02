@@ -9,13 +9,13 @@ from .generated import echo_pb2
 from .generated import echo_pb2_grpc
 from .generated import mission_control_pb2, mission_control_pb2_grpc
 
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer,QDateTime
 
 from QLed import QLed
 
 from datetime import datetime
+import time
 
 RPI_IP_ADDRESS_PORT = '96.237.232.240:50051'
 HEARTBEAT_TIMEOUT   = 1000
@@ -46,10 +46,11 @@ class RPiHeartBeat(QtCore.QThread):
         global RPI_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
         hb_received = False
         try:
+            timestamp = int(time.time())
             with grpc.insecure_channel(RPI_IP_ADDRESS_PORT) as channel:
                 stub = mission_control_pb2_grpc.MissionControlStub(channel)
                 response = stub.HeartBeat (
-                    mission_control_pb2.HeartBeatRequest(), 
+                    mission_control_pb2.HeartBeatRequest(request_timestamp = timestamp),
                     timeout = GRPC_CALL_TIMEOUT )
                 info = "Mission Control RPi HeartBeat received at: " + str(datetime.now())
                 hb_received = True
