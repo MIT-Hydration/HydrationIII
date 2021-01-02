@@ -51,7 +51,13 @@ message DrillCommandResponse {
 }
 
 service MissionControl {
-  rpc HearBeat (HeartBeatRequest) returns (HeartBeatReply);
-  rpc DrillSensorStatus (DrillSensorsStatusRequest) returns (DrillSensorsStatusResponse);
-  rpc DrillCommand (DrillCommandRequest) returns (DrillCommandResponse);
+    rpc HeartBeat (HeartBeatRequest) returns (HeartBeatReply);
+    rpc DrillSensorStatus (DrillSensorsStatusRequest) returns (DrillSensorsStatusResponse);
+    rpc DrillCommand (DrillCommandRequest) returns (DrillCommandResponse);
+}
+
+service DrillControl {
+    rpc HeartBeat (HeartBeatRequest) returns (HeartBeatReply);
+    rpc DrillSensorStatus (DrillSensorsStatusRequest) returns (DrillSensorsStatusResponse);
+    rpc DrillCommand (DrillCommandRequest) returns (DrillCommandResponse);
 }
