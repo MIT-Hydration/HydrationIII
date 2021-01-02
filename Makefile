@@ -12,8 +12,14 @@ TAG := $(shell git describe --tags --always --dirty)
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-run:
+run-mc-server:
 	@python3 -m $(MODULE)
+
+run-qt-client:
+	@python3 -m $(MODULE).qt_client
+
+run-echo-client:
+	@python3 -m $(MODULE).echo_client
 
 test:
 	@pytest
