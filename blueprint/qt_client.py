@@ -77,30 +77,62 @@ class RPiServerThread(QtCore.QThread):
         self.echo_done.emit(f'Response from {RPI_IP_ADDRESS_PORT}\n{info}')
 
 class MainWindow(QtWidgets.QWidget):
+    
+    def _addStatus(self, led, description):
+        h_layout = QtWidgets.QHBoxLayout()
+        h_layout.addWidget(led)
+        h_layout.addWidget(QtWidgets.QLabel(description))
+        h_layout.addStretch(5)
+        led.setMaximumHeight(20)
+        led.setMaximumWidth(20)
+        self.status_layout.addLayout(h_layout)
+
     def __init__(self):
         super(MainWindow, self).__init__()
+
+        main_h_layout = QtWidgets.QHBoxLayout()
+
+        self.status_groupbox = QtWidgets.QGroupBox("Status")
+        self.status_layout = QtWidgets.QVBoxLayout()
+        self.status_groupbox.setLayout(self.status_layout)
+        main_h_layout.addWidget(self.status_groupbox)
+
         self.list_widget = QtWidgets.QListWidget()
-        self.button = QtWidgets.QPushButton("Start")
+        self.test_client_button = QtWidgets.QPushButton("Test Client")
+        
         self.echo_button = QtWidgets.QPushButton("Echo Server")
         self.echo_textedit = QtWidgets.QTextEdit("Change the text and test!!!")
-        self.button.clicked.connect(self.start_download)
+        self.echo_textedit.setMaximumHeight(20)
+        #self.echo_textedit.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.MinimumExpanding)
+        echo_layout = QtWidgets.QHBoxLayout()
+        echo_layout.addWidget(self.echo_textedit)
+        echo_layout.addWidget(self.echo_button)
+
+        self.test_client_button.clicked.connect(self.start_download)
         self.echo_button.clicked.connect(self.start_echo)
 
-        self._led=QLed(self, onColour=QLed.Green, shape=QLed.Circle)
-        self._led.value=False
+        self.mission_control_led=QLed(self, onColour=QLed.Green, shape=QLed.Circle)
+        self.mission_control_led.value=False
+        self._addStatus(self.mission_control_led, "Mission Control")
 
-        status_layout = QtWidgets.QHBoxLayout()
-        status_layout.addWidget(self._led)
-        status_layout.addWidget(QtWidgets.QLabel("Mission Control Status"))
-        status_layout.addStretch(1)
-        
+        self.drill_asm_led=QLed(self, onColour=QLed.Green, shape=QLed.Circle)
+        self.drill_asm_led.value=False
+        self._addStatus(self.drill_asm_led, "Drilling Assembly")
+
+        self.water_prod_led=QLed(self, onColour=QLed.Green, shape=QLed.Circle)
+        self.water_prod_led.value=False
+        self._addStatus(self.water_prod_led, "Water Production")
+
+        self.status_layout.addStretch()
+
         layout = QtWidgets.QVBoxLayout()
-        layout.addLayout(status_layout)
-        layout.addWidget(self.button)
-        layout.addWidget(self.echo_button)
-        layout.addWidget(self.echo_textedit)
+        layout.addLayout(echo_layout)
+        layout.addWidget(self.test_client_button)
+        layout.addStretch()
         layout.addWidget(self.list_widget)
-        self.setLayout(layout)
+
+        main_h_layout.addLayout(layout)
+        self.setLayout(main_h_layout)
 
         self.heartbeat_timer=QTimer()
         self.heartbeat_timer.timeout.connect(self.onHeartBeat)
@@ -133,9 +165,9 @@ class MainWindow(QtWidgets.QWidget):
 
     def on_heartbeat_received(self, hb_recevied):
         if (hb_recevied):
-            self._led.value = True
+            self.mission_control_led.value = True
         else:
-            self._led.value = False
+            self.mission_control_led.value = False
 
     def on_data_ready(self, data):
         print(data)
