@@ -8,5 +8,5 @@ class Echoer(echo_pb2_grpc.EchoServicer):
 
 class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
-    def Reply(self, request, context):
+    def HeartBeat(self, request, context):
         return mission_control_pb2.HeartBeatReply()

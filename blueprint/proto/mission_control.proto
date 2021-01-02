@@ -17,37 +17,37 @@ enum CommandReport {
 }
 
 message HeartBeatRequest {
-    required uint32 request_timestamp = 1;
+    uint32 request_timestamp = 1;
 }
 
 message HeartBeatReply {
-    required uint32 timestamp = 1;
-    required uint32 request_timestamp = 2;
-    required bool drill_subsystem_online = 3;
-    required bool heater_sussystem_online = 4;
-    required SystemMode mode = 5;
+    uint32 timestamp = 1;
+    uint32 request_timestamp = 2;
+    bool drill_subsystem_online = 3;
+    bool heater_sussystem_online = 4;
+    SystemMode mode = 5;
 }
 
 message DrillSensorsStatusRequest {
-    required uint32 request_timestamp = 1;
+    uint32 request_timestamp = 1;
 }
 
 message DrillSensorsStatusResponse {
-    required uint32 timestamp = 1;
-    required uint32 request_timestamp = 2;
-    required bool drill_on = 3;
-    required float tachometer = 4;
+    uint32 timestamp = 1;
+    uint32 request_timestamp = 2;
+    bool drill_on = 3;
+    float tachometer = 4;
 }
 
 message DrillCommandRequest {
-    required uint32 request_timestamp = 1;
-    required bool drill_on = 2;
+    uint32 request_timestamp = 1;
+    bool drill_on = 2;
 }
 
 message DrillCommandResponse {
-    required uint32 timestamp = 1;
-    required uint32 request_timestamp = 2;
-    required CommandReport status = 3;
+    uint32 timestamp = 1;
+    uint32 request_timestamp = 2;
+    CommandReport status = 3;
 }
 
 service MissionControl {

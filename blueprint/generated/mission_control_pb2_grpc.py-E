@@ -6,8 +6,7 @@ import mission_control_pb2 as mission__control__pb2
 
 
 class MissionControlStub(object):
-    """The MissionControl service definition.
-    """
+    """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
         """Constructor.
@@ -15,20 +14,40 @@ class MissionControlStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.Reply = channel.unary_unary(
-                '/mission_control.MissionControl/Reply',
+        self.HeartBeat = channel.unary_unary(
+                '/mission_control.MissionControl/HeartBeat',
                 request_serializer=mission__control__pb2.HeartBeatRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.HeartBeatReply.FromString,
+                )
+        self.DrillSensorStatus = channel.unary_unary(
+                '/mission_control.MissionControl/DrillSensorStatus',
+                request_serializer=mission__control__pb2.DrillSensorsStatusRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.DrillSensorsStatusResponse.FromString,
+                )
+        self.DrillCommand = channel.unary_unary(
+                '/mission_control.MissionControl/DrillCommand',
+                request_serializer=mission__control__pb2.DrillCommandRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.DrillCommandResponse.FromString,
                 )
 
 
 class MissionControlServicer(object):
-    """The MissionControl service definition.
-    """
+    """Missing associated documentation comment in .proto file."""
 
-    def Reply(self, request, context):
-        """Echo back reply.
-        """
+    def HeartBeat(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DrillSensorStatus(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DrillCommand(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -36,10 +55,20 @@ class MissionControlServicer(object):
 
 def add_MissionControlServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'Reply': grpc.unary_unary_rpc_method_handler(
-                    servicer.Reply,
+            'HeartBeat': grpc.unary_unary_rpc_method_handler(
+                    servicer.HeartBeat,
                     request_deserializer=mission__control__pb2.HeartBeatRequest.FromString,
                     response_serializer=mission__control__pb2.HeartBeatReply.SerializeToString,
+            ),
+            'DrillSensorStatus': grpc.unary_unary_rpc_method_handler(
+                    servicer.DrillSensorStatus,
+                    request_deserializer=mission__control__pb2.DrillSensorsStatusRequest.FromString,
+                    response_serializer=mission__control__pb2.DrillSensorsStatusResponse.SerializeToString,
+            ),
+            'DrillCommand': grpc.unary_unary_rpc_method_handler(
+                    servicer.DrillCommand,
+                    request_deserializer=mission__control__pb2.DrillCommandRequest.FromString,
+                    response_serializer=mission__control__pb2.DrillCommandResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -49,11 +78,10 @@ def add_MissionControlServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class MissionControl(object):
-    """The MissionControl service definition.
-    """
+    """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def Reply(request,
+    def HeartBeat(request,
             target,
             options=(),
             channel_credentials=None,
@@ -63,8 +91,169 @@ class MissionControl(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/Reply',
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/HeartBeat',
             mission__control__pb2.HeartBeatRequest.SerializeToString,
             mission__control__pb2.HeartBeatReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def DrillSensorStatus(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/DrillSensorStatus',
+            mission__control__pb2.DrillSensorsStatusRequest.SerializeToString,
+            mission__control__pb2.DrillSensorsStatusResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def DrillCommand(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/DrillCommand',
+            mission__control__pb2.DrillCommandRequest.SerializeToString,
+            mission__control__pb2.DrillCommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+
+class DrillControlStub(object):
+    """Missing associated documentation comment in .proto file."""
+
+    def __init__(self, channel):
+        """Constructor.
+
+        Args:
+            channel: A grpc.Channel.
+        """
+        self.HeartBeat = channel.unary_unary(
+                '/mission_control.DrillControl/HeartBeat',
+                request_serializer=mission__control__pb2.HeartBeatRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.HeartBeatReply.FromString,
+                )
+        self.DrillSensorStatus = channel.unary_unary(
+                '/mission_control.DrillControl/DrillSensorStatus',
+                request_serializer=mission__control__pb2.DrillSensorsStatusRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.DrillSensorsStatusResponse.FromString,
+                )
+        self.DrillCommand = channel.unary_unary(
+                '/mission_control.DrillControl/DrillCommand',
+                request_serializer=mission__control__pb2.DrillCommandRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.DrillCommandResponse.FromString,
+                )
+
+
+class DrillControlServicer(object):
+    """Missing associated documentation comment in .proto file."""
+
+    def HeartBeat(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DrillSensorStatus(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DrillCommand(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+
+def add_DrillControlServicer_to_server(servicer, server):
+    rpc_method_handlers = {
+            'HeartBeat': grpc.unary_unary_rpc_method_handler(
+                    servicer.HeartBeat,
+                    request_deserializer=mission__control__pb2.HeartBeatRequest.FromString,
+                    response_serializer=mission__control__pb2.HeartBeatReply.SerializeToString,
+            ),
+            'DrillSensorStatus': grpc.unary_unary_rpc_method_handler(
+                    servicer.DrillSensorStatus,
+                    request_deserializer=mission__control__pb2.DrillSensorsStatusRequest.FromString,
+                    response_serializer=mission__control__pb2.DrillSensorsStatusResponse.SerializeToString,
+            ),
+            'DrillCommand': grpc.unary_unary_rpc_method_handler(
+                    servicer.DrillCommand,
+                    request_deserializer=mission__control__pb2.DrillCommandRequest.FromString,
+                    response_serializer=mission__control__pb2.DrillCommandResponse.SerializeToString,
+            ),
+    }
+    generic_handler = grpc.method_handlers_generic_handler(
+            'mission_control.DrillControl', rpc_method_handlers)
+    server.add_generic_rpc_handlers((generic_handler,))
+
+
+ # This class is part of an EXPERIMENTAL API.
+class DrillControl(object):
+    """Missing associated documentation comment in .proto file."""
+
+    @staticmethod
+    def HeartBeat(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.DrillControl/HeartBeat',
+            mission__control__pb2.HeartBeatRequest.SerializeToString,
+            mission__control__pb2.HeartBeatReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def DrillSensorStatus(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.DrillControl/DrillSensorStatus',
+            mission__control__pb2.DrillSensorsStatusRequest.SerializeToString,
+            mission__control__pb2.DrillSensorsStatusResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def DrillCommand(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.DrillControl/DrillCommand',
+            mission__control__pb2.DrillCommandRequest.SerializeToString,
+            mission__control__pb2.DrillCommandResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

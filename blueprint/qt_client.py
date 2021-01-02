@@ -48,7 +48,7 @@ class RPiHeartBeat(QtCore.QThread):
         try:
             with grpc.insecure_channel(RPI_IP_ADDRESS_PORT) as channel:
                 stub = mission_control_pb2_grpc.MissionControlStub(channel)
-                response = stub.Reply (
+                response = stub.HeartBeat (
                     mission_control_pb2.HeartBeatRequest(), 
                     timeout = GRPC_CALL_TIMEOUT )
                 info = "Mission Control RPi HeartBeat received at: " + str(datetime.now())
@@ -87,29 +87,11 @@ class MainWindow(QtWidgets.QWidget):
         led.setMaximumWidth(20)
         self.status_layout.addLayout(h_layout)
 
-    def __init__(self):
-        super(MainWindow, self).__init__()
-
-        main_h_layout = QtWidgets.QHBoxLayout()
-
+    def _initStatusWidgets(self):
         self.status_groupbox = QtWidgets.QGroupBox("Status")
         self.status_layout = QtWidgets.QVBoxLayout()
         self.status_groupbox.setLayout(self.status_layout)
-        main_h_layout.addWidget(self.status_groupbox)
-
-        self.list_widget = QtWidgets.QListWidget()
-        self.test_client_button = QtWidgets.QPushButton("Test Client")
-        
-        self.echo_button = QtWidgets.QPushButton("Echo Server")
-        self.echo_textedit = QtWidgets.QTextEdit("Change the text and test!!!")
-        self.echo_textedit.setMaximumHeight(20)
-        #self.echo_textedit.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.MinimumExpanding)
-        echo_layout = QtWidgets.QHBoxLayout()
-        echo_layout.addWidget(self.echo_textedit)
-        echo_layout.addWidget(self.echo_button)
-
-        self.test_client_button.clicked.connect(self.start_download)
-        self.echo_button.clicked.connect(self.start_echo)
+        self.main_h_layout.addWidget(self.status_groupbox)
 
         self.mission_control_led=QLed(self, onColour=QLed.Green, shape=QLed.Circle)
         self.mission_control_led.value=False
@@ -125,14 +107,35 @@ class MainWindow(QtWidgets.QWidget):
 
         self.status_layout.addStretch()
 
+    def __init__(self):
+        super(MainWindow, self).__init__()
+
+        self.main_h_layout = QtWidgets.QHBoxLayout()
+        self._initStatusWidgets()
+        
+        self.list_widget = QtWidgets.QListWidget()
+        self.test_client_button = QtWidgets.QPushButton("Test Client")
+        
+        self.echo_button = QtWidgets.QPushButton("Echo Server")
+        self.echo_textedit = QtWidgets.QTextEdit("Change the text and test!!!")
+        self.echo_textedit.setMaximumHeight(20)
+        #self.echo_textedit.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.MinimumExpanding)
+        echo_layout = QtWidgets.QHBoxLayout()
+        echo_layout.addWidget(self.echo_textedit)
+        echo_layout.addWidget(self.echo_button)
+
+        self.test_client_button.clicked.connect(self.start_download)
+        self.echo_button.clicked.connect(self.start_echo)
+
+        
         layout = QtWidgets.QVBoxLayout()
         layout.addLayout(echo_layout)
         layout.addWidget(self.test_client_button)
         layout.addStretch()
         layout.addWidget(self.list_widget)
 
-        main_h_layout.addLayout(layout)
-        self.setLayout(main_h_layout)
+        self.main_h_layout.addLayout(layout)
+        self.setLayout(self.main_h_layout)
 
         self.heartbeat_timer=QTimer()
         self.heartbeat_timer.timeout.connect(self.onHeartBeat)
