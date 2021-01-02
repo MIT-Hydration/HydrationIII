@@ -46,17 +46,20 @@ class RPiHeartBeat(QtCore.QThread):
         global RPI_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
         hb_received = False
         try:
-            timestamp = int(time.time())
+            timestamp = time.time()
             with grpc.insecure_channel(RPI_IP_ADDRESS_PORT) as channel:
                 stub = mission_control_pb2_grpc.MissionControlStub(channel)
                 response = stub.HeartBeat (
                     mission_control_pb2.HeartBeatRequest(request_timestamp = timestamp),
                     timeout = GRPC_CALL_TIMEOUT )
-                info = "Mission Control RPi HeartBeat received at: " + str(datetime.now())
+                print("Mission Control RPi HeartBeat received at: " + str(datetime.now()))
+                print(response)
                 hb_received = True
+                rtt_time = int((timestamp - request_timestamp)*1000)
+                self.rtt_label.setText(f"{rtt_time} [ms]")
         except Exception as e:
             info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"
-        print(info)
+            print(info)
         self.heartbeat_done.emit(hb_received)
 
 class RPiServerThread(QtCore.QThread):
@@ -107,6 +110,12 @@ class MainWindow(QtWidgets.QWidget):
         self._addStatus(self.water_prod_led, "Water Production")
 
         self.status_layout.addStretch()
+        
+        h_layout = QtWidgets.QHBoxLayout()
+        h_layout.addWidget(QtWidgets.QLabel("Round Trip Time:"))
+        self.rtt_label = QtWidgets.QLabel("N/A [ms]")
+        h_layout.addWidget(self.rtt_label)
+        self.status_layout.addLayout(h_layout)
 
     def __init__(self):
         super(MainWindow, self).__init__()

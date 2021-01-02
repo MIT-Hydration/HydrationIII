@@ -12,7 +12,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
     def HeartBeat(self, request, context):
         request_timestamp = request.request_timestamp
-        timestamp = int(time.time())
+        timestamp = time.time()
         return mission_control_pb2.HeartBeatReply(
             request_timestamp = request_timestamp,
             timestamp = timestamp,
