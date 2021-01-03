@@ -111,7 +111,7 @@ class MainWindow(QtWidgets.QWidget):
         self.status_layout.addStretch()
         
         h_layout = QtWidgets.QHBoxLayout()
-        h_layout.addWidget(QtWidgets.QLabel("Round Trip Time:"))
+        h_layout.addWidget(QtWidgets.QLabel("Response Time:"))
         self.rtt_label = QtWidgets.QLabel("N/A [ms]")
         self.rtt_label.setMinimumWidth(70)
         h_layout.addWidget(self.rtt_label)

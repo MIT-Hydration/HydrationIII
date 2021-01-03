@@ -28,11 +28,11 @@ message HeartBeatReply {
     SystemMode mode = 5;
 }
 
-message DrillSensorsStatusRequest {
+message DrillAsmStatusRequest {
     uint64 request_timestamp = 1;
 }
 
-message DrillSensorsStatusResponse {
+message DrillAsmStatusResponse {
     uint64 timestamp = 1;
     uint64 request_timestamp = 2;
     bool drill_on = 3;
@@ -52,12 +52,12 @@ message DrillCommandResponse {
 
 service MissionControl {
     rpc HeartBeat (HeartBeatRequest) returns (HeartBeatReply);
-    rpc DrillSensorStatus (DrillSensorsStatusRequest) returns (DrillSensorsStatusResponse);
+    rpc DrillAsmStatus (DrillAsmStatusRequest) returns (DrillAsmStatusResponse);
     rpc DrillCommand (DrillCommandRequest) returns (DrillCommandResponse);
 }
 
-service DrillControl {
+service DrillAsm {
     rpc HeartBeat (HeartBeatRequest) returns (HeartBeatReply);
-    rpc DrillSensorStatus (DrillSensorsStatusRequest) returns (DrillSensorsStatusResponse);
+    rpc DrillAsmStatus (DrillAsmStatusRequest) returns (DrillAsmStatusResponse);
     rpc DrillCommand (DrillCommandRequest) returns (DrillCommandResponse);
 }
