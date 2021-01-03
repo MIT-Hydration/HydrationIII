@@ -91,7 +91,7 @@ class MainWindow(QtWidgets.QWidget):
         self.status_layout.addLayout(h_layout)
 
     def _initStatusWidgets(self):
-        self.status_groupbox = QtWidgets.QGroupBox("Status")
+        self.status_groupbox = QtWidgets.QGroupBox("STATUS")
         self.status_layout = QtWidgets.QVBoxLayout()
         self.status_groupbox.setLayout(self.status_layout)
         self.main_h_layout.addWidget(self.status_groupbox)
@@ -113,6 +113,7 @@ class MainWindow(QtWidgets.QWidget):
         h_layout = QtWidgets.QHBoxLayout()
         h_layout.addWidget(QtWidgets.QLabel("Round Trip Time:"))
         self.rtt_label = QtWidgets.QLabel("N/A [ms]")
+        self.rtt_label.setMinimumWidth(70)
         h_layout.addWidget(self.rtt_label)
         self.status_layout.addLayout(h_layout)
 
