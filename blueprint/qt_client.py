@@ -227,10 +227,10 @@ class MainWindow(QtWidgets.QWidget):
         client_thread.start()
 
     def turn_fan_on(self):
-        set_fan(True)
+        self.set_fan(True)
     
     def turn_fan_off(self):
-        set_fan(False)
+        self.set_fan(False)
 
     def on_fan_done(self):
         return
@@ -245,7 +245,7 @@ class MainWindow(QtWidgets.QWidget):
     def on_heartbeat_received(self, response):
         if (response != None):
             self.mission_control_led.value = True
-            self.fan_on_led = response.fan_on
+            self.fan_on_led.value = response.fan_on
             self.mc_temp_label.setText(f"{response.cpu_temperature} [degC]")
             rtt_time = response.timestamp - response.request_timestamp
             self.rtt_label.setText(f"{rtt_time} [ms]")
