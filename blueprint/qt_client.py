@@ -247,7 +247,7 @@ class MainWindow(QtWidgets.QWidget):
         if (response != None):
             self.mission_control_led.value = True
             self.fan_on_led.value = response.fan_on
-            self.mc_temp_label.setText(f"{response.cpu_temperature_degC} [degC]")
+            self.mc_temp_label.setText(f"{response.cpu_temperature_degC:.2f} [degC]")
             rtt_time = response.timestamp - response.request_timestamp
             self.rtt_label.setText(f"{rtt_time} [ms]")
             
