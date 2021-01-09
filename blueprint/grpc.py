@@ -36,4 +36,4 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         return mission_control_pb2.FanCommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
-            mode = mission_control_pb2.EXECUTED)
+            status = mission_control_pb2.EXECUTED)
