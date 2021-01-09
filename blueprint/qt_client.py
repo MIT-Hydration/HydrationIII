@@ -104,14 +104,26 @@ class MainWindow(QtWidgets.QWidget):
         self.drill_asm_led.value=False
         self._addStatus(self.drill_asm_led, "Drilling Assembly")
 
-        self.water_prod_led=QLed(self, onColour=QLed.Green, shape=QLed.Circle)
+        self.water_prod_led = QLed(self, onColour=QLed.Green, shape=QLed.Circle)
         self.water_prod_led.value=False
         self._addStatus(self.water_prod_led, "Water Production")
+
+        self.status_layout.addWidget(QtWidgets.QLabel('-------------------'))
+        self.fan_on_led = QLed(self, onColour=QLed.Green, shape=QLed.Circle)
+        self.fan_on_led.value = False
+        self._addStatus(self.fan_on_led, "MiCon CPU Fan")
+        
+        h_layout_temp = QtWidgets.QHBoxLayout()
+        h_layout_temp.addWidget(QtWidgets.QLabel("MiCon Temperature:"))
+        self.mc_temp_label = QtWidgets.QLabel("N/A [degC]")
+        self.mc_temp_label.setMinimumWidth(70)
+        h_layout_temp.addWidget(self.mc_temp_label)
+        self.status_layout.addLayout(h_layout_temp)
 
         self.status_layout.addStretch()
         
         h_layout = QtWidgets.QHBoxLayout()
-        h_layout.addWidget(QtWidgets.QLabel("Round Trip Time:"))
+        h_layout.addWidget(QtWidgets.QLabel("Trip Time:"))
         self.rtt_label = QtWidgets.QLabel("N/A [ms]")
         self.rtt_label.setMinimumWidth(70)
         h_layout.addWidget(self.rtt_label)
@@ -134,12 +146,19 @@ class MainWindow(QtWidgets.QWidget):
         echo_layout.addWidget(self.echo_textedit)
         echo_layout.addWidget(self.echo_button)
 
+        self.fan_on_button = QtWidgets.QPushButton("Turn ON Fan")
+        self.fan_off_button = QtWidgets.QPushButton("Turn OFF Fan")
+        fan_layout = QtWidgets.QHBoxLayout()
+        fan_layout.addWidget(self.fan_on_button)
+        fan_layout.addWidget(self.fan_off_button)
+
         self.test_client_button.clicked.connect(self.start_download)
         self.echo_button.clicked.connect(self.start_echo)
 
-        
         layout = QtWidgets.QVBoxLayout()
         layout.addLayout(echo_layout)
+        layout.addLayout(fan_layout)
+        
         layout.addWidget(self.test_client_button)
         layout.addStretch()
         layout.addWidget(self.list_widget)
