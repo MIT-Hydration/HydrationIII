@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x15mission_control.proto\x12\x0fmission_control\"-\n\x10HeartBeatRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"\xd3\x01\n\x0eHeartBeatReply\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\x1e\n\x16\x64rill_subsystem_online\x18\x03 \x01(\x08\x12\x1f\n\x17heater_sussystem_online\x18\x04 \x01(\x08\x12\x0e\n\x06\x66\x61n_on\x18\x05 \x01(\x08\x12\x17\n\x0f\x63pu_temperature\x18\x06 \x01(\x02\x12)\n\x04mode\x18\x07 \x01(\x0e\x32\x1b.mission_control.SystemMode\"6\n\x19\x44rillSensorsStatusRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"p\n\x1a\x44rillSensorsStatusResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\x10\n\x08\x64rill_on\x18\x03 \x01(\x08\x12\x12\n\ntachometer\x18\x04 \x01(\x02\"B\n\x13\x44rillCommandRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\x10\n\x08\x64rill_on\x18\x02 \x01(\x08\"t\n\x14\x44rillCommandResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12.\n\x06status\x18\x03 \x01(\x0e\x32\x1e.mission_control.CommandReport\">\n\x11\x46\x61nCommandRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\x0e\n\x06\x66\x61n_on\x18\x02 \x01(\x08\"r\n\x12\x46\x61nCommandResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12.\n\x06status\x18\x03 \x01(\x0e\x32\x1e.mission_control.CommandReport*\\\n\nSystemMode\x12\x0b\n\x07UNKNOWN\x10\x00\x12\t\n\x05READY\x10\x01\x12\x0f\n\x0b\x43\x41LIBRATING\x10\x02\x12\n\n\x06MANUAL\x10\x03\x12\x0c\n\x08\x44RILLING\x10\x04\x12\x0b\n\x07HEATING\x10\x05*E\n\rCommandReport\x12\x0c\n\x08\x45XECUTED\x10\x00\x12\x11\n\rINVALID_STATE\x10\x01\x12\x13\n\x0f\x45XECUTION_ERROR\x10\x02\x32\x83\x03\n\x0eMissionControl\x12O\n\tHeartBeat\x12!.mission_control.HeartBeatRequest\x1a\x1f.mission_control.HeartBeatReply\x12l\n\x11\x44rillSensorStatus\x12*.mission_control.DrillSensorsStatusRequest\x1a+.mission_control.DrillSensorsStatusResponse\x12[\n\x0c\x44rillCommand\x12$.mission_control.DrillCommandRequest\x1a%.mission_control.DrillCommandResponse\x12U\n\nFanCommand\x12\".mission_control.FanCommandRequest\x1a#.mission_control.FanCommandResponse2\xaa\x02\n\x0c\x44rillControl\x12O\n\tHeartBeat\x12!.mission_control.HeartBeatRequest\x1a\x1f.mission_control.HeartBeatReply\x12l\n\x11\x44rillSensorStatus\x12*.mission_control.DrillSensorsStatusRequest\x1a+.mission_control.DrillSensorsStatusResponse\x12[\n\x0c\x44rillCommand\x12$.mission_control.DrillCommandRequest\x1a%.mission_control.DrillCommandResponseb\x06proto3'
+  serialized_pb=b'\n\x15mission_control.proto\x12\x0fmission_control\"-\n\x10HeartBeatRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"\xd8\x01\n\x0eHeartBeatReply\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\x1e\n\x16\x64rill_subsystem_online\x18\x03 \x01(\x08\x12\x1f\n\x17heater_sussystem_online\x18\x04 \x01(\x08\x12\x0e\n\x06\x66\x61n_on\x18\x05 \x01(\x08\x12\x1c\n\x14\x63pu_temperature_degC\x18\x06 \x01(\x02\x12)\n\x04mode\x18\x07 \x01(\x0e\x32\x1b.mission_control.SystemMode\"6\n\x19\x44rillSensorsStatusRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"p\n\x1a\x44rillSensorsStatusResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\x10\n\x08\x64rill_on\x18\x03 \x01(\x08\x12\x12\n\ntachometer\x18\x04 \x01(\x02\"B\n\x13\x44rillCommandRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\x10\n\x08\x64rill_on\x18\x02 \x01(\x08\"t\n\x14\x44rillCommandResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12.\n\x06status\x18\x03 \x01(\x0e\x32\x1e.mission_control.CommandReport\">\n\x11\x46\x61nCommandRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\x0e\n\x06\x66\x61n_on\x18\x02 \x01(\x08\"r\n\x12\x46\x61nCommandResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12.\n\x06status\x18\x03 \x01(\x0e\x32\x1e.mission_control.CommandReport*\\\n\nSystemMode\x12\x0b\n\x07UNKNOWN\x10\x00\x12\t\n\x05READY\x10\x01\x12\x0f\n\x0b\x43\x41LIBRATING\x10\x02\x12\n\n\x06MANUAL\x10\x03\x12\x0c\n\x08\x44RILLING\x10\x04\x12\x0b\n\x07HEATING\x10\x05*E\n\rCommandReport\x12\x0c\n\x08\x45XECUTED\x10\x00\x12\x11\n\rINVALID_STATE\x10\x01\x12\x13\n\x0f\x45XECUTION_ERROR\x10\x02\x32\x83\x03\n\x0eMissionControl\x12O\n\tHeartBeat\x12!.mission_control.HeartBeatRequest\x1a\x1f.mission_control.HeartBeatReply\x12l\n\x11\x44rillSensorStatus\x12*.mission_control.DrillSensorsStatusRequest\x1a+.mission_control.DrillSensorsStatusResponse\x12[\n\x0c\x44rillCommand\x12$.mission_control.DrillCommandRequest\x1a%.mission_control.DrillCommandResponse\x12U\n\nFanCommand\x12\".mission_control.FanCommandRequest\x1a#.mission_control.FanCommandResponse2\xaa\x02\n\x0c\x44rillControl\x12O\n\tHeartBeat\x12!.mission_control.HeartBeatRequest\x1a\x1f.mission_control.HeartBeatReply\x12l\n\x11\x44rillSensorStatus\x12*.mission_control.DrillSensorsStatusRequest\x1a+.mission_control.DrillSensorsStatusResponse\x12[\n\x0c\x44rillCommand\x12$.mission_control.DrillCommandRequest\x1a%.mission_control.DrillCommandResponseb\x06proto3'
 )
 
 _SYSTEMMODE = _descriptor.EnumDescriptor(
@@ -63,8 +63,8 @@ _SYSTEMMODE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=839,
-  serialized_end=931,
+  serialized_start=844,
+  serialized_end=936,
 )
 _sym_db.RegisterEnumDescriptor(_SYSTEMMODE)
 
@@ -94,8 +94,8 @@ _COMMANDREPORT = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=933,
-  serialized_end=1002,
+  serialized_start=938,
+  serialized_end=1007,
 )
 _sym_db.RegisterEnumDescriptor(_COMMANDREPORT)
 
@@ -188,7 +188,7 @@ _HEARTBEATREPLY = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='cpu_temperature', full_name='mission_control.HeartBeatReply.cpu_temperature', index=5,
+      name='cpu_temperature_degC', full_name='mission_control.HeartBeatReply.cpu_temperature_degC', index=5,
       number=6, type=2, cpp_type=6, label=1,
       has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
@@ -214,7 +214,7 @@ _HEARTBEATREPLY = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=90,
-  serialized_end=301,
+  serialized_end=306,
 )
 
 
@@ -245,8 +245,8 @@ _DRILLSENSORSSTATUSREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=303,
-  serialized_end=357,
+  serialized_start=308,
+  serialized_end=362,
 )
 
 
@@ -298,8 +298,8 @@ _DRILLSENSORSSTATUSRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=359,
-  serialized_end=471,
+  serialized_start=364,
+  serialized_end=476,
 )
 
 
@@ -337,8 +337,8 @@ _DRILLCOMMANDREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=473,
-  serialized_end=539,
+  serialized_start=478,
+  serialized_end=544,
 )
 
 
@@ -383,8 +383,8 @@ _DRILLCOMMANDRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=541,
-  serialized_end=657,
+  serialized_start=546,
+  serialized_end=662,
 )
 
 
@@ -422,8 +422,8 @@ _FANCOMMANDREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=659,
-  serialized_end=721,
+  serialized_start=664,
+  serialized_end=726,
 )
 
 
@@ -468,8 +468,8 @@ _FANCOMMANDRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=723,
-  serialized_end=837,
+  serialized_start=728,
+  serialized_end=842,
 )
 
 _HEARTBEATREPLY.fields_by_name['mode'].enum_type = _SYSTEMMODE
@@ -552,8 +552,8 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=1005,
-  serialized_end=1392,
+  serialized_start=1010,
+  serialized_end=1397,
   methods=[
   _descriptor.MethodDescriptor(
     name='HeartBeat',
@@ -608,8 +608,8 @@ _DRILLCONTROL = _descriptor.ServiceDescriptor(
   index=1,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=1395,
-  serialized_end=1693,
+  serialized_start=1400,
+  serialized_end=1698,
   methods=[
   _descriptor.MethodDescriptor(
     name='HeartBeat',

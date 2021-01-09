@@ -22,7 +22,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
             fan_on = (self.fan.value > 0.0),
-            cpu_temperature = cpu.temperature,
+            cpu_temperature_degC = self.cpu.temperature,
             mode = mission_control_pb2.READY)
 
     def FanCommand(self, request, context):

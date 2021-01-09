@@ -44,6 +44,10 @@ Following guide here: https://grpc.io/docs/languages/python/quickstart/
 2. `pip install grpcio`
 3. `pip install grpcio-tools`
 
+In addition you may need to add the user to the `dialout` group and restart to access gpio without sudo:
+
+`sudo adduser [username] dialout`
+
 ## Versions 
 I get the following versions in my mac
 
