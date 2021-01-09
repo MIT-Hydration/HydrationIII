@@ -78,7 +78,8 @@ class RPiFanThread(QtCore.QThread):
             with grpc.insecure_channel(RPI_IP_ADDRESS_PORT) as channel:
                 stub = mission_control_pb2_grpc.MissionControlStub(channel)
                 response = stub.FanCommand (
-                    mission_control_pb2.FanCommand(request_timestamp = timestamp, fan_on = self.state),
+                    mission_control_pb2.FanCommandRequest(
+                        request_timestamp = timestamp, fan_on = self.state),
                     timeout = GRPC_CALL_TIMEOUT )
                 print("Mission Control RPi FanCommandResponse received at: " + str(datetime.now()))
                 print(response)
