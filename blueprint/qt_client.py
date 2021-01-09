@@ -143,7 +143,7 @@ class MainWindow(QtWidgets.QWidget):
         self._addStatus(self.fan_on_led, "MiCon CPU Fan")
         
         h_layout_temp = QtWidgets.QHBoxLayout()
-        h_layout_temp.addWidget(QtWidgets.QLabel("MiCon Temperature:"))
+        h_layout_temp.addWidget(QtWidgets.QLabel("MC Temp.:"))
         self.mc_temp_label = QtWidgets.QLabel("N/A [degC]")
         self.mc_temp_label.setMinimumWidth(70)
         h_layout_temp.addWidget(self.mc_temp_label)
