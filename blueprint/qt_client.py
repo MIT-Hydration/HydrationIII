@@ -61,6 +61,34 @@ class RPiHeartBeat(QtCore.QThread):
             
         self.heartbeat_done.emit(response)
 
+
+class RPiFanThread(QtCore.QThread):
+    fan_done = QtCore.pyqtSignal(object)
+    state = False
+
+    def __init__(self, state):
+        QtCore.QThread.__init__(self)
+        self.state = state
+        
+    def run(self):
+        global RPI_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
+        response = None
+        try:
+            timestamp = int(time.time()*1000)
+            with grpc.insecure_channel(RPI_IP_ADDRESS_PORT) as channel:
+                stub = mission_control_pb2_grpc.MissionControlStub(channel)
+                response = stub.FanCommand (
+                    mission_control_pb2.FanCommand(request_timestamp = timestamp, fan_on = self.state),
+                    timeout = GRPC_CALL_TIMEOUT )
+                print("Mission Control RPi FanCommandResponse received at: " + str(datetime.now()))
+                print(response)
+        
+        except Exception as e:
+            info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"
+            print(info)
+            
+        self.fan_done.emit(response)
+
 class RPiServerThread(QtCore.QThread):
     echo_done = QtCore.pyqtSignal(object)
 
@@ -152,6 +180,9 @@ class MainWindow(QtWidgets.QWidget):
         fan_layout.addWidget(self.fan_on_button)
         fan_layout.addWidget(self.fan_off_button)
 
+        self.fan_on_button.clicked.connect(self.turn_fan_on)
+        self.fan_off_button.clicked.connect(self.turn_fan_off)
+        
         self.test_client_button.clicked.connect(self.start_download)
         self.echo_button.clicked.connect(self.start_echo)
 
@@ -188,6 +219,22 @@ class MainWindow(QtWidgets.QWidget):
         self.threads.append(client_thread)
         client_thread.start()
 
+    def set_fan(self, state):
+        self.threads = []
+        client_thread = RPiFanThread(state)
+        client_thread.fan_done.connect(self.on_fan_done)
+        self.threads.append(client_thread)
+        client_thread.start()
+
+    def turn_fan_on(self):
+        set_fan(True)
+    
+    def turn_fan_off(self):
+        set_fan(False)
+
+    def on_fan_done(self):
+        return
+
     def onHeartBeat(self):
         self.threads = []
         client_thread = RPiHeartBeat()
@@ -198,6 +245,8 @@ class MainWindow(QtWidgets.QWidget):
     def on_heartbeat_received(self, response):
         if (response != None):
             self.mission_control_led.value = True
+            self.fan_on_led = response.fan_on
+            self.mc_temp_label.setText(f"{response.cpu_temperature} [degC]")
             rtt_time = response.timestamp - response.request_timestamp
             self.rtt_label.setText(f"{rtt_time} [ms]")
             

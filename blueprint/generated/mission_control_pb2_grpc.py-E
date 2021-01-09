@@ -29,6 +29,11 @@ class MissionControlStub(object):
                 request_serializer=mission__control__pb2.DrillCommandRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.DrillCommandResponse.FromString,
                 )
+        self.FanCommand = channel.unary_unary(
+                '/mission_control.MissionControl/FanCommand',
+                request_serializer=mission__control__pb2.FanCommandRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.FanCommandResponse.FromString,
+                )
 
 
 class MissionControlServicer(object):
@@ -52,6 +57,12 @@ class MissionControlServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def FanCommand(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_MissionControlServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -69,6 +80,11 @@ def add_MissionControlServicer_to_server(servicer, server):
                     servicer.DrillCommand,
                     request_deserializer=mission__control__pb2.DrillCommandRequest.FromString,
                     response_serializer=mission__control__pb2.DrillCommandResponse.SerializeToString,
+            ),
+            'FanCommand': grpc.unary_unary_rpc_method_handler(
+                    servicer.FanCommand,
+                    request_deserializer=mission__control__pb2.FanCommandRequest.FromString,
+                    response_serializer=mission__control__pb2.FanCommandResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -128,6 +144,23 @@ class MissionControl(object):
         return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/DrillCommand',
             mission__control__pb2.DrillCommandRequest.SerializeToString,
             mission__control__pb2.DrillCommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def FanCommand(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/FanCommand',
+            mission__control__pb2.FanCommandRequest.SerializeToString,
+            mission__control__pb2.FanCommandResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
