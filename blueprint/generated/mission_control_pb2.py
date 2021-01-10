@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x15mission_control.proto\x12\x0fmission_control\"-\n\x10HeartBeatRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"\xaa\x01\n\x0eHeartBeatReply\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\x1e\n\x16\x64rill_subsystem_online\x18\x03 \x01(\x08\x12\x1f\n\x17heater_sussystem_online\x18\x04 \x01(\x08\x12)\n\x04mode\x18\x05 \x01(\x0e\x32\x1b.mission_control.SystemMode\"6\n\x19\x44rillSensorsStatusRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"p\n\x1a\x44rillSensorsStatusResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\x10\n\x08\x64rill_on\x18\x03 \x01(\x08\x12\x12\n\ntachometer\x18\x04 \x01(\x02\"B\n\x13\x44rillCommandRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\x10\n\x08\x64rill_on\x18\x02 \x01(\x08\"t\n\x14\x44rillCommandResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12.\n\x06status\x18\x03 \x01(\x0e\x32\x1e.mission_control.CommandReport*\\\n\nSystemMode\x12\x0b\n\x07UNKNOWN\x10\x00\x12\t\n\x05READY\x10\x01\x12\x0f\n\x0b\x43\x41LIBRATING\x10\x02\x12\n\n\x06MANUAL\x10\x03\x12\x0c\n\x08\x44RILLING\x10\x04\x12\x0b\n\x07HEATING\x10\x05*E\n\rCommandReport\x12\x0c\n\x08\x45XECUTED\x10\x00\x12\x11\n\rINVALID_STATE\x10\x01\x12\x13\n\x0f\x45XECUTION_ERROR\x10\x02\x32\xac\x02\n\x0eMissionControl\x12O\n\tHeartBeat\x12!.mission_control.HeartBeatRequest\x1a\x1f.mission_control.HeartBeatReply\x12l\n\x11\x44rillSensorStatus\x12*.mission_control.DrillSensorsStatusRequest\x1a+.mission_control.DrillSensorsStatusResponse\x12[\n\x0c\x44rillCommand\x12$.mission_control.DrillCommandRequest\x1a%.mission_control.DrillCommandResponse2\xaa\x02\n\x0c\x44rillControl\x12O\n\tHeartBeat\x12!.mission_control.HeartBeatRequest\x1a\x1f.mission_control.HeartBeatReply\x12l\n\x11\x44rillSensorStatus\x12*.mission_control.DrillSensorsStatusRequest\x1a+.mission_control.DrillSensorsStatusResponse\x12[\n\x0c\x44rillCommand\x12$.mission_control.DrillCommandRequest\x1a%.mission_control.DrillCommandResponseb\x06proto3'
+  serialized_pb=b'\n\x15mission_control.proto\x12\x0fmission_control\"-\n\x10HeartBeatRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"\xd8\x01\n\x0eHeartBeatReply\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\x1e\n\x16\x64rill_subsystem_online\x18\x03 \x01(\x08\x12\x1f\n\x17heater_sussystem_online\x18\x04 \x01(\x08\x12\x0e\n\x06\x66\x61n_on\x18\x05 \x01(\x08\x12\x1c\n\x14\x63pu_temperature_degC\x18\x06 \x01(\x02\x12)\n\x04mode\x18\x07 \x01(\x0e\x32\x1b.mission_control.SystemMode\"6\n\x19\x44rillSensorsStatusRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"p\n\x1a\x44rillSensorsStatusResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\x10\n\x08\x64rill_on\x18\x03 \x01(\x08\x12\x12\n\ntachometer\x18\x04 \x01(\x02\"B\n\x13\x44rillCommandRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\x10\n\x08\x64rill_on\x18\x02 \x01(\x08\"t\n\x14\x44rillCommandResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12.\n\x06status\x18\x03 \x01(\x0e\x32\x1e.mission_control.CommandReport\">\n\x11\x46\x61nCommandRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\x0e\n\x06\x66\x61n_on\x18\x02 \x01(\x08\"r\n\x12\x46\x61nCommandResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12.\n\x06status\x18\x03 \x01(\x0e\x32\x1e.mission_control.CommandReport*\\\n\nSystemMode\x12\x0b\n\x07UNKNOWN\x10\x00\x12\t\n\x05READY\x10\x01\x12\x0f\n\x0b\x43\x41LIBRATING\x10\x02\x12\n\n\x06MANUAL\x10\x03\x12\x0c\n\x08\x44RILLING\x10\x04\x12\x0b\n\x07HEATING\x10\x05*E\n\rCommandReport\x12\x0c\n\x08\x45XECUTED\x10\x00\x12\x11\n\rINVALID_STATE\x10\x01\x12\x13\n\x0f\x45XECUTION_ERROR\x10\x02\x32\x83\x03\n\x0eMissionControl\x12O\n\tHeartBeat\x12!.mission_control.HeartBeatRequest\x1a\x1f.mission_control.HeartBeatReply\x12l\n\x11\x44rillSensorStatus\x12*.mission_control.DrillSensorsStatusRequest\x1a+.mission_control.DrillSensorsStatusResponse\x12[\n\x0c\x44rillCommand\x12$.mission_control.DrillCommandRequest\x1a%.mission_control.DrillCommandResponse\x12U\n\nFanCommand\x12\".mission_control.FanCommandRequest\x1a#.mission_control.FanCommandResponse2\xaa\x02\n\x0c\x44rillControl\x12O\n\tHeartBeat\x12!.mission_control.HeartBeatRequest\x1a\x1f.mission_control.HeartBeatReply\x12l\n\x11\x44rillSensorStatus\x12*.mission_control.DrillSensorsStatusRequest\x1a+.mission_control.DrillSensorsStatusResponse\x12[\n\x0c\x44rillCommand\x12$.mission_control.DrillCommandRequest\x1a%.mission_control.DrillCommandResponseb\x06proto3'
 )
 
 _SYSTEMMODE = _descriptor.EnumDescriptor(
@@ -63,8 +63,8 @@ _SYSTEMMODE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=618,
-  serialized_end=710,
+  serialized_start=844,
+  serialized_end=936,
 )
 _sym_db.RegisterEnumDescriptor(_SYSTEMMODE)
 
@@ -94,8 +94,8 @@ _COMMANDREPORT = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=712,
-  serialized_end=781,
+  serialized_start=938,
+  serialized_end=1007,
 )
 _sym_db.RegisterEnumDescriptor(_COMMANDREPORT)
 
@@ -181,8 +181,22 @@ _HEARTBEATREPLY = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='mode', full_name='mission_control.HeartBeatReply.mode', index=4,
-      number=5, type=14, cpp_type=8, label=1,
+      name='fan_on', full_name='mission_control.HeartBeatReply.fan_on', index=4,
+      number=5, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='cpu_temperature_degC', full_name='mission_control.HeartBeatReply.cpu_temperature_degC', index=5,
+      number=6, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='mode', full_name='mission_control.HeartBeatReply.mode', index=6,
+      number=7, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -200,7 +214,7 @@ _HEARTBEATREPLY = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=90,
-  serialized_end=260,
+  serialized_end=306,
 )
 
 
@@ -231,8 +245,8 @@ _DRILLSENSORSSTATUSREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=262,
-  serialized_end=316,
+  serialized_start=308,
+  serialized_end=362,
 )
 
 
@@ -284,8 +298,8 @@ _DRILLSENSORSSTATUSRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=318,
-  serialized_end=430,
+  serialized_start=364,
+  serialized_end=476,
 )
 
 
@@ -323,8 +337,8 @@ _DRILLCOMMANDREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=432,
-  serialized_end=498,
+  serialized_start=478,
+  serialized_end=544,
 )
 
 
@@ -369,18 +383,106 @@ _DRILLCOMMANDRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=500,
-  serialized_end=616,
+  serialized_start=546,
+  serialized_end=662,
+)
+
+
+_FANCOMMANDREQUEST = _descriptor.Descriptor(
+  name='FanCommandRequest',
+  full_name='mission_control.FanCommandRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='request_timestamp', full_name='mission_control.FanCommandRequest.request_timestamp', index=0,
+      number=1, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='fan_on', full_name='mission_control.FanCommandRequest.fan_on', index=1,
+      number=2, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=664,
+  serialized_end=726,
+)
+
+
+_FANCOMMANDRESPONSE = _descriptor.Descriptor(
+  name='FanCommandResponse',
+  full_name='mission_control.FanCommandResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='timestamp', full_name='mission_control.FanCommandResponse.timestamp', index=0,
+      number=1, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='request_timestamp', full_name='mission_control.FanCommandResponse.request_timestamp', index=1,
+      number=2, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='status', full_name='mission_control.FanCommandResponse.status', index=2,
+      number=3, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=728,
+  serialized_end=842,
 )
 
 _HEARTBEATREPLY.fields_by_name['mode'].enum_type = _SYSTEMMODE
 _DRILLCOMMANDRESPONSE.fields_by_name['status'].enum_type = _COMMANDREPORT
+_FANCOMMANDRESPONSE.fields_by_name['status'].enum_type = _COMMANDREPORT
 DESCRIPTOR.message_types_by_name['HeartBeatRequest'] = _HEARTBEATREQUEST
 DESCRIPTOR.message_types_by_name['HeartBeatReply'] = _HEARTBEATREPLY
 DESCRIPTOR.message_types_by_name['DrillSensorsStatusRequest'] = _DRILLSENSORSSTATUSREQUEST
 DESCRIPTOR.message_types_by_name['DrillSensorsStatusResponse'] = _DRILLSENSORSSTATUSRESPONSE
 DESCRIPTOR.message_types_by_name['DrillCommandRequest'] = _DRILLCOMMANDREQUEST
 DESCRIPTOR.message_types_by_name['DrillCommandResponse'] = _DRILLCOMMANDRESPONSE
+DESCRIPTOR.message_types_by_name['FanCommandRequest'] = _FANCOMMANDREQUEST
+DESCRIPTOR.message_types_by_name['FanCommandResponse'] = _FANCOMMANDRESPONSE
 DESCRIPTOR.enum_types_by_name['SystemMode'] = _SYSTEMMODE
 DESCRIPTOR.enum_types_by_name['CommandReport'] = _COMMANDREPORT
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
@@ -427,6 +529,20 @@ DrillCommandResponse = _reflection.GeneratedProtocolMessageType('DrillCommandRes
   })
 _sym_db.RegisterMessage(DrillCommandResponse)
 
+FanCommandRequest = _reflection.GeneratedProtocolMessageType('FanCommandRequest', (_message.Message,), {
+  'DESCRIPTOR' : _FANCOMMANDREQUEST,
+  '__module__' : 'mission_control_pb2'
+  # @@protoc_insertion_point(class_scope:mission_control.FanCommandRequest)
+  })
+_sym_db.RegisterMessage(FanCommandRequest)
+
+FanCommandResponse = _reflection.GeneratedProtocolMessageType('FanCommandResponse', (_message.Message,), {
+  'DESCRIPTOR' : _FANCOMMANDRESPONSE,
+  '__module__' : 'mission_control_pb2'
+  # @@protoc_insertion_point(class_scope:mission_control.FanCommandResponse)
+  })
+_sym_db.RegisterMessage(FanCommandResponse)
+
 
 
 _MISSIONCONTROL = _descriptor.ServiceDescriptor(
@@ -436,8 +552,8 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=784,
-  serialized_end=1084,
+  serialized_start=1010,
+  serialized_end=1397,
   methods=[
   _descriptor.MethodDescriptor(
     name='HeartBeat',
@@ -469,6 +585,16 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
+  _descriptor.MethodDescriptor(
+    name='FanCommand',
+    full_name='mission_control.MissionControl.FanCommand',
+    index=3,
+    containing_service=None,
+    input_type=_FANCOMMANDREQUEST,
+    output_type=_FANCOMMANDRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
 ])
 _sym_db.RegisterServiceDescriptor(_MISSIONCONTROL)
 
@@ -482,8 +608,8 @@ _DRILLCONTROL = _descriptor.ServiceDescriptor(
   index=1,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=1087,
-  serialized_end=1385,
+  serialized_start=1400,
+  serialized_end=1698,
   methods=[
   _descriptor.MethodDescriptor(
     name='HeartBeat',

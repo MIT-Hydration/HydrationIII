@@ -61,6 +61,35 @@ class RPiHeartBeat(QtCore.QThread):
             
         self.heartbeat_done.emit(response)
 
+
+class RPiFanThread(QtCore.QThread):
+    fan_done = QtCore.pyqtSignal(object)
+    state = False
+
+    def __init__(self, state):
+        QtCore.QThread.__init__(self)
+        self.state = state
+        
+    def run(self):
+        global RPI_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
+        response = None
+        try:
+            timestamp = int(time.time()*1000)
+            with grpc.insecure_channel(RPI_IP_ADDRESS_PORT) as channel:
+                stub = mission_control_pb2_grpc.MissionControlStub(channel)
+                response = stub.FanCommand (
+                    mission_control_pb2.FanCommandRequest(
+                        request_timestamp = timestamp, fan_on = self.state),
+                    timeout = GRPC_CALL_TIMEOUT )
+                print("Mission Control RPi FanCommandResponse received at: " + str(datetime.now()))
+                print(response)
+        
+        except Exception as e:
+            info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"
+            print(info)
+            
+        self.fan_done.emit(response)
+
 class RPiServerThread(QtCore.QThread):
     echo_done = QtCore.pyqtSignal(object)
 
@@ -104,14 +133,26 @@ class MainWindow(QtWidgets.QWidget):
         self.drill_asm_led.value=False
         self._addStatus(self.drill_asm_led, "Drilling Assembly")
 
-        self.water_prod_led=QLed(self, onColour=QLed.Green, shape=QLed.Circle)
+        self.water_prod_led = QLed(self, onColour=QLed.Green, shape=QLed.Circle)
         self.water_prod_led.value=False
         self._addStatus(self.water_prod_led, "Water Production")
+
+        self.status_layout.addWidget(QtWidgets.QLabel('-------------------'))
+        self.fan_on_led = QLed(self, onColour=QLed.Green, shape=QLed.Circle)
+        self.fan_on_led.value = False
+        self._addStatus(self.fan_on_led, "MiCon CPU Fan")
+        
+        h_layout_temp = QtWidgets.QHBoxLayout()
+        h_layout_temp.addWidget(QtWidgets.QLabel("MC Temp.:"))
+        self.mc_temp_label = QtWidgets.QLabel("N/A [degC]")
+        self.mc_temp_label.setMinimumWidth(70)
+        h_layout_temp.addWidget(self.mc_temp_label)
+        self.status_layout.addLayout(h_layout_temp)
 
         self.status_layout.addStretch()
         
         h_layout = QtWidgets.QHBoxLayout()
-        h_layout.addWidget(QtWidgets.QLabel("Round Trip Time:"))
+        h_layout.addWidget(QtWidgets.QLabel("Trip Time:"))
         self.rtt_label = QtWidgets.QLabel("N/A [ms]")
         self.rtt_label.setMinimumWidth(70)
         h_layout.addWidget(self.rtt_label)
@@ -134,12 +175,22 @@ class MainWindow(QtWidgets.QWidget):
         echo_layout.addWidget(self.echo_textedit)
         echo_layout.addWidget(self.echo_button)
 
+        self.fan_on_button = QtWidgets.QPushButton("Turn ON Fan")
+        self.fan_off_button = QtWidgets.QPushButton("Turn OFF Fan")
+        fan_layout = QtWidgets.QHBoxLayout()
+        fan_layout.addWidget(self.fan_on_button)
+        fan_layout.addWidget(self.fan_off_button)
+
+        self.fan_on_button.clicked.connect(self.turn_fan_on)
+        self.fan_off_button.clicked.connect(self.turn_fan_off)
+        
         self.test_client_button.clicked.connect(self.start_download)
         self.echo_button.clicked.connect(self.start_echo)
 
-        
         layout = QtWidgets.QVBoxLayout()
         layout.addLayout(echo_layout)
+        layout.addLayout(fan_layout)
+        
         layout.addWidget(self.test_client_button)
         layout.addStretch()
         layout.addWidget(self.list_widget)
@@ -169,6 +220,22 @@ class MainWindow(QtWidgets.QWidget):
         self.threads.append(client_thread)
         client_thread.start()
 
+    def set_fan(self, state):
+        self.threads = []
+        client_thread = RPiFanThread(state)
+        client_thread.fan_done.connect(self.on_fan_done)
+        self.threads.append(client_thread)
+        client_thread.start()
+
+    def turn_fan_on(self):
+        self.set_fan(True)
+    
+    def turn_fan_off(self):
+        self.set_fan(False)
+
+    def on_fan_done(self):
+        return
+
     def onHeartBeat(self):
         self.threads = []
         client_thread = RPiHeartBeat()
@@ -179,6 +246,8 @@ class MainWindow(QtWidgets.QWidget):
     def on_heartbeat_received(self, response):
         if (response != None):
             self.mission_control_led.value = True
+            self.fan_on_led.value = response.fan_on
+            self.mc_temp_label.setText(f"{response.cpu_temperature_degC:.2f} [degC]")
             rtt_time = response.timestamp - response.request_timestamp
             self.rtt_label.setText(f"{rtt_time} [ms]")
             
