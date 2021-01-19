@@ -20,7 +20,7 @@ cpu = CPUTemperature()
 
 time_start_s = time.time()
 fp = open(f"{time_start_s}.csv", "w")
-fp.write("Time (s), CPU Temperature [degC], PWM command, Current [mA], Active Power [W]\n")
+fp.write("Time [s], CPU Temperature [degC], PWM command, Current [mA], Active Power [W]\n")
 while True:
     time_s = time.time()
     time_s_10sint = int((time_s - time_start_s)/10)
@@ -36,7 +36,7 @@ while True:
     cpu_temp = cpu.temperature
     print (f"{time_s}, {cpu_temp} [degC], {motor.value}, {current_mA} [mA], {power_W} [W]")
     fp.write (f"{time_s}, {cpu_temp}, {motor.value}, {current_mA}, {power_W}\n")
-    time.sleep(0.2)
+    time.sleep(0.02)
 
 client.close()
 fp.close()
