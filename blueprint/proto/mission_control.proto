@@ -96,6 +96,7 @@ message RigMoveCommandRequest {
 
 message DrillModeRequest {
     uint64 request_timestamp = 1;
+    bool drill_mode = 2;
 }
 
 message DrillCalibrationRequest {
@@ -139,8 +140,7 @@ service MissionControl {
 service DrillControl {
     rpc HeartBeat (HeartBeatRequest) returns (HeartBeatReply);
     rpc DrillAssemblyStatus (DrillAssemblyStatusRequest) returns (DrillAssemblyStatusResponse);
+    rpc DrillMode (DrillModeRequest) returns (CommandResponse);
     rpc EmergencyStop (EmergencyStopRequest) returns (CommandResponse);
-    
     rpc DrillCalibration (DrillCalibrationRequest) returns (CommandResponse);
-    
 }

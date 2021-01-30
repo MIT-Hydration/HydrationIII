@@ -25,15 +25,29 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             cpu_temperature_degC = self.cpu.temperature,
             mode = mission_control_pb2.READY)
 
-    def FanCommand(self, request, context):
-        timestamp = int(time.time()*1000)
-        
-        if (request.fan_on):
-            self.fan.value = 0.5
-        else:
-            self.fan.value = 0.0
+    def RigMove(self, request, context):
+        return # no implementation currently
 
-        return mission_control_pb2.FanCommandResponse(
+class DrillController(mission_control_pb2_grpc.MissionControlServicer):
+    drill_mode = False
+    drill_calibrated = False
+
+    def start_drill_mode(self):
+        
+        return
+
+    def stop_drill_mode(self):
+        return
+
+    def DrillMode(self, request, context):
+        timestamp = int(time.time()*1000)
+
+        if (self.drill_mode == False) and (request.drill_mode == True):
+            self.start_drill_mode()
+        elif (self.drill_mode == True) and (request.drill_mode = False):
+            self.stop_drill_mode()
+
+        return mission_control_pb2.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
             status = mission_control_pb2.EXECUTED)
