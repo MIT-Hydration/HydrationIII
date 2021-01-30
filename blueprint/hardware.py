@@ -44,6 +44,14 @@ class HardwareFactory:
     
 
 class AbstractDrill(ABC):
+
+    @abstractmethod
+    def start_sensor_readings(cls):
+        pass
+
+    @abstractmethod
+    def start_sensor_readings(cls):
+        pass
     
     @abstractmethod
     def set_drill_level(self, level):
@@ -87,7 +95,10 @@ class Drill(AbstractDrill):
             self.sensor_readings = {
                     "active_power_W": 0.0,
                     "current_mA": 0.0,
-                    "speed_rpm": 0.0
+                    "speed_rpm": 0.0,
+                    "accel_x_g": 0.0,
+                    "accel_y_g": 0.0,
+                    "accel_z_g": 0.0,
                 }
             self.client = ModbusSerialClient(port='/dev/ttyUSB0', method='rtu', baudrate=9600)
 
@@ -105,7 +116,36 @@ class Drill(AbstractDrill):
                 loop_end = time.time()
                 delta_time = loop_end - loop_start
                 if (delta_time < 0.01):
-                    time.sleep(0.02 - 0.01)
+                    time.sleep(0.01 - delta_time)
+                
+        def stop(self):
+            self.stopped = True
+
+    class FileWriterThread(threading.Thread):
+
+        def __init__(self, drill_thread):
+            threading.Thread.__init__(self)
+            self.drill_thread = drill_thread
+            self.stopped = True
+            
+        def run(self):
+            self.stopped = False
+            fp = open(f"{time_start_s}.csv", "w")
+            keys = drill_thread.sensor_readings.keys
+            for k in keys:
+                fp.write(f"{k},")
+            fp.write("\n")
+            while not self.stopped:
+                loop_start = time.time()
+                for k in keys:
+                    fp.write(f"{drill_thread.sensor_readings[k]},")
+                fp.write("\n")
+                loop_end = time.time()
+                delta_time = loop_end - loop_start
+                if (delta_time < 0.02):
+                    time.sleep(0.02 - delta_time)
+
+            fp.close()
                 
         def stop(self):
             self.stopped = True
@@ -114,14 +154,17 @@ class Drill(AbstractDrill):
     modbus_reg_count   = 4
     motor = PWMLED(12)
     drill_thread = DrillThread()
+    writer_thread = FileWriterThread(drill_thread)
     
     @classmethod
     def start_sensor_readings(cls):
         cls.drill_thred.start()
+        cls.writer_thread.start()
 
     @classmethod
     def stop_sensor_readings(cls):
         cls.drill_thread.stop()
+        cls.writer_thread.stop()
 
     @classmethod
     def set_drill_level(cls, level):

@@ -1,5 +1,6 @@
 from .generated import echo_pb2_grpc, echo_pb2
 from .generated import mission_control_pb2_grpc, mission_control_pb2
+from .hardware import HardwareFactory
 
 import time
 
@@ -31,13 +32,13 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 class DrillController(mission_control_pb2_grpc.MissionControlServicer):
     drill_mode = False
     drill_calibrated = False
+    drill_hw = HardwareFactory.getDrill()
 
     def start_drill_mode(self):
-        
-        return
+        drill_hw.start_sensor_readings()
 
     def stop_drill_mode(self):
-        return
+        drill_hw.stop_sensor_readings()
 
     def DrillMode(self, request, context):
         timestamp = int(time.time()*1000)
@@ -51,3 +52,5 @@ class DrillController(mission_control_pb2_grpc.MissionControlServicer):
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
             status = mission_control_pb2.EXECUTED)
+
+    def DrillDescendingDrilling:
