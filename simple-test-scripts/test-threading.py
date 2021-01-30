@@ -1,6 +1,6 @@
 """
-hardware.py
-Hardware Interface and Mock Layers for Hydration project.
+test-threading.py
+Test threading concept
 """
 
 __author__      = "Prakash Manandhar"
@@ -9,39 +9,13 @@ __credits__ = ["Prakash Manandhar"]
 __license__ = "Internal"
 __version__ = "1.0.0"
 __maintainer__ = "Prakash Manandhar"
-__email__ = "engineer.manandhar@gmail.com"
+__email__ = "prakashm@alum.mit.edu"
 __status__ = "Production"
 
 from abc import ABC, abstractmethod
 import time
 import threading
-
-from pymodbus.client.sync import ModbusSerialClient
-from pymodbus.payload import BinaryPayloadDecoder
-
-from gpiozero import PWMLED
-from gpiozero import CPUTemperature
-
-class HardwareFactory:
-    
-    is_mock = {
-        "drill": True
-    }
-
-    mock_load_profile_simple = {
-        "drill_ramp_delay_ms": 10,
-        "drill_ramp_slope_rpm_per_ms": 10 
-    }
-
-    current_load_profile = mock_load_profile_simple
-
-    @classmethod
-    def getDrill(cls):
-        if (cls.is_mock["drill"]):
-            return MockDrill()
-        else:
-            return Drill()
-    
+import random
 
 class AbstractDrill(ABC):
 
@@ -72,18 +46,6 @@ class AbstractDrill(ABC):
     @abstractmethod
     def get_current_mA(self):
         pass
-
-
-class MockDrill(AbstractDrill):
-    
-    def __init__(self):
-        self._set_time = time.time()
-        self._current_level = 0.0
-        self._set_level = 0.0
-
-    def set_drill_level(self, level):
-        self._set_time = time.time()
-        self._set_level = level
     
 class Drill(AbstractDrill):
 
@@ -100,19 +62,13 @@ class Drill(AbstractDrill):
                     "accel_y_g": 0.0,
                     "accel_z_g": 0.0,
                 }
-            self.client = ModbusSerialClient(port='/dev/ttyUSB0', method='rtu', baudrate=9600)
-
+            
         def run(self):
             self.stopped = False
             while not self.stopped:
                 loop_start = time.time()
-                result  = self.client.read_holding_registers(address, count,  unit=1)
-                decoder = BinaryPayloadDecoder.fromRegisters(result.registers, 
-                    wordorder = '>', byteorder = '>')
-                current_mA = decoder.decode_32bit_float()
-                power_W = decoder.decode_32bit_float()
-                self.sensor_readings["active_power_W"] = power_W
-                self.sensor_readings["current_mA"] =  current_mA
+                for k in self.sensor_readings:
+                    self.sensor_readings[k] = random.random()
                 loop_end = time.time()
                 delta_time = loop_end - loop_start
                 if (delta_time < 0.01):
@@ -130,17 +86,17 @@ class Drill(AbstractDrill):
             
         def run(self):
             self.stopped = False
+            time_start_s = time.time()
             fp = open(f"{time_start_s}.csv", "w")
             fp.write("time_s,")
-            keys = drill_thread.sensor_readings.keys
-            for k in keys:
+            for k in self.drill_thread.sensor_readings:
                 fp.write(f"{k},")
             fp.write("\n")
             while not self.stopped:
                 loop_start = time.time()
                 fp.write(f"{loop_start},")
-                for k in keys:
-                    fp.write(f"{drill_thread.sensor_readings[k]},")
+                for k in self.drill_thread.sensor_readings:
+                    fp.write(f"{self.drill_thread.sensor_readings[k]},")
                 fp.write("\n")
                 loop_end = time.time()
                 delta_time = loop_end - loop_start
@@ -152,15 +108,12 @@ class Drill(AbstractDrill):
         def stop(self):
             self.stopped = True
             
-    modbus_reg_address = 75
-    modbus_reg_count   = 4
-    motor = PWMLED(12)
     drill_thread = DrillThread()
     writer_thread = FileWriterThread(drill_thread)
     
     @classmethod
     def start_sensor_readings(cls):
-        cls.drill_thred.start()
+        cls.drill_thread.start()
         cls.writer_thread.start()
 
     @classmethod
@@ -188,3 +141,10 @@ class Drill(AbstractDrill):
     @classmethod
     def get_current_mA(cls):
         return cls.drill_thread.sensor_reading["current_mA"]
+
+
+if __name__ == "__main__":
+    drill = Drill()
+    drill.start_sensor_readings()
+    time.sleep(60)
+    drill.stop_sensor_readings()
