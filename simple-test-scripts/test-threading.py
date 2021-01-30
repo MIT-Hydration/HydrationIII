@@ -80,6 +80,9 @@ class Drill(AbstractDrill):
     class FileWriterThread(threading.Thread):
 
         def __init__(self, drill_thread):
+            self.delay = 0.0027856988543367034
+            self.sample_time = 0.02
+            self.sleep_time = self.sample_time - self.delay
             threading.Thread.__init__(self)
             self.drill_thread = drill_thread
             self.stopped = True
@@ -100,8 +103,8 @@ class Drill(AbstractDrill):
                 fp.write("\n")
                 loop_end = time.time()
                 delta_time = loop_end - loop_start
-                if (delta_time < 0.018):
-                    time.sleep(0.018 - delta_time)
+                if (delta_time < self.sleep_time):
+                    time.sleep(self.sleep_time - delta_time)
 
             fp.close()
                 
