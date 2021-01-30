@@ -19,20 +19,40 @@ class MissionControlStub(object):
                 request_serializer=mission__control__pb2.HeartBeatRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.HeartBeatReply.FromString,
                 )
-        self.DrillSensorStatus = channel.unary_unary(
-                '/mission_control.MissionControl/DrillSensorStatus',
-                request_serializer=mission__control__pb2.DrillSensorsStatusRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.DrillSensorsStatusResponse.FromString,
+        self.RigMove = channel.unary_unary(
+                '/mission_control.MissionControl/RigMove',
+                request_serializer=mission__control__pb2.RigMoveCommandRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
                 )
-        self.DrillCommand = channel.unary_unary(
-                '/mission_control.MissionControl/DrillCommand',
-                request_serializer=mission__control__pb2.DrillCommandRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.DrillCommandResponse.FromString,
+        self.DrillMode = channel.unary_unary(
+                '/mission_control.MissionControl/DrillMode',
+                request_serializer=mission__control__pb2.DrillModeRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
                 )
-        self.FanCommand = channel.unary_unary(
-                '/mission_control.MissionControl/FanCommand',
-                request_serializer=mission__control__pb2.FanCommandRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.FanCommandResponse.FromString,
+        self.DrillCalibration = channel.unary_unary(
+                '/mission_control.MissionControl/DrillCalibration',
+                request_serializer=mission__control__pb2.DrillCalibrationRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.DrillDescendingOff = channel.unary_unary(
+                '/mission_control.MissionControl/DrillDescendingOff',
+                request_serializer=mission__control__pb2.DrillDescendingOffRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.DrillDescendingDrilling = channel.unary_unary(
+                '/mission_control.MissionControl/DrillDescendingDrilling',
+                request_serializer=mission__control__pb2.DrillDescendingDrillingRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.EmergencyStop = channel.unary_unary(
+                '/mission_control.MissionControl/EmergencyStop',
+                request_serializer=mission__control__pb2.EmergencyStopRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.DrillAssemblyStatus = channel.unary_unary(
+                '/mission_control.MissionControl/DrillAssemblyStatus',
+                request_serializer=mission__control__pb2.DrillAssemblyStatusRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.DrillAssemblyStatusResponse.FromString,
                 )
 
 
@@ -45,19 +65,43 @@ class MissionControlServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def DrillSensorStatus(self, request, context):
+    def RigMove(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def DrillCommand(self, request, context):
+    def DrillMode(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def FanCommand(self, request, context):
+    def DrillCalibration(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DrillDescendingOff(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DrillDescendingDrilling(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def EmergencyStop(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DrillAssemblyStatus(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -71,20 +115,40 @@ def add_MissionControlServicer_to_server(servicer, server):
                     request_deserializer=mission__control__pb2.HeartBeatRequest.FromString,
                     response_serializer=mission__control__pb2.HeartBeatReply.SerializeToString,
             ),
-            'DrillSensorStatus': grpc.unary_unary_rpc_method_handler(
-                    servicer.DrillSensorStatus,
-                    request_deserializer=mission__control__pb2.DrillSensorsStatusRequest.FromString,
-                    response_serializer=mission__control__pb2.DrillSensorsStatusResponse.SerializeToString,
+            'RigMove': grpc.unary_unary_rpc_method_handler(
+                    servicer.RigMove,
+                    request_deserializer=mission__control__pb2.RigMoveCommandRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
             ),
-            'DrillCommand': grpc.unary_unary_rpc_method_handler(
-                    servicer.DrillCommand,
-                    request_deserializer=mission__control__pb2.DrillCommandRequest.FromString,
-                    response_serializer=mission__control__pb2.DrillCommandResponse.SerializeToString,
+            'DrillMode': grpc.unary_unary_rpc_method_handler(
+                    servicer.DrillMode,
+                    request_deserializer=mission__control__pb2.DrillModeRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
             ),
-            'FanCommand': grpc.unary_unary_rpc_method_handler(
-                    servicer.FanCommand,
-                    request_deserializer=mission__control__pb2.FanCommandRequest.FromString,
-                    response_serializer=mission__control__pb2.FanCommandResponse.SerializeToString,
+            'DrillCalibration': grpc.unary_unary_rpc_method_handler(
+                    servicer.DrillCalibration,
+                    request_deserializer=mission__control__pb2.DrillCalibrationRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'DrillDescendingOff': grpc.unary_unary_rpc_method_handler(
+                    servicer.DrillDescendingOff,
+                    request_deserializer=mission__control__pb2.DrillDescendingOffRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'DrillDescendingDrilling': grpc.unary_unary_rpc_method_handler(
+                    servicer.DrillDescendingDrilling,
+                    request_deserializer=mission__control__pb2.DrillDescendingDrillingRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'EmergencyStop': grpc.unary_unary_rpc_method_handler(
+                    servicer.EmergencyStop,
+                    request_deserializer=mission__control__pb2.EmergencyStopRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'DrillAssemblyStatus': grpc.unary_unary_rpc_method_handler(
+                    servicer.DrillAssemblyStatus,
+                    request_deserializer=mission__control__pb2.DrillAssemblyStatusRequest.FromString,
+                    response_serializer=mission__control__pb2.DrillAssemblyStatusResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -114,7 +178,7 @@ class MissionControl(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def DrillSensorStatus(request,
+    def RigMove(request,
             target,
             options=(),
             channel_credentials=None,
@@ -124,14 +188,14 @@ class MissionControl(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/DrillSensorStatus',
-            mission__control__pb2.DrillSensorsStatusRequest.SerializeToString,
-            mission__control__pb2.DrillSensorsStatusResponse.FromString,
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/RigMove',
+            mission__control__pb2.RigMoveCommandRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def DrillCommand(request,
+    def DrillMode(request,
             target,
             options=(),
             channel_credentials=None,
@@ -141,14 +205,14 @@ class MissionControl(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/DrillCommand',
-            mission__control__pb2.DrillCommandRequest.SerializeToString,
-            mission__control__pb2.DrillCommandResponse.FromString,
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/DrillMode',
+            mission__control__pb2.DrillModeRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def FanCommand(request,
+    def DrillCalibration(request,
             target,
             options=(),
             channel_credentials=None,
@@ -158,9 +222,77 @@ class MissionControl(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/FanCommand',
-            mission__control__pb2.FanCommandRequest.SerializeToString,
-            mission__control__pb2.FanCommandResponse.FromString,
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/DrillCalibration',
+            mission__control__pb2.DrillCalibrationRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def DrillDescendingOff(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/DrillDescendingOff',
+            mission__control__pb2.DrillDescendingOffRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def DrillDescendingDrilling(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/DrillDescendingDrilling',
+            mission__control__pb2.DrillDescendingDrillingRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def EmergencyStop(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/EmergencyStop',
+            mission__control__pb2.EmergencyStopRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def DrillAssemblyStatus(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/DrillAssemblyStatus',
+            mission__control__pb2.DrillAssemblyStatusRequest.SerializeToString,
+            mission__control__pb2.DrillAssemblyStatusResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -179,15 +311,25 @@ class DrillControlStub(object):
                 request_serializer=mission__control__pb2.HeartBeatRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.HeartBeatReply.FromString,
                 )
-        self.DrillSensorStatus = channel.unary_unary(
-                '/mission_control.DrillControl/DrillSensorStatus',
-                request_serializer=mission__control__pb2.DrillSensorsStatusRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.DrillSensorsStatusResponse.FromString,
+        self.DrillAssemblyStatus = channel.unary_unary(
+                '/mission_control.DrillControl/DrillAssemblyStatus',
+                request_serializer=mission__control__pb2.DrillAssemblyStatusRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.DrillAssemblyStatusResponse.FromString,
                 )
-        self.DrillCommand = channel.unary_unary(
-                '/mission_control.DrillControl/DrillCommand',
-                request_serializer=mission__control__pb2.DrillCommandRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.DrillCommandResponse.FromString,
+        self.DrillMode = channel.unary_unary(
+                '/mission_control.DrillControl/DrillMode',
+                request_serializer=mission__control__pb2.DrillModeRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.EmergencyStop = channel.unary_unary(
+                '/mission_control.DrillControl/EmergencyStop',
+                request_serializer=mission__control__pb2.EmergencyStopRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.DrillCalibration = channel.unary_unary(
+                '/mission_control.DrillControl/DrillCalibration',
+                request_serializer=mission__control__pb2.DrillCalibrationRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
                 )
 
 
@@ -200,13 +342,25 @@ class DrillControlServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def DrillSensorStatus(self, request, context):
+    def DrillAssemblyStatus(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def DrillCommand(self, request, context):
+    def DrillMode(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def EmergencyStop(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DrillCalibration(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -220,15 +374,25 @@ def add_DrillControlServicer_to_server(servicer, server):
                     request_deserializer=mission__control__pb2.HeartBeatRequest.FromString,
                     response_serializer=mission__control__pb2.HeartBeatReply.SerializeToString,
             ),
-            'DrillSensorStatus': grpc.unary_unary_rpc_method_handler(
-                    servicer.DrillSensorStatus,
-                    request_deserializer=mission__control__pb2.DrillSensorsStatusRequest.FromString,
-                    response_serializer=mission__control__pb2.DrillSensorsStatusResponse.SerializeToString,
+            'DrillAssemblyStatus': grpc.unary_unary_rpc_method_handler(
+                    servicer.DrillAssemblyStatus,
+                    request_deserializer=mission__control__pb2.DrillAssemblyStatusRequest.FromString,
+                    response_serializer=mission__control__pb2.DrillAssemblyStatusResponse.SerializeToString,
             ),
-            'DrillCommand': grpc.unary_unary_rpc_method_handler(
-                    servicer.DrillCommand,
-                    request_deserializer=mission__control__pb2.DrillCommandRequest.FromString,
-                    response_serializer=mission__control__pb2.DrillCommandResponse.SerializeToString,
+            'DrillMode': grpc.unary_unary_rpc_method_handler(
+                    servicer.DrillMode,
+                    request_deserializer=mission__control__pb2.DrillModeRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'EmergencyStop': grpc.unary_unary_rpc_method_handler(
+                    servicer.EmergencyStop,
+                    request_deserializer=mission__control__pb2.EmergencyStopRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'DrillCalibration': grpc.unary_unary_rpc_method_handler(
+                    servicer.DrillCalibration,
+                    request_deserializer=mission__control__pb2.DrillCalibrationRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -258,7 +422,7 @@ class DrillControl(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def DrillSensorStatus(request,
+    def DrillAssemblyStatus(request,
             target,
             options=(),
             channel_credentials=None,
@@ -268,14 +432,14 @@ class DrillControl(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.DrillControl/DrillSensorStatus',
-            mission__control__pb2.DrillSensorsStatusRequest.SerializeToString,
-            mission__control__pb2.DrillSensorsStatusResponse.FromString,
+        return grpc.experimental.unary_unary(request, target, '/mission_control.DrillControl/DrillAssemblyStatus',
+            mission__control__pb2.DrillAssemblyStatusRequest.SerializeToString,
+            mission__control__pb2.DrillAssemblyStatusResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def DrillCommand(request,
+    def DrillMode(request,
             target,
             options=(),
             channel_credentials=None,
@@ -285,8 +449,42 @@ class DrillControl(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.DrillControl/DrillCommand',
-            mission__control__pb2.DrillCommandRequest.SerializeToString,
-            mission__control__pb2.DrillCommandResponse.FromString,
+        return grpc.experimental.unary_unary(request, target, '/mission_control.DrillControl/DrillMode',
+            mission__control__pb2.DrillModeRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def EmergencyStop(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.DrillControl/EmergencyStop',
+            mission__control__pb2.EmergencyStopRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def DrillCalibration(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.DrillControl/DrillCalibration',
+            mission__control__pb2.DrillCalibrationRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
