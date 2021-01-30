@@ -77,3 +77,18 @@ class MockDrill(AbstractDrill):
 class Drill(AbstractDrill):
     def __init__(self):
         pass
+
+    def set_drill_level(self, level):
+        pass
+
+    def get_drill_level(self, level):
+        pass
+
+    def get_rotation_rpm(self):
+        pass
+
+    def get_active_power_W(self):
+        pass
+
+    def get_total_current_mA(self):
+        pass
