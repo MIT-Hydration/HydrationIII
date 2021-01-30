@@ -100,8 +100,8 @@ class Drill(AbstractDrill):
                 fp.write("\n")
                 loop_end = time.time()
                 delta_time = loop_end - loop_start
-                if (delta_time < 0.02):
-                    time.sleep(0.02 - delta_time)
+                if (delta_time < 0.018):
+                    time.sleep(0.018 - delta_time)
 
             fp.close()
                 
