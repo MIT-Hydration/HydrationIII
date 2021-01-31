@@ -1,6 +1,6 @@
 """
 test-threading.py
-Test threading concept
+Test threading concept with hardware attached
 """
 
 __author__      = "Prakash Manandhar"
@@ -15,7 +15,14 @@ __status__ = "Production"
 from abc import ABC, abstractmethod
 import time
 import threading
-import random
+
+from pymodbus.client.sync import ModbusSerialClient
+from pymodbus.payload import BinaryPayloadDecoder
+
+from gpiozero import PWMLED
+from gpiozero import CPUTemperature
+
+import serial
 
 class AbstractDrill(ABC):
 
@@ -49,24 +56,67 @@ class AbstractDrill(ABC):
     
 class Drill(AbstractDrill):
 
+    motor = PWMLED(12)
+
+    class DrillArduinoThread(threading.Thread):
+
+        def __init__(self):
+            threading.Thread.__init__(self)
+            self.stopped = True
+            self.sensor_readings = {
+                    "arduino_timestamp": 0.0,
+                    "tacho_rpm": 0.0,
+                    "imu_x_g": 0.0,
+                    "imu_y_g": 0.0,
+                    "imu_z_g": 0.0,
+                }
+            self.port = serial.Serial("/dev/ttyAMA0", baudrate=9000, timeout=3.0)
+
+        def run(self):
+            self.stopped = False
+            while not self.stopped:
+                loop_start = time.time()
+                self.port.write("\r\nGET_SENSOR_DATA\r\n")
+                rcv = self.port.readline()
+                self.sensor_readings["active_power_W"] = power_W
+                self.sensor_readings["current_mA"] =  current_mA
+                for k in self.sensor_readings:
+                    self.sensor_readings[k] = random.random()
+                loop_end = time.time()
+                delta_time = loop_end - loop_start
+                if (delta_time < 0.01):
+                    time.sleep(0.01 - delta_time)
+                
+        def stop(self):
+            self.stopped = True
+
+    
     class DrillPowerMeterThread(threading.Thread):
 
+        modbus_reg_address = 75
+        modbus_reg_count   = 4
+    
         def __init__(self):
             threading.Thread.__init__(self)
             self.stopped = True
             self.sensor_readings = {
                     "active_power_W": 0.0,
                     "current_mA": 0.0,
-                    "speed_rpm": 0.0,
-                    "accel_x_g": 0.0,
-                    "accel_y_g": 0.0,
-                    "accel_z_g": 0.0,
                 }
+            self.client = ModbusSerialClient(port='/dev/ttyUSB0', method='rtu', baudrate=9600)
             
         def run(self):
             self.stopped = False
             while not self.stopped:
                 loop_start = time.time()
+                result  = self.client.read_holding_registers(
+                    self.modbus_reg_address, self.modbus_reg_count,  unit=1)
+                decoder = BinaryPayloadDecoder.fromRegisters(result.registers, 
+                    wordorder = '>', byteorder = '>')
+                current_mA = decoder.decode_32bit_float()
+                power_W = decoder.decode_32bit_float()
+                self.sensor_readings["active_power_W"] = power_W
+                self.sensor_readings["current_mA"] =  current_mA
                 for k in self.sensor_readings:
                     self.sensor_readings[k] = random.random()
                 loop_end = time.time()
@@ -147,7 +197,18 @@ class Drill(AbstractDrill):
 
 
 if __name__ == "__main__":
+    
+    time_start_s = time.time()
     drill = Drill()
     drill.start_sensor_readings()
-    time.sleep(600)
+
+    while True:
+        time_s = time.time()
+        time_s_10sint = int((time_s - time_start_s)/10)
+        pwm_val = (time_s_10sint%5)*0.25
+        if pwm_val > 1.0:
+            pwm_val = 1.0
+        drill.set_drill_level((time_s_10sint%5)*0.25)
+        time.sleep(1)
+
     drill.stop_sensor_readings()
