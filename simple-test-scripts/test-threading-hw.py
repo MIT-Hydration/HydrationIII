@@ -15,6 +15,7 @@ __status__ = "Production"
 from abc import ABC, abstractmethod
 import time
 import threading
+import re
 
 from pymodbus.client.sync import ModbusSerialClient
 from pymodbus.payload import BinaryPayloadDecoder
@@ -64,24 +65,28 @@ class Drill(AbstractDrill):
             threading.Thread.__init__(self)
             self.stopped = True
             self.sensor_readings = {
-                    "arduino_timestamp": 0.0,
+                    "arduino_timestamp_ms": 0.0,
                     "tacho_rpm": 0.0,
                     "imu_x_g": 0.0,
                     "imu_y_g": 0.0,
                     "imu_z_g": 0.0,
                 }
-            self.port = serial.Serial("/dev/ttyAMA0", baudrate=9000, timeout=3.0)
+            self.port = serial.Serial("/dev/ttyACM0", baudrate=38400, timeout=3.0)
 
         def run(self):
             self.stopped = False
             while not self.stopped:
                 loop_start = time.time()
-                self.port.write("\r\nGET_SENSOR_DATA\r\n")
+                self.port.write("GET_SENSOR_DATA\n")
                 rcv = self.port.readline()
-                self.sensor_readings["active_power_W"] = power_W
-                self.sensor_readings["current_mA"] =  current_mA
-                for k in self.sensor_readings:
-                    self.sensor_readings[k] = random.random()
+                p = re.compile(r'TS = ([0-9]+) ms, TACHO = ([-0-9.]+) RPM, IMU = \(([-0-9.]+), ([-0-9.]+), ([-0-9.]+)\) g')
+                m = p.match(rcv)
+                if m is not None:    
+                    self.sensor_readings["arduino_timestamp_ms"] = int(m.group(1))
+                    self.sensor_readings["tacho_rpm"] =  float(m.group(2))
+                    self.sensor_readings["imu_x_g"] = float(m.group(3))
+                    self.sensor_readings["imu_y_g"] = float(m.group(4))
+                    self.sensor_readings["imu_z_g"] = float(m.group(5))
                 loop_end = time.time()
                 delta_time = loop_end - loop_start
                 if (delta_time < 0.01):
