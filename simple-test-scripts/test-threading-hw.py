@@ -184,11 +184,13 @@ class Drill(AbstractDrill):
     @classmethod
     def start_sensor_readings(cls):
         cls.drill_pm_thread.start()
+        cls.drill_ad_thread.start()
         cls.writer_thread.start()
 
     @classmethod
     def stop_sensor_readings(cls):
         cls.drill_pm_thread.stop()
+        cls.drill_ad_thread.stop()
         cls.writer_thread.stop()
 
     @classmethod
@@ -218,8 +220,8 @@ if __name__ == "__main__":
     time_start_s = time.time()
     drill = Drill()
     drill.start_sensor_readings()
-
-    while True:
+    time_s = time.time()
+    while (time_s - time_start_s) < 120:
         time_s = time.time()
         time_s_10sint = int((time_s - time_start_s)/10)
         pwm_val = (time_s_10sint%5)*0.25
@@ -227,5 +229,8 @@ if __name__ == "__main__":
             pwm_val = 1.0
         drill.set_drill_level((time_s_10sint%5)*0.25)
         time.sleep(1)
+
+    drill.set_drill_level(0)
+    time.sleep(10)
 
     drill.stop_sensor_readings()
