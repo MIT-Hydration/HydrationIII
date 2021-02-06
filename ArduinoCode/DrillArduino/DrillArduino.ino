@@ -19,7 +19,7 @@ bool get_sensor_data = false;
 bool start_stream = false;
 
 void setup() {
-  Serial.begin(38400);
+  Serial.begin(9600);
   if(!IMU.begin()) {
     Serial.println("Failed to initialize IMU!");
     while (1);
