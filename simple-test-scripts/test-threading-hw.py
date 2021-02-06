@@ -72,7 +72,7 @@ class Drill(AbstractDrill):
                     "imu_y_g": 0.0,
                     "imu_z_g": 0.0,
                 }
-            self.port = serial.Serial("/dev/ttyACM0", baudrate=9600, timeout=1,
+            self.port = serial.Serial("/dev/ttyACM0", baudrate=9600, timeout=5,
                 bytesize = serial.EIGHTBITS, stopbits = serial.STOPBITS_ONE,
                 parity=serial.PARITY_NONE)
             self.arduino_primed = False
@@ -85,8 +85,11 @@ class Drill(AbstractDrill):
                 loop_start = time.time()
                 if not self.arduino_primed:
                     self.port.flush()
-                    self.port.write(b"START_STREAM\n")
+                    written = self.port.write(b"START_STREAM\n")
+                    self.port.flush()
+                    print(f"wrote {written}")
                 rcv = self.port.readline()
+                #print(str(rcv))
                 m = self.pattern.match(rcv)
                 if m is not None:    
                     self.sensor_readings["arduino_timestamp_ms"] = int(m.group(1))
@@ -124,12 +127,15 @@ class Drill(AbstractDrill):
                 loop_start = time.time()
                 result  = self.client.read_holding_registers(
                     self.modbus_reg_address, self.modbus_reg_count,  unit=1)
-                decoder = BinaryPayloadDecoder.fromRegisters(result.registers, 
-                    wordorder = '>', byteorder = '>')
-                current_mA = decoder.decode_32bit_float()
-                power_W = decoder.decode_32bit_float()
-                self.sensor_readings["active_power_W"] = power_W
-                self.sensor_readings["current_mA"] =  current_mA
+                try:
+                    decoder = BinaryPayloadDecoder.fromRegisters(result.registers, 
+                        wordorder = '>', byteorder = '>')
+                    current_mA = decoder.decode_32bit_float()
+                    power_W = decoder.decode_32bit_float()
+                    self.sensor_readings["active_power_W"] = power_W
+                    self.sensor_readings["current_mA"] =  current_mA
+                except:
+                    pass
                 loop_end = time.time()
                 delta_time = loop_end - loop_start
                 if (delta_time < 0.01):
@@ -222,6 +228,7 @@ if __name__ == "__main__":
     time_start_s = time.time()
     drill = Drill()
     drill.start_sensor_readings()
+    time.sleep(10)
     time_s = time.time()
     while (time_s - time_start_s) < 120:
         time_s = time.time()
@@ -230,6 +237,9 @@ if __name__ == "__main__":
         if pwm_val > 1.0:
             pwm_val = 1.0
         drill.set_drill_level((time_s_10sint%5)*0.25)
+        print(drill.drill_pm_thread.sensor_readings)
+        print(drill.drill_ad_thread.sensor_readings)
+
         time.sleep(1)
 
     drill.set_drill_level(0)
