@@ -71,22 +71,29 @@ class Drill(AbstractDrill):
                     "imu_y_g": 0.0,
                     "imu_z_g": 0.0,
                 }
-            self.port = serial.Serial("/dev/ttyACM0", baudrate=38400, timeout=3.0)
+            self.port = serial.Serial("/dev/ttyACM0", baudrate=9600, timeout=1,
+                bytesize = serial.EIGHTBITS, stopbits = serial.STOPBITS_ONE,
+                parity=serial.PARITY_NONE)
+            self.arduino_primed = False
+            self.pattern = re.compile(
+                b'TS = ([0-9]+) ms, TACHO = ([-0-9.]+) RPM, IMU = \(([-0-9.]+), ([-0-9.]+), ([-0-9.]+)\) g')
 
         def run(self):
             self.stopped = False
             while not self.stopped:
                 loop_start = time.time()
-                self.port.write("GET_SENSOR_DATA\n")
+                if not self.arduino_primed:
+                    self.port.flush()
+                    self.port.write(b"START_STREAM\n")
                 rcv = self.port.readline()
-                p = re.compile(r'TS = ([0-9]+) ms, TACHO = ([-0-9.]+) RPM, IMU = \(([-0-9.]+), ([-0-9.]+), ([-0-9.]+)\) g')
-                m = p.match(rcv)
+                m = self.pattern.match(rcv)
                 if m is not None:    
                     self.sensor_readings["arduino_timestamp_ms"] = int(m.group(1))
                     self.sensor_readings["tacho_rpm"] =  float(m.group(2))
                     self.sensor_readings["imu_x_g"] = float(m.group(3))
                     self.sensor_readings["imu_y_g"] = float(m.group(4))
                     self.sensor_readings["imu_z_g"] = float(m.group(5))
+                    self.arduino_primed = True  
                 loop_end = time.time()
                 delta_time = loop_end - loop_start
                 if (delta_time < 0.01):
