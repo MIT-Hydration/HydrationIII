@@ -60,10 +60,10 @@ void loop() {
       Serial.print("TS = ");
       Serial.print(millis());   
       Serial.print(" ms");
-      Serial.print(', ');
+      Serial.print(", ");
       Serial.print("REQTIME = ");
       Serial.print(Receive);           
-      Serial.print(', ');
+      Serial.print(", ");
       Serial.println("V3.5 READY");
 
       ping = false;
@@ -72,16 +72,16 @@ void loop() {
       Serial.print("TS = ");
       Serial.print(millis());
       Serial.print(" ms");
-      Serial.print(', ');
+      Serial.print(", ");
       Serial.print("TACHO = ");
       Serial.print(RPM);
       Serial.print(" RPM");
-      Serial.print(', ');
+      Serial.print(", ");
       Serial.print("IMU = (");
       Serial.print(x, 4);
-      Serial.print(', ');
+      Serial.print(", ");
       Serial.print(y, 4);
-      Serial.print(', ');
+      Serial.print(", ");
       Serial.print(z, 4);
       Serial.println(") g");
 
@@ -129,16 +129,16 @@ void sendData(unsigned long intervalUs){
     Serial.print("TS = ");
     Serial.print(millis());
     Serial.print(" ms");
-    Serial.print(', ');; 
+    Serial.print(", ");; 
     Serial.print("TACHO = ");
     Serial.print(RPM);
     Serial.print(" RPM");
-    Serial.print(', ');
+    Serial.print(", ");
     Serial.print("IMU = (");
     Serial.print(x, 4);
-    Serial.print(', ');
+    Serial.print(", ");
     Serial.print(y, 4);
-    Serial.print(', ');
+    Serial.print(", ");
     Serial.print(z, 4);
     Serial.println(") g");
   }
