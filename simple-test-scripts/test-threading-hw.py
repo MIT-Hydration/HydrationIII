@@ -58,6 +58,7 @@ class AbstractDrill(ABC):
 class Drill(AbstractDrill):
 
     motor = PWMLED(12)
+    cpu_temperature_degC = CPUTemperature()
 
     class DrillArduinoThread(threading.Thread):
 
@@ -152,7 +153,7 @@ class Drill(AbstractDrill):
             self.stopped = False
             time_start_s = time.time()
             fp = open(f"{time_start_s}.csv", "w")
-            fp.write("time_s,motor_command,")
+            fp.write("time_s,cpu_t_degC,motor_command,")
             for k in self.drill_pm_thread.sensor_readings:
                 fp.write(f"{k},")
             for k in self.drill_ad_thread.sensor_readings:
@@ -162,6 +163,7 @@ class Drill(AbstractDrill):
                 loop_start = time.time()
                 fp.write(f"{loop_start},")
                 fp.write(f"{Drill.motor.value},")
+                fp.write(f"{Drill.cpu_temperature_degC.temperature},")
                 for k in self.drill_pm_thread.sensor_readings:
                     fp.write(f"{self.drill_pm_thread.sensor_readings[k]},")
                 for k in self.drill_ad_thread.sensor_readings:
