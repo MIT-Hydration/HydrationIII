@@ -154,7 +154,7 @@ class Drill(AbstractDrill):
             while not self.stopped:
                 loop_start = time.time()
                 fp.write(f"{loop_start},")
-                fp.write(f"{Drill.motor},")
+                fp.write(f"{Drill.motor.value},")
                 for k in self.drill_pm_thread.sensor_readings:
                     fp.write(f"{self.drill_pm_thread.sensor_readings[k]},")
                 for k in self.drill_ad_thread.sensor_readings:
