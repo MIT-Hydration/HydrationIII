@@ -122,8 +122,6 @@ class Drill(AbstractDrill):
                 power_W = decoder.decode_32bit_float()
                 self.sensor_readings["active_power_W"] = power_W
                 self.sensor_readings["current_mA"] =  current_mA
-                for k in self.sensor_readings:
-                    self.sensor_readings[k] = random.random()
                 loop_end = time.time()
                 delta_time = loop_end - loop_start
                 if (delta_time < 0.01):
@@ -134,27 +132,33 @@ class Drill(AbstractDrill):
 
     class FileWriterThread(threading.Thread):
 
-        def __init__(self, drill_pm_thread):
+        def __init__(self, drill_pm_thread, drill_ad_thread):
             self.delay = 0.0027856988543367034
             self.sample_time = 0.02
             self.sleep_time = self.sample_time - self.delay
             threading.Thread.__init__(self)
             self.drill_pm_thread = drill_pm_thread
+            self.drill_ad_thread = drill_ad_thread
             self.stopped = True
             
         def run(self):
             self.stopped = False
             time_start_s = time.time()
             fp = open(f"{time_start_s}.csv", "w")
-            fp.write("time_s,")
+            fp.write("time_s,motor_command,")
             for k in self.drill_pm_thread.sensor_readings:
                 fp.write(f"{k},")
+            for k in self.drill_ad_thread.sensor_readings:
+                fp.write(f"{k},")    
             fp.write("\n")
             while not self.stopped:
                 loop_start = time.time()
                 fp.write(f"{loop_start},")
+                fp.write(f"{Drill.motor},")
                 for k in self.drill_pm_thread.sensor_readings:
                     fp.write(f"{self.drill_pm_thread.sensor_readings[k]},")
+                for k in self.drill_ad_thread.sensor_readings:
+                    fp.write(f"{self.drill_ad_thread.sensor_readings[k]},")
                 fp.write("\n")
                 loop_end = time.time()
                 delta_time = loop_end - loop_start
@@ -167,7 +171,8 @@ class Drill(AbstractDrill):
             self.stopped = True
             
     drill_pm_thread = DrillPowerMeterThread()
-    writer_thread = FileWriterThread(drill_pm_thread)
+    drill_ad_thread = DrillArduinoThread()
+    writer_thread = FileWriterThread(drill_pm_thread, drill_ad_thread)
     
     @classmethod
     def start_sensor_readings(cls):
