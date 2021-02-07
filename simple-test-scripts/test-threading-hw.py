@@ -147,7 +147,7 @@ class Drill(AbstractDrill):
     class FileWriterThread(threading.Thread):
 
         def __init__(self, drill_pm_thread, drill_ad_thread):
-            self.delay = 0.0027856988543367034
+            self.delay = 0.0007856988543367034
             self.sample_time = 0.02
             self.sleep_time = self.sample_time - self.delay
             threading.Thread.__init__(self)
@@ -236,7 +236,8 @@ if __name__ == "__main__":
         pwm_val = (time_s_10sint%10)*0.1
         if pwm_val > 1.0:
             pwm_val = 1.0
-        drill.set_drill_level((time_s_10sint%5)*0.25)
+        drill.set_drill_level(pwm_val)
+        print(f"setting drill level {pwm_val}")
         print(drill.drill_pm_thread.sensor_readings)
         print(drill.drill_ad_thread.sensor_readings)
 
