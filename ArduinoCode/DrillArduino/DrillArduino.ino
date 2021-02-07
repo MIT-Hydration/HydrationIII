@@ -108,12 +108,13 @@ void rpmRead(unsigned long intervalUs){ // Calculate rpm each intervalUs microse
     
     if(rev>0){
       RPM = (rev * (adjustUs+60000000.0)) / (detectTime - startTime);
+      RPM = RPM/2.0;
       rev = 0;
       newMeasure = true;
       numberOfTry = 0;
     }else{
       numberOfTry++;
-      if(numberOfTry * intervalUs > 200000){  // if 1 second without detection rpm = 0
+      if(numberOfTry * intervalUs > 100000){  // if 1 second without detection rpm = 0
         RPM = 0;
         numberOfTry = 0;
       }
