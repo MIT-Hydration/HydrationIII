@@ -225,15 +225,16 @@ class Drill(AbstractDrill):
 
 if __name__ == "__main__":
     
-    time_start_s = time.time()
     drill = Drill()
+    drill.set_drill_level(0.0)
     drill.start_sensor_readings()
     time.sleep(10)
+    time_start_s = time.time()
     time_s = time.time()
     while (time_s - time_start_s) < 240:
         time_s = time.time()
         time_s_10sint = int((time_s - time_start_s)/10)
-        pwm_val = (time_s_10sint%10)*0.1
+        pwm_val = (time_s_10sint%11)*0.1
         if pwm_val > 1.0:
             pwm_val = 1.0
         drill.set_drill_level(pwm_val)
