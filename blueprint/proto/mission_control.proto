@@ -48,7 +48,7 @@ message HeartBeatReply {
     uint64 timestamp = 1;
     uint64 request_timestamp = 2;
     bool drill_subsystem_online = 3;
-    bool heater_sussystem_online = 4;
+    bool heater_subsystem_online = 4;
     bool fan_on  = 5;
     float cpu_temperature_degC = 6;
     SystemMode mode = 7;

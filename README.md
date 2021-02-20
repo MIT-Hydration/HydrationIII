@@ -111,3 +111,7 @@ Needed to install the following modules and small code modifications:
 
 Installing LED component: `https://github.com/jazzycamel/QLed`
 `python3 -m pip install QLed`
+
+
+### Pymodbus
+`python3 -m pip install pymodbus`

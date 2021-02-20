@@ -9,7 +9,7 @@ from .generated import echo_pb2_grpc
 
 def run():
     print('On Macbook Client')
-    with grpc.insecure_channel('96.237.232.240:50051') as channel:
+    with grpc.insecure_channel('127.0.0.1:50051') as channel:
         stub = echo_pb2_grpc.EchoStub(channel)
         response = stub.Reply(echo_pb2.EchoRequest(message='Hello World!'))
     print("Echo client received: " + response.message)

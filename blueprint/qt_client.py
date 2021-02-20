@@ -17,7 +17,7 @@ from QLed import QLed
 from datetime import datetime
 import time
 
-RPI_IP_ADDRESS_PORT = '96.237.232.240:50051'
+RPI_IP_ADDRESS_PORT = '127.0.0.1:50051'
 HEARTBEAT_TIMEOUT   = 1000
 GRPC_CALL_TIMEOUT   = 1000
 
@@ -46,6 +46,7 @@ class RPiHeartBeat(QtCore.QThread):
         global RPI_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
         response = None
         try:
+            
             timestamp = int(time.time()*1000)
             with grpc.insecure_channel(RPI_IP_ADDRESS_PORT) as channel:
                 stub = mission_control_pb2_grpc.MissionControlStub(channel)
@@ -54,6 +55,7 @@ class RPiHeartBeat(QtCore.QThread):
                     timeout = GRPC_CALL_TIMEOUT )
                 print("Mission Control RPi HeartBeat received at: " + str(datetime.now()))
                 print(response)
+            
         
         except Exception as e:
             info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"

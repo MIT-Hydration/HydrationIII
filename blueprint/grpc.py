@@ -14,16 +14,18 @@ class Echoer(echo_pb2_grpc.EchoServicer):
 
 class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
-    fan = PWMLED(12)
-    cpu = CPUTemperature()
+    fan = 0#PWMLED(12)
+    cpu = 0#CPUTemperature()
 
     def HeartBeat(self, request, context):
         timestamp = int(time.time()*1000)
         return mission_control_pb2.HeartBeatReply(
             request_timestamp = request.request_timestamp,
+            drill_subsystem_online = True,
+            heater_subsystem_online=False,
             timestamp = timestamp,
-            fan_on = (self.fan.value > 0.0),
-            cpu_temperature_degC = self.cpu.temperature,
+            fan_on = False,
+            cpu_temperature_degC = self.cpu,#temperature,
             mode = mission_control_pb2.READY)
 
     def RigMove(self, request, context):
@@ -45,7 +47,7 @@ class DrillController(mission_control_pb2_grpc.MissionControlServicer):
 
         if (self.drill_mode == False) and (request.drill_mode == True):
             self.start_drill_mode()
-        elif (self.drill_mode == True) and (request.drill_mode = False):
+        elif (self.drill_mode == True) and (request.drill_mode == False):
             self.stop_drill_mode()
 
         return mission_control_pb2.CommandResponse(
@@ -53,4 +55,4 @@ class DrillController(mission_control_pb2_grpc.MissionControlServicer):
             timestamp = timestamp,
             status = mission_control_pb2.EXECUTED)
 
-    def DrillDescendingDrilling:
+    

@@ -15,13 +15,13 @@ __status__ = "Production"
 from abc import ABC, abstractmethod
 import time
 import threading
-
+'''
 from pymodbus.client.sync import ModbusSerialClient
 from pymodbus.payload import BinaryPayloadDecoder
 
 from gpiozero import PWMLED
 from gpiozero import CPUTemperature
-
+'''
 class HardwareFactory:
     
     is_mock = {
@@ -85,6 +85,35 @@ class MockDrill(AbstractDrill):
         self._set_time = time.time()
         self._set_level = level
     
+    
+    def start_sensor_readings(cls):
+        pass
+
+    
+    def start_sensor_readings(cls):
+        pass
+    
+    
+    def set_drill_level(self, level):
+        pass
+
+    
+    def get_drill_level(self, level):
+        pass
+
+    
+    def get_speed_rpm(self):
+        pass
+
+    
+    def get_active_power_W(self):
+        pass
+
+    
+    def get_current_mA(self):
+        pass
+
+'''   
 class Drill(AbstractDrill):
 
     class DrillThread(threading.Thread):
@@ -188,3 +217,4 @@ class Drill(AbstractDrill):
     @classmethod
     def get_current_mA(cls):
         return cls.drill_thread.sensor_reading["current_mA"]
+'''
