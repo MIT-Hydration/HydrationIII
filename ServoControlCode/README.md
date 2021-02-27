@@ -18,25 +18,43 @@
 13. Run `ls /dev/ttyXRUSB*` to test that the hub has been successfully recognized. If it hasn't, see the two READMEs in `Linux_Software/hubDriverPkg/ExarKernelDriver/` and `Linux_Software` for further instructions and debugging.
 
 **Installing sFoundation shared C++ Library**
+
 14. Start up Eclipse. Create a new workspace, with Linux_Software acting as the root of your project folder.
+
 15. Using the Project Explorer on the left, click on the sFoundation folder (under sFoundationPkg).
+
 16. Click on the arrow next to the Build menu option (the hammer icon in the top bar)
+
 17. Select Release
+
 18. Build by clicking on the hammer icon.
+
 19. In Terminal, navigate to the sFoundation directory
+
 20. Run `sudo cp MNuserDriver20.xml /usr/lib`
+
 21. Navigate to the Release directory (`cd Release`), which should have been created after the previous build.
+
 22. Run `sudo cp libsFoundation20.so /usr/lib`
+
 23. Navigate to `/usr/lib`, run `ldconfig -n .`
+
 24. At this point, if you run `ls /usr/lib`, you should see `libsFoundation20.so.1` in light blue letters. If it's highlighted in red, then something has gone wrong. Refer to the README in the root directory (`Linux_Software`), and more specifically [this website](https://tldp.org/HOWTO/Program-Library-HOWTO/shared-libraries.html)
 
 **Building and running interface**
+
 25. Try building `SDK Examples/HelloWorld` by clicking on the arrow next to the Build Icon, selecting `Debug_With_LinuxGCC` and then pressing the Build Icon. If you encounter no `pthread` related errors, skip to step 27. If you encounter errors relating to the sFoundation library, then something went wrong during the installation of the shared library. If it gives you errors regarding pthread, read step 26.
+
 26. Right click the `Hello World` folder. Select `Properties`. Under `Configuration`, select `[Multiple Configurations..]`.  Select `Debug_with_LinuxGCC` and `Release_with_LinuxGCC`. Under `Tool Settings` tab, select `GCC C++ Linker/Miscellaneous`. In `Linker flags`, type `-pthread`. Click on Apply and Close (bottom right). Try and build `HelloWorld` as I described in the first sentence of this step.
+
 27. If `HelloWorld` builds, great! Navigate to `SDK_Examples/Example-Homing`. Open `Example-Homing.cpp`, and replace all the code (delete & copy-paste) in there with the code from `run.cpp` (found in this repo). The reason for this is because after hours of trying, I have (for now) given up on trying to make my own project folders in Linux_Software.
+
 28. With the hub plugged in, build your new `Example-Homing.cpp` with `Debug_with_LinuxGCC`. 
+
 29. Through the Eclipse Project Explorer window, navigate to the newly generated `Example-Homing/Debug_with_LinuxGCC` folder
+
 30. Right click on the `Example-Homing - [x84_64/le]`executable, and select `Run As/Local C/C++ Application`. If you have any problems with ports/the hub, terminate the program and unplug and replug the USB.
+
 31. Follow the instructions on the Eclipse console
 
 
