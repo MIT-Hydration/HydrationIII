@@ -59,14 +59,15 @@
 
 
 # Usage
-In it's current form, the program runs using  a simplistic UI, where you enter commands in the form of letters to control the drill. At the beginning of the program, the interface guides you through "soft-homing" the drill. If you wish, you can turn on hard homing.
+In its current form, just to demonstrate the high-level functions available, the program runs using a simplistic UI, where you enter commands as characters to control the position, speed and direction of the servo motor. At the beginning of the program, the interface guides you through "soft-homing" the servo. If you wish, you can turn on hard homing.
 
 ---------
 **Soft homing**
 Motor turns until user presses a key. Wherever it stops is considered "home"
 
 **Hard homing**
-Motor turns until it encounters significant resistance. Untested (tried holding the motor in place, did not work - perhaps I am not strong enough?) If you wish to turn hard homing ON, change 
+Motor turns until it encounters significant resistance. Untested (tried holding the motor in place, did not work - perhaps I am not strong enough?). Hard homing must be tested and validated in ClearView before it is used in code. If you wish to turn hard homing ON, change 
+
 `homing(true, theNode);` 
 to
 `homing(false, theNode);`
@@ -77,16 +78,16 @@ The commands are as follows:
 
 `u`: Increase RPM by 10 in the upwards direction (i.e. from 0 go to 10, or from -20 go to 10)
 `d`: Increase RPM by 10 in the downards direction (i.e. from -10 go to -20, or from 20 go to 10)
-`n`: Provide statistics such as torque, torque error, position, speed, etc.
+`n`: Provide updated statistics such as torque, torque error, position, speed, etc.
 `s`: Stop the motor
-`e`: End the program gracefully (**run this if you don't want port errors the next time you start the program**)
+`e`: End the program gracefully (**run this to ensure you don't get port errors the next time you start the program**)
 
-Note: The program has only been tested for a hub connected to 1 drill so far.
+Note: The program has only been tested for a hub connected to 1 servo so far.
 
 
 
 # Development
-I've tried to make `run.cpp` as easy as I can for you to use. If you get bored of using my simplistic interface and want to actually get started writing your own control code, scroll down in the code to the section which says `YOUR CODE STARTS HERE`. You can use functions I wrote to make things like homing and changing speed a lot easier. The functions are
+I've tried to make `run.cpp` as easy as I can for you to use. If you get bored of using my simplistic interface and want to actually get started writing your own control code, scroll down in the code to the section which says `YOUR CODE STARTS HERE`. You can use functions I wrote to make things like homing, changing speed and recording performance data a lot easier. The functions (defined at the top of `run.cpp`) are
 
 `get_position(node)` - position in meters
 `get_rop(node)` - velocity in m/s
@@ -96,13 +97,18 @@ I've tried to make `run.cpp` as easy as I can for you to use. If you get bored o
 `homing(softHoming[boolean], node)` - homes motor, hard if softHoming is set to false, soft otherwise 
 `setSpeed(speed[double], node)` - sets speed of motor. 0 is stationary, 10 is 10 rpm upwards, -10 is 10 rpm downwards.
 
-The code in it's current form will iterate over each node connected to the hub.
+**Warning:** The code in it's current form will iterate over each node connected to the hub. This is in the form of a for-loop 
+ 
+ `for (size_t iPort = 0; iPort < portCount; iPort++) {...}`
 
-In the near future, this will be ported to Python. This is a temporary abstraction layer so that we can begin playing around with the motors using code.
+which iterates over each node. If you only want to run your code on one motor, you can modify the for loop to either run code if the theNode.Info.UserID.Value() is equal to a certain value, or you can kill the loop after it runs once. This for-loop design is obviously not permanent.
+
+In the near future, the above functions and more will be ported to Python. This is a temporary abstraction layer so that we can begin playing around with the motors using code.
 
 
 # Included in this directory
-*(this is moreso for me, to note done things to include in here in case I forget)*
 * Linux_Software.tar - contains library code
 * sFoundation Windows Guide - can be viewed on a Windows machine, extremely helpful library reference guide. AFAIK there is no version of this that is viewable on Linux, which sucks. 100% worth running a VM or second Windows laptop just to view this guide if you're writing code, however.
-* run.cpp 
+* run.cpp - the code in here must replace the Example-Homing in the SDK_Examples
+* User manual
+* README
