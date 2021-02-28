@@ -118,7 +118,7 @@ In the near future, the above functions and more will be ported to Python. This 
 
 # Included in this directory
 * Linux_Software.tar - contains library code
-* sFoundation Windows Guide - can be viewed on a Windows machine, extremely helpful library reference guide. AFAIK there is no version of this that is viewable on Linux, which sucks. 100% worth running a VM or second Windows laptop just to view this guide if you're writing code, however.
+* sFoundation Windows Guide - extremely helpful sFoundation library reference guide. Can use either a seperate Windows machine, or if you want to view this in Linux, the xchm program (`sudo apt-get install xchm -y`, `xchm *.chm` in this directory to open the manual) will work fine.
 * run.cpp - the code in here must replace the Example-Homing in the SDK_Examples
 * User manual
 * README
