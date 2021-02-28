@@ -77,9 +77,13 @@ to
 The commands are as follows:
 
 `u`: Increase RPM by 10 in the upwards direction (i.e. from 0 go to 10, or from -20 go to 10)
+
 `d`: Increase RPM by 10 in the downards direction (i.e. from -10 go to -20, or from 20 go to 10)
+
 `n`: Provide updated statistics such as torque, torque error, position, speed, etc.
+
 `s`: Stop the motor
+
 `e`: End the program gracefully (**run this to ensure you don't get port errors the next time you start the program**)
 
 Note: The program has only been tested for a hub connected to 1 servo so far.
@@ -90,11 +94,17 @@ Note: The program has only been tested for a hub connected to 1 servo so far.
 I've tried to make `run.cpp` as easy as I can for you to use. If you get bored of using my simplistic interface and want to actually get started writing your own control code, scroll down in the code to the section which says `YOUR CODE STARTS HERE`. You can use functions I wrote to make things like homing, changing speed and recording performance data a lot easier. The functions (defined at the top of `run.cpp`) are
 
 `get_position(node)` - position in meters
+
 `get_rop(node)` - velocity in m/s
+
 `get_torque(node)` - percentage of maximum torque
+
 `get_torque_error(node)`
+
 `get_pos_error(node)` - position error in meters (difference from commanded and actual)
+
 `homing(softHoming[boolean], node)` - homes motor, hard if softHoming is set to false, soft otherwise 
+
 `setSpeed(speed[double], node)` - sets speed of motor. 0 is stationary, 10 is 10 rpm upwards, -10 is 10 rpm downwards.
 
 **Warning:** The code in it's current form will iterate over each node connected to the hub. This is in the form of a for-loop 
