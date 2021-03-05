@@ -168,8 +168,8 @@ class Drill(AbstractDrill):
             while not self.stopped:
                 loop_start = time.time()
                 fp.write(f"{loop_start},")
-                fp.write(f"{Drill.motor.value},")
                 fp.write(f"{Drill.cpu_temperature_degC.temperature},")
+                fp.write(f"{Drill.motor.value},")
                 for k in self.drill_pm_thread.sensor_readings:
                     fp.write(f"{self.drill_pm_thread.sensor_readings[k]},")
                 for k in self.drill_ad_thread.sensor_readings:
@@ -233,8 +233,9 @@ if __name__ == "__main__":
     time_s = time.time()
     while (time_s - time_start_s) < 240:
         time_s = time.time()
-        time_s_10sint = int((time_s - time_start_s)/10)
-        pwm_val = (time_s_10sint%11)*0.1
+        time_s_int = int((time_s - time_start_s)/1)
+        pwm_val = (time_s_int%11)*0.1
+        #pwm_val = 1.0
         if pwm_val > 1.0:
             pwm_val = 1.0
         drill.set_drill_level(pwm_val)
@@ -242,7 +243,7 @@ if __name__ == "__main__":
         print(drill.drill_pm_thread.sensor_readings)
         print(drill.drill_ad_thread.sensor_readings)
 
-        time.sleep(1)
+        time.sleep(0.5)
 
     drill.set_drill_level(0)
     time.sleep(10)
