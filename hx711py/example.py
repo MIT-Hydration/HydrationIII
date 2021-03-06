@@ -5,7 +5,7 @@ import sys
 
 EMULATE_HX711=False
 
-referenceUnit = 610900.0/1324.0 # display units per graph
+referenceUnit = 1 #610900.0/1324.0 # display units per graph
 
 if not EMULATE_HX711:
     import RPi.GPIO as GPIO
