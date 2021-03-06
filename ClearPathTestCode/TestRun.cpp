@@ -149,7 +149,7 @@ int main(int argc, char* argv[]) {
 	try {
 
 		SysManager::FindComHubPorts(comHubPorts);
-		printf("Found %d SC Hubs\n", comHubPorts.size());
+		printf("Found %ld SC Hubs\n", comHubPorts.size());
 
 		for (portCount = 0; portCount < comHubPorts.size() && portCount < NET_CONTROLLER_MAX; portCount++) {
 
