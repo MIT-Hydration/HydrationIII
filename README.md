@@ -38,6 +38,7 @@ See here: https://www.raspberrypi.org/forums/viewtopic.php?t=269749 , and https:
 
 3. `sudo apt-get install net-tools`
 4. `gsettings set org.gnome.Vino require-encryption false` was required for VNC connection to work for screensharing when collaborting using a mac
+5. Follow steps here to get `sshserver`: https://thishosting.rocks/how-to-enable-ssh-on-ubuntu/ for remote login
 
 ## Install GRPC in MAC
 Following guide here: https://grpc.io/docs/languages/python/quickstart/
