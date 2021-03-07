@@ -24,3 +24,6 @@ hydration-servo-test:
 
 hydration-servo-homing:
 	python3 TestHydrationServoHoming.py
+
+hydration-servo-move-p:
+	python3 TestHydrationServoMove.py
