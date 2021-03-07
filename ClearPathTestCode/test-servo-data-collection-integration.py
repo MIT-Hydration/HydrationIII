@@ -110,8 +110,8 @@ class Drill(AbstractDrill):
                     self.arduino_primed = True  
                 loop_end = time.time()
                 delta_time = loop_end - loop_start
-                if (delta_time < 0.01):
-                    time.sleep(0.01 - delta_time)
+                if (delta_time < 0.02):
+                    time.sleep(0.02 - delta_time)
                 
         def stop(self):
             self.stopped = True
@@ -144,7 +144,8 @@ class Drill(AbstractDrill):
                     power_W = decoder.decode_32bit_float()
                     self.sensor_readings["active_power_W"] = power_W
                     self.sensor_readings["current_mA"] =  current_mA
-                except:
+                except Exception as e:
+                    print(e)
                     pass
                 loop_end = time.time()
                 delta_time = loop_end - loop_start
@@ -188,8 +189,8 @@ class Drill(AbstractDrill):
                     time.sleep(0.01 - delta_time)
                 
         def stop(self):
-            if not EMULATE_HX711:
-                GPIO.cleanup()
+            #if not EMULATE_HX711:
+            #    GPIO.cleanup()
             self.stopped = True
 
     class DrillZ1ServoThread(threading.Thread):
@@ -321,9 +322,9 @@ class Drill(AbstractDrill):
         return cls.drill_pm_thread.sensor_readings["current_mA"]
 
 def move_to_target_position(target, drill):
-    PID_P = 100000
+    PID_P = 10000
     TOLERANCE = 0.001 # m
-    MAX_SPEED = 250 # rpm
+    MAX_SPEED = 50 # rpm
     HydrationServo.set_drill_speed(0)
     current_position = HydrationServo.get_drill_position()
     while (abs(current_position - target) > TOLERANCE):
@@ -350,7 +351,7 @@ if __name__ == "__main__":
     time_start_s = time.time()
     time_s = time.time()
     drill.set_drill_level(1.0) # turn to maximum drill speed
-    target = -4 * 25.4/1000 # -2 inches to m
+    target = -6 * 25.4/1000 # -2 inches to m
     try:
         move_to_target_position(0, drill) # home
         time.sleep(1)
