@@ -6,7 +6,6 @@
 using namespace sFnd;
 
 static PyMethodDef HydrationServo_methods[] = {
-    {"pants", pants, METH_VARARGS, "Returns a square of an integer."},
     {NULL, NULL, 0, NULL}
 };
 

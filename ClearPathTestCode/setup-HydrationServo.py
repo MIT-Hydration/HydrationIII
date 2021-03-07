@@ -3,7 +3,9 @@ from distutils.core import setup, Extension
 HydrationServo_module = Extension(
     'HydrationServo',
     sources=['HydrationServo.cpp'],
-    language='C++', )
+    language='C++', 
+    include_dirs=['/home/hydration/ClearPath/inc/inc-pub'],
+    )
 
 setup(
     name='HydrationServo',
