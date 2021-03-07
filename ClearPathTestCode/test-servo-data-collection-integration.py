@@ -16,6 +16,7 @@ from abc import ABC, abstractmethod
 import time
 import threading
 import re
+import numpy
 
 from pymodbus.client.sync import ModbusSerialClient
 from pymodbus.payload import BinaryPayloadDecoder
@@ -24,7 +25,7 @@ from gpiozero import PWMLED
 from gpiozero import CPUTemperature
 
 import serial
-#import HydrationServo
+import HydrationServo
 
 EMULATE_HX711=False
 
@@ -276,8 +277,10 @@ class Drill(AbstractDrill):
     drill_pm_thread = DrillPowerMeterThread()
     drill_ad_thread = DrillArduinoThread()
     drill_wob_thread = DrillWeightOnBitThread()
+    drill_z1_thread = DrillZ1ServoThread()
     writer_thread = FileWriterThread(
-        drill_pm_thread, drill_ad_thread, drill_wob_thread)
+        drill_pm_thread, drill_ad_thread, drill_wob_thread,
+        drill_z1_thread)
 
     
     @classmethod
@@ -330,10 +333,10 @@ def move_to_target_position(target, drill):
         HydrationServo.set_drill_speed(speed)
         time.sleep(0.1)
         current_position = HydrationServo.get_drill_position()
-        print (f'Drill Position: {current_position} m')
         print(drill.drill_pm_thread.sensor_readings)
         print(drill.drill_ad_thread.sensor_readings)
         print(drill.drill_wob_thread.sensor_readings)
+        print(drill.drill_z1_thread.sensor_readings)
     HydrationServo.set_drill_speed(0)
 
 if __name__ == "__main__":
@@ -349,9 +352,12 @@ if __name__ == "__main__":
     drill.set_drill_level(1.0) # turn to maximum drill speed
     target = -4 * 25.4/1000 # -2 inches to m
     try:
-        move_to_target_position(0) # home
+        move_to_target_position(0, drill) # home
         time.sleep(1)
-        move_to_target_position(target)
+        move_to_target_position(target, drill)
+        time.sleep(1)
+        move_to_target_position(0, drill) # home
+
     except Exception as e:
         print("Exception!")
         print(e)

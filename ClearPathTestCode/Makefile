@@ -27,3 +27,6 @@ hydration-servo-homing:
 
 hydration-servo-move-p:
 	python3 TestHydrationServoMove.py
+
+servo-sensor-int:
+	python3 test-servo-data-collection-integration.py
