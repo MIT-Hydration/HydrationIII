@@ -17,7 +17,25 @@ static struct PyModuleDef HydrationServo_definition = {
     HydrationServo_methods
 };
 
-void connect_clearpath(void) {
+#define CHANGE_NUMBER_SPACE	2000	//The change to the numberspace after homing (cnts)
+#define TIME_TILL_TIMEOUT	50000	//The timeout used for homing(ms) -- low from bottom
+#define ACC_LIM_RPM_PER_SEC	300
+#define VEL_LIM_RPM			30
+#define CNTS_PER_MM			400
+#define RPM_PER_MM_PER_SECOND			30
+
+// Send message and wait for newline
+char msgUser(const char *msg) {
+	std::cout << msg;
+	char input;
+	input = getchar();
+	return input;
+}
+
+
+SysManager myMgr;							//Create System Manager myMgr`
+
+int connect_clearpath(void) {
    /*
   -------------------------------
   CONNECTION CODE STARTS HERE
@@ -102,10 +120,25 @@ void connect_clearpath(void) {
 						return -2;
 					}
 				}
+			}
+		}
+	
         /*
         -------------------------------
         CONNECTION CODE ENDS HERE
         -------------------------------*/
+	}
+	catch (mnErr& theErr) {
+		//This statement will print the address of the error, the error code (defined by the mnErr class),
+		//as well as the corresponding error message.
+		printf("Caught error: addr=%d, err=0x%08x\nmsg=%s\n", theErr.TheAddr, theErr.ErrorCode, theErr.ErrorMsg);
+		msgUser("Press any key to continue."); //pause so the user can see the error message; waits for user to press a key
+
+		return 0;  //This terminates the main program
+	}
+  myMgr.PortsClose();
+  msgUser("Press any key to end."); //pause so the user can see the error message; waits for user to press a key
+  return 0;			//End program			
 }
 
 PyMODINIT_FUNC PyInit_HydrationServo(void) {
