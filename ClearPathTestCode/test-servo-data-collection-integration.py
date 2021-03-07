@@ -191,9 +191,38 @@ class Drill(AbstractDrill):
                 GPIO.cleanup()
             self.stopped = True
 
+    class DrillZ1ServoThread(threading.Thread):
+
+        def __init__(self):
+            threading.Thread.__init__(self)
+            self.stopped = True
+            self.sensor_readings = {
+                    "DrillZ1Position_m": 0.0
+                }
+            
+        def run(self):
+            self.stopped = False
+            while not self.stopped:
+                loop_start = time.time()
+                try:
+                    current_position = HydrationServo.get_drill_position()
+                    self.sensor_readings["DrillZ1Position_m"] = current_position
+                except Exception as e:
+                    print(e)
+                    pass
+                loop_end = time.time()
+                delta_time = loop_end - loop_start
+                if (delta_time < 0.01):
+                    time.sleep(0.01 - delta_time)
+                
+        def stop(self):
+            self.stopped = True
+    
     class FileWriterThread(threading.Thread):
 
-        def __init__(self, drill_pm_thread, drill_ad_thread, drill_wob_thread):
+        def __init__(self, drill_pm_thread, 
+                drill_ad_thread, drill_wob_thread,
+                drill_z1_thread):
             self.delay = 0.0007856988543367034
             self.sample_time = 0.02
             self.sleep_time = self.sample_time - self.delay
@@ -201,6 +230,7 @@ class Drill(AbstractDrill):
             self.drill_pm_thread = drill_pm_thread
             self.drill_ad_thread = drill_ad_thread
             self.drill_wob_thread = drill_wob_thread
+            self.drill_z1_thread = drill_z1_thread
             self.stopped = True
             
         def run(self):
@@ -214,6 +244,9 @@ class Drill(AbstractDrill):
                 fp.write(f"{k},") 
             for k in self.drill_wob_thread.sensor_readings:
                 fp.write(f"{k},")
+            for k in self.drill_z1_thread.sensor_readings:
+                fp.write(f"{k},")
+             
             fp.write("\n")
             while not self.stopped:
                 loop_start = time.time()
@@ -226,6 +259,9 @@ class Drill(AbstractDrill):
                     fp.write(f"{self.drill_ad_thread.sensor_readings[k]},")
                 for k in self.drill_wob_thread.sensor_readings:
                     fp.write(f"{self.drill_wob_thread.sensor_readings[k]},")
+                for k in self.drill_z1_thread.sensor_readings:
+                    fp.write(f"{self.drill_z1_thread.sensor_readings[k]},")
+                
                 fp.write("\n")
                 loop_end = time.time()
                 delta_time = loop_end - loop_start
@@ -249,6 +285,7 @@ class Drill(AbstractDrill):
         cls.drill_pm_thread.start()
         cls.drill_ad_thread.start()
         cls.drill_wob_thread.start()
+        cls.drill_z1_thread.start()
         cls.writer_thread.start()
 
     @classmethod
@@ -256,6 +293,7 @@ class Drill(AbstractDrill):
         cls.drill_pm_thread.stop()
         cls.drill_ad_thread.stop()
         cls.drill_wob_thread.stop()
+        cls.drill_z1_thread.stop()
         cls.writer_thread.stop()
 
     @classmethod
@@ -279,29 +317,46 @@ class Drill(AbstractDrill):
     def get_current_mA(cls):
         return cls.drill_pm_thread.sensor_readings["current_mA"]
 
+def move_to_target_position(target, drill):
+    PID_P = 100000
+    TOLERANCE = 0.001 # m
+    MAX_SPEED = 250 # rpm
+    HydrationServo.set_drill_speed(0)
+    current_position = HydrationServo.get_drill_position()
+    while (abs(current_position - target) > TOLERANCE):
+        speed = PID_P * (target - current_position)
+        if (abs(speed) > MAX_SPEED):
+            speed = numpy.sign(speed)*MAX_SPEED
+        HydrationServo.set_drill_speed(speed)
+        time.sleep(0.1)
+        current_position = HydrationServo.get_drill_position()
+        print (f'Drill Position: {current_position} m')
+        print(drill.drill_pm_thread.sensor_readings)
+        print(drill.drill_ad_thread.sensor_readings)
+        print(drill.drill_wob_thread.sensor_readings)
+    HydrationServo.set_drill_speed(0)
 
 if __name__ == "__main__":
     
     drill = Drill()
     drill.set_drill_level(0.0)
     drill.start_sensor_readings()
+    print ("Init Done!")
+ 
     time.sleep(10)
     time_start_s = time.time()
     time_s = time.time()
-    while (time_s - time_start_s) < 240:
-        time_s = time.time()
-        time_s_int = int((time_s - time_start_s)/1)
-        pwm_val = (time_s_int%11)*0.1
-        #pwm_val = 1.0
-        if pwm_val > 1.0:
-            pwm_val = 1.0
-        drill.set_drill_level(pwm_val)
-        print(f"setting drill level {pwm_val}")
-        print(drill.drill_pm_thread.sensor_readings)
-        print(drill.drill_ad_thread.sensor_readings)
-        print(drill.drill_wob_thread.sensor_readings)
-
-        time.sleep(0.5)
+    drill.set_drill_level(1.0) # turn to maximum drill speed
+    target = -4 * 25.4/1000 # -2 inches to m
+    try:
+        move_to_target_position(0) # home
+        time.sleep(1)
+        move_to_target_position(target)
+    except Exception as e:
+        print("Exception!")
+        print(e)
+        HydrationServo.set_drill_speed(0)
+    HydrationServo.set_drill_speed(0)
 
     drill.set_drill_level(0)
     time.sleep(10)
