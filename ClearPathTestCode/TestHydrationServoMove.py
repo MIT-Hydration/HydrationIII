@@ -20,7 +20,7 @@ def move_to_target_position(target):
 
 if __name__ == "__main__":
     print ("Init Done!")
-    target = -2 * 25.4/1000 # -2 inches to m
+    target = -3 * 25.4/1000 # -2 inches to m
     PID_P = 1000
     try:
         move_to_target_position(0) # home
