@@ -11,6 +11,7 @@ using namespace sFnd;
 #define VEL_LIM_RPM			30
 #define CNTS_PER_MM			400
 #define RPM_PER_MM_PER_SECOND			30
+#define THREAD_PITCH (2.0/1000.0) // meters (2 mm pitch)
 
 SysManager myMgr;	//Create System Manager myMgr
 INode *pTheNode ;       // Pointer to the Node
@@ -39,7 +40,8 @@ int _set_drill_speed(double speed){
   theNode.Motion.AccLimit = ACC_LIM_RPM_PER_SEC; //Set Acceleration Limit (RPM/Sec)
   theNode.Motion.VelLimit = VEL_LIM_RPM;	 //Set Velocity Limit (RPM)
   theNode.Motion.MoveVelStart(speed);
-  printf("Speed set to %lf m/s\n", speed);
+  double speed_mps = (speed / 60)*THREAD_PITCH;
+  printf("Speed set to %lf RPM (%lf m/s)\n", speed, speed_mps);
   return 1;
 }
 
