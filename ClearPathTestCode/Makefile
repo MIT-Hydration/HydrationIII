@@ -10,3 +10,7 @@ hello:
 test-run:
 	g++ -I"/home/hydration/ClearPath/inc/inc-pub" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"TestRun.d" -MT"TestRun.o" -o "TestRun.o" "TestRun.cpp"
 	g++ -pthread -o "TestRun" ./TestRun.o   -lsFoundation20
+
+pants:
+	g++ -I"/home/hydration/ClearPath/inc/inc-pub" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"example-pants.d" -MT"example-pants.o" -o "example-pants.o" "example-pants.cpp"
+	
