@@ -3,9 +3,9 @@ import time
 import numpy
 
 def move_to_target_position(target):
-    PID_P = 10000
+    PID_P = 100000
     TOLERANCE = 0.001 # m
-    MAX_SPEED = 200 # rpm
+    MAX_SPEED = 250 # rpm
     HydrationServo.set_drill_speed(0)
     current_position = HydrationServo.get_drill_position()
     while (abs(current_position - target) > TOLERANCE):

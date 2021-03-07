@@ -24,7 +24,7 @@ from gpiozero import PWMLED
 from gpiozero import CPUTemperature
 
 import serial
-import HydrationServo
+#import HydrationServo
 
 EMULATE_HX711=False
 
@@ -165,7 +165,7 @@ class Drill(AbstractDrill):
                     "WeightOnBit": 0.0
                 }
             self.hx.set_reading_format("MSB", "MSB")
-            self.hx.set_reference_unit(referenceUnit)
+            self.hx.set_reference_unit(self.referenceUnit)
             self.hx.reset()
             self.hx.tare()
 
@@ -174,11 +174,12 @@ class Drill(AbstractDrill):
             while not self.stopped:
                 loop_start = time.time()
                 try:
-                    val = hx.get_weight(5)
+                    val = self.hx.get_weight(5)
                     self.sensor_readings["WeightOnBit"] = val
                     self.hx.power_down()
                     self.hx.power_up()
-                except:
+                except Exception as e:
+                    print(e)
                     pass
                 loop_end = time.time()
                 delta_time = loop_end - loop_start
@@ -211,7 +212,7 @@ class Drill(AbstractDrill):
                 fp.write(f"{k},")
             for k in self.drill_ad_thread.sensor_readings:
                 fp.write(f"{k},") 
-            for k in self.drill_wob_thread.sensor_reading:
+            for k in self.drill_wob_thread.sensor_readings:
                 fp.write(f"{k},")
             fp.write("\n")
             while not self.stopped:
@@ -276,7 +277,7 @@ class Drill(AbstractDrill):
     
     @classmethod
     def get_current_mA(cls):
-        return cls.drill_pm_thread.sensor_reading["current_mA"]
+        return cls.drill_pm_thread.sensor_readings["current_mA"]
 
 
 if __name__ == "__main__":
@@ -298,6 +299,7 @@ if __name__ == "__main__":
         print(f"setting drill level {pwm_val}")
         print(drill.drill_pm_thread.sensor_readings)
         print(drill.drill_ad_thread.sensor_readings)
+        print(drill.drill_wob_thread.sensor_readings)
 
         time.sleep(0.5)
 
