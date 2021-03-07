@@ -20,8 +20,7 @@ def move_to_target_position(target):
 
 if __name__ == "__main__":
     print ("Init Done!")
-    target = -3 * 25.4/1000 # -2 inches to m
-    PID_P = 1000
+    target = -4 * 25.4/1000 # -2 inches to m
     try:
         move_to_target_position(0) # home
         time.sleep(1)
