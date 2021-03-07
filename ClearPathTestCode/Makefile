@@ -12,5 +12,5 @@ test-run:
 	g++ -pthread -o "TestRun" ./TestRun.o   -lsFoundation20
 
 pants:
-	g++ -I"/home/hydration/ClearPath/inc/inc-pub" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"example-pants.d" -MT"example-pants.o" -o "example-pants.o" "example-pants.cpp"
+	g++ -I"/home/hydration/ClearPath/inc/inc-pub" -I"/usr/include/python3.8" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"example-pants.d" -MT"example-pants.o" -o "example-pants.o" "example-pants.cpp"
 	

@@ -1,11 +1,3 @@
-# Initial demo
-
-This project is to demo the following strucutre end-to-end. 
-
-https://docs.google.com/drawings/d/1QRMFYuSZM9tMgI91pgGa5nRd84Z5f_WUibL6J7ogIU0/edit?usp=sharing
-
-See tag V0.3: https://github.com/MIT-Hydration/HydrationIII/tree/V0.3
-
 # Running
 
 ## Generate ProtoBuf Interface Files
@@ -39,6 +31,11 @@ See here: https://www.raspberrypi.org/forums/viewtopic.php?t=269749 , and https:
 3. `sudo apt-get install net-tools`
 4. `gsettings set org.gnome.Vino require-encryption false` was required for VNC connection to work for screensharing when collaborting using a mac
 5. Follow steps here to get `sshserver`: https://thishosting.rocks/how-to-enable-ssh-on-ubuntu/ for remote login
+
+## Python C++ Bindings in RPi (Ubuntu)
+
+1. `sudo apt-get install python3-dev`
+2. `sudo apt install libpython3.9-dev`
 
 ## Install GRPC in MAC
 Following guide here: https://grpc.io/docs/languages/python/quickstart/
@@ -112,3 +109,12 @@ Needed to install the following modules and small code modifications:
 
 Installing LED component: `https://github.com/jazzycamel/QLed`
 `python3 -m pip install QLed`
+
+# Initial demo
+
+This project is to demo the following strucutre end-to-end. 
+
+https://docs.google.com/drawings/d/1QRMFYuSZM9tMgI91pgGa5nRd84Z5f_WUibL6J7ogIU0/edit?usp=sharing
+
+See tag V0.3: https://github.com/MIT-Hydration/HydrationIII/tree/V0.3
+
