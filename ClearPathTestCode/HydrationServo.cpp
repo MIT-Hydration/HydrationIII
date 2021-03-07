@@ -5,6 +5,13 @@
 
 using namespace sFnd;
 
+#define CHANGE_NUMBER_SPACE	2000	//The change to the numberspace after homing (cnts)
+#define TIME_TILL_TIMEOUT	50000	//The timeout used for homing(ms) -- low from bottom
+#define ACC_LIM_RPM_PER_SEC	300
+#define VEL_LIM_RPM			30
+#define CNTS_PER_MM			400
+#define RPM_PER_MM_PER_SECOND			30
+
 SysManager myMgr;	//Create System Manager myMgr
 
 INode & _getFirstNode() {
@@ -20,12 +27,12 @@ double _get_position(){
 	return myPosn;
 }
 
-static PyObject *pants(PyObject *self, PyObject *args) {
-  return PyDouble_FromDouble(_get_position());
+static PyObject *get_drill_position(PyObject *self, PyObject *args) {
+  return PyFloat_FromDouble(_get_position());
 }
 
 static PyMethodDef HydrationServo_methods[] = {
-
+    {"get_drill_position", get_drill_position, METH_VARARGS, "Returns drill position"},
     {NULL, NULL, 0, NULL}
 };
 
@@ -37,12 +44,6 @@ static struct PyModuleDef HydrationServo_definition = {
     HydrationServo_methods
 };
 
-#define CHANGE_NUMBER_SPACE	2000	//The change to the numberspace after homing (cnts)
-#define TIME_TILL_TIMEOUT	50000	//The timeout used for homing(ms) -- low from bottom
-#define ACC_LIM_RPM_PER_SEC	300
-#define VEL_LIM_RPM			30
-#define CNTS_PER_MM			400
-#define RPM_PER_MM_PER_SECOND			30
 
 // Send message and wait for newline
 char msgUser(const char *msg) {
