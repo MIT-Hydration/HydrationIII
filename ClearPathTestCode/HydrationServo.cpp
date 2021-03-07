@@ -13,18 +13,13 @@ using namespace sFnd;
 #define RPM_PER_MM_PER_SECOND			30
 
 SysManager myMgr;	//Create System Manager myMgr
-
-INode & _getFirstNode() {
-  IPort &myPort = myMgr.Ports(iPort);
-	INode &theNode = myPort.Nodes(iNode);
-  return theNode; 
-}
+INode *pTheNode ;       // Pointer to the Node
 
 double _get_position(){
-	theNode = _getFirstNode();
+  INode &theNode = *(pTheNode);
   theNode.Motion.PosnMeasured.Refresh();
-	double myPosn = (theNode.Motion.PosnMeasured.Value()) / CNTS_PER_MM * 1000;
-	return myPosn;
+  double myPosn = (theNode.Motion.PosnMeasured.Value()) / (CNTS_PER_MM * 1000);
+  return myPosn;
 }
 
 static PyObject *get_drill_position(PyObject *self, PyObject *args) {
@@ -62,6 +57,7 @@ int connect_clearpath(void) {
   */
 	size_t portCount = 0;
 	std::vector<std::string> comHubPorts;
+	pTheNode = NULL;
 
 	//Create the SysManager object. This object will coordinate actions among various ports
 	// and within nodes. In this example we use this object to setup and open our port.
@@ -112,6 +108,7 @@ int connect_clearpath(void) {
 
 						// Create a shortcut reference for the first node
 				INode &theNode = myPort.Nodes(iNode);
+				pTheNode = &theNode; // store address to the first node
 
 				//theNode.EnableReq(false);				//Ensure Node is disabled before starting
 
@@ -152,8 +149,6 @@ int connect_clearpath(void) {
 
 		return 0;  //This terminates the main program
 	}
-  myMgr.PortsClose();
-  msgUser("Press any key to end."); //pause so the user can see the error message; waits for user to press a key
   return 0;			//End program			
 }
 
