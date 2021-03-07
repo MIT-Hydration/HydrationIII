@@ -5,6 +5,7 @@ HydrationServo_module = Extension(
     sources=['HydrationServo.cpp'],
     language='C++', 
     include_dirs=['/home/hydration/ClearPath/inc/inc-pub'],
+    libraries=['sFoundation20'],
     )
 
 setup(
