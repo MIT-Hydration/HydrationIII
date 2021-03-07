@@ -32,8 +32,8 @@ char msgUser(const char *msg) {
 	return input;
 }
 
-
-SysManager myMgr;							//Create System Manager myMgr`
+SysManager myMgr;	//Create System Manager myMgr
+INode &theNode;   // reference to the first node
 
 int connect_clearpath(void) {
    /*
@@ -95,7 +95,7 @@ int connect_clearpath(void) {
 				//////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 						// Create a shortcut reference for the first node
-				INode &theNode = myPort.Nodes(iNode);
+				theNode = myPort.Nodes(iNode);
 
 				//theNode.EnableReq(false);				//Ensure Node is disabled before starting
 
