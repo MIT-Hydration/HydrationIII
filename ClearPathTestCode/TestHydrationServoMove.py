@@ -22,9 +22,11 @@ if __name__ == "__main__":
     print ("Init Done!")
     target = -4 * 25.4/1000 # -2 inches to m
     try:
-        move_to_target_position(0) # home
+        move_to_target_position(0) # move down
         time.sleep(1)
         move_to_target_position(target)
+        time.sleep(1)
+        move_to_target_position(0) # home
     except Exception as e:
         print("Exception!")
         print(e)
