@@ -22,12 +22,50 @@ double _get_position(){
   return myPosn;
 }
 
+int _set_drill_speed(double speed){
+	/*
+	Parameters
+	-------------
+	speed: run to this speed
+	Outputs
+	-------------
+	return 1: set speed successfully
+	-1: did not set speed
+	 */
+  INode &theNode = *(pTheNode);
+  theNode.Motion.MoveWentDone(); //Clear the rising edge Move done register
+  theNode.AccUnit(INode::RPM_PER_SEC);	//Set the units for Acceleration to RPM/SEC
+  theNode.VelUnit(INode::RPM);		//Set the units for Velocity to RPM
+  theNode.Motion.AccLimit = ACC_LIM_RPM_PER_SEC; //Set Acceleration Limit (RPM/Sec)
+  theNode.Motion.VelLimit = VEL_LIM_RPM;	 //Set Velocity Limit (RPM)
+  theNode.Motion.MoveVelStart(speed);
+  printf("Speed set to %lf m/s\n", speed);
+  return 1;
+}
+
+
 static PyObject *get_drill_position(PyObject *self, PyObject *args) {
   return PyFloat_FromDouble(_get_position());
 }
 
+
+static PyObject *set_drill_speed(PyObject *self, PyObject *args) {
+  double speed;
+  if (!PyArg_ParseTuple(args, "d", &speed)) {
+    return NULL;
+  }
+
+  int set_speed = _set_drill_speed(speed);
+  if (set_speed > 0)
+    Py_RETURN_TRUE;
+  else
+    Py_RETURN_FALSE;
+}
+
 static PyMethodDef HydrationServo_methods[] = {
     {"get_drill_position", get_drill_position, METH_VARARGS, "Returns drill position"},
+    {"set_drill_speed", set_drill_speed, 
+	    METH_VARARGS, "Sets drill speed"},
     {NULL, NULL, 0, NULL}
 };
 
