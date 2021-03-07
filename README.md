@@ -37,6 +37,14 @@ See here: https://www.raspberrypi.org/forums/viewtopic.php?t=269749 , and https:
 1. `sudo apt-get install python3-dev`
 2. `sudo apt install libpython3.9-dev`
 
+## Running ClearPath Servo Test in RPi
+
+See `Makefile` in `ClearPathTestCode` folder. 
+
+1. `make test-run` for a completely C++ program to test the servo connection
+2. `make hydration-servo` for compiling C++ to Python bindings
+3. `make hydration-servo-test` to physically test the bindings
+
 ## Install GRPC in MAC
 Following guide here: https://grpc.io/docs/languages/python/quickstart/
 

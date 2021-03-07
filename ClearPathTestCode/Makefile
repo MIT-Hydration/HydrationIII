@@ -18,3 +18,6 @@ pants:
 
 hydration-servo:
 	python3 setup-HydrationServo.py build_ext --inplace
+
+hydration-servo-test:
+	python3 TestHydrationServo.py
