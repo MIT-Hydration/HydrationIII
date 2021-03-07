@@ -2,6 +2,8 @@ clean:
 	rm -rf HelloWorld TestRun
 	rm -rf *.o
 	rm -rf *.d
+	rm -rf build
+	rm -rf *.so
 
 hello:
 	g++ -I"/home/hydration/ClearPath/inc/inc-pub" -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"HelloWorld.d" -MT"HelloWorld.o" -o "HelloWorld.o" "HelloWorld.cpp"
@@ -12,6 +14,4 @@ test-run:
 	g++ -pthread -o "TestRun" ./TestRun.o   -lsFoundation20
 
 pants:
-	cd example-pants
 	python3 setup.py build_ext --inplace
-	cd ..
