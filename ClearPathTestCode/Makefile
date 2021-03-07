@@ -15,3 +15,6 @@ test-run:
 
 pants:
 	python3 setup.py build_ext --inplace
+
+hydration-servo:
+	python3 setup-HydrationServo.py build_ext --inplace
