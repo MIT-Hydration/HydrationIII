@@ -5,7 +5,27 @@
 
 using namespace sFnd;
 
+SysManager myMgr;	//Create System Manager myMgr
+
+INode & _getFirstNode() {
+  IPort &myPort = myMgr.Ports(iPort);
+	INode &theNode = myPort.Nodes(iNode);
+  return theNode; 
+}
+
+double _get_position(){
+	theNode = _getFirstNode();
+  theNode.Motion.PosnMeasured.Refresh();
+	double myPosn = (theNode.Motion.PosnMeasured.Value()) / CNTS_PER_MM * 1000;
+	return myPosn;
+}
+
+static PyObject *pants(PyObject *self, PyObject *args) {
+  return PyDouble_FromDouble(_get_position());
+}
+
 static PyMethodDef HydrationServo_methods[] = {
+
     {NULL, NULL, 0, NULL}
 };
 
@@ -32,7 +52,6 @@ char msgUser(const char *msg) {
 	return input;
 }
 
-SysManager myMgr;	//Create System Manager myMgr
 
 int connect_clearpath(void) {
    /*
@@ -73,9 +92,6 @@ int connect_clearpath(void) {
 		}
 		else {
 			printf("Unable to locate SC hub port\n");
-
-			msgUser("Press any key to continue."); //pause so the user can see the error message; waits for user to press a key
-
 			return -1;  //This terminates the main program
 		}
 
