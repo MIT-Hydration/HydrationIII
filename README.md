@@ -12,7 +12,7 @@
 Test to make sure that the server is accesible and running without GUI complications
 `make run-echo-client`
 
-## Server
+## Server (Raspberry Pi 4 B)
 
 ### Mission Control Server
 
@@ -44,6 +44,12 @@ See `Makefile` in `ClearPathTestCode` folder.
 1. `make test-run` for a completely C++ program to test the servo connection
 2. `make hydration-servo` for compiling C++ to Python bindings
 3. `make hydration-servo-test` to physically test the bindings
+
+## For connecting to INA-219 current sensor from AdaFruit
+
+1. `python3 -m pip install pi-ina219`
+
+See example here: https://pypi.org/project/pi-ina219/
 
 ## Install GRPC in MAC
 Following guide here: https://grpc.io/docs/languages/python/quickstart/
