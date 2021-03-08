@@ -51,6 +51,11 @@ See `Makefile` in `ClearPathTestCode` folder.
 
 See example here: https://pypi.org/project/pi-ina219/
 
+## For GPIO in RPi
+
+We are using gpiozero: https://gpiozero.readthedocs.io/en/stable/
+
+
 ## Install GRPC in MAC
 Following guide here: https://grpc.io/docs/languages/python/quickstart/
 
