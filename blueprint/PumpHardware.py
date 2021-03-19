@@ -8,17 +8,13 @@ class AbstractPump:
     @abstractmethod
     def set_direction_forward():
         pass
-
-    @abstractmethod
-    def get_direction_forward():
-        pass
       
     @abstractmethod
     def set_direction_reverse():
         pass
 
     @abstractmethod
-    def get_direction_reverse():
+    def get_direction():
         pass
       
 #SPEED (Liter per Minute):
@@ -66,27 +62,29 @@ class Pump(AbstractPump):
     #DIRECTIONS:  
     @classmethod
     def set_direction_forward():
-        cls.motor.value = level
-    @classmethod
-    def get_direction_forward():
-        return cls.drill_thread.sensor_readings["speed_rpm"]
-        pass
-        
+    GPIO.output(DIR, GPIO.LOW)
+    direction=1 
+    
     @classmethod
     def set_direction_reverse():
-        cls.motor.value = level
+    GPIO.output(DIR, GPIO.HIGH)    
+    direction=0
+    
+    
     @classmethod
-    def get_direction_reverse():
-        return cls.drill_thread.sensor_readings["speed_rpm"]
-        pass
+    def get_direction():
+        return direction
+        pass         
+   
 
    #SPEED (Liter per Minute):
     @classmethod
     def set_speed_LpM(speedLpM_value):
-        speedLpM=speedLpM_value      
+        speedLpM=speedLpM_value 
+        
     @classmethod
     def get_speed_LpM():
-        return cls.drill_thread.sensor_readings["speed_rpm"]
+        return speedLpM
         pass
       
     #FILTER CLEANING SEQUENCE:
@@ -97,8 +95,9 @@ class Pump(AbstractPump):
     #MAXSPEED (Percentage of the Max):
     @classmethod
     def get_max_speed():
-        return cls.drill_thread.sensor_readings["speed_rpm"]
+        return 
         pass
+    
     @classmethod
     def set_speed_PoM(speedPoM_value):
         speedPoM=speedPoM_value
@@ -106,6 +105,6 @@ class Pump(AbstractPump):
       
      @classmethod
     def get_speed_PoM():
-        return cls.drill_thread.sensor_readings["speed_rpm"]
+        return 
         pass
 
