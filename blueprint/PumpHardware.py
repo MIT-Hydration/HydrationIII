@@ -2,9 +2,12 @@
 from time import sleep # this lets us have a time delay
 import RPi.GPIO as GPIO
 
+duration = 5000
+delay = 0.0000001
+
 
 class AbstractPump:
-#DIRECTIONS:    
+    #DIRECTIONS:    
     @abstractmethod
     def set_direction_forward():
         pass
@@ -17,7 +20,7 @@ class AbstractPump:
     def get_direction():
         pass
       
-#SPEED (Liter per Minute):
+    #SPEED (Liter per Minute):
     @abstractmethod
     def set_speed_LpM(speedLpM_value):
         pass
@@ -25,14 +28,13 @@ class AbstractPump:
     @abstractmethod
     def get_speed_LpM():
         pass
-#FILTER CLEANING SEQUENCE:
-
+    
+    #FILTER CLEANING SEQUENCE:
     @abstractmethod
     def cleaning_sequence():
         pass
       
-#MAXSPEED (Percentage of the Max):
-
+    #MAXSPEED (Percentage of the Max):
     @abstractmethod
     def get_max_speed():
         pass
@@ -59,6 +61,28 @@ class MockPump(AbstractPump):
     
     
 class Pump(AbstractPump):
+    
+    def __init__():
+        speedLpM.set_speed_LPM(0)
+        speedPoM.set_speed_PoM(0)
+        direction.set_direction_forward()
+        
+    
+    def run()
+    GPIO.output(ENA, GPIO.LOW)
+    #set direction
+    #will be a while loop later probably
+    for x in range(duration): 
+        GPIO.output(PUL, GPIO.HIGH)
+        sleep(delay)
+        GPIO.output(PUL, GPIO.LOW)
+        sleep(delay)
+    return
+
+   #def stop()
+   
+    
+    
     #DIRECTIONS:  
     @classmethod
     def set_direction_forward():
