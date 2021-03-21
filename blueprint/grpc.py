@@ -23,7 +23,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         cpu_temp = HardwareFactory.getMissionControlRPi() \
             .get_cpu_temperature()
 
-        if (mission_time_started):
+        if (self.mission_time_started):
             mission_time = timestamp - self.mission_start_time
         else:
             mission_time = 0
