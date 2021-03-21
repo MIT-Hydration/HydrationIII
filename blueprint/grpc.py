@@ -27,7 +27,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
             cpu_temperature_degC = cpu_temp,
-            mission_time = timestamp - self.mission_start_time,
+            mission_start_time_ms = timestamp - self.mission_start_time,
             mode = self.mode)
 
     def RigMove(self, request, context):
