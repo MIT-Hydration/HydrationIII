@@ -16,10 +16,19 @@ from QLed import QLed
 
 from datetime import datetime
 import time
+import configparser
 
-RPI_IP_ADDRESS_PORT = '96.237.232.240:50051'
-HEARTBEAT_TIMEOUT   = 1000
-GRPC_CALL_TIMEOUT   = 1000
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+RPI_IP_ADDRESS_PORT = \
+    f"{config.get('Network', 'MissionControlRPiIPAddress')}:" \
+    f"{config.get('Network', 'GRPCPort')}"
+
+HEARTBEAT_TIMEOUT   = \
+    config.getint('Network', 'HeartbeatTimeout')
+GRPC_CALL_TIMEOUT   = \
+    config.getint('Network', 'GRPCTimeout')
 
 class DownloadThread(QtCore.QThread):
 

@@ -19,29 +19,32 @@ import threading
 from pymodbus.client.sync import ModbusSerialClient
 from pymodbus.payload import BinaryPayloadDecoder
 
-from gpiozero import PWMLED
-from gpiozero import CPUTemperature
+import configparser
+
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+if config.getboolean('Operating System', 'RunningInRPi'):
+    from gpiozero import PWMLED
+    from gpiozero import CPUTemperature
+
+from . import RPiHardware
 
 class HardwareFactory:
     
-    is_mock = {
-        "drill": False
-    }
-
-    mock_load_profile_simple = {
-        "drill_ramp_delay_ms": 10,
-        "drill_ramp_slope_rpm_per_ms": 10 
-    }
-
-    current_load_profile = mock_load_profile_simple
-
     @classmethod
     def getDrill(cls):
-        if (cls.is_mock["drill"]):
+        if (config.getboolean('Mocks', 'MockDrill')):
             return MockDrill()
         else:
             return Drill()
     
+    @classmethod
+    def getMissionControlRPi(cls):
+        if (config.getboolean('Mocks', 'MockMissionControlRPi')):
+            return RPiHardware.MockRPiHardware()
+        else:
+            return RPiHardware.RPiHardware()
 
 class AbstractDrill(ABC):
 
@@ -58,7 +61,7 @@ class AbstractDrill(ABC):
         pass
 
     @abstractmethod
-    def get_drill_level(self, level):
+    def get_drill_level(self):
         pass
 
     @abstractmethod
@@ -84,6 +87,26 @@ class MockDrill(AbstractDrill):
     def set_drill_level(self, level):
         self._set_time = time.time()
         self._set_level = level
+
+    @classmethod
+    def start_sensor_readings(cls):
+        pass
+
+    @classmethod
+    def start_sensor_readings(cls):
+        pass
+    
+    def get_drill_level(self, level):
+        return self._set_level
+        
+    def get_speed_rpm(self):
+        return -100.0
+
+    def get_active_power_W(self):
+        return -2000.0
+
+    def get_current_mA(self):
+        return -999.0
     
 class Drill(AbstractDrill):
 
@@ -154,7 +177,9 @@ class Drill(AbstractDrill):
             
     modbus_reg_address = 75
     modbus_reg_count   = 4
-    motor = PWMLED(12)
+    motor = HardwareFactory.getMissionControlRPi() \
+        .connect_triac_pin(config.getint(
+            'HardwareConnection', 'TriacGPIOPin'))
     drill_thread = DrillThread()
     writer_thread = FileWriterThread(drill_thread)
     

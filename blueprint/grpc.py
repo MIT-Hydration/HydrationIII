@@ -4,9 +4,6 @@ from .hardware import HardwareFactory
 
 import time
 
-from gpiozero import PWMLED
-from gpiozero import CPUTemperature
-
 class Echoer(echo_pb2_grpc.EchoServicer):
 
     def Reply(self, request, context):
@@ -14,15 +11,16 @@ class Echoer(echo_pb2_grpc.EchoServicer):
 
 class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
-    cpu = CPUTemperature()
-
     def HeartBeat(self, request, context):
         timestamp = int(time.time()*1000)
+        cpu_temp = HardwareFactory.getMissionControlRPi() \
+            .get_cpu_temperature()
+
         return mission_control_pb2.HeartBeatReply(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
             fan_on = False,
-            cpu_temperature_degC = self.cpu.temperature,
+            cpu_temperature_degC = cpu_temp,
             mode = mission_control_pb2.READY)
 
     def RigMove(self, request, context):
