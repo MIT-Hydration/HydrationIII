@@ -278,7 +278,7 @@ class MainWindow(QtWidgets.QWidget):
             rtt_time = response.timestamp - response.request_timestamp
             self.rtt_label.setText(f"{rtt_time} [ms]")
             mission_time = timedelta(milliseconds=response.mission_start_time_ms)
-            self.mission_time_label.setText(mission_time)
+            self.mission_time_label.setText(str(mission_time))
 
             if (response.mode == mission_control_pb2.STARTUP_DIAGNOSTICS):
                 mode_text = 'Startup Diagnostics'

@@ -23,11 +23,16 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         cpu_temp = HardwareFactory.getMissionControlRPi() \
             .get_cpu_temperature()
 
+        if (mission_time_started):
+            mission_time = timestamp - self.mission_start_time
+        else:
+            mission_time = 0
+
         return mission_control_pb2.HeartBeatReply(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
             cpu_temperature_degC = cpu_temp,
-            mission_start_time_ms = timestamp - self.mission_start_time,
+            mission_start_time_ms = mission_time,
             mode = self.mode)
 
     def RigMove(self, request, context):
