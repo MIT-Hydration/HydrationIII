@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x15mission_control.proto\x12\x0fmission_control\"-\n\x10HeartBeatRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"\xd8\x01\n\x0eHeartBeatReply\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\x1e\n\x16\x64rill_subsystem_online\x18\x03 \x01(\x08\x12\x1f\n\x17heater_sussystem_online\x18\x04 \x01(\x08\x12\x0e\n\x06\x66\x61n_on\x18\x05 \x01(\x08\x12\x1c\n\x14\x63pu_temperature_degC\x18\x06 \x01(\x02\x12)\n\x04mode\x18\x07 \x01(\x0e\x32\x1b.mission_control.SystemMode\"0\n\x10RigStatusRequest\x12\x1c\n\x14request_timestamp_ms\x18\x01 \x01(\x04\"\xc5\x01\n\x11RigStatusResponse\x12\x14\n\x0ctimestamp_ms\x18\x01 \x01(\x04\x12\x1c\n\x14request_timestamp_ms\x18\x02 \x01(\x04\x12\x14\n\x0cx_position_m\x18\n \x01(\x02\x12\x16\n\x0ex_velocity_m_s\x18\x0b \x01(\x02\x12\x14\n\x0cy_position_m\x18\x0c \x01(\x02\x12\x16\n\x0ey_velocity_m_s\x18\r \x01(\x02\x12 \n\x18last_calibration_success\x18\x14 \x01(\x08\":\n\x1a\x44rillAssemblyStatusRequest\x12\x1c\n\x14request_timestamp_ms\x18\x01 \x01(\x04\"\xc3\x02\n\x1b\x44rillAssemblyStatusResponse\x12\x14\n\x0ctimestamp_ms\x18\x01 \x01(\x04\x12\x1c\n\x14request_timestamp_ms\x18\x02 \x01(\x04\x12\x15\n\rdrill_setting\x18\x03 \x01(\x02\x12\x16\n\x0etachometer_RPM\x18\x04 \x01(\x02\x12\x17\n\x0f\x64rill_e_power_W\x18\x05 \x01(\x02\x12\x19\n\x11\x64rill_e_current_A\x18\x06 \x01(\x02\x12\x14\n\x0cz_position_m\x18\x07 \x01(\x02\x12\x16\n\x0ez_velocity_m_s\x18\x08 \x01(\x02\x12\x1c\n\x14\x63pu_temperature_degC\x18\t \x01(\x02\x12 \n\x18last_calibration_success\x18\x14 \x01(\x08\x12\x1f\n\x17\x63\x61libration_error_state\x18\x15 \x01(\x08\"H\n\x15RigMoveCommandRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\t\n\x01x\x18\x02 \x01(\x02\x12\t\n\x01y\x18\x03 \x01(\x02\"A\n\x10\x44rillModeRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\x12\n\ndrill_mode\x18\x02 \x01(\x08\"4\n\x17\x44rillCalibrationRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"J\n\x19\x44rillDescendingOffRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\x12\n\ntarget_z_m\x18\x02 \x01(\x02\"O\n\x1e\x44rillDescendingDrillingRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\x12\n\ntarget_z_m\x18\x02 \x01(\x02\"o\n\x0f\x43ommandResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12.\n\x06status\x18\x03 \x01(\x0e\x32\x1e.mission_control.CommandReport\"1\n\x14\x45mergencyStopRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04*\xd3\x02\n\nSystemMode\x12\x0b\n\x07UNKNOWN\x10\x00\x12\t\n\x05READY\x10\x01\x12\x0f\n\x0b\x43\x41LIBRATING\x10\x02\x12\n\n\x06MANUAL\x10\x03\x12\x0f\n\x0bRIG_STANDBY\x10\x65\x12\x1c\n\x18RIG_DRILL_POSITIONING_XY\x10\x66\x12\x1c\n\x18RIG_WATER_POSITIONING_XY\x10g\x12\x12\n\rDRILL_STANDBY\x10\xc9\x01\x12\x16\n\x11\x44RILL_CALIBRATING\x10\xca\x01\x12\x19\n\x14\x44RILL_DESCENDING_OFF\x10\xcb\x01\x12\x1e\n\x19\x44RILL_DESCENDING_DRILLING\x10\xcc\x01\x12\x18\n\x13\x44RILL_ASCENDING_OFF\x10\xcd\x01\x12\x17\n\x12\x44RILL_ASCENDING_ON\x10\xce\x01\x12\x1c\n\x17\x44RILL_CALIBRATION_ERROR\x10\xfa\x01\x12\x0b\n\x07HEATING\x10\x0c*E\n\rCommandReport\x12\x0c\n\x08\x45XECUTED\x10\x00\x12\x11\n\rINVALID_STATE\x10\x01\x12\x13\n\x0f\x45XECUTION_ERROR\x10\x02\x32\x86\x06\n\x0eMissionControl\x12O\n\tHeartBeat\x12!.mission_control.HeartBeatRequest\x1a\x1f.mission_control.HeartBeatReply\x12S\n\x07RigMove\x12&.mission_control.RigMoveCommandRequest\x1a .mission_control.CommandResponse\x12P\n\tDrillMode\x12!.mission_control.DrillModeRequest\x1a .mission_control.CommandResponse\x12^\n\x10\x44rillCalibration\x12(.mission_control.DrillCalibrationRequest\x1a .mission_control.CommandResponse\x12\x62\n\x12\x44rillDescendingOff\x12*.mission_control.DrillDescendingOffRequest\x1a .mission_control.CommandResponse\x12l\n\x17\x44rillDescendingDrilling\x12/.mission_control.DrillDescendingDrillingRequest\x1a .mission_control.CommandResponse\x12X\n\rEmergencyStop\x12%.mission_control.EmergencyStopRequest\x1a .mission_control.CommandResponse\x12p\n\x13\x44rillAssemblyStatus\x12+.mission_control.DrillAssemblyStatusRequest\x1a,.mission_control.DrillAssemblyStatusResponse2\xdd\x03\n\x0c\x44rillControl\x12O\n\tHeartBeat\x12!.mission_control.HeartBeatRequest\x1a\x1f.mission_control.HeartBeatReply\x12p\n\x13\x44rillAssemblyStatus\x12+.mission_control.DrillAssemblyStatusRequest\x1a,.mission_control.DrillAssemblyStatusResponse\x12P\n\tDrillMode\x12!.mission_control.DrillModeRequest\x1a .mission_control.CommandResponse\x12X\n\rEmergencyStop\x12%.mission_control.EmergencyStopRequest\x1a .mission_control.CommandResponse\x12^\n\x10\x44rillCalibration\x12(.mission_control.DrillCalibrationRequest\x1a .mission_control.CommandResponseb\x06proto3'
+  serialized_pb=b'\n\x15mission_control.proto\x12\x0fmission_control\"-\n\x10HeartBeatRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"\xe7\x01\n\x0eHeartBeatReply\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\x1e\n\x16\x64rill_subsystem_online\x18\x03 \x01(\x08\x12\x1f\n\x17heater_sussystem_online\x18\x04 \x01(\x08\x12\x1c\n\x14\x63pu_temperature_degC\x18\x06 \x01(\x02\x12)\n\x04mode\x18\x07 \x01(\x0e\x32\x1b.mission_control.SystemMode\x12\x1d\n\x15mission_start_time_ms\x18\x08 \x01(\x04\"0\n\x10RigStatusRequest\x12\x1c\n\x14request_timestamp_ms\x18\x01 \x01(\x04\"\xc5\x01\n\x11RigStatusResponse\x12\x14\n\x0ctimestamp_ms\x18\x01 \x01(\x04\x12\x1c\n\x14request_timestamp_ms\x18\x02 \x01(\x04\x12\x14\n\x0cx_position_m\x18\n \x01(\x02\x12\x16\n\x0ex_velocity_m_s\x18\x0b \x01(\x02\x12\x14\n\x0cy_position_m\x18\x0c \x01(\x02\x12\x16\n\x0ey_velocity_m_s\x18\r \x01(\x02\x12 \n\x18last_calibration_success\x18\x14 \x01(\x08\":\n\x1a\x44rillAssemblyStatusRequest\x12\x1c\n\x14request_timestamp_ms\x18\x01 \x01(\x04\"\xc3\x02\n\x1b\x44rillAssemblyStatusResponse\x12\x14\n\x0ctimestamp_ms\x18\x01 \x01(\x04\x12\x1c\n\x14request_timestamp_ms\x18\x02 \x01(\x04\x12\x15\n\rdrill_setting\x18\x03 \x01(\x02\x12\x16\n\x0etachometer_RPM\x18\x04 \x01(\x02\x12\x17\n\x0f\x64rill_e_power_W\x18\x05 \x01(\x02\x12\x19\n\x11\x64rill_e_current_A\x18\x06 \x01(\x02\x12\x14\n\x0cz_position_m\x18\x07 \x01(\x02\x12\x16\n\x0ez_velocity_m_s\x18\x08 \x01(\x02\x12\x1c\n\x14\x63pu_temperature_degC\x18\t \x01(\x02\x12 \n\x18last_calibration_success\x18\x14 \x01(\x08\x12\x1f\n\x17\x63\x61libration_error_state\x18\x15 \x01(\x08\"H\n\x15RigMoveCommandRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\t\n\x01x\x18\x02 \x01(\x02\x12\t\n\x01y\x18\x03 \x01(\x02\"A\n\x10\x44rillModeRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\x12\n\ndrill_mode\x18\x02 \x01(\x08\"4\n\x17\x44rillCalibrationRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"J\n\x19\x44rillDescendingOffRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\x12\n\ntarget_z_m\x18\x02 \x01(\x02\"O\n\x1e\x44rillDescendingDrillingRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\x12\n\ntarget_z_m\x18\x02 \x01(\x02\"o\n\x0f\x43ommandResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12.\n\x06status\x18\x03 \x01(\x0e\x32\x1e.mission_control.CommandReport\"1\n\x14\x45mergencyStopRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"+\n\x0eSetModeRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"5\n\x18StartMissionClockRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04*\xc4\x02\n\nSystemMode\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x17\n\x13STARTUP_DIAGNOSTICS\x10\x64\x12\x0f\n\x0bRIG_STANDBY\x10\x65\x12\x1c\n\x18RIG_DRILL_POSITIONING_XY\x10\x66\x12\x1c\n\x18RIG_WATER_POSITIONING_XY\x10g\x12\x12\n\rDRILL_STANDBY\x10\xc9\x01\x12\x16\n\x11\x44RILL_CALIBRATING\x10\xca\x01\x12\x19\n\x14\x44RILL_DESCENDING_OFF\x10\xcb\x01\x12\x1e\n\x19\x44RILL_DESCENDING_DRILLING\x10\xcc\x01\x12\x18\n\x13\x44RILL_ASCENDING_OFF\x10\xcd\x01\x12\x17\n\x12\x44RILL_ASCENDING_ON\x10\xce\x01\x12\x1c\n\x17\x44RILL_CALIBRATION_ERROR\x10\xfa\x01\x12\x0b\n\x07HEATING\x10\x0c*E\n\rCommandReport\x12\x0c\n\x08\x45XECUTED\x10\x00\x12\x11\n\rINVALID_STATE\x10\x01\x12\x13\n\x0f\x45XECUTION_ERROR\x10\x02\x32\xb6\x07\n\x0eMissionControl\x12O\n\tHeartBeat\x12!.mission_control.HeartBeatRequest\x1a\x1f.mission_control.HeartBeatReply\x12L\n\x07SetMode\x12\x1f.mission_control.SetModeRequest\x1a .mission_control.CommandResponse\x12`\n\x11StartMissionClock\x12).mission_control.StartMissionClockRequest\x1a .mission_control.CommandResponse\x12S\n\x07RigMove\x12&.mission_control.RigMoveCommandRequest\x1a .mission_control.CommandResponse\x12P\n\tDrillMode\x12!.mission_control.DrillModeRequest\x1a .mission_control.CommandResponse\x12^\n\x10\x44rillCalibration\x12(.mission_control.DrillCalibrationRequest\x1a .mission_control.CommandResponse\x12\x62\n\x12\x44rillDescendingOff\x12*.mission_control.DrillDescendingOffRequest\x1a .mission_control.CommandResponse\x12l\n\x17\x44rillDescendingDrilling\x12/.mission_control.DrillDescendingDrillingRequest\x1a .mission_control.CommandResponse\x12X\n\rEmergencyStop\x12%.mission_control.EmergencyStopRequest\x1a .mission_control.CommandResponse\x12p\n\x13\x44rillAssemblyStatus\x12+.mission_control.DrillAssemblyStatusRequest\x1a,.mission_control.DrillAssemblyStatusResponse2\xdd\x03\n\x0c\x44rillControl\x12O\n\tHeartBeat\x12!.mission_control.HeartBeatRequest\x1a\x1f.mission_control.HeartBeatReply\x12p\n\x13\x44rillAssemblyStatus\x12+.mission_control.DrillAssemblyStatusRequest\x1a,.mission_control.DrillAssemblyStatusResponse\x12P\n\tDrillMode\x12!.mission_control.DrillModeRequest\x1a .mission_control.CommandResponse\x12X\n\rEmergencyStop\x12%.mission_control.EmergencyStopRequest\x1a .mission_control.CommandResponse\x12^\n\x10\x44rillCalibration\x12(.mission_control.DrillCalibrationRequest\x1a .mission_control.CommandResponseb\x06proto3'
 )
 
 _SYSTEMMODE = _descriptor.EnumDescriptor(
@@ -36,80 +36,70 @@ _SYSTEMMODE = _descriptor.EnumDescriptor(
       type=None,
       create_key=_descriptor._internal_create_key),
     _descriptor.EnumValueDescriptor(
-      name='READY', index=1, number=1,
+      name='STARTUP_DIAGNOSTICS', index=1, number=100,
       serialized_options=None,
       type=None,
       create_key=_descriptor._internal_create_key),
     _descriptor.EnumValueDescriptor(
-      name='CALIBRATING', index=2, number=2,
+      name='RIG_STANDBY', index=2, number=101,
       serialized_options=None,
       type=None,
       create_key=_descriptor._internal_create_key),
     _descriptor.EnumValueDescriptor(
-      name='MANUAL', index=3, number=3,
+      name='RIG_DRILL_POSITIONING_XY', index=3, number=102,
       serialized_options=None,
       type=None,
       create_key=_descriptor._internal_create_key),
     _descriptor.EnumValueDescriptor(
-      name='RIG_STANDBY', index=4, number=101,
+      name='RIG_WATER_POSITIONING_XY', index=4, number=103,
       serialized_options=None,
       type=None,
       create_key=_descriptor._internal_create_key),
     _descriptor.EnumValueDescriptor(
-      name='RIG_DRILL_POSITIONING_XY', index=5, number=102,
+      name='DRILL_STANDBY', index=5, number=201,
       serialized_options=None,
       type=None,
       create_key=_descriptor._internal_create_key),
     _descriptor.EnumValueDescriptor(
-      name='RIG_WATER_POSITIONING_XY', index=6, number=103,
+      name='DRILL_CALIBRATING', index=6, number=202,
       serialized_options=None,
       type=None,
       create_key=_descriptor._internal_create_key),
     _descriptor.EnumValueDescriptor(
-      name='DRILL_STANDBY', index=7, number=201,
+      name='DRILL_DESCENDING_OFF', index=7, number=203,
       serialized_options=None,
       type=None,
       create_key=_descriptor._internal_create_key),
     _descriptor.EnumValueDescriptor(
-      name='DRILL_CALIBRATING', index=8, number=202,
+      name='DRILL_DESCENDING_DRILLING', index=8, number=204,
       serialized_options=None,
       type=None,
       create_key=_descriptor._internal_create_key),
     _descriptor.EnumValueDescriptor(
-      name='DRILL_DESCENDING_OFF', index=9, number=203,
+      name='DRILL_ASCENDING_OFF', index=9, number=205,
       serialized_options=None,
       type=None,
       create_key=_descriptor._internal_create_key),
     _descriptor.EnumValueDescriptor(
-      name='DRILL_DESCENDING_DRILLING', index=10, number=204,
+      name='DRILL_ASCENDING_ON', index=10, number=206,
       serialized_options=None,
       type=None,
       create_key=_descriptor._internal_create_key),
     _descriptor.EnumValueDescriptor(
-      name='DRILL_ASCENDING_OFF', index=11, number=205,
+      name='DRILL_CALIBRATION_ERROR', index=11, number=250,
       serialized_options=None,
       type=None,
       create_key=_descriptor._internal_create_key),
     _descriptor.EnumValueDescriptor(
-      name='DRILL_ASCENDING_ON', index=12, number=206,
-      serialized_options=None,
-      type=None,
-      create_key=_descriptor._internal_create_key),
-    _descriptor.EnumValueDescriptor(
-      name='DRILL_CALIBRATION_ERROR', index=13, number=250,
-      serialized_options=None,
-      type=None,
-      create_key=_descriptor._internal_create_key),
-    _descriptor.EnumValueDescriptor(
-      name='HEATING', index=14, number=12,
+      name='HEATING', index=12, number=12,
       serialized_options=None,
       type=None,
       create_key=_descriptor._internal_create_key),
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1461,
-  serialized_end=1800,
+  serialized_start=1576,
+  serialized_end=1900,
 )
 _sym_db.RegisterEnumDescriptor(_SYSTEMMODE)
 
@@ -139,16 +129,14 @@ _COMMANDREPORT = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1802,
-  serialized_end=1871,
+  serialized_start=1902,
+  serialized_end=1971,
 )
 _sym_db.RegisterEnumDescriptor(_COMMANDREPORT)
 
 CommandReport = enum_type_wrapper.EnumTypeWrapper(_COMMANDREPORT)
 UNKNOWN = 0
-READY = 1
-CALIBRATING = 2
-MANUAL = 3
+STARTUP_DIAGNOSTICS = 100
 RIG_STANDBY = 101
 RIG_DRILL_POSITIONING_XY = 102
 RIG_WATER_POSITIONING_XY = 103
@@ -235,22 +223,22 @@ _HEARTBEATREPLY = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='fan_on', full_name='mission_control.HeartBeatReply.fan_on', index=4,
-      number=5, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='cpu_temperature_degC', full_name='mission_control.HeartBeatReply.cpu_temperature_degC', index=5,
+      name='cpu_temperature_degC', full_name='mission_control.HeartBeatReply.cpu_temperature_degC', index=4,
       number=6, type=2, cpp_type=6, label=1,
       has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='mode', full_name='mission_control.HeartBeatReply.mode', index=6,
+      name='mode', full_name='mission_control.HeartBeatReply.mode', index=5,
       number=7, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='mission_start_time_ms', full_name='mission_control.HeartBeatReply.mission_start_time_ms', index=6,
+      number=8, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -268,7 +256,7 @@ _HEARTBEATREPLY = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=90,
-  serialized_end=306,
+  serialized_end=321,
 )
 
 
@@ -299,8 +287,8 @@ _RIGSTATUSREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=308,
-  serialized_end=356,
+  serialized_start=323,
+  serialized_end=371,
 )
 
 
@@ -373,8 +361,8 @@ _RIGSTATUSRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=359,
-  serialized_end=556,
+  serialized_start=374,
+  serialized_end=571,
 )
 
 
@@ -405,8 +393,8 @@ _DRILLASSEMBLYSTATUSREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=558,
-  serialized_end=616,
+  serialized_start=573,
+  serialized_end=631,
 )
 
 
@@ -507,8 +495,8 @@ _DRILLASSEMBLYSTATUSRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=619,
-  serialized_end=942,
+  serialized_start=634,
+  serialized_end=957,
 )
 
 
@@ -553,8 +541,8 @@ _RIGMOVECOMMANDREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=944,
-  serialized_end=1016,
+  serialized_start=959,
+  serialized_end=1031,
 )
 
 
@@ -592,8 +580,8 @@ _DRILLMODEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1018,
-  serialized_end=1083,
+  serialized_start=1033,
+  serialized_end=1098,
 )
 
 
@@ -624,8 +612,8 @@ _DRILLCALIBRATIONREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1085,
-  serialized_end=1137,
+  serialized_start=1100,
+  serialized_end=1152,
 )
 
 
@@ -663,8 +651,8 @@ _DRILLDESCENDINGOFFREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1139,
-  serialized_end=1213,
+  serialized_start=1154,
+  serialized_end=1228,
 )
 
 
@@ -702,8 +690,8 @@ _DRILLDESCENDINGDRILLINGREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1215,
-  serialized_end=1294,
+  serialized_start=1230,
+  serialized_end=1309,
 )
 
 
@@ -748,8 +736,8 @@ _COMMANDRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1296,
-  serialized_end=1407,
+  serialized_start=1311,
+  serialized_end=1422,
 )
 
 
@@ -780,8 +768,72 @@ _EMERGENCYSTOPREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1409,
-  serialized_end=1458,
+  serialized_start=1424,
+  serialized_end=1473,
+)
+
+
+_SETMODEREQUEST = _descriptor.Descriptor(
+  name='SetModeRequest',
+  full_name='mission_control.SetModeRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='request_timestamp', full_name='mission_control.SetModeRequest.request_timestamp', index=0,
+      number=1, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1475,
+  serialized_end=1518,
+)
+
+
+_STARTMISSIONCLOCKREQUEST = _descriptor.Descriptor(
+  name='StartMissionClockRequest',
+  full_name='mission_control.StartMissionClockRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='request_timestamp', full_name='mission_control.StartMissionClockRequest.request_timestamp', index=0,
+      number=1, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1520,
+  serialized_end=1573,
 )
 
 _HEARTBEATREPLY.fields_by_name['mode'].enum_type = _SYSTEMMODE
@@ -799,6 +851,8 @@ DESCRIPTOR.message_types_by_name['DrillDescendingOffRequest'] = _DRILLDESCENDING
 DESCRIPTOR.message_types_by_name['DrillDescendingDrillingRequest'] = _DRILLDESCENDINGDRILLINGREQUEST
 DESCRIPTOR.message_types_by_name['CommandResponse'] = _COMMANDRESPONSE
 DESCRIPTOR.message_types_by_name['EmergencyStopRequest'] = _EMERGENCYSTOPREQUEST
+DESCRIPTOR.message_types_by_name['SetModeRequest'] = _SETMODEREQUEST
+DESCRIPTOR.message_types_by_name['StartMissionClockRequest'] = _STARTMISSIONCLOCKREQUEST
 DESCRIPTOR.enum_types_by_name['SystemMode'] = _SYSTEMMODE
 DESCRIPTOR.enum_types_by_name['CommandReport'] = _COMMANDREPORT
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
@@ -894,6 +948,20 @@ EmergencyStopRequest = _reflection.GeneratedProtocolMessageType('EmergencyStopRe
   })
 _sym_db.RegisterMessage(EmergencyStopRequest)
 
+SetModeRequest = _reflection.GeneratedProtocolMessageType('SetModeRequest', (_message.Message,), {
+  'DESCRIPTOR' : _SETMODEREQUEST,
+  '__module__' : 'mission_control_pb2'
+  # @@protoc_insertion_point(class_scope:mission_control.SetModeRequest)
+  })
+_sym_db.RegisterMessage(SetModeRequest)
+
+StartMissionClockRequest = _reflection.GeneratedProtocolMessageType('StartMissionClockRequest', (_message.Message,), {
+  'DESCRIPTOR' : _STARTMISSIONCLOCKREQUEST,
+  '__module__' : 'mission_control_pb2'
+  # @@protoc_insertion_point(class_scope:mission_control.StartMissionClockRequest)
+  })
+_sym_db.RegisterMessage(StartMissionClockRequest)
+
 
 
 _MISSIONCONTROL = _descriptor.ServiceDescriptor(
@@ -903,8 +971,8 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=1874,
-  serialized_end=2648,
+  serialized_start=1974,
+  serialized_end=2924,
   methods=[
   _descriptor.MethodDescriptor(
     name='HeartBeat',
@@ -917,9 +985,29 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
     create_key=_descriptor._internal_create_key,
   ),
   _descriptor.MethodDescriptor(
+    name='SetMode',
+    full_name='mission_control.MissionControl.SetMode',
+    index=1,
+    containing_service=None,
+    input_type=_SETMODEREQUEST,
+    output_type=_COMMANDRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='StartMissionClock',
+    full_name='mission_control.MissionControl.StartMissionClock',
+    index=2,
+    containing_service=None,
+    input_type=_STARTMISSIONCLOCKREQUEST,
+    output_type=_COMMANDRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
     name='RigMove',
     full_name='mission_control.MissionControl.RigMove',
-    index=1,
+    index=3,
     containing_service=None,
     input_type=_RIGMOVECOMMANDREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -929,7 +1017,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='DrillMode',
     full_name='mission_control.MissionControl.DrillMode',
-    index=2,
+    index=4,
     containing_service=None,
     input_type=_DRILLMODEREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -939,7 +1027,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='DrillCalibration',
     full_name='mission_control.MissionControl.DrillCalibration',
-    index=3,
+    index=5,
     containing_service=None,
     input_type=_DRILLCALIBRATIONREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -949,7 +1037,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='DrillDescendingOff',
     full_name='mission_control.MissionControl.DrillDescendingOff',
-    index=4,
+    index=6,
     containing_service=None,
     input_type=_DRILLDESCENDINGOFFREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -959,7 +1047,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='DrillDescendingDrilling',
     full_name='mission_control.MissionControl.DrillDescendingDrilling',
-    index=5,
+    index=7,
     containing_service=None,
     input_type=_DRILLDESCENDINGDRILLINGREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -969,7 +1057,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='EmergencyStop',
     full_name='mission_control.MissionControl.EmergencyStop',
-    index=6,
+    index=8,
     containing_service=None,
     input_type=_EMERGENCYSTOPREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -979,7 +1067,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='DrillAssemblyStatus',
     full_name='mission_control.MissionControl.DrillAssemblyStatus',
-    index=7,
+    index=9,
     containing_service=None,
     input_type=_DRILLASSEMBLYSTATUSREQUEST,
     output_type=_DRILLASSEMBLYSTATUSRESPONSE,
@@ -999,8 +1087,8 @@ _DRILLCONTROL = _descriptor.ServiceDescriptor(
   index=1,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=2651,
-  serialized_end=3128,
+  serialized_start=2927,
+  serialized_end=3404,
   methods=[
   _descriptor.MethodDescriptor(
     name='HeartBeat',

@@ -19,6 +19,16 @@ class MissionControlStub(object):
                 request_serializer=mission__control__pb2.HeartBeatRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.HeartBeatReply.FromString,
                 )
+        self.SetMode = channel.unary_unary(
+                '/mission_control.MissionControl/SetMode',
+                request_serializer=mission__control__pb2.SetModeRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.StartMissionClock = channel.unary_unary(
+                '/mission_control.MissionControl/StartMissionClock',
+                request_serializer=mission__control__pb2.StartMissionClockRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
         self.RigMove = channel.unary_unary(
                 '/mission_control.MissionControl/RigMove',
                 request_serializer=mission__control__pb2.RigMoveCommandRequest.SerializeToString,
@@ -60,6 +70,18 @@ class MissionControlServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def HeartBeat(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetMode(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def StartMissionClock(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -114,6 +136,16 @@ def add_MissionControlServicer_to_server(servicer, server):
                     servicer.HeartBeat,
                     request_deserializer=mission__control__pb2.HeartBeatRequest.FromString,
                     response_serializer=mission__control__pb2.HeartBeatReply.SerializeToString,
+            ),
+            'SetMode': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetMode,
+                    request_deserializer=mission__control__pb2.SetModeRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'StartMissionClock': grpc.unary_unary_rpc_method_handler(
+                    servicer.StartMissionClock,
+                    request_deserializer=mission__control__pb2.StartMissionClockRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
             ),
             'RigMove': grpc.unary_unary_rpc_method_handler(
                     servicer.RigMove,
@@ -174,6 +206,40 @@ class MissionControl(object):
         return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/HeartBeat',
             mission__control__pb2.HeartBeatRequest.SerializeToString,
             mission__control__pb2.HeartBeatReply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetMode(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/SetMode',
+            mission__control__pb2.SetModeRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def StartMissionClock(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/StartMissionClock',
+            mission__control__pb2.StartMissionClockRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

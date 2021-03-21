@@ -14,7 +14,7 @@ from PyQt5.QtCore import QTimer,QDateTime
 
 from QLed import QLed
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 import configparser
 
@@ -159,19 +159,38 @@ class MainWindow(QtWidgets.QWidget):
         self.status_layout.addLayout(h_layout_temp)
 
         self.status_layout.addStretch()
+
+        # add display of mode
+        self.system_mode_label = QtWidgets.QLabel("[Not Connected]")
+        self.status_layout.addWidget(self.system_mode_label)
+        self.mission_time_label = QtWidgets.QLabel("[Not Connected]")
+        self.status_layout.addWidget(self.mission_time_label)
         
         h_layout = QtWidgets.QHBoxLayout()
         h_layout.addWidget(QtWidgets.QLabel("Trip Time:"))
         self.rtt_label = QtWidgets.QLabel("N/A [ms]")
         self.rtt_label.setMinimumWidth(70)
         h_layout.addWidget(self.rtt_label)
+        
         self.status_layout.addLayout(h_layout)
+
+    def _initDiagnostics(self):
+        self.startup_diagnostics_groupbox = QtWidgets.QGroupBox("P01 Startup and Diagnostics")
+        layout = QtWidgets.QVBoxLayout()
+        self.startup_diagnostics_groupbox.setLayout(layout)
+        self.main_h_layout.addWidget(self.startup_diagnostics_groupbox)
+
+        self.start_mission_clock_button = \
+             QtWidgets.QPushButton("Start Mission Clock")
+        layout.addWidget(
+            self.start_mission_clock_button)
 
     def __init__(self):
         super(MainWindow, self).__init__()
 
         self.main_h_layout = QtWidgets.QHBoxLayout()
         self._initStatusWidgets()
+        self._initDiagnostics()
         
         self.list_widget = QtWidgets.QListWidget()
         self.test_client_button = QtWidgets.QPushButton("Test Client")
@@ -255,10 +274,18 @@ class MainWindow(QtWidgets.QWidget):
     def on_heartbeat_received(self, response):
         if (response != None):
             self.mission_control_led.value = True
-            self.fan_on_led.value = response.fan_on
             self.mc_temp_label.setText(f"{response.cpu_temperature_degC:.2f} [degC]")
             rtt_time = response.timestamp - response.request_timestamp
             self.rtt_label.setText(f"{rtt_time} [ms]")
+            mission_time = timedelta(response.mission_time)
+            self.mission_time_label.setText(mission_time)
+
+            if (response.mode == mission_control_pb2.STARTUP_DIAGNOSTICS):
+                mode_text = 'Startup Diagnostics'
+            else:
+                mode_text = 'Unknown'
+            self.system_mode_label.setText(mode_text)
+            
             
         else:
             self.mission_control_led.value = False

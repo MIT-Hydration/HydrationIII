@@ -11,6 +11,13 @@ class Echoer(echo_pb2_grpc.EchoServicer):
 
 class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
+    mission_time_started = False
+    mission_start_time = -1
+    mode = mission_control_pb2.STARTUP_DIAGNOSTICS
+
+    def __init__(self):
+        self._stopMotors()
+
     def HeartBeat(self, request, context):
         timestamp = int(time.time()*1000)
         cpu_temp = HardwareFactory.getMissionControlRPi() \
@@ -19,12 +26,53 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         return mission_control_pb2.HeartBeatReply(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
-            fan_on = False,
             cpu_temperature_degC = cpu_temp,
-            mode = mission_control_pb2.READY)
+            mission_time = timestamp - self.mission_start_time,
+            mode = self.mode)
 
     def RigMove(self, request, context):
         return # no implementation currently
+
+    def _stopMotors(self):
+        # todo stop motors
+        pass
+
+    def _putInStartupDiagnosticsMode(self):
+        self._stopMotors()
+        self.mode =  mission_control_pb2.STARTUP_DIAGNOSTICS
+
+    def SetMode (self, request, context):
+        timestamp = int(time.time()*1000)
+        if (self.mode == request.mode): # do nothing
+            return mission_control_pb2.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mission_control_pb2.EXECUTED)
+
+        if (request.mode == mission_control_pb2.STARTUP_DIAGNOSTICS):
+            self._putInStartupDiagnosticsMode()
+            return mission_control_pb2.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mission_control_pb2.EXECUTED)
+
+    def StartMissionClock (self, request, context):
+        timestamp = int(time.time()*1000)
+        if (self.mode != mission_control_pb2.STARTUP_DIAGNOSTICS) or \
+           (self.mission_time_started): # do nothing
+            return mission_control_pb2.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mission_control_pb2.INVALID_STATE)
+
+        self.mission_start_time = timestamp
+        self.mission_time_started = True
+        
+        return mission_control_pb2.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mission_control_pb2.EXECUTED)
+
 
 class DrillController(mission_control_pb2_grpc.MissionControlServicer):
     drill_mode = False

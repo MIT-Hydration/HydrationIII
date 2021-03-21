@@ -3,9 +3,7 @@ package mission_control;
 
 enum SystemMode {
     UNKNOWN = 0;
-    READY = 1;
-    CALIBRATING = 2;
-    MANUAL = 3;
+    STARTUP_DIAGNOSTICS = 100;
 
     RIG_STANDBY = 101;
     RIG_DRILL_POSITIONING_XY = 102; // user has requested to move the rig to drill at position XY
@@ -49,9 +47,9 @@ message HeartBeatReply {
     uint64 request_timestamp = 2;
     bool drill_subsystem_online = 3;
     bool heater_sussystem_online = 4;
-    bool fan_on  = 5;
     float cpu_temperature_degC = 6;
     SystemMode mode = 7;
+    uint64 mission_start_time_ms = 8;
 }
 
 message RigStatusRequest {
@@ -123,8 +121,18 @@ message EmergencyStopRequest {
     uint64 request_timestamp = 1;
 }
 
+message SetModeRequest {
+    uint64 request_timestamp = 1;
+}
+
+message StartMissionClockRequest {
+    uint64 request_timestamp = 1;
+}
+
 service MissionControl {
     rpc HeartBeat (HeartBeatRequest) returns (HeartBeatReply);
+    rpc SetMode (SetModeRequest) returns (CommandResponse);
+    rpc StartMissionClock (StartMissionClockRequest) returns (CommandResponse);
     
     rpc RigMove (RigMoveCommandRequest) returns (CommandResponse);
     rpc DrillMode (DrillModeRequest) returns (CommandResponse);
