@@ -25,7 +25,7 @@ from gpiozero import CPUTemperature
 class HardwareFactory:
     
     is_mock = {
-        "drill": True
+        "drill": False
     }
 
     mock_load_profile_simple = {
