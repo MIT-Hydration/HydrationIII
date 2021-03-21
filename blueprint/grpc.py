@@ -45,7 +45,7 @@ class DrillController(mission_control_pb2_grpc.MissionControlServicer):
 
         if (self.drill_mode == False) and (request.drill_mode == True):
             self.start_drill_mode()
-        elif (self.drill_mode == True) and (request.drill_mode = False):
+        elif (self.drill_mode == True) and (request.drill_mode == False):
             self.stop_drill_mode()
 
         return mission_control_pb2.CommandResponse(
@@ -53,4 +53,5 @@ class DrillController(mission_control_pb2_grpc.MissionControlServicer):
             timestamp = timestamp,
             status = mission_control_pb2.EXECUTED)
 
-    def DrillDescendingDrilling:
+    def DrillDescendingDrilling(self):
+        pass
