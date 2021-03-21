@@ -14,7 +14,6 @@ class Echoer(echo_pb2_grpc.EchoServicer):
 
 class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
-    fan = PWMLED(12)
     cpu = CPUTemperature()
 
     def HeartBeat(self, request, context):
@@ -22,7 +21,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         return mission_control_pb2.HeartBeatReply(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
-            fan_on = (self.fan.value > 0.0),
+            fan_on = False,
             cpu_temperature_degC = self.cpu.temperature,
             mode = mission_control_pb2.READY)
 
