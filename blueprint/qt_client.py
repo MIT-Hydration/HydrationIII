@@ -99,6 +99,33 @@ class RPiFanThread(QtCore.QThread):
             
         self.fan_done.emit(response)
 
+class RPiCommandThread(QtCore.QThread):
+    command_done = QtCore.pyqtSignal(object)
+    
+    def __init__(self):
+        QtCore.QThread.__init__(self)
+        
+    def run(self):
+        global RPI_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
+        response = None
+        try:
+            timestamp = int(time.time()*1000)
+            with grpc.insecure_channel(RPI_IP_ADDRESS_PORT) as channel:
+                stub = mission_control_pb2_grpc.MissionControlStub(channel)
+                response = stub.StartMissionClock (
+                    mission_control_pb2.StartMissionClockRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+                print("Mission Control RPi Start Mission Control Command received at: " + str(datetime.now()))
+                print(response)
+        
+        except Exception as e:
+            info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"
+            print(info)
+            
+        self.command_done.emit(response)
+
+
 class RPiServerThread(QtCore.QThread):
     echo_done = QtCore.pyqtSignal(object)
 
@@ -184,6 +211,8 @@ class MainWindow(QtWidgets.QWidget):
              QtWidgets.QPushButton("Start Mission Clock")
         layout.addWidget(
             self.start_mission_clock_button)
+        self.start_mission_clock_button.clicked.connect \
+            (self.start_mission_clock)
 
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -245,6 +274,12 @@ class MainWindow(QtWidgets.QWidget):
         self.threads = []
         client_thread = RPiServerThread(self.echo_textedit.toPlainText())
         client_thread.echo_done.connect(self.on_data_ready)
+        self.threads.append(client_thread)
+        client_thread.start()
+
+    def start_mission_clock(self):
+        self.threads = []
+        client_thread = RPiCommandThread()
         self.threads.append(client_thread)
         client_thread.start()
 
