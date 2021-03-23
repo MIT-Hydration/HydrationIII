@@ -3,12 +3,14 @@ from time import sleep # this lets us have a time delay
 import RPi.GPIO as GPIO
 
 from abc import ABC, abstractmethod #https://docs.python.org/3/library/abc.html
-
-duration = 5000
-delay = 0.0000001
+#Abstract Base Class
 
 
 class AbstractPump(ABC):
+   
+   #class variables ? 
+   duration = 5000
+   delay = 0.0000001 
     
     #DIRECTIONS:    
     @abstractmethod
@@ -51,9 +53,10 @@ class AbstractPump(ABC):
         pass
 
 
+#Child Class 
 class MockPump(AbstractPump):
     
-    # init method or "constructor"
+    # init method or "constructor" Dunder method 
     def __init__(self, speedLpM,speedPoM, direction):
         self.set_speed_LPM(0)
         self.set_speed_PoM(0)
@@ -64,7 +67,7 @@ class MockPump(AbstractPump):
         #does nothing
         pass 
     
-    
+#Child Class    
 class Pump(AbstractPump):
     
     # init method or "constructor"
