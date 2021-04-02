@@ -315,7 +315,7 @@ class MainWindow(QtWidgets.QWidget):
             mission_time = timedelta(milliseconds=response.mission_time_ms)
             self.mission_time_label.setText(str(mission_time))
 
-            if (response.mode == mission_control_pb2.STARTUP_DIAGNOSTICS):
+            if (response.mode == mission_control_pb2.MAJOR_MODE_STARTUP_DIAGNOSTICS):
                 mode_text = 'Startup Diagnostics'
             else:
                 mode_text = 'Unknown'

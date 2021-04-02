@@ -50,7 +50,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             .get_cpu_temperature()
 
         if (self.mission_time_started):
-            mission_time = timestamp - self.mission_start_time
+            mission_time = timestamp - self.mission_time
         else:
             mission_time = 0
 
@@ -58,7 +58,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
             cpu_temperature_degC = cpu_temp,
-            mission_start_time_ms = mission_time,
+            mission_time_ms = mission_time,
             mode = self.mode)
 
     def RigMove(self, request, context):
@@ -70,7 +70,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
     def _putInStartupDiagnosticsMode(self):
         self._stopMotors()
-        self.mode =  mcpb.STARTUP_DIAGNOSTICS
+        self.mode =  mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS
 
     def SetMode (self, request, context):
         timestamp = int(time.time()*1000)
@@ -80,7 +80,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 timestamp = timestamp,
                 status = mcpb.EXECUTED)
 
-        if (request.mode == mcpb.STARTUP_DIAGNOSTICS):
+        if (request.mode == mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS):
             self._putInStartupDiagnosticsMode()
             return mcpb.CommandResponse(
                 request_timestamp = request.request_timestamp,
@@ -89,14 +89,14 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
     def StartMissionClock (self, request, context):
         timestamp = int(time.time()*1000)
-        if (self.mode != mcpb.STARTUP_DIAGNOSTICS) or \
+        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
            (self.mission_time_started): # do nothing
             return mcpb.CommandResponse(
                 request_timestamp = request.request_timestamp,
                 timestamp = timestamp,
                 status = mcpb.INVALID_STATE)
 
-        self.mission_start_time = timestamp
+        self.mission_time = timestamp
         self.mission_time_started = True
         
         return mcpb.CommandResponse(
