@@ -14,6 +14,11 @@ class MissionControlStub(object):
         Args:
             channel: A grpc.Channel.
         """
+        self.GetMajorModes = channel.unary_unary(
+                '/mission_control.MissionControl/GetMajorModes',
+                request_serializer=mission__control__pb2.GetMajorModesRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.MajorModesList.FromString,
+                )
         self.HeartBeat = channel.unary_unary(
                 '/mission_control.MissionControl/HeartBeat',
                 request_serializer=mission__control__pb2.HeartBeatRequest.SerializeToString,
@@ -68,6 +73,12 @@ class MissionControlStub(object):
 
 class MissionControlServicer(object):
     """Missing associated documentation comment in .proto file."""
+
+    def GetMajorModes(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
     def HeartBeat(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -132,6 +143,11 @@ class MissionControlServicer(object):
 
 def add_MissionControlServicer_to_server(servicer, server):
     rpc_method_handlers = {
+            'GetMajorModes': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetMajorModes,
+                    request_deserializer=mission__control__pb2.GetMajorModesRequest.FromString,
+                    response_serializer=mission__control__pb2.MajorModesList.SerializeToString,
+            ),
             'HeartBeat': grpc.unary_unary_rpc_method_handler(
                     servicer.HeartBeat,
                     request_deserializer=mission__control__pb2.HeartBeatRequest.FromString,
@@ -191,6 +207,23 @@ def add_MissionControlServicer_to_server(servicer, server):
  # This class is part of an EXPERIMENTAL API.
 class MissionControl(object):
     """Missing associated documentation comment in .proto file."""
+
+    @staticmethod
+    def GetMajorModes(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/GetMajorModes',
+            mission__control__pb2.GetMajorModesRequest.SerializeToString,
+            mission__control__pb2.MajorModesList.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def HeartBeat(request,

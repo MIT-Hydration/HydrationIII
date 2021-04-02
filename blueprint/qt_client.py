@@ -312,7 +312,7 @@ class MainWindow(QtWidgets.QWidget):
             self.mc_temp_label.setText(f"{response.cpu_temperature_degC:.2f} [degC]")
             rtt_time = response.timestamp - response.request_timestamp
             self.rtt_label.setText(f"{rtt_time} [ms]")
-            mission_time = timedelta(milliseconds=response.mission_start_time_ms)
+            mission_time = timedelta(milliseconds=response.mission_time_ms)
             self.mission_time_label.setText(str(mission_time))
 
             if (response.mode == mission_control_pb2.STARTUP_DIAGNOSTICS):

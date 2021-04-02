@@ -1,10 +1,14 @@
 from concurrent import futures
 import grpc
 
-from .generated import echo_pb2_grpc
+from .generated import echo_pb2_grpc, echo_pb2
 from .generated import mission_control_pb2_grpc
-from .grpc import Echoer
-from .grpc import MissionController
+from .mission_control_server import MissionController
+
+class Echoer(echo_pb2_grpc.EchoServicer):
+
+    def Reply(self, request, context):
+        return echo_pb2.EchoReply(message=f'[Rpi 00] You said: {request.message}')
 
 class Server:
 

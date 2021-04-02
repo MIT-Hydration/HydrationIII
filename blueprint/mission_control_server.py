@@ -1,22 +1,48 @@
-from .generated import echo_pb2_grpc, echo_pb2
-from .generated import mission_control_pb2_grpc, mission_control_pb2
+from .generated import mission_control_pb2_grpc
+from .generated import mission_control_pb2 as mcpb
 from .hardware import HardwareFactory
 
 import time
-
-class Echoer(echo_pb2_grpc.EchoServicer):
-
-    def Reply(self, request, context):
-        return echo_pb2.EchoReply(message=f'[Rpi 00] You said: {request.message}')
 
 class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
     mission_time_started = False
     mission_start_time = -1
-    mode = mission_control_pb2.STARTUP_DIAGNOSTICS
+    mode = mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS
 
     def __init__(self):
         self._stopMotors()
+
+    def GetMajorModes(self, request, context):
+        timestamp = int(time.time()*1000)
+        modes = [
+                mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS,
+                mcpb.MAJOR_MODE_HOME_Z1_Z2,
+                mcpb.MAJOR_MODE_MOVE_X_Y,
+                mcpb.MAJOR_MODE_DRILL_BOREHOLE,
+                mcpb.MAJOR_MODE_CASE_BOREHOLE,
+                mcpb.MAJOR_MODE_INSERT_HEATER,
+                mcpb.MAJOR_MODE_MINE_WATER,
+                mcpb.MAJOR_MODE_DATA_DOWNLOAD,
+                mcpb.MAJOR_MODE_TROUBLESHOOT,
+            ]
+        modes_label = [
+            "01 Startup/calibrate",
+            "02 Home Z1, Z2",
+            "03 Move X, Y",
+            "04 Drill borehole",
+            "05 Case borehole",
+            "06 Insert heater",
+            "07 Mine water",
+            "08 Data download",
+            "09 Troubleshoot"       
+            ]
+        return mcpb.MajorModesList(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            modes = modes,
+            mode_labels = modes_label,
+            mode = self.mode)
 
     def HeartBeat(self, request, context):
         timestamp = int(time.time()*1000)
@@ -28,7 +54,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         else:
             mission_time = 0
 
-        return mission_control_pb2.HeartBeatReply(
+        return mcpb.HeartBeatReply(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
             cpu_temperature_degC = cpu_temp,
@@ -44,39 +70,39 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
     def _putInStartupDiagnosticsMode(self):
         self._stopMotors()
-        self.mode =  mission_control_pb2.STARTUP_DIAGNOSTICS
+        self.mode =  mcpb.STARTUP_DIAGNOSTICS
 
     def SetMode (self, request, context):
         timestamp = int(time.time()*1000)
         if (self.mode == request.mode): # do nothing
-            return mission_control_pb2.CommandResponse(
+            return mcpb.CommandResponse(
                 request_timestamp = request.request_timestamp,
                 timestamp = timestamp,
-                status = mission_control_pb2.EXECUTED)
+                status = mcpb.EXECUTED)
 
-        if (request.mode == mission_control_pb2.STARTUP_DIAGNOSTICS):
+        if (request.mode == mcpb.STARTUP_DIAGNOSTICS):
             self._putInStartupDiagnosticsMode()
-            return mission_control_pb2.CommandResponse(
+            return mcpb.CommandResponse(
                 request_timestamp = request.request_timestamp,
                 timestamp = timestamp,
-                status = mission_control_pb2.EXECUTED)
+                status = mcpb.EXECUTED)
 
     def StartMissionClock (self, request, context):
         timestamp = int(time.time()*1000)
-        if (self.mode != mission_control_pb2.STARTUP_DIAGNOSTICS) or \
+        if (self.mode != mcpb.STARTUP_DIAGNOSTICS) or \
            (self.mission_time_started): # do nothing
-            return mission_control_pb2.CommandResponse(
+            return mcpb.CommandResponse(
                 request_timestamp = request.request_timestamp,
                 timestamp = timestamp,
-                status = mission_control_pb2.INVALID_STATE)
+                status = mcpb.INVALID_STATE)
 
         self.mission_start_time = timestamp
         self.mission_time_started = True
         
-        return mission_control_pb2.CommandResponse(
+        return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
-            status = mission_control_pb2.EXECUTED)
+            status = mcpb.EXECUTED)
 
 
 class DrillController(mission_control_pb2_grpc.MissionControlServicer):
@@ -98,10 +124,10 @@ class DrillController(mission_control_pb2_grpc.MissionControlServicer):
         elif (self.drill_mode == True) and (request.drill_mode == False):
             self.stop_drill_mode()
 
-        return mission_control_pb2.CommandResponse(
+        return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
-            status = mission_control_pb2.EXECUTED)
+            status = mcpb.EXECUTED)
 
     def DrillDescendingDrilling(self):
         pass
