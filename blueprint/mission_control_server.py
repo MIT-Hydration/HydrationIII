@@ -26,7 +26,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 mcpb.MAJOR_MODE_DATA_DOWNLOAD,
                 mcpb.MAJOR_MODE_TROUBLESHOOT,
             ]
-        modes_label = [
+        mode_labels = [
             "01 Startup/calibrate",
             "02 Home Z1, Z2",
             "03 Move X, Y",
@@ -41,8 +41,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
             modes = modes,
-            mode_labels = modes_label,
-            mode = self.mode)
+            mode_labels = mode_labels)
 
     def HeartBeat(self, request, context):
         timestamp = int(time.time()*1000)

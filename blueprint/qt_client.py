@@ -18,6 +18,8 @@ from datetime import datetime, timedelta
 import time
 import configparser
 
+from . import mode_display
+
 config = configparser.ConfigParser()
 config.read('config.ini')
 
@@ -214,10 +216,21 @@ class MainWindow(QtWidgets.QWidget):
         self.start_mission_clock_button.clicked.connect \
             (self.start_mission_clock)
 
+    def _initModeDisplay(self):
+        self.mode_groupbox = QtWidgets.QGroupBox("Mode Selection")
+        self.mode_layout = QtWidgets.QVBoxLayout()
+        self.mode_groupbox.setLayout(self.mode_layout)
+        self.main_h_layout.addWidget(self.mode_groupbox)
+
+        self.mode_display = mode_display.ModeDisplay(
+            self.mode_layout)
+
+
     def __init__(self):
         super(MainWindow, self).__init__()
 
         self.main_h_layout = QtWidgets.QHBoxLayout()
+        self._initModeDisplay()
         self._initStatusWidgets()
         self._initDiagnostics()
         
@@ -339,6 +352,6 @@ class MainWindow(QtWidgets.QWidget):
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     window = MainWindow()
-    window.resize(640, 480)
+    window.resize(1500, 740)
     window.show()
     sys.exit(app.exec_())

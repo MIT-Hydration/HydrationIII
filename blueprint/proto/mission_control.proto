@@ -145,7 +145,7 @@ message MajorModesList {
     uint64 timestamp = 1;
     uint64 request_timestamp = 2;
     repeated int32 modes = 3;
-    repeated int32 mode_labels = 4;
+    repeated string mode_labels = 4;
 }
 
 
