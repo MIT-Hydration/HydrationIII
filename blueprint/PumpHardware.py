@@ -110,10 +110,10 @@ class MockPump(AbstractPump):
 
 class Pump(AbstractPump):
 
-    def __init__(self, speedlpm, speedpom, direction):
-        self.speedlpm = speedlpm
-        self.speedpom = speedpom
-        self.direction = direction
+    def __init__(self):
+        self.speedlpm = 0
+        self.speedpom = 0
+        self.direction = 0
 
     def run(self):
         cycles = 20
@@ -129,8 +129,8 @@ class Pump(AbstractPump):
         cyclecount = (cyclecount + 1)
         GPIO.cleanup()
 
-    # The cls parameter is the class object, which allows @classmethod methods to easily instantiate the class, 
-    # regardless of any inheritance going on. 
+    # The cls parameter is the class object, which allows @classmethod methods to easily instantiate the class,
+    # regardless of any inheritance going on.
 
     # DIRECTIONS:
 
