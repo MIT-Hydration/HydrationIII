@@ -53,11 +53,20 @@ message HeartBeatRequest {
 message HeartBeatReply {
     uint64 timestamp = 1;
     uint64 request_timestamp = 2;
-    bool drill_subsystem_online = 3;
-    bool heater_sussystem_online = 4;
+    float main_suppy_V = 3;
+    bool bus_24V_dc = 4;
+    bool bus_75V_dc = 5;
     float cpu_temperature_degC = 6;
     SystemMode mode = 7;
     uint64 mission_time_ms = 8;
+    bool zdrill_servo_moving = 9;
+    bool zwater_servo_moving = 10;
+    bool x_servo_moving = 11;
+    bool y_servo_moving = 12;
+    float drill_motor_setting = 13;
+    bool pump_on = 14;
+    bool heater_setting = 15;
+    float total_current_mA = 16;
 }
 
 message RigStatusRequest {
