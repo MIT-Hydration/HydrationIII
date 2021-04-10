@@ -161,7 +161,7 @@ class MainWindow(QtWidgets.QWidget):
         self.status_groupbox = QtWidgets.QGroupBox("STATUS")
         self.status_layout = QtWidgets.QVBoxLayout()
         self.status_groupbox.setLayout(self.status_layout)
-        self.main_h_layout.addWidget(self.status_groupbox)
+        self.main_grid_layout.addWidget(self.status_groupbox, 3, 0, 3, 2)
 
         self.mission_control_led=QLed(self, onColour=QLed.Green, shape=QLed.Circle)
         self.mission_control_led.value=False
@@ -207,7 +207,8 @@ class MainWindow(QtWidgets.QWidget):
         self.startup_diagnostics_groupbox = QtWidgets.QGroupBox("P01 Startup and Diagnostics")
         layout = QtWidgets.QVBoxLayout()
         self.startup_diagnostics_groupbox.setLayout(layout)
-        self.main_h_layout.addWidget(self.startup_diagnostics_groupbox)
+        self.main_grid_layout.addWidget(
+            self.startup_diagnostics_groupbox, 0, 3, 3, 2)
 
         self.start_mission_clock_button = \
              QtWidgets.QPushButton("Start Mission Clock")
@@ -220,54 +221,20 @@ class MainWindow(QtWidgets.QWidget):
         self.mode_groupbox = QtWidgets.QGroupBox("Mode Selection")
         self.mode_layout = QtWidgets.QVBoxLayout()
         self.mode_groupbox.setLayout(self.mode_layout)
-        self.main_h_layout.addWidget(self.mode_groupbox)
+        self.main_grid_layout.addWidget(
+            self.mode_groupbox, 0, 0, 3, 2)
 
         self.mode_display = mode_display.ModeDisplay(
             self.mode_layout)
 
-
     def __init__(self):
         super(MainWindow, self).__init__()
-
-        self.main_h_layout = QtWidgets.QHBoxLayout()
+        self.main_grid_layout = QtWidgets.QGridLayout()
         self._initModeDisplay()
         self._initStatusWidgets()
         self._initDiagnostics()
+        self.setLayout(self.main_grid_layout)
         
-        self.list_widget = QtWidgets.QListWidget()
-        self.test_client_button = QtWidgets.QPushButton("Test Client")
-        
-        self.echo_button = QtWidgets.QPushButton("Echo Server")
-        self.echo_textedit = QtWidgets.QTextEdit("Change the text and test!!!")
-        self.echo_textedit.setMaximumHeight(20)
-        #self.echo_textedit.setSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.MinimumExpanding)
-        echo_layout = QtWidgets.QHBoxLayout()
-        echo_layout.addWidget(self.echo_textedit)
-        echo_layout.addWidget(self.echo_button)
-
-        self.fan_on_button = QtWidgets.QPushButton("Turn ON Fan")
-        self.fan_off_button = QtWidgets.QPushButton("Turn OFF Fan")
-        fan_layout = QtWidgets.QHBoxLayout()
-        fan_layout.addWidget(self.fan_on_button)
-        fan_layout.addWidget(self.fan_off_button)
-
-        self.fan_on_button.clicked.connect(self.turn_fan_on)
-        self.fan_off_button.clicked.connect(self.turn_fan_off)
-        
-        self.test_client_button.clicked.connect(self.start_download)
-        self.echo_button.clicked.connect(self.start_echo)
-
-        layout = QtWidgets.QVBoxLayout()
-        layout.addLayout(echo_layout)
-        layout.addLayout(fan_layout)
-        
-        layout.addWidget(self.test_client_button)
-        layout.addStretch()
-        layout.addWidget(self.list_widget)
-
-        self.main_h_layout.addLayout(layout)
-        self.setLayout(self.main_h_layout)
-
         self.heartbeat_timer=QTimer()
         self.heartbeat_timer.timeout.connect(self.onHeartBeat)
         self.startHeartBeatTimer()
@@ -333,11 +300,11 @@ class MainWindow(QtWidgets.QWidget):
             else:
                 mode_text = 'Unknown'
             self.system_mode_label.setText(mode_text)
-            
+            self.mode_display.update_mode(response.mode)
             
         else:
             self.mission_control_led.value = False
-
+        
     def on_data_ready(self, data):
         print(data)
         self.list_widget.addItem(data)

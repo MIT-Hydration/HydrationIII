@@ -92,3 +92,9 @@ class ModeDisplay:
         self.mode_labels = response.mode_labels
         self._initStatusWidgets()
 
+    def update_mode(self, mode):
+        for i in range(len(self.modes)):
+            if (self.modes[i] == mode):
+                self.mode_leds[i].value = True
+            else:
+                self.mode_leds[i].value = False
