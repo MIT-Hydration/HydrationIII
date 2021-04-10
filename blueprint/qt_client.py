@@ -18,7 +18,7 @@ from datetime import datetime, timedelta
 import time
 import configparser
 
-from . import mode_display
+from . import mode_display, status_display
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -148,60 +148,15 @@ class RPiServerThread(QtCore.QThread):
 
 class MainWindow(QtWidgets.QWidget):
     
-    def _addStatus(self, led, description):
-        h_layout = QtWidgets.QHBoxLayout()
-        h_layout.addWidget(led)
-        h_layout.addWidget(QtWidgets.QLabel(description))
-        h_layout.addStretch(5)
-        led.setMaximumHeight(20)
-        led.setMaximumWidth(20)
-        self.status_layout.addLayout(h_layout)
-
-    def _initStatusWidgets(self):
-        self.status_groupbox = QtWidgets.QGroupBox("STATUS")
+    def _initStatusDisplay(self):
+        self.status_groupbox = QtWidgets.QGroupBox("System Status")
         self.status_layout = QtWidgets.QVBoxLayout()
         self.status_groupbox.setLayout(self.status_layout)
-        self.main_grid_layout.addWidget(self.status_groupbox, 3, 0, 3, 2)
+        self.main_grid_layout.addWidget(
+            self.status_groupbox, 3, 0, 3, 2)
 
-        self.mission_control_led=QLed(self, onColour=QLed.Green, shape=QLed.Circle)
-        self.mission_control_led.value=False
-        self._addStatus(self.mission_control_led, "Mission Control")
-
-        self.drill_asm_led=QLed(self, onColour=QLed.Green, shape=QLed.Circle)
-        self.drill_asm_led.value=False
-        self._addStatus(self.drill_asm_led, "Drilling Assembly")
-
-        self.water_prod_led = QLed(self, onColour=QLed.Green, shape=QLed.Circle)
-        self.water_prod_led.value=False
-        self._addStatus(self.water_prod_led, "Water Production")
-
-        self.status_layout.addWidget(QtWidgets.QLabel('-------------------'))
-        self.fan_on_led = QLed(self, onColour=QLed.Green, shape=QLed.Circle)
-        self.fan_on_led.value = False
-        self._addStatus(self.fan_on_led, "MiCon CPU Fan")
-        
-        h_layout_temp = QtWidgets.QHBoxLayout()
-        h_layout_temp.addWidget(QtWidgets.QLabel("MC Temp.:"))
-        self.mc_temp_label = QtWidgets.QLabel("N/A [degC]")
-        self.mc_temp_label.setMinimumWidth(70)
-        h_layout_temp.addWidget(self.mc_temp_label)
-        self.status_layout.addLayout(h_layout_temp)
-
-        self.status_layout.addStretch()
-
-        # add display of mode
-        self.system_mode_label = QtWidgets.QLabel("[Not Connected]")
-        self.status_layout.addWidget(self.system_mode_label)
-        self.mission_time_label = QtWidgets.QLabel("[Not Connected]")
-        self.status_layout.addWidget(self.mission_time_label)
-        
-        h_layout = QtWidgets.QHBoxLayout()
-        h_layout.addWidget(QtWidgets.QLabel("Trip Time:"))
-        self.rtt_label = QtWidgets.QLabel("N/A [ms]")
-        self.rtt_label.setMinimumWidth(70)
-        h_layout.addWidget(self.rtt_label)
-        
-        self.status_layout.addLayout(h_layout)
+        self.status_display = status_display.StatusDisplay(
+            self.status_layout)
 
     def _initDiagnostics(self):
         self.startup_diagnostics_groupbox = QtWidgets.QGroupBox("P01 Startup and Diagnostics")
@@ -231,7 +186,7 @@ class MainWindow(QtWidgets.QWidget):
         super(MainWindow, self).__init__()
         self.main_grid_layout = QtWidgets.QGridLayout()
         self._initModeDisplay()
-        self._initStatusWidgets()
+        self._initStatusDisplay()
         self._initDiagnostics()
         self.setLayout(self.main_grid_layout)
         
@@ -288,23 +243,9 @@ class MainWindow(QtWidgets.QWidget):
 
     def on_heartbeat_received(self, response):
         if (response != None):
-            self.mission_control_led.value = True
-            self.mc_temp_label.setText(f"{response.cpu_temperature_degC:.2f} [degC]")
-            rtt_time = response.timestamp - response.request_timestamp
-            self.rtt_label.setText(f"{rtt_time} [ms]")
-            mission_time = timedelta(milliseconds=response.mission_time_ms)
-            self.mission_time_label.setText(str(mission_time))
-
-            if (response.mode == mission_control_pb2.MAJOR_MODE_STARTUP_DIAGNOSTICS):
-                mode_text = 'Startup Diagnostics'
-            else:
-                mode_text = 'Unknown'
-            self.system_mode_label.setText(mode_text)
             self.mode_display.update_mode(response.mode)
+        self.status_display.update_status(response)
             
-        else:
-            self.mission_control_led.value = False
-        
     def on_data_ready(self, data):
         print(data)
         self.list_widget.addItem(data)

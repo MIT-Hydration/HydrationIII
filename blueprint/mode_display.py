@@ -30,8 +30,6 @@ MC_IP_ADDRESS_PORT = \
     f"{config.get('Network', 'MissionControlRPiIPAddress')}:" \
     f"{config.get('Network', 'GRPCPort')}"
 
-HEARTBEAT_TIMEOUT   = \
-    config.getint('Network', 'HeartbeatTimeout')
 GRPC_CALL_TIMEOUT   = \
     config.getint('Network', 'GRPCTimeout')
 
