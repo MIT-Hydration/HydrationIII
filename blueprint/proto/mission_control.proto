@@ -148,10 +148,25 @@ message MajorModesList {
     repeated string mode_labels = 4;
 }
 
+message HoleListRequest {
+    uint64 request_timestamp = 1;
+}
+
+message HoleList {
+    uint64 timestamp = 1;
+    uint64 request_timestamp = 2;
+    repeated int32 order = 3;
+    repeated float x_m = 4;
+    repeated float y_m = 5;
+    repeated float max_z_m = 6;
+    repeated float water_ml = 7;
+    repeated float diameter_m = 8;
+}
 
 service MissionControl {
     rpc GetMajorModes (GetMajorModesRequest) returns (MajorModesList);
     rpc HeartBeat (HeartBeatRequest) returns (HeartBeatReply);
+    rpc GetHoles (HoleListRequest) returns (HoleList);
     rpc SetMode (SetModeRequest) returns (CommandResponse);
     rpc StartMissionClock (StartMissionClockRequest) returns (CommandResponse);
     
