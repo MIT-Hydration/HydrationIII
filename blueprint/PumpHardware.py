@@ -126,7 +126,7 @@ class Pump(AbstractPump):
                 sleep(delay)
                 GPIO.output(PUL, GPIO.LOW)
                 sleep(delay)
-                cyclecount = (cyclecount + 1)
+            cyclecount = (cyclecount + 1)
         GPIO.cleanup()
 
     # The cls parameter is the class object, which allows @classmethod methods to easily instantiate the class,
