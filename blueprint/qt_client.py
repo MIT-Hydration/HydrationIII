@@ -147,13 +147,22 @@ class RPiServerThread(QtCore.QThread):
         self.echo_done.emit(f'Response from {RPI_IP_ADDRESS_PORT}\n{info}')
 
 class MainWindow(QtWidgets.QWidget):
+
+    def _initEmergencyStop(self):
+        self.emergency_button = QtWidgets.QPushButton('EMERGENCY STOP [ESC]', self)
+        self.emergency_button.setIcon(QtGui.QIcon('./blueprint/Big_Red_Button.png'))
+        self.emergency_button.setIconSize(QtCore.QSize(50,50))
+        self.emergency_button.setMinimumHeight(75)
+        self.main_grid_layout.addWidget(
+            self.emergency_button, 0, 0, 1, 1)
+
     
     def _initStatusDisplay(self):
         self.status_groupbox = QtWidgets.QGroupBox("System Status")
         self.status_layout = QtWidgets.QVBoxLayout()
         self.status_groupbox.setLayout(self.status_layout)
         self.main_grid_layout.addWidget(
-            self.status_groupbox, 3, 0, 3, 2)
+            self.status_groupbox, 3, 0, 2, 1)
 
         self.status_display = status_display.StatusDisplay(
             self.status_layout)
@@ -163,10 +172,11 @@ class MainWindow(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         self.startup_diagnostics_groupbox.setLayout(layout)
         self.main_grid_layout.addWidget(
-            self.startup_diagnostics_groupbox, 0, 3, 3, 2)
+            self.startup_diagnostics_groupbox, 0, 1, 3, 5)
 
         self.start_mission_clock_button = \
              QtWidgets.QPushButton("Start Mission Clock")
+        self.start_mission_clock_button.setMinimumWidth(1000)
         layout.addWidget(
             self.start_mission_clock_button)
         self.start_mission_clock_button.clicked.connect \
@@ -177,7 +187,7 @@ class MainWindow(QtWidgets.QWidget):
         self.mode_layout = QtWidgets.QVBoxLayout()
         self.mode_groupbox.setLayout(self.mode_layout)
         self.main_grid_layout.addWidget(
-            self.mode_groupbox, 0, 0, 3, 2)
+            self.mode_groupbox, 1, 0, 2, 1)
 
         self.mode_display = mode_display.ModeDisplay(
             self.mode_layout)
@@ -185,6 +195,7 @@ class MainWindow(QtWidgets.QWidget):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.main_grid_layout = QtWidgets.QGridLayout()
+        self._initEmergencyStop()
         self._initModeDisplay()
         self._initStatusDisplay()
         self._initDiagnostics()
