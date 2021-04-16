@@ -44,7 +44,7 @@ class StatusDisplay:
             ("Current (A)", True, 6.0, 8.5),
             ("CPU Temp (degC)", True, 60, 75),
             ("Mission Time (H:M:S)", True, 80*60*60*1000, 100*60*60*1000),
-            ("Round Trip Time (ms)", True, 300, 5000)
+            ("Round Trip Time (ms)", True, 300, 5000),
         ]
         self.leds = [None] * len(self.status_list)
         self.values = [None] * len(self.status_list)
@@ -74,5 +74,34 @@ class StatusDisplay:
             self._addStatus(i)
         self.layout.addStretch(5)
 
+
+    def _update_value(self, i, v, fstr, name, check_value):
+        if (self.status_list[i][0] != name):
+            raise IndexError(f"{name} not at right index")
+        self.leds[i].value = True
+        if (self.status_list[i][1]):
+            self.values[i].setText(fstr%v)
+            if check_value:
+                if (v < self.status_list[i][2]):
+                    self.values[i].setStyleSheet("color: green")
+                elif (v < self.status_list[i][3]):
+                    self.values[i].setStyleSheet("color: orange")
+                else: 
+                    self.values[i].setStyleSheet("color: red") 
+        
+
     def update_status(self, response):
-        pass
+        if (response != None):
+            self._update_value(0, True, "", "System HeartBeat", False)
+            self._update_value(12, response.cpu_temperature_degC,
+                                 "%0.2f [degC]", "CPU Temp (degC)", True)
+            mission_time = timedelta(milliseconds=int(response.mission_time_ms / 1000)*1000)
+            self._update_value(13, str(mission_time), "%s", "Mission Time (H:M:S)", False)
+            rtt_time = response.timestamp - response.request_timestamp
+            self._update_value(14, rtt_time, "%0.2f [ms]", "Round Trip Time (ms)", True)
+            
+
+        else:
+            for l in self.leds:
+                l.value = False
+
