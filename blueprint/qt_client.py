@@ -32,20 +32,6 @@ HEARTBEAT_TIMEOUT   = \
 GRPC_CALL_TIMEOUT   = \
     config.getint('Network', 'GRPCTimeout')
 
-class DownloadThread(QtCore.QThread):
-
-    data_downloaded = QtCore.pyqtSignal(object)
-
-    def __init__(self, url):
-        QtCore.QThread.__init__(self)
-        self.url = url
-
-    def run(self):
-        try:
-            info = urlopen(self.url).info()   
-        except:
-            info = f"Error opening URL: {self.url}"
-        self.data_downloaded.emit('%s\n%s' % (self.url, info))
 
 class RPiHeartBeat(QtCore.QThread):
     heartbeat_done = QtCore.pyqtSignal(object)
@@ -72,34 +58,6 @@ class RPiHeartBeat(QtCore.QThread):
             
         self.heartbeat_done.emit(response)
 
-
-class RPiFanThread(QtCore.QThread):
-    fan_done = QtCore.pyqtSignal(object)
-    state = False
-
-    def __init__(self, state):
-        QtCore.QThread.__init__(self)
-        self.state = state
-        
-    def run(self):
-        global RPI_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
-        response = None
-        try:
-            timestamp = int(time.time()*1000)
-            with grpc.insecure_channel(RPI_IP_ADDRESS_PORT) as channel:
-                stub = mission_control_pb2_grpc.MissionControlStub(channel)
-                response = stub.FanCommand (
-                    mission_control_pb2.FanCommandRequest(
-                        request_timestamp = timestamp, fan_on = self.state),
-                    timeout = GRPC_CALL_TIMEOUT )
-                print("Mission Control RPi FanCommandResponse received at: " + str(datetime.now()))
-                print(response)
-        
-        except Exception as e:
-            info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"
-            print(info)
-            
-        self.fan_done.emit(response)
 
 class RPiCommandThread(QtCore.QThread):
     command_done = QtCore.pyqtSignal(object)
@@ -146,6 +104,32 @@ class RPiServerThread(QtCore.QThread):
             info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}"
         self.echo_done.emit(f'Response from {RPI_IP_ADDRESS_PORT}\n{info}')
 
+class EmergencyStopThread(QtCore.QThread):
+    command_done = QtCore.pyqtSignal(object)
+    
+    def __init__(self):
+        QtCore.QThread.__init__(self)
+        
+    def run(self):
+        global RPI_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
+        response = None
+        try:
+            timestamp = int(time.time()*1000)
+            with grpc.insecure_channel(RPI_IP_ADDRESS_PORT) as channel:
+                stub = mission_control_pb2_grpc.MissionControlStub(channel)
+                response = stub.EmergencyStop (
+                    mission_control_pb2.EmergencyStopRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+                print("Mission Control RPi Start Mission Control Command received at: " + str(datetime.now()))
+                print(response)
+        
+        except Exception as e:
+            info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"
+            print(info)
+            
+        self.command_done.emit(response)
+
 class MainWindow(QtWidgets.QWidget):
 
     def _initEmergencyStop(self):
@@ -155,6 +139,8 @@ class MainWindow(QtWidgets.QWidget):
         self.emergency_button.setMinimumHeight(75)
         self.main_grid_layout.addWidget(
             self.emergency_button, 0, 0, 1, 1)
+        self.emergency_button.clicked.connect \
+            (self.emergency_stop)
 
     
     def _initStatusDisplay(self):
@@ -205,16 +191,6 @@ class MainWindow(QtWidgets.QWidget):
         self.heartbeat_timer.timeout.connect(self.onHeartBeat)
         self.startHeartBeatTimer()
 
-    def start_download(self):
-        urls = ['http://google.com', 'http://twitter.com', 'http://yandex.ru',
-                'http://stackoverflow.com/', 'http://www.youtube.com/'
-                ]
-        self.threads = []
-        for url in urls:
-            downloader = DownloadThread(url)
-            downloader.data_downloaded.connect(self.on_data_ready)
-            self.threads.append(downloader)
-            downloader.start()
 
     def start_echo(self):
         self.threads = []
@@ -229,21 +205,15 @@ class MainWindow(QtWidgets.QWidget):
         self.threads.append(client_thread)
         client_thread.start()
 
-    def set_fan(self, state):
+    def emergency_stop(self):
         self.threads = []
-        client_thread = RPiFanThread(state)
-        client_thread.fan_done.connect(self.on_fan_done)
+        client_thread = EmergencyStopThread()
         self.threads.append(client_thread)
         client_thread.start()
+        self.emergency_button.setText("ATTEMPTING EMERGENCY STOP [ESC]")
 
-    def turn_fan_on(self):
-        self.set_fan(True)
-    
-    def turn_fan_off(self):
-        self.set_fan(False)
-
-    def on_fan_done(self):
-        return
+    def on_emergency_stop_done(self):
+        pass
 
     def onHeartBeat(self):
         self.threads = []
