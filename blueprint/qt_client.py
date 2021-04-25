@@ -5,8 +5,6 @@ import logging
 
 import grpc
 
-from .generated import echo_pb2
-from .generated import echo_pb2_grpc
 from .generated import mission_control_pb2, mission_control_pb2_grpc
 
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -18,7 +16,7 @@ from datetime import datetime, timedelta
 import time
 import configparser
 
-from . import mode_display, status_display
+from . import mode_display, status_display, startup_diagnostics_display
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -58,51 +56,6 @@ class RPiHeartBeat(QtCore.QThread):
             
         self.heartbeat_done.emit(response)
 
-
-class RPiCommandThread(QtCore.QThread):
-    command_done = QtCore.pyqtSignal(object)
-    
-    def __init__(self):
-        QtCore.QThread.__init__(self)
-        
-    def run(self):
-        global RPI_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
-        response = None
-        try:
-            timestamp = int(time.time()*1000)
-            with grpc.insecure_channel(RPI_IP_ADDRESS_PORT) as channel:
-                stub = mission_control_pb2_grpc.MissionControlStub(channel)
-                response = stub.StartMissionClock (
-                    mission_control_pb2.StartMissionClockRequest(
-                        request_timestamp = timestamp),
-                    timeout = GRPC_CALL_TIMEOUT )
-                print("Mission Control RPi Start Mission Control Command received at: " + str(datetime.now()))
-                print(response)
-        
-        except Exception as e:
-            info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"
-            print(info)
-            
-        self.command_done.emit(response)
-
-
-class RPiServerThread(QtCore.QThread):
-    echo_done = QtCore.pyqtSignal(object)
-
-    def __init__(self, echo_text):
-        QtCore.QThread.__init__(self)
-        self.echo_text = echo_text
-
-    def run(self):
-        global RPI_IP_ADDRESS_PORT
-        try:
-            with grpc.insecure_channel(RPI_IP_ADDRESS_PORT) as channel:
-                stub = echo_pb2_grpc.EchoStub(channel)
-                response = stub.Reply(echo_pb2.EchoRequest(message=self.echo_text))
-                info = "Echo client received: " + response.message   
-        except:
-            info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}"
-        self.echo_done.emit(f'Response from {RPI_IP_ADDRESS_PORT}\n{info}')
 
 class EmergencyStopThread(QtCore.QThread):
     command_done = QtCore.pyqtSignal(object)
@@ -160,13 +113,7 @@ class MainWindow(QtWidgets.QWidget):
         self.main_grid_layout.addWidget(
             self.startup_diagnostics_groupbox, 0, 1, 3, 5)
 
-        self.start_mission_clock_button = \
-             QtWidgets.QPushButton("Start Mission Clock")
-        self.start_mission_clock_button.setMinimumWidth(1000)
-        layout.addWidget(
-            self.start_mission_clock_button)
-        self.start_mission_clock_button.clicked.connect \
-            (self.start_mission_clock)
+        self.startup_display = startup_diagnostics_display.StartupDiagnosticsDisplay(layout)
 
     def _initModeDisplay(self):
         self.mode_groupbox = QtWidgets.QGroupBox("Mode Selection")
@@ -190,20 +137,6 @@ class MainWindow(QtWidgets.QWidget):
         self.heartbeat_timer=QTimer()
         self.heartbeat_timer.timeout.connect(self.onHeartBeat)
         self.startHeartBeatTimer()
-
-
-    def start_echo(self):
-        self.threads = []
-        client_thread = RPiServerThread(self.echo_textedit.toPlainText())
-        client_thread.echo_done.connect(self.on_data_ready)
-        self.threads.append(client_thread)
-        client_thread.start()
-
-    def start_mission_clock(self):
-        self.threads = []
-        client_thread = RPiCommandThread()
-        self.threads.append(client_thread)
-        client_thread.start()
 
     def emergency_stop(self):
         self.threads = []

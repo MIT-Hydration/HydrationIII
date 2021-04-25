@@ -142,7 +142,7 @@ message SetModeRequest {
     uint64 request_timestamp = 1;
 }
 
-message StartMissionClockRequest {
+message StartCommandRequest {
     uint64 request_timestamp = 1;
 }
 
@@ -177,7 +177,14 @@ service MissionControl {
     rpc HeartBeat (HeartBeatRequest) returns (HeartBeatReply);
     rpc GetHoles (HoleListRequest) returns (HoleList);
     rpc SetMode (SetModeRequest) returns (CommandResponse);
-    rpc StartMissionClock (StartMissionClockRequest) returns (CommandResponse);
+    rpc StartMissionClock (StartCommandRequest) returns (CommandResponse);
+    rpc StartHomeZ1 (StartCommandRequest) returns (CommandResponse);
+    rpc StartHomeZ2 (StartCommandRequest) returns (CommandResponse);
+    rpc StartHomeX (StartCommandRequest) returns (CommandResponse);
+    rpc StartHomeY (StartCommandRequest) returns (CommandResponse);
+    rpc StartSpinDrillMotor (StartCommandRequest) returns (CommandResponse);
+    rpc StartSpinPump (StartCommandRequest) returns (CommandResponse);
+    rpc StartHeater (StartCommandRequest) returns (CommandResponse);
     
     rpc RigMove (RigMoveCommandRequest) returns (CommandResponse);
     rpc DrillMode (DrillModeRequest) returns (CommandResponse);
