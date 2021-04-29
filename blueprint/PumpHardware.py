@@ -2,6 +2,7 @@ from time import sleep  # this lets us have a time delay
 import time
 from abc import ABC, abstractmethod  # https://docs.python.org/3/library/abc.html
 
+
 import RPi.GPIO as GPIO
 
 PUL = 17  # Stepper Drive Pulses
@@ -14,10 +15,6 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(PUL, GPIO.OUT)
 GPIO.setup(DIR, GPIO.OUT)
 GPIO.setup(ENA, GPIO.OUT)
-
-duration = 5000
-delay = 0.0000001
-max_speed = 18
 
 
 class AbstractPump(ABC):
@@ -64,12 +61,26 @@ class AbstractPump(ABC):
 
 
 class MockPump(AbstractPump):
+    duration = 400
+    delay = 0.0000001
+
     def __init__(self):
         self.speedlpm = 0
         self.speedpom = 0
         self.direction = 0
 
-    def run(self):
+    @staticmethod
+    def run_pump():
+        cycles = 1
+        cyclecount = 0
+        while cyclecount < cycles:
+            for x in range(MockPump.duration):
+                print("pulse high")
+                sleep(MockPump.delay)
+                print("pulse low")
+                sleep(MockPump.delay)
+                print(cyclecount)
+                cyclecount = cyclecount + 1
         pass
 
     def set_direction_forward(self):
@@ -109,24 +120,27 @@ class MockPump(AbstractPump):
 
 
 class Pump(AbstractPump):
+    duration = 400
+    delay = 0.0000001
 
     def __init__(self):
         self.speedlpm = 0
         self.speedpom = 0
         self.direction = 0
 
-    def run(self):
+    @staticmethod
+    def run_pump():
         cycles = 20
         cyclecount = 0
         while cyclecount < cycles:
             GPIO.setup(ENA, GPIO.OUT)
             GPIO.output(ENA, GPIO.LOW)
-            for x in range(duration):
+            for x in range(Pump.duration):
                 GPIO.output(PUL, GPIO.HIGH)
-                sleep(delay)
+                sleep(Pump.delay)
                 GPIO.output(PUL, GPIO.LOW)
-                sleep(delay)
-            cyclecount = (cyclecount + 1)
+                sleep(Pump.delay)
+                cyclecount = (cyclecount + 1)
         GPIO.cleanup()
 
     # The cls parameter is the class object, which allows @classmethod methods to easily instantiate the class,
@@ -166,7 +180,7 @@ class Pump(AbstractPump):
             current_time = time.time()
             elapsed_time = current_time - start_time
             self.set_direction_reverse()
-            self.run()
+            self.run_pump()
             if elapsed_time > seconds:
                 print("Finished iterating in:" + str(int(elapsed_time)))
                 break
@@ -177,7 +191,7 @@ class Pump(AbstractPump):
             current_time = time.time()
             elapsed_time = current_time - start_time
             self.set_direction_forward()
-            self.run()
+            self.run_pump()
             if elapsed_time > seconds:
                 print("Finished iterating in:" + str(int(elapsed_time)))
                 break
@@ -186,7 +200,7 @@ class Pump(AbstractPump):
             current_time = time.time()
             elapsed_time = current_time - start_time
             self.set_direction_reverse()
-            self.run()
+            self.run_pump()
             if elapsed_time > seconds:
                 print("Finished iterating in:" + str(int(elapsed_time)))
                 break
@@ -195,13 +209,28 @@ class Pump(AbstractPump):
     # MAXSPEED (Percentage of the Max):
 
     def get_max_speed(self):
+        # in rpm  or lpm? is it really needed? (limitation of the pump is 300 rpm)
         pass
 
     def set_speed_pom(self, speedpom_value):
-        self.speedpom = speedpom_value
-        pass
+        # delay for the setting 400 pulse/rev
+        # to test
+        if speedpom_value == 0:
+            Pump.delay = 1
+            self.speedpom = 0
+        # 100 rpm
+        if speedpom_value == 33:
+            Pump.delay = 0.00063
+            self.speedpom = 33
+        # 200 rpm
+        if speedpom_value == 66:
+            Pump.delay = 0.000265
+            self.speedpom = 66
+        # 300 rpm
+        if speedpom_value == 100:
+            Pump.delay = 0.00015
+            self.speedpom = 100
 
     def get_speed_pom(self):
         return self.speedpom
-
 
