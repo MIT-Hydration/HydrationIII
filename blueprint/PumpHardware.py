@@ -71,17 +71,13 @@ class MockPump(AbstractPump):
 
     @staticmethod
     def run_pump():
-        cycles = 1
-        cyclecount = 0
-        while cyclecount < cycles:
-            for x in range(MockPump.duration):
-                print("pulse high")
-                sleep(MockPump.delay)
-                print("pulse low")
-                sleep(MockPump.delay)
-                print(cyclecount)
-                cyclecount = cyclecount + 1
+        while True:
+            print("pulse high")
+            sleep(MockPump.delay)
+            print("pulse low")
+            sleep(MockPump.delay)
         pass
+
 
     def set_direction_forward(self):
         self.direction = 1
@@ -128,20 +124,18 @@ class Pump(AbstractPump):
         self.speedpom = 0
         self.direction = 0
 
+    
+    #à tester!! -> ajouter-> GPIO.cleanup() à la fin 
     @staticmethod
     def run_pump():
-        cycles = 20
-        cyclecount = 0
-        while cyclecount < cycles:
-            GPIO.setup(ENA, GPIO.OUT)
-            GPIO.output(ENA, GPIO.LOW)
-            for x in range(Pump.duration):
-                GPIO.output(PUL, GPIO.HIGH)
-                sleep(Pump.delay)
-                GPIO.output(PUL, GPIO.LOW)
-                sleep(Pump.delay)
-                cyclecount = (cyclecount + 1)
-        GPIO.cleanup()
+        GPIO.setup(ENA, GPIO.OUT)
+        GPIO.output(ENA, GPIO.LOW)
+        while True:
+            GPIO.output(PUL, GPIO.HIGH)
+            sleep(Pump.delay)
+            GPIO.output(PUL, GPIO.LOW)
+            sleep(Pump.delay)
+        
 
     # The cls parameter is the class object, which allows @classmethod methods to easily instantiate the class,
     # regardless of any inheritance going on.
