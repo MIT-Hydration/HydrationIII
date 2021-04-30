@@ -20,6 +20,8 @@ from datetime import datetime, timedelta
 import time
 import configparser
 
+from functools import partial
+
 import grpc
 from .generated import mission_control_pb2, mission_control_pb2_grpc
 
@@ -319,6 +321,10 @@ class StopHeaterThread(QtCore.QThread):
             
         self.command_done.emit(response)
 
+def _changeStyle(button):
+    #button.setStyleSheet("background-color: green")
+    button.setText(button.text() + " [x]")
+
 class StartupDiagnosticsDisplay:
 
     def __init__(self, layout):
@@ -352,15 +358,18 @@ class StartupDiagnosticsDisplay:
                     self.buttons[i] = QtWidgets.QPushButton(self.startup_list[i][0])
                     self.layout.addWidget(self.buttons[i], line, 0)
                     self.buttons[i].clicked.connect(self.startup_list[i][1])
+                    self.buttons[i].clicked.connect(partial(_changeStyle, self.buttons[i]))
                     self.buttons[i+1] = QtWidgets.QPushButton(self.startup_list[i+1][0])
                     self.layout.addWidget(self.buttons[i+1], line, 1)
                     self.buttons[i+1].clicked.connect(self.startup_list[i+1][1])
+                    self.buttons[i+1].clicked.connect(partial(_changeStyle, self.buttons[i+1]))
                     i += 2
                     line += 1
             else:
                     self.buttons[i] = QtWidgets.QPushButton(self.startup_list[i][0])
                     self.layout.addWidget(self.buttons[i], line, 0, 1, 2)
                     self.buttons[i].clicked.connect(self.startup_list[i][1])
+                    self.buttons[i].clicked.connect(partial(_changeStyle, self.buttons[i]))
                     i += 1
                     line += 1
         self.layout.rowStretch(5)
@@ -423,8 +432,8 @@ class StartupDiagnosticsDisplay:
         self.threads = []
         client_thread = StartHeaterThread()
         self.threads.append(client_thread)
-        client_thread.start() 
-    
+        client_thread.start()
+   
     def stop_heater(self):
         self.threads = []
         client_thread = StopHeaterThread()
