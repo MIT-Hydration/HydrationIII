@@ -148,7 +148,7 @@ See tag V0.3: https://github.com/MIT-Hydration/HydrationIII/tree/V0.3
 1. Have a ticket to do the work
 2. Review requirements with team lead of the subsystem
 3. Set the ticket to In Progress
-4. Create a branch in GitHub (e.g. use *git checkout -b <branch name>* command). Use the Jira ticket number as branch name (e.g. *SOFT-2*)
+4. Create a branch in GitHub (e.g. use *git checkout -b _branch-name_* command). Use the Jira ticket number as branch name (e.g. *SOFT-2*)
 5. Start working on the ticket, commit as many times as you want 
 6. When ready, create a *Pull Request* using the GitHub interface
 7. Put the ticket in *Review and Commit* column in Jira
