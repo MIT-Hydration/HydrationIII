@@ -183,8 +183,12 @@ service MissionControl {
     rpc StartHomeX (StartCommandRequest) returns (CommandResponse);
     rpc StartHomeY (StartCommandRequest) returns (CommandResponse);
     rpc StartSpinDrillMotor (StartCommandRequest) returns (CommandResponse);
+    rpc StopSpinDrillMotor (StartCommandRequest) returns (CommandResponse);
     rpc StartSpinPump (StartCommandRequest) returns (CommandResponse);
+    rpc StopSpinPump (StartCommandRequest) returns (CommandResponse);
     rpc StartHeater (StartCommandRequest) returns (CommandResponse);
+    rpc StopHeater (StartCommandRequest) returns (CommandResponse);
+
     
     rpc RigMove (RigMoveCommandRequest) returns (CommandResponse);
     rpc DrillMode (DrillModeRequest) returns (CommandResponse);
