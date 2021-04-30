@@ -24,18 +24,21 @@ GPIO.setup(DIR, GPIO.OUT)
 GPIO.setup(ENA, GPIO.OUT)
 GPIO.setup(SIG, GPIO.IN)
 
-class PumpMode():
-    MANUAL=0
-    AUTOMATIC=1
+class PumpMode:
+    MANUAL=0     # manually set speed, direction, cleaning sequence, stop
+    AUTOMATIC=1  # run continuously, clean if required, stop
     
-    
-    
-    
+    # when starting manual mode from automatic, always start from 0 speed (stop)
+    # emergency stop is always possible, and returns to manual mode
     
 class AbstractPump(ABC):
     
     @abstractmethod
     def emergency_stop(self):
+        pass
+    
+    @abstractmethod
+    def get_flow_mlps(self):
         pass
     
     # DIRECTIONS:
@@ -47,19 +50,20 @@ class AbstractPump(ABC):
     def get_direction(self):
         pass
 
-    # SPEED (Liter per Minute):
+    # SPEED (Milli-liter per seconds):
     @abstractmethod
-    def set_speed_lpm(self, speedlpm_value):
+    def set_speed_mlps(self, speedlpm_value):
         pass
 
     @abstractmethod
-    def get_speed_lpm(self):
+    def get_speed_mlps(self):
         pass
    
-   @abstractmethod
+    @abstractmethod
     def get_mode(self):
         pass
-   @abstractmethod
+    
+    @abstractmethod
     def set_mode(self, mode):
         pass
 
@@ -70,7 +74,7 @@ class AbstractPump(ABC):
 
     # MAXSPEED (Percentage of the Max):
     @abstractmethod
-    def get_max_speed_lpm(self): 
+    def get_max_speed_mlps(self): 
         pass
 
     @abstractmethod
