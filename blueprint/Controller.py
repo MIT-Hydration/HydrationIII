@@ -24,16 +24,23 @@ GPIO.setup(DIR, GPIO.OUT)
 GPIO.setup(ENA, GPIO.OUT)
 GPIO.setup(SIG, GPIO.IN)
 
-
+class PumpMode():
+    MANUAL=0
+    AUTOMATIC=1
+    
+    
+    
+    
+    
 class AbstractPump(ABC):
-
+    
+    @abstractmethod
+    def emergency_stop(self):
+        pass
+    
     # DIRECTIONS:
     @abstractmethod
-    def set_direction_forward(self):
-        pass
-
-    @abstractmethod
-    def set_direction_reverse(self):
+    def set_direction(self, direction):
         pass
 
     @abstractmethod
@@ -48,6 +55,13 @@ class AbstractPump(ABC):
     @abstractmethod
     def get_speed_lpm(self):
         pass
+   
+   @abstractmethod
+    def get_mode(self):
+        pass
+   @abstractmethod
+    def set_mode(self, mode):
+        pass
 
     # FILTER CLEANING SEQUENCE:
     @abstractmethod
@@ -56,7 +70,7 @@ class AbstractPump(ABC):
 
     # MAXSPEED (Percentage of the Max):
     @abstractmethod
-    def get_max_speed(self):
+    def get_max_speed_lpm(self): 
         pass
 
     @abstractmethod
@@ -128,7 +142,13 @@ class MockPump(AbstractPump):
     def add_flow(self):
         pass
 
-
+   
+    def get_mode(self):
+        pass
+  
+    def set_mode(self, mode):
+        pass
+    
 class Pump(AbstractPump):
     duration = 400
     delay = 0.0000001
@@ -326,4 +346,11 @@ class Pump(AbstractPump):
         pass
 
 
+    def get_mode(self):
+        pass
+  
+
+    def set_mode(self, mode):      
+            
+        pass
 
