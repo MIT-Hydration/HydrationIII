@@ -64,13 +64,28 @@ class MissionControlStub(object):
                 request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.CommandResponse.FromString,
                 )
+        self.StopSpinDrillMotor = channel.unary_unary(
+                '/mission_control.MissionControl/StopSpinDrillMotor',
+                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
         self.StartSpinPump = channel.unary_unary(
                 '/mission_control.MissionControl/StartSpinPump',
                 request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.CommandResponse.FromString,
                 )
+        self.StopSpinPump = channel.unary_unary(
+                '/mission_control.MissionControl/StopSpinPump',
+                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
         self.StartHeater = channel.unary_unary(
                 '/mission_control.MissionControl/StartHeater',
+                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.StopHeater = channel.unary_unary(
+                '/mission_control.MissionControl/StopHeater',
                 request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.CommandResponse.FromString,
                 )
@@ -174,13 +189,31 @@ class MissionControlServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def StopSpinDrillMotor(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def StartSpinPump(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def StopSpinPump(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def StartHeater(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def StopHeater(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -281,13 +314,28 @@ def add_MissionControlServicer_to_server(servicer, server):
                     request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
                     response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
             ),
+            'StopSpinDrillMotor': grpc.unary_unary_rpc_method_handler(
+                    servicer.StopSpinDrillMotor,
+                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
             'StartSpinPump': grpc.unary_unary_rpc_method_handler(
                     servicer.StartSpinPump,
                     request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
                     response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
             ),
+            'StopSpinPump': grpc.unary_unary_rpc_method_handler(
+                    servicer.StopSpinPump,
+                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
             'StartHeater': grpc.unary_unary_rpc_method_handler(
                     servicer.StartHeater,
+                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'StopHeater': grpc.unary_unary_rpc_method_handler(
+                    servicer.StopHeater,
                     request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
                     response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
             ),
@@ -507,6 +555,23 @@ class MissionControl(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
+    def StopSpinDrillMotor(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/StopSpinDrillMotor',
+            mission__control__pb2.StartCommandRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
     def StartSpinPump(request,
             target,
             options=(),
@@ -524,6 +589,23 @@ class MissionControl(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
+    def StopSpinPump(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/StopSpinPump',
+            mission__control__pb2.StartCommandRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
     def StartHeater(request,
             target,
             options=(),
@@ -535,6 +617,23 @@ class MissionControl(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/StartHeater',
+            mission__control__pb2.StartCommandRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def StopHeater(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/StopHeater',
             mission__control__pb2.StartCommandRequest.SerializeToString,
             mission__control__pb2.CommandResponse.FromString,
             options, channel_credentials,

@@ -108,7 +108,7 @@ class MainWindow(QtWidgets.QWidget):
 
     def _initDiagnostics(self):
         self.startup_diagnostics_groupbox = QtWidgets.QGroupBox("P01 Startup and Diagnostics")
-        layout = QtWidgets.QVBoxLayout()
+        layout = QtWidgets.QGridLayout()
         self.startup_diagnostics_groupbox.setLayout(layout)
         self.main_grid_layout.addWidget(
             self.startup_diagnostics_groupbox, 0, 1, 3, 5)

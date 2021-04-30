@@ -20,6 +20,8 @@ from datetime import datetime, timedelta
 import time
 import configparser
 
+from functools import partial
+
 import grpc
 from .generated import mission_control_pb2, mission_control_pb2_grpc
 
@@ -189,6 +191,32 @@ class StartSpinDrillMotorThread(QtCore.QThread):
             
         self.command_done.emit(response)
 
+class StopSpinDrillMotorThread(QtCore.QThread):
+    command_done = QtCore.pyqtSignal(object)
+    
+    def __init__(self):
+        QtCore.QThread.__init__(self)
+        
+    def run(self):
+        global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
+        response = None
+        try:
+            timestamp = int(time.time()*1000)
+            with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
+                stub = mission_control_pb2_grpc.MissionControlStub(channel)
+                response = stub.StopSpinDrillMotor (
+                    mission_control_pb2.StartCommandRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+                print("Mission Control RPi Start Mission Control Command received at: " + str(datetime.now()))
+                print(response)
+        
+        except Exception as e:
+            info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
+            print(info)
+            
+        self.command_done.emit(response)
+
 class StartSpinPumpThread(QtCore.QThread):
     command_done = QtCore.pyqtSignal(object)
     
@@ -203,6 +231,32 @@ class StartSpinPumpThread(QtCore.QThread):
             with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
                 stub = mission_control_pb2_grpc.MissionControlStub(channel)
                 response = stub.StartSpinPump (
+                    mission_control_pb2.StartCommandRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+                print("Mission Control RPi Start Mission Control Command received at: " + str(datetime.now()))
+                print(response)
+        
+        except Exception as e:
+            info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
+            print(info)
+            
+        self.command_done.emit(response)
+
+class StopSpinPumpThread(QtCore.QThread):
+    command_done = QtCore.pyqtSignal(object)
+    
+    def __init__(self):
+        QtCore.QThread.__init__(self)
+        
+    def run(self):
+        global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
+        response = None
+        try:
+            timestamp = int(time.time()*1000)
+            with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
+                stub = mission_control_pb2_grpc.MissionControlStub(channel)
+                response = stub.StopSpinPump (
                     mission_control_pb2.StartCommandRequest(
                         request_timestamp = timestamp),
                     timeout = GRPC_CALL_TIMEOUT )
@@ -241,6 +295,36 @@ class StartHeaterThread(QtCore.QThread):
             
         self.command_done.emit(response)
 
+class StopHeaterThread(QtCore.QThread):
+    command_done = QtCore.pyqtSignal(object)
+    
+    def __init__(self):
+        QtCore.QThread.__init__(self)
+        
+    def run(self):
+        global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
+        response = None
+        try:
+            timestamp = int(time.time()*1000)
+            with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
+                stub = mission_control_pb2_grpc.MissionControlStub(channel)
+                response = stub.StopHeater (
+                    mission_control_pb2.StartCommandRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+                print("Mission Control RPi Start Mission Control Command received at: " + str(datetime.now()))
+                print(response)
+        
+        except Exception as e:
+            info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
+            print(info)
+            
+        self.command_done.emit(response)
+
+def _changeStyle(button):
+    #button.setStyleSheet("background-color: green")
+    button.setText(button.text() + " [x]")
+
 class StartupDiagnosticsDisplay:
 
     def __init__(self, layout):
@@ -251,9 +335,12 @@ class StartupDiagnosticsDisplay:
             ("Home Z2 axis servo", self.start_home_Z2), 
             ("Home X axis servo", self.start_home_X), 
             ("Home Y axis servo", self.start_home_Y), 
-            ("Spin Drill motor", self.start_spin_drill_motor), 
-            ("Spin pump", self.start_spin_pump), 
-            ("Start heater", self.start_heater),        
+            ("Start Spin Drill motor", self.start_spin_drill_motor),
+            ("Stop Spin Drill motor", self.stop_spin_drill_motor), 
+            ("Start Spin pump", self.start_spin_pump),
+            ("Stop Spin pump", self.stop_spin_pump), 
+            ("Start heater", self.start_heater),
+            ("Stop heater", self.stop_heater),        
         ]
         
         self.buttons = [None] * len(self.startup_list)
@@ -261,11 +348,31 @@ class StartupDiagnosticsDisplay:
         self._initWidgets()
 
     def _initWidgets(self):
-        for i in range(len(self.startup_list)):
-            self.buttons[i] = QtWidgets.QPushButton(self.startup_list[i][0])
-            self.layout.addWidget(self.buttons[i])
-            self.buttons[i].clicked.connect(self.startup_list[i][1])
-        self.layout.addStretch(5)
+        i = 0
+        line = 0
+        while (i < len(self.startup_list)):
+            if (("Start" in self.startup_list[i][0]) and ("Stop" in self.startup_list[i+1][0])):
+                sub1 = self.startup_list[i][0].replace("Start", "")
+                sub2 = self.startup_list[i+1][0].replace("Stop", "")
+                if (sub1 == sub2):
+                    self.buttons[i] = QtWidgets.QPushButton(self.startup_list[i][0])
+                    self.layout.addWidget(self.buttons[i], line, 0)
+                    self.buttons[i].clicked.connect(self.startup_list[i][1])
+                    self.buttons[i].clicked.connect(partial(_changeStyle, self.buttons[i]))
+                    self.buttons[i+1] = QtWidgets.QPushButton(self.startup_list[i+1][0])
+                    self.layout.addWidget(self.buttons[i+1], line, 1)
+                    self.buttons[i+1].clicked.connect(self.startup_list[i+1][1])
+                    self.buttons[i+1].clicked.connect(partial(_changeStyle, self.buttons[i+1]))
+                    i += 2
+                    line += 1
+            else:
+                    self.buttons[i] = QtWidgets.QPushButton(self.startup_list[i][0])
+                    self.layout.addWidget(self.buttons[i], line, 0, 1, 2)
+                    self.buttons[i].clicked.connect(self.startup_list[i][1])
+                    self.buttons[i].clicked.connect(partial(_changeStyle, self.buttons[i]))
+                    i += 1
+                    line += 1
+        self.layout.rowStretch(5)
 
     def start_mission_clock(self):
         self.threads = []
@@ -301,16 +408,34 @@ class StartupDiagnosticsDisplay:
         self.threads = []
         client_thread = StartSpinDrillMotorThread()
         self.threads.append(client_thread)
-        client_thread.start() 
+        client_thread.start()
+
+    def stop_spin_drill_motor(self):
+        self.threads = []
+        client_thread = StopSpinDrillMotorThread()
+        self.threads.append(client_thread)
+        client_thread.start()  
 
     def start_spin_pump(self):
         self.threads = []
         client_thread = StartSpinPumpThread()
+        self.threads.append(client_thread)
+        client_thread.start()
+
+    def stop_spin_pump(self):
+        self.threads = []
+        client_thread = StopSpinPumpThread()
         self.threads.append(client_thread)
         client_thread.start() 
 
     def start_heater(self):
         self.threads = []
         client_thread = StartHeaterThread()
+        self.threads.append(client_thread)
+        client_thread.start()
+   
+    def stop_heater(self):
+        self.threads = []
+        client_thread = StopHeaterThread()
         self.threads.append(client_thread)
         client_thread.start() 
