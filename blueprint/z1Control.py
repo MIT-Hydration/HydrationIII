@@ -52,6 +52,27 @@ def make_ref_path(z_desired, z_current, mode, time_start):
     return ref_path
 
 
+def PID(Kp, Ki, Kd, t_0, Value_bar=0):
+    e_prev = 0
+    t_prev = t_0
+    I = 0
+    while True:
+        t, Current_Value, Set_Value = yield Value
+
+        #PID calculations
+        #error in speed = error in position/expected time elapsed (.1s)
+        e = (Set_Value - Current_Value)/.1
+
+        P = Kp*e
+        I = I + Ki*e*(t - t_prev)
+        D = Kd*(e - e_prev)/(t-t_prev)
+
+        Value = Value_bar + P + I + D
+
+        e_prev = e
+        t_prev = t
+
+
 #unchanged variables
 '''
 for assigning unchanged variables use tuples
@@ -63,13 +84,19 @@ weight_on_bit_limit = 145 #[N]
 #lead on lead screw
 Lead = .002 #[m/rev].002m/rev or 2mm/rev
 
-#pre-defined base speeds
+#pre-defined base speeds (Proportional control constant)
 agg_base = 14 #[rev/s] rotational velocity of the motor
 base = 10 #[rev/s] rotational velocity of the motor
 slow_base = 5 #[rev/s] rotational velocity of the motor
 snail_base = 2 #[rev/s] rotational velocity of the motor
 up = -10 #[rev/s] rotational velocity of the motor
 stop = 0
+Kp = [14, 10, 5, 2]
+
+
+#Integral and Deriviative control constants
+Ki = 1
+Kd = 1
 
 #body
 
@@ -151,9 +178,11 @@ class DrillController:
         
         WOB_mode = 0
         step = 0
-        #Drill assembly raises until at desired postion
-        while end_pos < actual_pos
-            
+        controller = PID(agg_base, Ki, Kd, t_0)
+        controller.send(None)
+
+        #Drill assembly descends until at desired postion
+        while (end_pos + .001) < actual_pos
             
             #obtain sensors inputs
             #actual pos from servo output
@@ -211,14 +240,18 @@ class DrillController:
                     #return weight on bit limit exceeded Error
                     break
 
-                    
+            # use WOB input to determine if speed mode needs to be changed, if the mode was changed, a new reference path is created        
             else:
+                # normal rate of decent
                 if WOB >= 100 and < 120
                     WOB_mode_new = 1
+                # slow rat eof decent
                 elif WOB >= 120 and < 130
                     WOB_mode_new = 2
+                # snail rate of decent
                 elif WOB >= 130 and < 140
                     WOB_mode_new = 3
+                # aggressive rate of decent
                 else:
                     WOB_mode_new = 0
                 if WOB_mode != WOB_mode_new
@@ -226,6 +259,8 @@ class DrillController:
                     #create new reference path
                     ref_path = create_ref_path(desired_pos, actual_pos, WOB_mode, round(t, 1)
                     step = 0
+                    controller = PID(Kp[WOB_mode], Ki, Kd, t)
+                    controller.send(None)
                     
             #pull reference position from the reference path
             ref_pos = ref_path[step]
@@ -233,26 +268,11 @@ class DrillController:
             #send command to servo for speed to go down, pace determined by 
             #difference between actual position and reference position
             
-            if actual_pos != ref_pos:
-                pos_diff = actual_pos - ref_pos
-                if WOB_mode = 0:
-                    servo_speed = agg_base + pos_diff/.1/Lead 
-                if WOB_mode = 1:
-                    servo_speed = base + pos_diff/.1/Lead 
-                if WOB_mode = 2:
-                    servo_speed = slow_base + pos_diff/.1/Lead 
-                if WOB_mode = 3:
-                    servo_speed = snail_base + pos_diff/.1/Lead 
-            else:
-                
-                if WOB_mode = 0:
-                    servo_speed = agg_base
-                if WOB_mode = 1:
-                    servo_speed = base
-                if WOB_mode = 2:
-                    servo_speed = slow_base
-                if WOB_mode = 3:
-                    servo_speed = snail_base
+
+            '''actual_pos = call from servo'''
+
+            servo_speed = controller.send([t, actual_pos, ref_pos])
+            '''drill.speed = servo_speed need to update with final hardware code'''
 
             step =+ 1
             #check if .1s has passed, if not, wait for .1 sec to finish to maintain max 10Hz freq
