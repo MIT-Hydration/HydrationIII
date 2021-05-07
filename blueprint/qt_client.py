@@ -17,6 +17,7 @@ import time
 import configparser
 
 from . import mode_display, status_display, startup_diagnostics_display
+from . import hole_position_display
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -97,7 +98,7 @@ class MainWindow(QtWidgets.QWidget):
         self.status_layout = QtWidgets.QVBoxLayout()
         self.status_groupbox.setLayout(self.status_layout)
         self.main_grid_layout.addWidget(
-            self.status_groupbox, 4, 0, 7, 1)
+            self.status_groupbox, 3, 0, 7, 1)
 
         self.status_display = status_display.StatusDisplay(
             self.status_layout)
@@ -107,7 +108,7 @@ class MainWindow(QtWidgets.QWidget):
         layout = QtWidgets.QGridLayout()
         self.startup_diagnostics_groupbox.setLayout(layout)
         self.main_grid_layout.addWidget(
-            self.startup_diagnostics_groupbox, 0, 1, 7, 5)
+            self.startup_diagnostics_groupbox, 0, 1, 4, 5)
 
         self.startup_display = startup_diagnostics_display.StartupDiagnosticsDisplay(layout)
 
@@ -116,7 +117,7 @@ class MainWindow(QtWidgets.QWidget):
         self.mode_layout = QtWidgets.QVBoxLayout()
         self.mode_groupbox.setLayout(self.mode_layout)
         self.main_grid_layout.addWidget(
-            self.mode_groupbox, 1, 0, 3, 1)
+            self.mode_groupbox, 1, 0, 2, 1)
 
         self.mode_display = mode_display.ModeDisplay(
             self.mode_layout)
@@ -128,11 +129,23 @@ class MainWindow(QtWidgets.QWidget):
         self._initModeDisplay()
         self._initStatusDisplay()
         self._initDiagnostics()
+        self._initHolePos()
         self.setLayout(self.main_grid_layout)
         
         self.heartbeat_timer=QTimer()
         self.heartbeat_timer.timeout.connect(self.onHeartBeat)
         self.startHeartBeatTimer()
+
+    def _initHolePos(self):
+        self.hole_pos_groupbox = QtWidgets.QGroupBox("Rig Holes and Position")
+        self.hole_pos_layout = QtWidgets.QGridLayout()
+        self.hole_pos_groupbox.setLayout(self.hole_pos_layout)
+        self.main_grid_layout.addWidget(
+            self.hole_pos_groupbox, 4, 1, 6, 10)
+
+        self.hole_pos_diplay = hole_position_display.HolePositionDisplay(
+            self.hole_pos_layout
+        )
 
     def emergency_stop(self):
         self.threads = []
@@ -170,7 +183,10 @@ class MainWindow(QtWidgets.QWidget):
         
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    apply_stylesheet(app, theme='light_blue.xml')
+    #apply_stylesheet(app, theme='light_blue.xml')
+    apply_stylesheet(app, theme='dark_teal.xml')
+    QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
+    QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps)
     
     window = MainWindow()
     window.resize(1500, 740)
