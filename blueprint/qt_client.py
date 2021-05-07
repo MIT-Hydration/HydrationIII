@@ -49,11 +49,12 @@ class RPiHeartBeat(QtCore.QThread):
                     timeout = GRPC_CALL_TIMEOUT )
                 print("Mission Control RPi HeartBeat received at: " + str(datetime.now()))
                 print(response)
-                self.done.emit(response)
         
         except Exception as e:
             info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
+
+        self.done.emit(response)
             
 
 class EmergencyStopThread(QtCore.QThread):
@@ -143,7 +144,7 @@ class MainWindow(QtWidgets.QWidget):
         self.main_grid_layout.addWidget(
             self.hole_pos_groupbox, 4, 1, 6, 10)
 
-        self.hole_pos_diplay = hole_position_display.HolePositionDisplay(
+        self.hole_pos_display = hole_position_display.HolePositionDisplay(
             self.hole_pos_layout
         )
 
@@ -169,6 +170,7 @@ class MainWindow(QtWidgets.QWidget):
         if (response != None):
             self.mode_display.update_mode(response.mode)
         self.status_display.update_status(response)
+        self.hole_pos_display.update_display(response)
             
     def on_data_ready(self, data):
         print(data)

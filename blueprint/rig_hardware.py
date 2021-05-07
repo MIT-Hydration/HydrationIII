@@ -25,10 +25,18 @@ class AbstractRigHardware(ABC):
         pass
 
     @abstractmethod
+    def isXMoving(self):
+        pass
+
+    @abstractmethod
+    def isYMoving(self):
+        pass
+
+    @abstractmethod
     def emergencyStop(self):
         pass
 
-class MockRigHardware(AbstractRPiHardware):
+class MockRigHardware(AbstractRigHardware):
     
     def __init__(self):
         self.position = [50.0, 50.0]
@@ -36,20 +44,22 @@ class MockRigHardware(AbstractRPiHardware):
         self.homingTime = [0.0, 0.0]
     
     def _update(self, i):
-        VEL = -10 # cm/s
+        VEL = -2 # cm/s
         if self.homing[i]:
-            dt = time.time() - self.homingTime[i]
+            new_t = time.time()
+            dt = new_t - self.homingTime[i]
             ds = VEL*dt
             s = self.position[i] + ds
             if s <= 0.0:
                 self.homing[i] = False
                 s = 0.0
             self.position[i] = s
-
+            self.homingTime[i] = new_t
+            
     def getPosition(self):
         self._update(0)
         self._update(1)
-        return self.current_pos
+        return self.position
 
     def homeX(self):
         self.homing[0] = True
@@ -63,7 +73,14 @@ class MockRigHardware(AbstractRPiHardware):
         self.homing[0] = False
         self.homing[1] = False
 
-class RigHardware(AbstractRPiHardware):
+    def isXMoving(self):
+        #print(f"X is moving {self.homing[0]}")
+        return self.homing[0]
+
+    def isYMoving(self):
+        return self.homing[1]
+
+class RigHardware(AbstractRigHardware):
     def homeX(self):
         pass
 

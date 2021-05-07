@@ -67,6 +67,9 @@ message HeartBeatReply {
     bool pump_on = 14;
     bool heater_setting = 15;
     float total_current_mA = 16;
+
+    float rig_x = 100;
+    float rig_y = 101;
 }
 
 message RigStatusRequest {

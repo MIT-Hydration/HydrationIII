@@ -67,6 +67,11 @@ class StatusDisplay:
         for i in range(len(self.status_list)):
             self._addStatus(i)
 
+    def _update_bool(self, i, name, check_value):
+        if (self.status_list[i][0] != name):
+            raise IndexError(f"{name} not at right index")
+        self.checkboxes[i].setChecked(check_value)
+    
     def _update_value(self, i, v, fstr, name, check_value):
         if (self.status_list[i][0] != name):
             raise IndexError(f"{name} not at right index")
@@ -84,9 +89,13 @@ class StatusDisplay:
 
     def update_status(self, response):
         if (response != None):
-            self._update_value(0, True, "", "System HeartBeat", False)
-            for i in range(1, 12):
+            self._update_bool(0, "System HeartBeat", True)
+            for i in [1, 2, 3, 4, 5, 8, 9, 10, 11]:
                 self.checkboxes[i].setChecked(False)
+            
+            self._update_bool(6, "X servo", response.x_servo_moving)
+            self._update_bool(7, "Y servo", response.y_servo_moving)
+            
             self._update_value(12, response.cpu_temperature_degC,
                                  "%0.2f [degC]", "CPU Temp (degC)", True)
             mission_time = timedelta(milliseconds=int(response.mission_time_ms / 1000)*1000)
