@@ -48,6 +48,8 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         cpu_temp = HardwareFactory.getMissionControlRPi() \
             .get_cpu_temperature()
 
+        rig_hardware = HardwareFactory.getRig()
+
         if (self.mission_time_started):
             mission_time = timestamp - self.mission_time
         else:
@@ -58,6 +60,10 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             timestamp = timestamp,
             cpu_temperature_degC = cpu_temp,
             mission_time_ms = mission_time,
+            x_servo_moving = rig_hardware.isXMoving(),
+            y_servo_moving = rig_hardware.isYMoving(),
+            rig_x = rig_hardware.getPosition()[0],
+            rig_y = rig_hardware.getPosition()[1],
             mode = self.mode)
 
     def RigMove(self, request, context):
@@ -97,6 +103,40 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
         self.mission_time = timestamp
         self.mission_time_started = True
+        
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)
+
+    def StartHomeX (self, request, context):
+        timestamp = int(time.time()*1000)
+        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
+           (self.mission_time_started): # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+
+        rig_hardware = HardwareFactory.getRig()
+        rig_hardware.homeX()
+        
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)
+
+    def StartHomeY (self, request, context):
+        timestamp = int(time.time()*1000)
+        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
+           (self.mission_time_started): # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+
+        rig_hardware = HardwareFactory.getRig()
+        rig_hardware.homeY()
         
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,

@@ -7,16 +7,17 @@ import grpc
 
 from .generated import mission_control_pb2, mission_control_pb2_grpc
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QTimer,QDateTime
+from PySide6 import QtCore, QtWidgets, QtGui
+from PySide6.QtCore import QTimer, Signal
 
-from QLed import QLed
+from qt_material import apply_stylesheet
 
 from datetime import datetime, timedelta
 import time
 import configparser
 
 from . import mode_display, status_display, startup_diagnostics_display
+from . import hole_position_display
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -32,8 +33,7 @@ GRPC_CALL_TIMEOUT   = \
 
 
 class RPiHeartBeat(QtCore.QThread):
-    heartbeat_done = QtCore.pyqtSignal(object)
-
+    done = Signal(object)
     def __init__(self):
         QtCore.QThread.__init__(self)
         
@@ -53,12 +53,11 @@ class RPiHeartBeat(QtCore.QThread):
         except Exception as e:
             info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
-            
-        self.heartbeat_done.emit(response)
 
+        self.done.emit(response)
+            
 
 class EmergencyStopThread(QtCore.QThread):
-    command_done = QtCore.pyqtSignal(object)
     
     def __init__(self):
         QtCore.QThread.__init__(self)
@@ -81,14 +80,13 @@ class EmergencyStopThread(QtCore.QThread):
             info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
             
-        self.command_done.emit(response)
-
+        
 class MainWindow(QtWidgets.QWidget):
 
     def _initEmergencyStop(self):
         self.emergency_button = QtWidgets.QPushButton('EMERGENCY STOP [ESC]', self)
         self.emergency_button.setIcon(QtGui.QIcon('./blueprint/Big_Red_Button.png'))
-        self.emergency_button.setIconSize(QtCore.QSize(50,50))
+        self.emergency_button.setIconSize(QtCore.QSize(30,30))
         self.emergency_button.setMinimumHeight(75)
         self.main_grid_layout.addWidget(
             self.emergency_button, 0, 0, 1, 1)
@@ -101,7 +99,7 @@ class MainWindow(QtWidgets.QWidget):
         self.status_layout = QtWidgets.QVBoxLayout()
         self.status_groupbox.setLayout(self.status_layout)
         self.main_grid_layout.addWidget(
-            self.status_groupbox, 3, 0, 2, 1)
+            self.status_groupbox, 3, 0, 7, 1)
 
         self.status_display = status_display.StatusDisplay(
             self.status_layout)
@@ -111,7 +109,7 @@ class MainWindow(QtWidgets.QWidget):
         layout = QtWidgets.QGridLayout()
         self.startup_diagnostics_groupbox.setLayout(layout)
         self.main_grid_layout.addWidget(
-            self.startup_diagnostics_groupbox, 0, 1, 3, 5)
+            self.startup_diagnostics_groupbox, 0, 1, 4, 5)
 
         self.startup_display = startup_diagnostics_display.StartupDiagnosticsDisplay(layout)
 
@@ -132,11 +130,23 @@ class MainWindow(QtWidgets.QWidget):
         self._initModeDisplay()
         self._initStatusDisplay()
         self._initDiagnostics()
+        self._initHolePos()
         self.setLayout(self.main_grid_layout)
         
         self.heartbeat_timer=QTimer()
         self.heartbeat_timer.timeout.connect(self.onHeartBeat)
         self.startHeartBeatTimer()
+
+    def _initHolePos(self):
+        self.hole_pos_groupbox = QtWidgets.QGroupBox("Rig Holes and Position")
+        self.hole_pos_layout = QtWidgets.QGridLayout()
+        self.hole_pos_groupbox.setLayout(self.hole_pos_layout)
+        self.main_grid_layout.addWidget(
+            self.hole_pos_groupbox, 4, 1, 6, 10)
+
+        self.hole_pos_display = hole_position_display.HolePositionDisplay(
+            self.hole_pos_layout
+        )
 
     def emergency_stop(self):
         self.threads = []
@@ -151,14 +161,16 @@ class MainWindow(QtWidgets.QWidget):
     def onHeartBeat(self):
         self.threads = []
         client_thread = RPiHeartBeat()
-        client_thread.heartbeat_done.connect(self.on_heartbeat_received)
+        client_thread.done.connect(self.on_heartbeat_received)
         self.threads.append(client_thread)
         client_thread.start()
 
+    @QtCore.Slot(object)
     def on_heartbeat_received(self, response):
         if (response != None):
             self.mode_display.update_mode(response.mode)
         self.status_display.update_status(response)
+        self.hole_pos_display.update_display(response)
             
     def on_data_ready(self, data):
         print(data)
@@ -173,6 +185,11 @@ class MainWindow(QtWidgets.QWidget):
         
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
+    #apply_stylesheet(app, theme='light_blue.xml')
+    apply_stylesheet(app, theme='dark_teal.xml')
+    QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
+    QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps)
+    
     window = MainWindow()
     window.resize(1500, 740)
     window.show()

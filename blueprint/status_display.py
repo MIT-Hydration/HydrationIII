@@ -12,10 +12,8 @@ __maintainer__ = "Prakash Manandhar"
 __email__ = "engineer.manandhar@gmail.com"
 __status__ = "Production"
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QTimer,QDateTime
+from PySide6 import QtCore, QtWidgets, QtGui
 
-from QLed import QLed
 from datetime import datetime, timedelta
 import time
 
@@ -46,39 +44,38 @@ class StatusDisplay:
             ("Mission Time (H:M:S)", True, 80*60*60*1000, 100*60*60*1000),
             ("Round Trip Time (ms)", True, 300, 5000),
         ]
-        self.leds = [None] * len(self.status_list)
+        self.checkboxes = [None] * len(self.status_list)
         self.values = [None] * len(self.status_list)
         self.layout = layout
+        self.layout.setSpacing(0.5)
         self._initStatusWidgets()
         
     def _addStatus(self, i):
         h_layout = QtWidgets.QHBoxLayout()
-        led = QLed(onColour=QLed.Green, shape=QLed.Circle)
-        self.leds[i] = led
-        led.setMaximumHeight(20)
-        led.setMaximumWidth(20)
-        h_layout.addWidget(led)
         description = self.status_list[i][0]
         if self.status_list[i][1]:
-            description += ":"
-        h_layout.addWidget(QtWidgets.QLabel(description))
+            description += ":     "
+        checkbox = QtWidgets.QCheckBox(description)
+        self.checkboxes[i] = checkbox
+        h_layout.addWidget(checkbox)
         if self.status_list[i][1]:
             self.values[i] = QtWidgets.QLabel("N/A")
             h_layout.addWidget(self.values[i])
-        
-        h_layout.addStretch(5)
         self.layout.addLayout(h_layout)
 
     def _initStatusWidgets(self):
         for i in range(len(self.status_list)):
             self._addStatus(i)
-        self.layout.addStretch(5)
 
-
+    def _update_bool(self, i, name, check_value):
+        if (self.status_list[i][0] != name):
+            raise IndexError(f"{name} not at right index")
+        self.checkboxes[i].setChecked(check_value)
+    
     def _update_value(self, i, v, fstr, name, check_value):
         if (self.status_list[i][0] != name):
             raise IndexError(f"{name} not at right index")
-        self.leds[i].value = True
+        self.checkboxes[i].setChecked(True)
         if (self.status_list[i][1]):
             self.values[i].setText(fstr%v)
             if check_value:
@@ -92,7 +89,13 @@ class StatusDisplay:
 
     def update_status(self, response):
         if (response != None):
-            self._update_value(0, True, "", "System HeartBeat", False)
+            self._update_bool(0, "System HeartBeat", True)
+            for i in [1, 2, 3, 4, 5, 8, 9, 10, 11]:
+                self.checkboxes[i].setChecked(False)
+            
+            self._update_bool(6, "X servo", response.x_servo_moving)
+            self._update_bool(7, "Y servo", response.y_servo_moving)
+            
             self._update_value(12, response.cpu_temperature_degC,
                                  "%0.2f [degC]", "CPU Temp (degC)", True)
             mission_time = timedelta(milliseconds=int(response.mission_time_ms / 1000)*1000)
@@ -100,8 +103,7 @@ class StatusDisplay:
             rtt_time = response.timestamp - response.request_timestamp
             self._update_value(14, rtt_time, "%0.2f [ms]", "Round Trip Time (ms)", True)
             
-
         else:
-            for l in self.leds:
-                l.value = False
+            for c in self.checkboxes:
+                c.setChecked(False)
 

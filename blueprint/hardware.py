@@ -28,24 +28,41 @@ if config.getboolean('Operating System', 'RunningInRPi'):
     from gpiozero import PWMLED
     from gpiozero import CPUTemperature
 
-from . import RPiHardware
+from . import RPiHardware, rig_hardware
 
 class HardwareFactory:
-    
+
+    drill = None
+    rpi = None
+    rig = None
+
     @classmethod
     def getDrill(cls):
-        if (config.getboolean('Mocks', 'MockDrill')):
-            return MockDrill()
-        else:
-            return Drill()
+        if cls.drill is None:
+            if (config.getboolean('Mocks', 'MockDrill')):
+                cls.drill = MockDrill()
+            else:
+                cls.drill = Drill()
+        return cls.drill
     
     @classmethod
     def getMissionControlRPi(cls):
-        if (config.getboolean('Mocks', 'MockMissionControlRPi')):
-            return RPiHardware.MockRPiHardware()
-        else:
-            return RPiHardware.RPiHardware()
+        if cls.rpi is None:
+            if (config.getboolean('Mocks', 'MockMissionControlRPi')):
+                cls.rpi = RPiHardware.MockRPiHardware()
+            else:
+                cls.rpi = RPiHardware.RPiHardware()
+        return cls.rpi
 
+    @classmethod
+    def getRig(cls):
+        if cls.rig is None:
+            if (config.getboolean('Mocks', 'MockRig')):
+                cls.rig = rig_hardware.MockRigHardware()
+            else:
+                cls.rig = rig_hardware.RigHardware()
+        return cls.rig
+    
 class AbstractDrill(ABC):
 
     @abstractmethod

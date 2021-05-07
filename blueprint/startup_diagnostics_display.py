@@ -12,10 +12,8 @@ __maintainer__ = "Marcellin Feasson"
 __email__ = "feasson.marcellin@gmail.com"
 __status__ = "Production"
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QTimer,QDateTime
+from PySide6 import QtCore, QtWidgets, QtGui
 
-from QLed import QLed
 from datetime import datetime, timedelta
 import time
 import configparser
@@ -35,9 +33,7 @@ MC_IP_ADDRESS_PORT = \
 GRPC_CALL_TIMEOUT   = \
     config.getint('Network', 'GRPCTimeout')
 
-class StartMissionClockThread(QtCore.QThread):
-    command_done = QtCore.pyqtSignal(object)
-    
+class StartMissionClockThread(QtCore.QThread):    
     def __init__(self):
         QtCore.QThread.__init__(self)
         
@@ -59,11 +55,7 @@ class StartMissionClockThread(QtCore.QThread):
             info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
             
-        self.command_done.emit(response)
-
-class StartHomeZ1Thread(QtCore.QThread):
-    command_done = QtCore.pyqtSignal(object)
-    
+class StartHomeZ1Thread(QtCore.QThread):    
     def __init__(self):
         QtCore.QThread.__init__(self)
         
@@ -84,12 +76,8 @@ class StartHomeZ1Thread(QtCore.QThread):
         except Exception as e:
             info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
-            
-        self.command_done.emit(response)
 
-class StartHomeZ2Thread(QtCore.QThread):
-    command_done = QtCore.pyqtSignal(object)
-    
+class StartHomeZ2Thread(QtCore.QThread):    
     def __init__(self):
         QtCore.QThread.__init__(self)
         
@@ -111,11 +99,7 @@ class StartHomeZ2Thread(QtCore.QThread):
             info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
             
-        self.command_done.emit(response)
-
-class StartHomeXThread(QtCore.QThread):
-    command_done = QtCore.pyqtSignal(object)
-    
+class StartHomeXThread(QtCore.QThread):    
     def __init__(self):
         QtCore.QThread.__init__(self)
         
@@ -137,11 +121,7 @@ class StartHomeXThread(QtCore.QThread):
             info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
             
-        self.command_done.emit(response)
-
-class StartHomeYThread(QtCore.QThread):
-    command_done = QtCore.pyqtSignal(object)
-    
+class StartHomeYThread(QtCore.QThread):    
     def __init__(self):
         QtCore.QThread.__init__(self)
         
@@ -163,11 +143,7 @@ class StartHomeYThread(QtCore.QThread):
             info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
             
-        self.command_done.emit(response)
-
-class StartSpinDrillMotorThread(QtCore.QThread):
-    command_done = QtCore.pyqtSignal(object)
-    
+class StartSpinDrillMotorThread(QtCore.QThread):    
     def __init__(self):
         QtCore.QThread.__init__(self)
         
@@ -189,11 +165,7 @@ class StartSpinDrillMotorThread(QtCore.QThread):
             info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
             
-        self.command_done.emit(response)
-
 class StopSpinDrillMotorThread(QtCore.QThread):
-    command_done = QtCore.pyqtSignal(object)
-    
     def __init__(self):
         QtCore.QThread.__init__(self)
         
@@ -215,11 +187,7 @@ class StopSpinDrillMotorThread(QtCore.QThread):
             info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
             
-        self.command_done.emit(response)
-
 class StartSpinPumpThread(QtCore.QThread):
-    command_done = QtCore.pyqtSignal(object)
-    
     def __init__(self):
         QtCore.QThread.__init__(self)
         
@@ -240,12 +208,8 @@ class StartSpinPumpThread(QtCore.QThread):
         except Exception as e:
             info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
-            
-        self.command_done.emit(response)
 
 class StopSpinPumpThread(QtCore.QThread):
-    command_done = QtCore.pyqtSignal(object)
-    
     def __init__(self):
         QtCore.QThread.__init__(self)
         
@@ -266,12 +230,8 @@ class StopSpinPumpThread(QtCore.QThread):
         except Exception as e:
             info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
-            
-        self.command_done.emit(response)
 
 class StartHeaterThread(QtCore.QThread):
-    command_done = QtCore.pyqtSignal(object)
-    
     def __init__(self):
         QtCore.QThread.__init__(self)
         
@@ -292,12 +252,8 @@ class StartHeaterThread(QtCore.QThread):
         except Exception as e:
             info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
-            
-        self.command_done.emit(response)
 
 class StopHeaterThread(QtCore.QThread):
-    command_done = QtCore.pyqtSignal(object)
-    
     def __init__(self):
         QtCore.QThread.__init__(self)
         
@@ -318,12 +274,11 @@ class StopHeaterThread(QtCore.QThread):
         except Exception as e:
             info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
-            
-        self.command_done.emit(response)
 
 def _changeStyle(button):
-    #button.setStyleSheet("background-color: green")
-    button.setText(button.text() + " [x]")
+    button.setStyleSheet("color: '#dc3545'")
+    #button.setText(button.text() + " [x]")
+    #button.setChecked(True)
 
 class StartupDiagnosticsDisplay:
 
