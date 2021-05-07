@@ -40,6 +40,6 @@ class HolePositionDisplay(QtWidgets.QWidget):
 
     def update_display(self, response):
         if (response != None):    
-            print(response.rig_x)
-            print(response.rig_y)  
+            #print(response.rig_x)
+            #print(response.rig_y)  
             self.scatter.setData([response.rig_x], [response.rig_y])
