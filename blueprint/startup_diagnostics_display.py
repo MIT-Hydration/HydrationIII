@@ -14,7 +14,6 @@ __status__ = "Production"
 
 from PySide6 import QtCore, QtWidgets, QtGui
 
-#from QLed import QLed
 from datetime import datetime, timedelta
 import time
 import configparser
@@ -277,8 +276,9 @@ class StopHeaterThread(QtCore.QThread):
             print(info)
 
 def _changeStyle(button):
-    #button.setStyleSheet("background-color: green")
-    button.setText(button.text() + " [x]")
+    button.setStyleSheet("color: '#dc3545'")
+    #button.setText(button.text() + " [x]")
+    #button.setChecked(True)
 
 class StartupDiagnosticsDisplay:
 

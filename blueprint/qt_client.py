@@ -16,7 +16,7 @@ from datetime import datetime, timedelta
 import time
 import configparser
 
-from . import mode_display#, status_display, startup_diagnostics_display
+from . import mode_display, status_display, startup_diagnostics_display
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -84,7 +84,7 @@ class MainWindow(QtWidgets.QWidget):
     def _initEmergencyStop(self):
         self.emergency_button = QtWidgets.QPushButton('EMERGENCY STOP [ESC]', self)
         self.emergency_button.setIcon(QtGui.QIcon('./blueprint/Big_Red_Button.png'))
-        self.emergency_button.setIconSize(QtCore.QSize(50,50))
+        self.emergency_button.setIconSize(QtCore.QSize(30,30))
         self.emergency_button.setMinimumHeight(75)
         self.main_grid_layout.addWidget(
             self.emergency_button, 0, 0, 1, 1)
@@ -97,7 +97,7 @@ class MainWindow(QtWidgets.QWidget):
         self.status_layout = QtWidgets.QVBoxLayout()
         self.status_groupbox.setLayout(self.status_layout)
         self.main_grid_layout.addWidget(
-            self.status_groupbox, 3, 0, 2, 1)
+            self.status_groupbox, 4, 0, 7, 1)
 
         self.status_display = status_display.StatusDisplay(
             self.status_layout)
@@ -107,7 +107,7 @@ class MainWindow(QtWidgets.QWidget):
         layout = QtWidgets.QGridLayout()
         self.startup_diagnostics_groupbox.setLayout(layout)
         self.main_grid_layout.addWidget(
-            self.startup_diagnostics_groupbox, 0, 1, 3, 5)
+            self.startup_diagnostics_groupbox, 0, 1, 7, 5)
 
         self.startup_display = startup_diagnostics_display.StartupDiagnosticsDisplay(layout)
 
@@ -116,7 +116,7 @@ class MainWindow(QtWidgets.QWidget):
         self.mode_layout = QtWidgets.QVBoxLayout()
         self.mode_groupbox.setLayout(self.mode_layout)
         self.main_grid_layout.addWidget(
-            self.mode_groupbox, 1, 0, 2, 1)
+            self.mode_groupbox, 1, 0, 3, 1)
 
         self.mode_display = mode_display.ModeDisplay(
             self.mode_layout)
@@ -126,8 +126,8 @@ class MainWindow(QtWidgets.QWidget):
         self.main_grid_layout = QtWidgets.QGridLayout()
         self._initEmergencyStop()
         self._initModeDisplay()
-        #self._initStatusDisplay()
-        #self._initDiagnostics()
+        self._initStatusDisplay()
+        self._initDiagnostics()
         self.setLayout(self.main_grid_layout)
         
         self.heartbeat_timer=QTimer()
@@ -155,7 +155,7 @@ class MainWindow(QtWidgets.QWidget):
     def on_heartbeat_received(self, response):
         if (response != None):
             self.mode_display.update_mode(response.mode)
-        #self.status_display.update_status(response)
+        self.status_display.update_status(response)
             
     def on_data_ready(self, data):
         print(data)
@@ -170,7 +170,7 @@ class MainWindow(QtWidgets.QWidget):
         
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    apply_stylesheet(app, theme='dark_teal.xml')
+    apply_stylesheet(app, theme='light_blue.xml')
     
     window = MainWindow()
     window.resize(1500, 740)

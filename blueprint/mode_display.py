@@ -63,6 +63,7 @@ class ModeDisplay(QtWidgets.QWidget):
         client_thread.start()
         self.modes = []
         self.layout = layout
+        layout.setSpacing(0.5)
         
     def _initStatusWidgets(self):
         print("Initializing Status Widgets")
