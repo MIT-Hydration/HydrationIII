@@ -12,8 +12,7 @@ __maintainer__ = "Prakash Manandhar"
 __email__ = "engineer.manandhar@gmail.com"
 __status__ = "Production"
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QTimer,QDateTime
+from PySide6 import QtCore, QtWidgets, QtGui
 
 from QLed import QLed
 from datetime import datetime, timedelta

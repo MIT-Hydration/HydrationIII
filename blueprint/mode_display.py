@@ -12,10 +12,9 @@ __maintainer__ = "Prakash Manandhar"
 __email__ = "engineer.manandhar@gmail.com"
 __status__ = "Production"
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QTimer,QDateTime
+from PySide6 import QtCore, QtWidgets, QtGui
+from PySide6.QtCore import Signal
 
-from QLed import QLed
 from datetime import datetime, timedelta
 import time
 import configparser
@@ -34,8 +33,7 @@ GRPC_CALL_TIMEOUT   = \
     config.getint('Network', 'GRPCTimeout')
 
 class ModesFetchThread(QtCore.QThread):
-    done = QtCore.pyqtSignal(object)
-
+    done = Signal(object)
     def __init__(self):
         QtCore.QThread.__init__(self)
         
@@ -56,8 +54,7 @@ class ModesFetchThread(QtCore.QThread):
             info = f"Error connecting to Mission Control Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
 
-class ModeDisplay:
-
+class ModeDisplay(QtWidgets.QWidget):
     def __init__(self, layout):
         self.threads = []
         client_thread = ModesFetchThread()
@@ -67,24 +64,17 @@ class ModeDisplay:
         self.modes = []
         self.layout = layout
         
-    def _addStatus(self, led, description):
-        h_layout = QtWidgets.QHBoxLayout()
-        h_layout.addWidget(led)
-        h_layout.addWidget(QtWidgets.QLabel(description))
-        h_layout.addStretch(5)
-        led.setMaximumHeight(20)
-        led.setMaximumWidth(20)
-        self.layout.addLayout(h_layout)
-
     def _initStatusWidgets(self):
-        self.mode_leds = []
+        print("Initializing Status Widgets")
+        self.mode_radios = []
         for i in range(len(self.modes)):
-            self.mode_leds.append(
-                    QLed(onColour=QLed.Green, shape=QLed.Circle)
-                )
-            self._addStatus(self.mode_leds[i], self.mode_labels[i])
+            self.mode_radios.append(
+                     QtWidgets.QRadioButton(self.mode_labels[i])
+                 )
+            self.layout.addWidget(self.mode_radios[i])
         self.layout.addStretch(5)
 
+    @QtCore.Slot(object)
     def _on_modes_fetch_done(self, response):
         self.modes = response.modes
         self.mode_labels = response.mode_labels
@@ -92,7 +82,8 @@ class ModeDisplay:
 
     def update_mode(self, mode):
         for i in range(len(self.modes)):
-            if (self.modes[i] == mode):
-                self.mode_leds[i].value = True
-            else:
-                self.mode_leds[i].value = False
+             if (self.modes[i] == mode):
+                 self.mode_radios[i].setChecked(True)
+             else:
+                 self.mode_radios[i].setChecked(False)
+        pass

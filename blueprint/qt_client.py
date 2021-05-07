@@ -7,16 +7,16 @@ import grpc
 
 from .generated import mission_control_pb2, mission_control_pb2_grpc
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QTimer,QDateTime
+from PySide6 import QtCore, QtWidgets, QtGui
+from PySide6.QtCore import QTimer, Signal
 
-from QLed import QLed
+from qt_material import apply_stylesheet
 
 from datetime import datetime, timedelta
 import time
 import configparser
 
-from . import mode_display, status_display, startup_diagnostics_display
+from . import mode_display#, status_display, startup_diagnostics_display
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -32,8 +32,7 @@ GRPC_CALL_TIMEOUT   = \
 
 
 class RPiHeartBeat(QtCore.QThread):
-    heartbeat_done = QtCore.pyqtSignal(object)
-
+    done = Signal(object)
     def __init__(self):
         QtCore.QThread.__init__(self)
         
@@ -49,16 +48,14 @@ class RPiHeartBeat(QtCore.QThread):
                     timeout = GRPC_CALL_TIMEOUT )
                 print("Mission Control RPi HeartBeat received at: " + str(datetime.now()))
                 print(response)
+                self.done.emit(response)
         
         except Exception as e:
             info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
             
-        self.heartbeat_done.emit(response)
-
 
 class EmergencyStopThread(QtCore.QThread):
-    command_done = QtCore.pyqtSignal(object)
     
     def __init__(self):
         QtCore.QThread.__init__(self)
@@ -81,8 +78,7 @@ class EmergencyStopThread(QtCore.QThread):
             info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
             
-        self.command_done.emit(response)
-
+        
 class MainWindow(QtWidgets.QWidget):
 
     def _initEmergencyStop(self):
@@ -130,8 +126,8 @@ class MainWindow(QtWidgets.QWidget):
         self.main_grid_layout = QtWidgets.QGridLayout()
         self._initEmergencyStop()
         self._initModeDisplay()
-        self._initStatusDisplay()
-        self._initDiagnostics()
+        #self._initStatusDisplay()
+        #self._initDiagnostics()
         self.setLayout(self.main_grid_layout)
         
         self.heartbeat_timer=QTimer()
@@ -151,14 +147,15 @@ class MainWindow(QtWidgets.QWidget):
     def onHeartBeat(self):
         self.threads = []
         client_thread = RPiHeartBeat()
-        client_thread.heartbeat_done.connect(self.on_heartbeat_received)
+        client_thread.done.connect(self.on_heartbeat_received)
         self.threads.append(client_thread)
         client_thread.start()
 
+    @QtCore.Slot(object)
     def on_heartbeat_received(self, response):
         if (response != None):
             self.mode_display.update_mode(response.mode)
-        self.status_display.update_status(response)
+        #self.status_display.update_status(response)
             
     def on_data_ready(self, data):
         print(data)
@@ -173,6 +170,8 @@ class MainWindow(QtWidgets.QWidget):
         
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
+    apply_stylesheet(app, theme='dark_teal.xml')
+    
     window = MainWindow()
     window.resize(1500, 740)
     window.show()
