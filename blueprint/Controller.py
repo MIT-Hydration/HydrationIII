@@ -192,7 +192,29 @@ class Pump(AbstractPump):
                 else:  # if flow is sufficient
                     print("Pumping")
                     self.run_pump()
-
+                    
+        # def run(self):
+        #     self.stopped = False
+        #     while not self.stopped:
+        #         self.set_sensor()
+        #         #print("Setting sensor succeeded")
+        #         starttime = time.time()
+        #         limit_time = 900  # limit time = 15 min for now mais à définir avec MIT
+        #         lowerbound_flow = 0.5
+        #         flow_time = 5
+        #         while not self.stopped:
+        #             pumping_time = time.time() - starttime
+        #             print(str(len(self.flow) - 1) + str(len(self.flow) - 2))
+        #             actual_flow = (self.flow[len(self.flow) - 1] + self.flow[len(self.flow) - 2]) / 2
+        #             #if limit_time > pumping_time > flow_time and actual_flow < lowerbound_flow:
+        #             if pumping_time < limit_time and actual_flow < lowerbound_flow and pumping_time > flow_time:
+        #                 self.cleaning_sequence()
+        #             if pumping_time > limit_time and actual_flow < lowerbound_flow:  # means no more ice, stop the pump
+        #                 break
+        #             else:  # if flow is sufficient
+        #                 print("Pumping")
+        #                 self.run_pump()
+        
         def stop(self):
             self.stopped = True
 
