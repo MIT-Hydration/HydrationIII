@@ -22,7 +22,7 @@ Test to make sure that the server is accesible and running without GUI complicat
 
 ```
 ssh hydration@96.237.232.240 -p1337
-ssh hydration@172.20.10.2 -p1337 # prakash's verizon phone hotspot
+ssh hydration@174.249.33.221 -p1337 # prakash's verizon phone hotspot
 ssh hydration@192.168.1.196 -p1337
 ```
 # Installation
