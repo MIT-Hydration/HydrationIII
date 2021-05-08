@@ -20,9 +20,11 @@ Test to make sure that the server is accesible and running without GUI complicat
 
 ### Connecting through ssh
 
-`ssh hydration@96.237.232.240 -p1337`
-`ssh hydration@192.168.1.196 -p1337`
-
+```
+ssh hydration@96.237.232.240 -p1337
+ssh hydration@172.20.10.2 -p1337 # prakash's verizon phone hotspot
+ssh hydration@192.168.1.196 -p1337
+```
 # Installation
 
 Steps that I did (you may need slightly different steps based on OS/hardware):
