@@ -19,4 +19,5 @@ class Server:
         mission_control_pb2_grpc.add_MissionControlServicer_to_server(MissionController(), server)
         server.add_insecure_port('0.0.0.0:50051')
         server.start()
+        print("Mission Control Server Started [OK], Use Ctrl-C to close")
         server.wait_for_termination()
