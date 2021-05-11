@@ -16,14 +16,14 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 if config.getboolean('Operating System', 'RunningInRPi'):
-    from gpiozero import PWMLED
+    from gpiozero import PWMLED, DigitalInputDevice
     import RPi.GPIO as GPIO
 
 PUL = 13  # Stepper Drive Pulses to GPIO 13 (PWM-1)
 # Controller Direction Bit (High for Controller default / LOW to Force a Direction Change).
 DIR = 27
 ENA = 22  # Controller Enable Bit (High to Enable / LOW to Disable).
-#SIG = 26  # Pin receiving the Hall Effect signal
+SIG = 26  # Pin receiving the Hall Effect signal
 
 #GPIO.setmode(GPIO.BCM)
 
@@ -162,6 +162,34 @@ class Pump(AbstractPump):
     duration = 400
     delay = 0.0000001
     pump_pwm = PWMLED(PUL)
+
+    class FlowSensorThread(threading.Thread):
+        input_pin = DigitalInputDevice(SIG)
+        N = 1000
+
+        def __init__(self):
+            threading.Thread.__init__(self)
+            self.stopped = True
+            # to store data for 1 s at 1 ms sample time
+            self.pulse_array = [0]*self.N 
+
+         def run(self):
+            self.stopped = False
+            while not self.stopped:
+                loop_start = time.time()
+                v = self.input_pin.value
+                self.pulse_array[:]=self.pulse_array[1:self.N]+arr[0:1]
+                self.pulse_array[-1] = v
+                loop_end = time.time()
+                delta_time = loop_end - loop_start
+                if (delta_time < 0.001):
+                    time.sleep(0.001 - delta_time)
+                
+        def stop(self):
+            self.stopped = True
+
+        def get_flow_rate_lpm(self):
+            return 0.0
 
     def set_direction(self, direction):
         if direction == 1:
