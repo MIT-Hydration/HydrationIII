@@ -318,6 +318,9 @@ class Pump(AbstractPump):
         # return 300 rpm in mlps once we have the mapping
         pass
 
+    def __init__(self):
+        self.pump_pwm.value = 0.0
+
     def set_speed_pom(self, speedpom):
         self.speedpom = speedpom
         if speedpom < 1.0:
