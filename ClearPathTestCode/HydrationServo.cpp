@@ -16,7 +16,7 @@ using namespace sFnd;
 #define NUM_MOTORS_MAX 4
 
 SysManager myMgr;	//Create System Manager myMgr
-(INode *) pTheNode[NUM_MOTORS_MAX] ;       // Pointer to the Node
+INode * pTheNode[NUM_MOTORS_MAX] ;       // Pointer to the Node
 unsigned numNodesDetected = -1;
 
 double _get_position(unsigned long i){
@@ -66,8 +66,8 @@ static PyObject *get_motor_id(PyObject *self, PyObject *args) {
     return NULL;
   }
   if (i >= numNodesDetected) return NULL;
-  theNode = *(pTheNode[i]);
-  return PyUnicode_FromString((unsigned long)theNode.Info.UserID.Value());
+  INode &theNode = *(pTheNode[i]);
+  return PyUnicode_FromString(theNode.Info.UserID.Value());
 }
 
 static PyObject *set_speed_rpm(PyObject *self, PyObject *args) {
