@@ -9,6 +9,11 @@ from time import sleep  # this lets us have a time delay
 import time
 from abc import ABC, abstractmethod  # https://docs.python.org/3/library/abc.html
 
+import configparser
+
+config = configparser.ConfigParser()
+config.read('config.ini')
+
 if config.getboolean('Operating System', 'RunningInRPi'):
     from gpiozero import PWMLED
     import RPi.GPIO as GPIO
@@ -152,7 +157,6 @@ class MockPump(AbstractPump):
     #
     # def set_mode(self, mode):
     #     pass
-
 
 class Pump(AbstractPump):
     duration = 400
