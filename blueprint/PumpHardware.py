@@ -94,7 +94,6 @@ class AbstractPump(ABC):
     def get_speed_pom(self):
         pass
 
-
 class MockPump(AbstractPump):
     duration = 400
     delay = 0.0000001
@@ -164,87 +163,6 @@ class Pump(AbstractPump):
     delay = 0.0000001
     pump_pwm = PWMLED(PUL)
 
-    class PumpThread(threading.Thread):
-        def __init__(self):
-            threading.Thread.__init__(self)
-            self.set_speed_mlps(0)
-            self.set_speed_pom(33)
-            self.direction = 0
-            self.flow = [10, 10, 10]
-            self.voltage = []  # the array that will contain the direct voltage values from the sensor (MCP3008)
-            self.N = 0
-            self.N_flow = 0
-            self.delta_t = 1
-            #self.mode = PumpMode()
-            self.stopped = True
-
-        def run(self):
-            #should this be before or after the while not self.stopped?
-            self.set_sensor()
-            print("Setting sensor succeeded")
-            starttime = time.time()
-            limit_time = 900  # limit time = 15 min for now mais à définir avec MIT
-            lowerbound_flow = 0.5
-            flow_time = 5
-            self.stopped = False
-            while not self.stopped:
-                #while True:
-                pumping_time = time.time() - starttime
-                print(str(len(self.flow) - 1) + str(len(self.flow) - 2))
-                actual_flow = (self.flow[len(self.flow) - 1] + self.flow[len(self.flow) - 2]) / 2
-                #if limit_time > pumping_time > flow_time and actual_flow < lowerbound_flow: ?
-                if pumping_time < limit_time and actual_flow < lowerbound_flow and pumping_time > flow_time:
-                    self.cleaning_sequence()
-                if pumping_time > limit_time and actual_flow < lowerbound_flow:  # means no more ice, stop the pump
-                    break
-                else:  # if flow is sufficient
-                    print("Pumping")
-                    self.run_pump()
-                    
-        # def run(self):
-        #     self.stopped = False
-        #     while not self.stopped:
-        #         self.set_sensor()
-        #         #print("Setting sensor succeeded")
-        #         starttime = time.time()
-        #         limit_time = 900  # limit time = 15 min for now mais à définir avec MIT
-        #         lowerbound_flow = 0.5
-        #         flow_time = 5
-        #         while not self.stopped:
-        #             pumping_time = time.time() - starttime
-        #             print(str(len(self.flow) - 1) + str(len(self.flow) - 2))
-        #             actual_flow = (self.flow[len(self.flow) - 1] + self.flow[len(self.flow) - 2]) / 2
-        #             #if limit_time > pumping_time > flow_time and actual_flow < lowerbound_flow:
-        #             if pumping_time < limit_time and actual_flow < lowerbound_flow and pumping_time > flow_time:
-        #                 self.cleaning_sequence()
-        #             if pumping_time > limit_time and actual_flow < lowerbound_flow:  # means no more ice, stop the pump
-        #                 break
-        #             else:  # if flow is sufficient
-        #                 print("Pumping")
-        #                 self.run_pump()
-        
-        def stop(self):
-            self.stopped = True
-
-    pump_thread = PumpThread()
-
-    def run_pump(self):
-        cycles = 1
-        cyclecount = 0
-        while cyclecount < cycles:
-            GPIO.setup(ENA, GPIO.OUT)
-            GPIO.output(ENA, GPIO.LOW)
-            self.set_direction_reverse()
-            # duration needs to be set like the settings of the stepper driver
-            for x in range(Pump.duration):
-                GPIO.output(PUL, GPIO.HIGH)
-                sleep(Pump.delay)
-                GPIO.output(PUL, GPIO.LOW)
-                sleep(Pump.delay)
-                self.add_flow()
-            cyclecount = (cyclecount + 1)
-
-
     def set_direction(self, direction):
         if direction == 1:
             GPIO.output(DIR, GPIO.LOW)
@@ -254,22 +172,13 @@ class Pump(AbstractPump):
             self.direction = 0
         pass
 
-
-    # def set_direction_forward(self):
-    #     GPIO.output(DIR, GPIO.LOW)
-    #     self.direction = 1
-    #
-    # def set_direction_reverse(self):
-    #     GPIO.output(DIR, GPIO.HIGH)
-    #     self.direction = 0
-
     def get_direction(self):
         return self.direction
 
         # SPEED (Liter per Minute):
 
     def set_speed_mlps(self, speedmlps_value):
-        self.speedlpm = speedlpm_value
+        self.speedlpm = speedmlps_value
         pass
 
     def get_speed_mlps(self):
