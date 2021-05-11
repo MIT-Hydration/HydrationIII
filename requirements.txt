@@ -1,3 +1,4 @@
 pyqtgraph
 PySide6
 qt_material
+pymodbus

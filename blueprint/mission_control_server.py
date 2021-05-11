@@ -126,6 +126,24 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             timestamp = timestamp,
             status = mcpb.EXECUTED)
 
+    def StartSpinPump (self, request, context):
+        timestamp = int(time.time()*1000)
+        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
+           (self.mission_time_started): # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+
+        pump = HardwareFactory.getPump()
+        pump.set_direction(1)
+        pump.set_speed_pom(66)
+        
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)
+
     def StartHomeY (self, request, context):
         timestamp = int(time.time()*1000)
         if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
