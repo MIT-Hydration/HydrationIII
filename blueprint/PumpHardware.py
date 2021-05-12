@@ -17,7 +17,7 @@ PUL = 13  # Stepper Drive Pulses to GPIO 13 (PWM-1)
 # Controller Direction Bit (High for Controller default / LOW to Force a Direction Change).
 DIR = 27
 ENA = 22  # Controller Enable Bit (High to Enable / LOW to Disable).
-SIG = 26  # Pin receiving the Hall Effect signal
+SIG = 6  # Pin receiving the Hall Effect signal
 
 #GPIO.setmode(GPIO.BCM)
 
