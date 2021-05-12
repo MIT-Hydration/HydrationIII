@@ -1,13 +1,8 @@
-# library for the arrays
-import numpy as np
-from numpy import amax
-
-# for the FFT
-from scipy.fft import fft, ifft, fftshift
-
 from time import sleep  # this lets us have a time delay
 import time
 from abc import ABC, abstractmethod  # https://docs.python.org/3/library/abc.html
+
+import numpy
 
 import threading
 import configparser
@@ -162,6 +157,11 @@ class Pump(AbstractPump):
     duration = 400
     delay = 0.0000001
     pump_pwm = PWMLED(PUL)
+    sensor_thread = None
+    speed_rpm = 0
+    MAX_RPM = 150
+    MOTOR_PULSES_PER_REV = 400
+    LITERS_PER_REV = 0.055
 
     class FlowSensorThread(threading.Thread):
         input_pin = DigitalInputDevice(SIG)
@@ -171,14 +171,14 @@ class Pump(AbstractPump):
             threading.Thread.__init__(self)
             self.stopped = True
             # to store data for 1 s at 1 ms sample time
-            self.pulse_array = [0]*self.N 
+            self.pulse_array = numpy.zeros(self.N, dtype=int)
 
          def run(self):
             self.stopped = False
             while not self.stopped:
                 loop_start = time.time()
                 v = self.input_pin.value
-                self.pulse_array[:]=self.pulse_array[1:self.N]+arr[0:1]
+                self.pulse_array = numpy.roll(self.pulse_arrray, -1)
                 self.pulse_array[-1] = v
                 loop_end = time.time()
                 delta_time = loop_end - loop_start
@@ -189,7 +189,15 @@ class Pump(AbstractPump):
             self.stopped = True
 
         def get_flow_rate_lpm(self):
-            return 0.0
+            array_shift = self.pulse_array[1:]
+            array = self.pulse_array[0:-1]
+            delta = array - array_shift
+            count = numpy.count_nonzero(delta < 0)
+            PULSES_PER_LITER = 10500
+            ARRAY_TIME = 1 # second
+            liters_per_second = (count/PULSE_PER_LITER)/ARRAY_TIME
+            liters_per_minute = liters_per_second * 60
+            return liters_per_minute
 
     def set_direction(self, direction):
         if direction == 1:
@@ -203,14 +211,12 @@ class Pump(AbstractPump):
     def get_direction(self):
         return self.direction
 
-        # SPEED (Liter per Minute):
+    # SPEED (Liter per Minute):
+    def set_speed_lpm(self, speed_lpm):
+        self.set_speed_rpm(speed_lpm / self.LITERS_PER_REV)
 
-    def set_speed_mlps(self, speedmlps_value):
-        self.speedlpm = speedmlps_value
-        pass
-
-    def get_speed_mlps(self):
-        return self.speedmlps
+    def get_speed_lpm(self):
+        return self.speed_rpm * self.LITERS_PER_REV
 
     # Stop pump 5 sec, reverse pump 5 sec, stop pump 10 sec to let debris settle /
     # be diluted, normal pump 10 sec, reverse pump 5 sec, stop pump 5 sec, back to normal    pumping
@@ -250,81 +256,33 @@ class Pump(AbstractPump):
                 break
         time.sleep(5)
 
-    # MAXSPEED (Percentage of the Max):
-
-    def get_max_speed(self):
-        # return 300 rpm in mlps once we have the mapping
-        pass
+    def get_max_speed_lpm(self):
+        return 240
 
     def __init__(self):
         self.pump_pwm.value = 0.0
 
     def set_speed_pom(self, speedpom):
-        self.speedpom = speedpom
-        if speedpom < 1.0:
+        speed_rpm = speedpom*self.MAX_RPM/100
+        self.set_speed_rpm(speed_rpm)
+    
+    def set_speed_rpm(self, speed_rpm)
+        self.speed_rpm = speed_rpm
+        if speed_rpm < 1.0:
             self.pump_pwm.value = 0.0
+            self.speed_rpm = 0
         else:
             PULSE_PER_REV = 400.0
-            MAX_SPEED_RPM = 300.0
-            speed_rpm = (speedpom * MAX_SPEED_RPM)/100.0
             speed_rps = speed_rpm/60.0
-            pulse_per_second = speed_rps*PULSE_PER_REV
+            pulse_per_second = speed_rps*self.MOTOR_PULSES_PER_REV
             self.pump_pwm.frequency = pulse_per_second
             self.pump_pwm.value = 0.2
 
+    def get_speed_rpm(self):
+        return self.speed_rpm
+
     def get_speed_pom(self):
-        return self.speedpom
+        return (self.speed_rpm/self.MAX_RPM)*100
 
-    def set_sensor(self):
-        print("Setting up sensor...")
-        self.N = 1000  # variable determining the number of values we want to keep in VOLTAGE array to compute flow #must be even
-        self.N_flow = 1000  # variable determining the number of values we want to keep in FLOW array to compute flow
-        # filling up the first 1000 cases of the array
-        t0 = time.time()
-        while len(self.voltage) < self.N:
-            if GPIO.input(26):
-                self.voltage.append(1)
-            else:
-                self.voltage.append(0)
-            sleep(0.003)
-        t1 = time.time()
-        # variable defining the time between each aquisition (seconds)
-        self.delta_t = (t1 - t0) / self.N
-        print(self.delta_t)
-        pass
-
-    def add_flow(self):
-        print("Computing flow...")
-        self.voltage.pop(1)  # delete first one
-        if GPIO.input(26):
-            self.voltage.append(1)
-        else:
-            self.voltage.append(0)
-            # add one to the back
-        t3 = time.time()
-        # the array for the k-space of the FFT
-        k = np.linspace(-0.5 / self.delta_t, 0.5 / self.delta_t - 1 / (self.N * self.delta_t), num=self.N)
-        # print(channel.voltage)  $
-        trans = abs(fftshift(fft(self.voltage)))  # take the fourier transform
-        # print(trans)
-        frequency = k[np.argmax(trans[501:1000]) + 500]  # take the max close to zero (bc that's the peak that matters)
-        # print(str(np.argmax(trans[501:1000])+500))
-        # file.write(str(np.max(trans[501:1000]))+"\n")
-        if np.amax(trans[501:1000]) < 20:
-            frequency = 0.0
-        # print(frequency)
-        flow_value = frequency / 10500  # turning pulse/second into L/second
-        print(str(flow_value * 1000) + " \n")
-        self.flow.append(
-            flow_value * 1000)  # adding the value of the flow to the array (maybe will be in a file) and putting it in ml/s
-        if len(self.flow) > self.N_flow:
-            self.flow.pop(1)
-        t4 = time.time()
-        print("Flow added")
-        pass
-
-    # def get_mode(self):
-    #     return self.mode
-    #
-    # def set_mode(self, mode):
-    #     self.mode= mode
+    def get_flow_rate_lpm(self):
+        self.sensor_thread.get_flow_rate_lpm()
