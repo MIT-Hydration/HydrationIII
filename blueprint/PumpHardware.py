@@ -71,13 +71,13 @@ class AbstractPump(ABC):
     #     pass
 
     # FILTER CLEANING SEQUENCE:
-    @abstractmethod
-    def cleaning_sequence(self):
-        pass
+    # @abstractmethod
+    # def cleaning_sequence(self):
+    #     pass
 
     # MAXSPEED (Percentage of the Max):
     @abstractmethod
-    def get_max_speed(self):
+    def get_max_speed_rpm(self):
         pass
 
     @abstractmethod
@@ -218,7 +218,7 @@ class Pump(AbstractPump):
     def get_speed_lpm(self):
         return self.speed_rpm * self.LITERS_PER_REV
 
-    def get_max_speed_lpm(self):
+    def get_max_speed_rpm(self):
         return 240
 
     def __init__(self):
