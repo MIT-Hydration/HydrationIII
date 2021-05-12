@@ -55,11 +55,11 @@ class AbstractPump(ABC):
 
     # SPEED (Milli-liter per seconds):
     @abstractmethod
-    def set_speed_mlps(self, speedmlps_value):
+    def set_speed_lpm(self, speed_lpm):
         pass
 
     @abstractmethod
-    def get_speed_mlps(self):
+    def get_speed_lpm(self):
         pass
 
     # @abstractmethod
