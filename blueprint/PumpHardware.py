@@ -12,8 +12,7 @@ config.read('config.ini')
 
 if config.getboolean('Operating System', 'RunningInRPi'):
     from gpiozero import PWMLED, DigitalInputDevice
-    import RPi.GPIO as GPIO
-
+    
 PUL = 13  # Stepper Drive Pulses to GPIO 13 (PWM-1)
 # Controller Direction Bit (High for Controller default / LOW to Force a Direction Change).
 DIR = 27
@@ -217,44 +216,6 @@ class Pump(AbstractPump):
 
     def get_speed_lpm(self):
         return self.speed_rpm * self.LITERS_PER_REV
-
-    # Stop pump 5 sec, reverse pump 5 sec, stop pump 10 sec to let debris settle /
-    # be diluted, normal pump 10 sec, reverse pump 5 sec, stop pump 5 sec, back to normal    pumping
-    # FILTER CLEANING SEQUENCE:
-
-    def cleaning_sequence(self):
-        time.sleep(5)
-        start_time = time.time()
-        seconds = 5
-        while True:
-            current_time = time.time()
-            elapsed_time = current_time - start_time
-            self.set_direction(0)
-            self.run_pump()
-            if elapsed_time > seconds:
-                print("Finished iterating in:" + str(int(elapsed_time)))
-                break
-        time.sleep(10)
-        start_time = time.time()
-        seconds = 10
-        while True:
-            current_time = time.time()
-            elapsed_time = current_time - start_time
-            self.set_direction(1)
-            self.run_pump()
-            if elapsed_time > seconds:
-                print("Finished iterating in:" + str(int(elapsed_time)))
-                break
-        seconds = 5
-        while True:
-            current_time = time.time()
-            elapsed_time = current_time - start_time
-            self.set_direction(0)
-            self.run_pump()
-            if elapsed_time > seconds:
-                print("Finished iterating in:" + str(int(elapsed_time)))
-                break
-        time.sleep(5)
 
     def get_max_speed_lpm(self):
         return 240
