@@ -18,7 +18,7 @@ PUL = 13  # Stepper Drive Pulses to GPIO 13 (PWM-1)
 # Controller Direction Bit (High for Controller default / LOW to Force a Direction Change).
 DIR = 27
 ENA = 22  # Controller Enable Bit (High to Enable / LOW to Disable).
-SIG = 6  # Pin receiving the Hall Effect signal
+SIG = 26  # Pin receiving the Hall Effect signal
 
 GPIO.setmode(GPIO.BCM)
 
@@ -157,7 +157,6 @@ class Pump(AbstractPump):
     duration = 400
     delay = 0.0000001
     pump_pwm = PWMLED(PUL)
-    sensor_thread = None
     speed_rpm = 0
     MAX_RPM = 150
     MOTOR_PULSES_PER_REV = 400
@@ -178,8 +177,9 @@ class Pump(AbstractPump):
             while not self.stopped:
                 loop_start = time.time()
                 v = GPIO.input(SIG)
+                #print(v)
                 #v = 0
-                self.pulse_array = numpy.roll(self.pulse_arrray, -1)
+                self.pulse_array = numpy.roll(self.pulse_array, -1)
                 self.pulse_array[-1] = v
                 loop_end = time.time()
                 delta_time = loop_end - loop_start
@@ -193,13 +193,18 @@ class Pump(AbstractPump):
             array_shift = self.pulse_array[1:]
             array = self.pulse_array[0:-1]
             delta = array - array_shift
-            count = numpy.count_nonzero(delta < 0)
-            PULSES_PER_LITER = 10500
+            count = numpy.count_nonzero(delta < 0.0)
+            #print(count)
+            PULSES_PER_LITER = 10500.0
             ARRAY_TIME = 1 # second
-            liters_per_second = (count/PULSE_PER_LITER)/ARRAY_TIME
+            liters_per_second = (count/PULSES_PER_LITER)/ARRAY_TIME
             liters_per_minute = liters_per_second * 60
+            print(liters_per_minute)
             return liters_per_minute
-
+    
+    sensor_thread = FlowSensorThread()
+    
+    
     def set_direction(self, direction):
         if direction == 1:
             self.direction_pin.value = 1
@@ -223,6 +228,8 @@ class Pump(AbstractPump):
 
     def __init__(self):
         self.pump_pwm.value = 0.0
+        self.set_direction(1)
+        self.sensor_thread.start()
 
     def set_speed_pom(self, speedpom):
         speed_rpm = speedpom*self.MAX_RPM/100
@@ -247,4 +254,4 @@ class Pump(AbstractPump):
         return (self.speed_rpm/self.MAX_RPM)*100
 
     def get_flow_rate_lpm(self):
-        self.sensor_thread.get_flow_rate_lpm()
+        return self.sensor_thread.get_flow_rate_lpm()
