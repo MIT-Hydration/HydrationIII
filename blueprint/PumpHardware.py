@@ -173,7 +173,7 @@ class Pump(AbstractPump):
             # to store data for 1 s at 1 ms sample time
             self.pulse_array = numpy.zeros(self.N, dtype=int)
 
-         def run(self):
+        def run(self):
             self.stopped = False
             while not self.stopped:
                 loop_start = time.time()
@@ -266,7 +266,7 @@ class Pump(AbstractPump):
         speed_rpm = speedpom*self.MAX_RPM/100
         self.set_speed_rpm(speed_rpm)
     
-    def set_speed_rpm(self, speed_rpm)
+    def set_speed_rpm(self, speed_rpm):
         self.speed_rpm = speed_rpm
         if speed_rpm < 1.0:
             self.pump_pwm.value = 0.0
