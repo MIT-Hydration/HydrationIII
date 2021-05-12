@@ -161,10 +161,10 @@ class Pump(AbstractPump):
     MAX_RPM = 150
     MOTOR_PULSES_PER_REV = 400
     LITERS_PER_REV = 0.055
-
+    direction_pin = DigitalOutputDevice(DIR)
+        
     class FlowSensorThread(threading.Thread):
-        input_pin = DigitalInputDevice(SIG)
-        direction_pin = DigitalOutputDevice(DIR)
+        #input_pin = DigitalInputDevice(SIG)
         N = 1000
 
         def __init__(self):
@@ -177,7 +177,8 @@ class Pump(AbstractPump):
             self.stopped = False
             while not self.stopped:
                 loop_start = time.time()
-                v = self.input_pin.value
+                #v = self.input_pin.value
+                v = 0
                 self.pulse_array = numpy.roll(self.pulse_arrray, -1)
                 self.pulse_array[-1] = v
                 loop_end = time.time()
