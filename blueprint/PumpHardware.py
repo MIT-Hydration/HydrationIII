@@ -11,7 +11,7 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 if config.getboolean('Operating System', 'RunningInRPi'):
-    from gpiozero import PWMLED, DigitalInputDevice
+    from gpiozero import PWMLED, DigitalInputDevice, DigitalOutputDevice
     
 PUL = 13  # Stepper Drive Pulses to GPIO 13 (PWM-1)
 # Controller Direction Bit (High for Controller default / LOW to Force a Direction Change).
@@ -164,6 +164,7 @@ class Pump(AbstractPump):
 
     class FlowSensorThread(threading.Thread):
         input_pin = DigitalInputDevice(SIG)
+        direction_pin = DigitalOutputDevice(DIR)
         N = 1000
 
         def __init__(self):
@@ -200,12 +201,11 @@ class Pump(AbstractPump):
 
     def set_direction(self, direction):
         if direction == 1:
-            GPIO.output(DIR, GPIO.LOW)
+            self.direction_pin.value = 1
             self.direction = 1
         if direction == 0:
-            GPIO.output(DIR, GPIO.HIGH)
+            self.direction_pin.value = 0
             self.direction = 0
-        pass
 
     def get_direction(self):
         return self.direction
