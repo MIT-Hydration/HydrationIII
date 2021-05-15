@@ -134,6 +134,7 @@ class MockPump(AbstractPump):
 
     def set_speed_pom(self, speedpom_value):
         self.speedpom = speedpom_value
+        print(f"Setting Mock Speed to {speedpom_value} % of Max")
         pass
 
     def get_speed_pom(self):
@@ -166,7 +167,7 @@ class Pump(AbstractPump):
             self.voltage = []  # the array that will contain the direct voltage values from the sensor (MCP3008)
             self.N = 0
             self.N_flow = 0
-            self.delta_t =
+            self.delta_t = 1
             #self.mode = PumpMode()
             self.stopped = True
 
@@ -321,7 +322,7 @@ class Pump(AbstractPump):
                 self.pump_thread.start()
                 # 100 rpm
                 if speedpom_value == 33:
-                    Pump.delay = 0.00063
+                    Pump.delay = 0.000630
                     self.speedpom = 33
                 # 200 rpm
                 if speedpom_value == 66:
@@ -329,12 +330,12 @@ class Pump(AbstractPump):
                     self.speedpom = 66
                 # 300 rpm
                 if speedpom_value == 100:
-                    Pump.delay = 0.00015
+                    Pump.delay = 0.000150
                     self.speedpom = 100
             if not self.pump_thread.stopped:
                 # 100 rpm
                 if speedpom_value == 33:
-                    Pump.delay = 0.00063
+                    Pump.delay = 0.000630
                     self.speedpom = 33
                 # 200 rpm
                 if speedpom_value == 66:

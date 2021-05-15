@@ -13,17 +13,20 @@ using namespace sFnd;
 #define RPM_PER_MM_PER_SECOND			30
 #define THREAD_PITCH (2.0/1000.0) // meters (2 mm pitch)
 
-SysManager myMgr;	//Create System Manager myMgr
-INode *pTheNode ;       // Pointer to the Node
+#define NUM_MOTORS_MAX 4
 
-double _get_position(){
-  INode &theNode = *(pTheNode);
+SysManager myMgr;	//Create System Manager myMgr
+INode * pTheNode[NUM_MOTORS_MAX] ;       // Pointer to the Node
+unsigned numNodesDetected = -1;
+
+double _get_position(unsigned long i){
+  INode &theNode = *(pTheNode[i]);
   theNode.Motion.PosnMeasured.Refresh();
   double myPosn = (theNode.Motion.PosnMeasured.Value()) / (CNTS_PER_MM * 1000);
   return myPosn;
 }
 
-int _set_drill_speed(double speed){
+int _set_speed_rpm(unsigned long i, double speed){
 	/*
 	Parameters
 	-------------
@@ -33,7 +36,7 @@ int _set_drill_speed(double speed){
 	return 1: set speed successfully
 	-1: did not set speed
 	 */
-  INode &theNode = *(pTheNode);
+  INode &theNode = *(pTheNode[i]);
   theNode.Motion.MoveWentDone(); //Clear the rising edge Move done register
   theNode.AccUnit(INode::RPM_PER_SEC);	//Set the units for Acceleration to RPM/SEC
   theNode.VelUnit(INode::RPM);		//Set the units for Velocity to RPM
@@ -45,19 +48,36 @@ int _set_drill_speed(double speed){
   return 1;
 }
 
-
-static PyObject *get_drill_position(PyObject *self, PyObject *args) {
-  return PyFloat_FromDouble(_get_position());
-}
-
-
-static PyObject *set_drill_speed(PyObject *self, PyObject *args) {
-  double speed;
-  if (!PyArg_ParseTuple(args, "d", &speed)) {
+static PyObject *get_position(PyObject *self, PyObject *args) {
+  unsigned long i;
+  if (!PyArg_ParseTuple(args, "k", &i)) {
     return NULL;
   }
+  return PyFloat_FromDouble(_get_position(i));
+}
 
-  int set_speed = _set_drill_speed(speed);
+static PyObject *get_num_motors(PyObject *self, PyObject *args) {
+	return PyLong_FromUnsignedLong((unsigned long)numNodesDetected);
+}
+
+static PyObject *get_motor_id(PyObject *self, PyObject *args) {
+  unsigned long i;
+  if (!PyArg_ParseTuple(args, "k", &i)) {
+    return NULL;
+  }
+  if (i >= numNodesDetected) return NULL;
+  INode &theNode = *(pTheNode[i]);
+  return PyUnicode_FromString(theNode.Info.UserID.Value());
+}
+
+static PyObject *set_speed_rpm(PyObject *self, PyObject *args) {
+  unsigned long i;
+  double speed;
+  if (!PyArg_ParseTuple(args, "kd", &i, &speed)) {
+    return NULL;
+  }
+  
+  int set_speed = _set_speed_rpm(i, speed);
   if (set_speed > 0)
     Py_RETURN_TRUE;
   else
@@ -65,9 +85,12 @@ static PyObject *set_drill_speed(PyObject *self, PyObject *args) {
 }
 
 static PyMethodDef HydrationServo_methods[] = {
-    {"get_drill_position", get_drill_position, METH_VARARGS, "Returns drill position"},
-    {"set_drill_speed", set_drill_speed, 
-	    METH_VARARGS, "Sets drill speed"},
+    {"get_position", get_position, METH_VARARGS, "Returns servo position"},
+    {"set_speed_rpm", set_speed_rpm, 
+	    METH_VARARGS, "Sets servo speed"},
+	{"get_num_motors", get_num_motors, 
+	    METH_VARARGS, "Returns the number of motors"},
+	{"get_motor_id", get_motor_id, METH_VARARGS, "Returns the ID (Name) of the Motor"},
     {NULL, NULL, 0, NULL}
 };
 
@@ -97,7 +120,8 @@ int connect_clearpath(void) {
   */
 	size_t portCount = 0;
 	std::vector<std::string> comHubPorts;
-	pTheNode = NULL;
+	for (unsigned iNode = 0; iNode < NUM_MOTORS_MAX; iNode++)
+		pTheNode[iNode] = NULL;
 
 	//Create the SysManager object. This object will coordinate actions among various ports
 	// and within nodes. In this example we use this object to setup and open our port.
@@ -148,7 +172,7 @@ int connect_clearpath(void) {
 
 						// Create a shortcut reference for the first node
 				INode &theNode = myPort.Nodes(iNode);
-				pTheNode = &theNode; // store address to the first node
+				pTheNode[iNode] = &theNode; // store address to the first node
 
 				//theNode.EnableReq(false);				//Ensure Node is disabled before starting
 
@@ -173,6 +197,10 @@ int connect_clearpath(void) {
 						return -2;
 					}
 				}
+				numNodesDetected = iNode + 1;
+				// make sure we are not assigning without allocating memory for array
+				// of nodes
+				if(iNode >= NUM_MOTORS_MAX) break; 
 			}
 		}
 	
