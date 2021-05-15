@@ -28,7 +28,7 @@ if config.getboolean('Operating System', 'RunningInRPi'):
     from gpiozero import PWMLED
     from gpiozero import CPUTemperature
 
-from . import RPiHardware, rig_hardware, WaterPumpHardware
+from . import RPiHardware, rig_hardware, PumpHardware
 
 class HardwareFactory:
 
@@ -72,6 +72,15 @@ class HardwareFactory:
             else:
                 cls.rig = rig_hardware.RigHardware()
         return cls.rig
+
+    @classmethod
+    def getWaterPump(cls):
+        if cls.drill is None:
+            if (config.getboolean('Mocks', 'MockWaterPump')):
+                cls.drill = PumpHardware.MockPump()
+            else:
+                cls.drill = PumpHardware.Pump()
+        return cls.drill
     
 class AbstractDrill(ABC):
 

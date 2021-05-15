@@ -21,6 +21,9 @@ run-qt-client:
 run-echo-client:
 	@python3 -m $(MODULE).echo_client
 
+run-water-pump-test:
+	@python3 -m $(MODULE).test.test_water_pump
+
 grpc-gen:
 	@python3 -m grpc_tools.protoc \
 			-I $(MODULE)/proto \
