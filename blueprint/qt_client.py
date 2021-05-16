@@ -1,3 +1,4 @@
+from blueprint import calibration_display
 import sys
 from urllib.request import urlopen
 
@@ -93,35 +94,43 @@ class MainWindow(QtWidgets.QWidget):
         self.emergency_button.clicked.connect \
             (self.emergency_stop)
 
-    
+    def _initModeDisplay(self):
+        self.mode_groupbox = QtWidgets.QGroupBox("Mode Selection")
+        self.mode_layout = QtWidgets.QVBoxLayout()
+        self.mode_groupbox.setLayout(self.mode_layout)
+        self.main_grid_layout.addWidget(
+            self.mode_groupbox, 1, 0, 1, 1)
+
+        self.mode_display = mode_display.ModeDisplay(
+            self.mode_layout)
+  
     def _initStatusDisplay(self):
         self.status_groupbox = QtWidgets.QGroupBox("System Status")
         self.status_layout = QtWidgets.QVBoxLayout()
         self.status_groupbox.setLayout(self.status_layout)
         self.main_grid_layout.addWidget(
-            self.status_groupbox, 3, 0, 7, 1)
+            self.status_groupbox, 2, 0, 5, 1)
 
         self.status_display = status_display.StatusDisplay(
             self.status_layout)
 
     def _initDiagnostics(self):
         self.startup_diagnostics_groupbox = QtWidgets.QGroupBox("P01 Startup and Diagnostics")
-        layout = QtWidgets.QGridLayout()
-        self.startup_diagnostics_groupbox.setLayout(layout)
+        self.diagnostics_layout = QtWidgets.QGridLayout()
+        self.startup_diagnostics_groupbox.setLayout(self.diagnostics_layout)
         self.main_grid_layout.addWidget(
-            self.startup_diagnostics_groupbox, 0, 1, 4, 5)
+            self.startup_diagnostics_groupbox, 0, 1, 2, 5)
 
-        self.startup_display = startup_diagnostics_display.StartupDiagnosticsDisplay(layout)
+        self.startup_display = startup_diagnostics_display.StartupDiagnosticsDisplay(self.diagnostics_layout)
 
-    def _initModeDisplay(self):
-        self.mode_groupbox = QtWidgets.QGroupBox("Mode Selection")
-        self.mode_layout = QtWidgets.QVBoxLayout()
-        self.mode_groupbox.setLayout(self.mode_layout)
+    def _initCalibration(self):
+        self.calibration_groupbox = QtWidgets.QGroupBox("P01 Calibration")
+        self.calibration_layout = QtWidgets.QFormLayout()
+        self.calibration_groupbox.setLayout(self.calibration_layout)
         self.main_grid_layout.addWidget(
-            self.mode_groupbox, 1, 0, 2, 1)
+            self.calibration_groupbox, 0, 6, 2, 5)
 
-        self.mode_display = mode_display.ModeDisplay(
-            self.mode_layout)
+        self.calibration_display = calibration_display.CalibrationDisplay(self.calibration_layout)       
 
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -130,6 +139,7 @@ class MainWindow(QtWidgets.QWidget):
         self._initModeDisplay()
         self._initStatusDisplay()
         self._initDiagnostics()
+        self._initCalibration()
         self._initHolePos()
         self.setLayout(self.main_grid_layout)
         
@@ -142,7 +152,7 @@ class MainWindow(QtWidgets.QWidget):
         self.hole_pos_layout = QtWidgets.QGridLayout()
         self.hole_pos_groupbox.setLayout(self.hole_pos_layout)
         self.main_grid_layout.addWidget(
-            self.hole_pos_groupbox, 4, 1, 6, 10)
+            self.hole_pos_groupbox, 2, 1, 5, 10)
 
         self.hole_pos_display = hole_position_display.HolePositionDisplay(
             self.hole_pos_layout

@@ -191,7 +191,6 @@ service MissionControl {
     rpc StopSpinPump (StartCommandRequest) returns (CommandResponse);
     rpc StartHeater (StartCommandRequest) returns (CommandResponse);
     rpc StopHeater (StartCommandRequest) returns (CommandResponse);
-
     
     rpc RigMove (RigMoveCommandRequest) returns (CommandResponse);
     rpc DrillMode (DrillModeRequest) returns (CommandResponse);
