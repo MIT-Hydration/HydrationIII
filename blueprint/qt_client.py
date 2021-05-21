@@ -1,4 +1,3 @@
-from blueprint import calibration_display
 import sys
 from urllib.request import urlopen
 
@@ -17,7 +16,7 @@ from datetime import datetime, timedelta
 import time
 import configparser
 
-from . import mode_display, status_display, startup_diagnostics_display
+from . import mode_display, status_display, startup_diagnostics_display, limits_display
 from . import hole_position_display
 
 config = configparser.ConfigParser()
@@ -99,7 +98,7 @@ class MainWindow(QtWidgets.QWidget):
         self.mode_layout = QtWidgets.QVBoxLayout()
         self.mode_groupbox.setLayout(self.mode_layout)
         self.main_grid_layout.addWidget(
-            self.mode_groupbox, 1, 0, 1, 1)
+            self.mode_groupbox, 1, 0, 6, 1)
 
         self.mode_display = mode_display.ModeDisplay(
             self.mode_layout)
@@ -109,7 +108,7 @@ class MainWindow(QtWidgets.QWidget):
         self.status_layout = QtWidgets.QVBoxLayout()
         self.status_groupbox.setLayout(self.status_layout)
         self.main_grid_layout.addWidget(
-            self.status_groupbox, 2, 0, 5, 1)
+            self.status_groupbox, 7, 0, 14, 1)
 
         self.status_display = status_display.StatusDisplay(
             self.status_layout)
@@ -119,18 +118,18 @@ class MainWindow(QtWidgets.QWidget):
         self.diagnostics_layout = QtWidgets.QGridLayout()
         self.startup_diagnostics_groupbox.setLayout(self.diagnostics_layout)
         self.main_grid_layout.addWidget(
-            self.startup_diagnostics_groupbox, 0, 1, 2, 5)
+            self.startup_diagnostics_groupbox, 0, 1, 7, 5)
 
         self.startup_display = startup_diagnostics_display.StartupDiagnosticsDisplay(self.diagnostics_layout)
 
-    def _initCalibration(self):
-        self.calibration_groupbox = QtWidgets.QGroupBox("P01 Calibration")
-        self.calibration_layout = QtWidgets.QFormLayout()
-        self.calibration_groupbox.setLayout(self.calibration_layout)
+    def _initLimits(self):
+        self.limits_groupbox = QtWidgets.QGroupBox("P01 Limits")
+        self.limits_layout = QtWidgets.QFormLayout()
+        self.limits_groupbox.setLayout(self.limits_layout)
         self.main_grid_layout.addWidget(
-            self.calibration_groupbox, 0, 6, 2, 5)
+            self.limits_groupbox, 0, 6, 7, 5)
 
-        self.calibration_display = calibration_display.CalibrationDisplay(self.calibration_layout)       
+        self.limits_display = limits_display.LimitsDisplay(self.limits_layout)       
 
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -139,7 +138,7 @@ class MainWindow(QtWidgets.QWidget):
         self._initModeDisplay()
         self._initStatusDisplay()
         self._initDiagnostics()
-        self._initCalibration()
+        self._initLimits()
         self._initHolePos()
         self.setLayout(self.main_grid_layout)
         
@@ -152,7 +151,7 @@ class MainWindow(QtWidgets.QWidget):
         self.hole_pos_layout = QtWidgets.QGridLayout()
         self.hole_pos_groupbox.setLayout(self.hole_pos_layout)
         self.main_grid_layout.addWidget(
-            self.hole_pos_groupbox, 2, 1, 5, 10)
+            self.hole_pos_groupbox, 7, 1, 14, 10)
 
         self.hole_pos_display = hole_position_display.HolePositionDisplay(
             self.hole_pos_layout

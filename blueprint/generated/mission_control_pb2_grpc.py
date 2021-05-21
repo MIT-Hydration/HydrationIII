@@ -124,6 +124,16 @@ class MissionControlStub(object):
                 request_serializer=mission__control__pb2.DrillAssemblyStatusRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.DrillAssemblyStatusResponse.FromString,
                 )
+        self.SetAirGap = channel.unary_unary(
+                '/mission_control.MissionControl/SetAirGap',
+                request_serializer=mission__control__pb2.LimitChangeRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.GetAirGap = channel.unary_unary(
+                '/mission_control.MissionControl/GetAirGap',
+                request_serializer=mission__control__pb2.GetLimitRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.LimitResponse.FromString,
+                )
 
 
 class MissionControlServicer(object):
@@ -261,6 +271,18 @@ class MissionControlServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SetAirGap(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetAirGap(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_MissionControlServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -373,6 +395,16 @@ def add_MissionControlServicer_to_server(servicer, server):
                     servicer.DrillAssemblyStatus,
                     request_deserializer=mission__control__pb2.DrillAssemblyStatusRequest.FromString,
                     response_serializer=mission__control__pb2.DrillAssemblyStatusResponse.SerializeToString,
+            ),
+            'SetAirGap': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetAirGap,
+                    request_deserializer=mission__control__pb2.LimitChangeRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'GetAirGap': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetAirGap,
+                    request_deserializer=mission__control__pb2.GetLimitRequest.FromString,
+                    response_serializer=mission__control__pb2.LimitResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -755,6 +787,40 @@ class MissionControl(object):
         return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/DrillAssemblyStatus',
             mission__control__pb2.DrillAssemblyStatusRequest.SerializeToString,
             mission__control__pb2.DrillAssemblyStatusResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetAirGap(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/SetAirGap',
+            mission__control__pb2.LimitChangeRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetAirGap(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/GetAirGap',
+            mission__control__pb2.GetLimitRequest.SerializeToString,
+            mission__control__pb2.LimitResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
