@@ -218,6 +218,9 @@ service MissionControl {
 
     rpc SetAirGap (LimitChangeRequest) returns (CommandResponse);
     rpc GetAirGap (GetLimitRequest) returns (LimitResponse);
+
+    rpc SetMaxZ1Travel (LimitChangeRequest) returns (CommandResponse);
+    rpc GetMaxZ1Travel (GetLimitRequest) returns (LimitResponse);
 }
 
 service DrillControl {

@@ -134,6 +134,16 @@ class MissionControlStub(object):
                 request_serializer=mission__control__pb2.GetLimitRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.LimitResponse.FromString,
                 )
+        self.SetMaxZ1Travel = channel.unary_unary(
+                '/mission_control.MissionControl/SetMaxZ1Travel',
+                request_serializer=mission__control__pb2.LimitChangeRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.GetMaxZ1Travel = channel.unary_unary(
+                '/mission_control.MissionControl/GetMaxZ1Travel',
+                request_serializer=mission__control__pb2.GetLimitRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.LimitResponse.FromString,
+                )
 
 
 class MissionControlServicer(object):
@@ -283,6 +293,18 @@ class MissionControlServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SetMaxZ1Travel(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetMaxZ1Travel(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_MissionControlServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -403,6 +425,16 @@ def add_MissionControlServicer_to_server(servicer, server):
             ),
             'GetAirGap': grpc.unary_unary_rpc_method_handler(
                     servicer.GetAirGap,
+                    request_deserializer=mission__control__pb2.GetLimitRequest.FromString,
+                    response_serializer=mission__control__pb2.LimitResponse.SerializeToString,
+            ),
+            'SetMaxZ1Travel': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetMaxZ1Travel,
+                    request_deserializer=mission__control__pb2.LimitChangeRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'GetMaxZ1Travel': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetMaxZ1Travel,
                     request_deserializer=mission__control__pb2.GetLimitRequest.FromString,
                     response_serializer=mission__control__pb2.LimitResponse.SerializeToString,
             ),
@@ -819,6 +851,40 @@ class MissionControl(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/GetAirGap',
+            mission__control__pb2.GetLimitRequest.SerializeToString,
+            mission__control__pb2.LimitResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetMaxZ1Travel(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/SetMaxZ1Travel',
+            mission__control__pb2.LimitChangeRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetMaxZ1Travel(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/GetMaxZ1Travel',
             mission__control__pb2.GetLimitRequest.SerializeToString,
             mission__control__pb2.LimitResponse.FromString,
             options, channel_credentials,

@@ -3,6 +3,10 @@ from .generated import mission_control_pb2 as mcpb
 from .hardware import HardwareFactory
 
 import time
+import configparser
+
+config = configparser.ConfigParser()
+config.read('config.ini')
 
 class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
@@ -12,6 +16,8 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
     def __init__(self):
         self._stopMotors()
+        self.air_gap = config.getfloat('Rig', 'AirGap')
+        self.max_z1_travel = config.getfloat('Rig', 'MaxZ1Travel')
 
     def GetMajorModes(self, request, context):
         timestamp = int(time.time()*1000)
@@ -125,6 +131,52 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
             status = mcpb.EXECUTED)
+
+    def SetAirGap (self, request, context):
+        timestamp = int(time.time()*1000)
+        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
+           (self.mission_time_started): # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+
+        self.air_gap = request.value
+        
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)
+
+    def GetAirGap(self, request, context):
+        timestamp = int(time.time()*1000)
+        
+        return mcpb.LimitResponse(
+            request_timestamp = request.request_timestamp,
+            value = self.air_gap)
+
+    def SetMaxZ1Travel (self, request, context):
+        timestamp = int(time.time()*1000)
+        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
+           (self.mission_time_started): # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+
+        self.max_z1_travel = request.value
+        
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)
+
+    def GetMaxZ1Travel(self, request, context):
+        timestamp = int(time.time()*1000)
+        
+        return mcpb.LimitResponse(
+            request_timestamp = request.request_timestamp,
+            value = self.max_z1_travel)
 
     def StartSpinPump (self, request, context):
         timestamp = int(time.time()*1000)
