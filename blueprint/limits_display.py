@@ -118,6 +118,166 @@ class GetMaxZ1Thread(GetThread):
                         request_timestamp = timestamp),
                     timeout = GRPC_CALL_TIMEOUT )
 
+class SetLowerCurrentLimitThread(SetThread):
+
+    def _get_response(self, stub, timestamp):
+        return stub.SetLowerCurrentLimit(
+                    mission_control_pb2.LimitChangeRequest(
+                        request_timestamp = timestamp, value = self.value),
+                    timeout = GRPC_CALL_TIMEOUT )
+
+class GetLowerCurrentLimitThread(GetThread):
+    
+    def _get_response(self, stub, timestamp):
+        return stub.GetLowerCurrentLimit(
+                    mission_control_pb2.LimitChangeRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+
+class SetUpperCurrentLimitThread(SetThread):
+
+    def _get_response(self, stub, timestamp):
+        return stub.SetUpperCurrentLimit(
+                    mission_control_pb2.LimitChangeRequest(
+                        request_timestamp = timestamp, value = self.value),
+                    timeout = GRPC_CALL_TIMEOUT )
+
+class GetUpperCurrentLimitThread(GetThread):
+    
+    def _get_response(self, stub, timestamp):
+        return stub.GetUpperCurrentLimit(
+                    mission_control_pb2.LimitChangeRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+
+class SetLowerWOBLimitThread(SetThread):
+
+    def _get_response(self, stub, timestamp):
+        return stub.SetLowerWOBLimit(
+                    mission_control_pb2.LimitChangeRequest(
+                        request_timestamp = timestamp, value = self.value),
+                    timeout = GRPC_CALL_TIMEOUT )
+
+class GetLowerWOBLimitThread(GetThread):
+    
+    def _get_response(self, stub, timestamp):
+        return stub.GetLowerWOBLimit(
+                    mission_control_pb2.LimitChangeRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+
+class SetUpperWOBLimitThread(SetThread):
+
+    def _get_response(self, stub, timestamp):
+        return stub.SetUpperWOBLimit(
+                    mission_control_pb2.LimitChangeRequest(
+                        request_timestamp = timestamp, value = self.value),
+                    timeout = GRPC_CALL_TIMEOUT )
+
+class GetUpperWOBLimitThread(GetThread):
+    
+    def _get_response(self, stub, timestamp):
+        return stub.GetUpperWOBLimit(
+                    mission_control_pb2.LimitChangeRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+
+class SetLowerRPMLimitThread(SetThread):
+
+    def _get_response(self, stub, timestamp):
+        return stub.SetLowerRPMLimit(
+                    mission_control_pb2.LimitChangeRequest(
+                        request_timestamp = timestamp, value = self.value),
+                    timeout = GRPC_CALL_TIMEOUT )
+
+class GetLowerRPMLimitThread(GetThread):
+    
+    def _get_response(self, stub, timestamp):
+        return stub.GetLowerRPMLimit(
+                    mission_control_pb2.LimitChangeRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+
+class SetUpperRPMLimitThread(SetThread):
+
+    def _get_response(self, stub, timestamp):
+        return stub.SetUpperRPMLimit(
+                    mission_control_pb2.LimitChangeRequest(
+                        request_timestamp = timestamp, value = self.value),
+                    timeout = GRPC_CALL_TIMEOUT )
+
+class GetUpperRPMLimitThread(GetThread):
+    
+    def _get_response(self, stub, timestamp):
+        return stub.GetUpperRPMLimit(
+                    mission_control_pb2.LimitChangeRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+
+class SetZ1ServoTorqueLimitThread(SetThread):
+
+    def _get_response(self, stub, timestamp):
+        return stub.SetZ1ServoTorqueLimit(
+                    mission_control_pb2.LimitChangeRequest(
+                        request_timestamp = timestamp, value = self.value),
+                    timeout = GRPC_CALL_TIMEOUT )
+
+class GetZ1ServoTorqueLimitThread(GetThread):
+    
+    def _get_response(self, stub, timestamp):
+        return stub.GetZ1ServoTorqueLimit(
+                    mission_control_pb2.LimitChangeRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+
+class SetZ2ServoTorqueLimitThread(SetThread):
+
+    def _get_response(self, stub, timestamp):
+        return stub.SetZ2ServoTorqueLimit(
+                    mission_control_pb2.LimitChangeRequest(
+                        request_timestamp = timestamp, value = self.value),
+                    timeout = GRPC_CALL_TIMEOUT )
+
+class GetZ2ServoTorqueLimitThread(GetThread):
+    
+    def _get_response(self, stub, timestamp):
+        return stub.GetZ2ServoTorqueLimit(
+                    mission_control_pb2.LimitChangeRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+
+class SetXServoTorqueLimitThread(SetThread):
+
+    def _get_response(self, stub, timestamp):
+        return stub.SetXServoTorqueLimit(
+                    mission_control_pb2.LimitChangeRequest(
+                        request_timestamp = timestamp, value = self.value),
+                    timeout = GRPC_CALL_TIMEOUT )
+
+class GetXServoTorqueLimitThread(GetThread):
+    
+    def _get_response(self, stub, timestamp):
+        return stub.GetXServoTorqueLimit(
+                    mission_control_pb2.LimitChangeRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+
+class SetYServoTorqueLimitThread(SetThread):
+
+    def _get_response(self, stub, timestamp):
+        return stub.SetYServoTorqueLimit(
+                    mission_control_pb2.LimitChangeRequest(
+                        request_timestamp = timestamp, value = self.value),
+                    timeout = GRPC_CALL_TIMEOUT )
+
+class GetYServoTorqueLimitThread(GetThread):
+    
+    def _get_response(self, stub, timestamp):
+        return stub.GetYServoTorqueLimit(
+                    mission_control_pb2.LimitChangeRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+
 class LimitsDisplay:
 
     def __init__(self, layout):
@@ -126,16 +286,16 @@ class LimitsDisplay:
         self.limits_list = [
             ("AIR GAP TO REGOLITH (in cm): ", self.set_air_gap, False, self.get_air_gap),
             ("MAX Z1 TRAVEL LENGTH  (in cm): ", self.set_max_Z1, False, self.get_max_Z1),  
-            ("CURRENT LIMITS (in A) - Lower: ", self.set_current_limit_lower, True,
-                " Upper: ", self.set_current_limit_upper, self.get_air_gap), 
-            ("WOB LIMIT (in N) - Lower: ", self.set_WOB_limit_lower, True,
-                " Upper: ", self.set_WOB_limit_upper, self.get_air_gap), 
-            ("RPM LIMIT (in %) - Lower: ", self.set_RPM_limit_lower, True,
-                " Upper: ", self.set_RPM_limit_upper, self.get_air_gap), 
-            ("Z1 SERVO TORQUE LIMIT (in %): ", self.set_Z1_servo_torque, True,
-                "Z2 SERVO TORQUE LIMIT (in %): ", self.set_Z2_servo_torque, self.get_air_gap),
-            ("X SERVO TORQUE LIMIT (in %): ", self.set_X_servo_torque, True,
-                "Y SERVO TORQUE LIMIT (in %): ", self.set_Y_servo_torque, self.get_air_gap),         
+            ("CURRENT LIMITS (in A) - Lower: ", self.set_current_limit_lower, True, self.get_current_limit_lower,
+                " Upper: ", self.set_current_limit_upper, self.set_current_limit_upper), 
+            ("WOB LIMIT (in N) - Lower: ", self.set_WOB_limit_lower, True, self.get_WOB_limit_lower,
+                " Upper: ", self.set_WOB_limit_upper, self.get_WOB_limit_upper), 
+            ("RPM LIMIT (in %) - Lower: ", self.set_RPM_limit_lower, True, self.get_RPM_limit_lower,
+                " Upper: ", self.set_RPM_limit_upper, self.get_RPM_limit_upper), 
+            ("Z1 SERVO TORQUE LIMIT (in %): ", self.set_Z1_servo_torque, True, self.get_Z1_servo_torque,
+                "Z2 SERVO TORQUE LIMIT (in %): ", self.set_Z2_servo_torque, self.get_Z2_servo_torque),
+            ("X SERVO TORQUE LIMIT (in %): ", self.set_X_servo_torque, True, self.get_X_servo_torque,
+                "Y SERVO TORQUE LIMIT (in %): ", self.set_Y_servo_torque, self.get_Y_servo_torque),         
         ]
         
         self.layout = layout
@@ -151,12 +311,12 @@ class LimitsDisplay:
             edit1.setValidator(QtGui.QDoubleValidator())
             edit2 = QtWidgets.QLineEdit()
             edit2.editingFinished.connect(
-                partial(self.limits_list[i][4], edit1))
+                partial(self.limits_list[i][5], edit1))
             edit2.setValidator(QtGui.QDoubleValidator())
-            self.limits_list[i][-1](edit1)
+            self.limits_list[i][3](edit1)
             self.limits_list[i][-1](edit2)
 
-            label2 = QtWidgets.QLabel(self.limits_list[i][3])        
+            label2 = QtWidgets.QLabel(self.limits_list[i][4])        
             hboxlayout = QtWidgets.QHBoxLayout()
 
             hboxlayout.addWidget(edit1)
@@ -198,43 +358,112 @@ class LimitsDisplay:
         self.threads.append(client_thread)
         client_thread.start() 
 
-    def set_current_limit_lower(self, current_limit_lower):
+    def set_current_limit_lower(self, edit):
         self.threads = []
+        client_thread = SetLowerCurrentLimitThread(float(edit.text()))
+        self.threads.append(client_thread)
+        client_thread.start()
 
     def get_current_limit_lower(self, edit):
-        client_thread = GetCurrentLimitLower(edit)
+        client_thread = GetLowerCurrentLimitThread(edit)
         self.threads.append(client_thread)
         client_thread.start() 
 
-    def set_current_limit_upper(self, current_limit_upper):
+    def set_current_limit_upper(self, edit):
         self.threads = []
+        client_thread = SetUpperCurrentLimitThread(float(edit.text()))
+        self.threads.append(client_thread)
+        client_thread.start()
 
-    def get_current_limit_lower(self, edit):
-        client_thread = GetCurrentLimitUpper(edit)
+    def get_current_limit_upper(self, edit):
+        client_thread = GetUpperCurrentLimitThread(edit)
         self.threads.append(client_thread)
         client_thread.start() 
 
-    def set_WOB_limit_lower(self, WOB_limit_lower):
-        print("I am here!")
-        print(WOB_limit_lower.text())
+    def set_WOB_limit_lower(self, edit):
+        self.threads = []
+        client_thread = SetLowerWOBLimitThread(float(edit.text()))
+        self.threads.append(client_thread)
+        client_thread.start()
+
+    def get_WOB_limit_lower(self, edit):
+        client_thread = GetLowerWOBLimitThread(edit)
+        self.threads.append(client_thread)
+        client_thread.start() 
         
-    def set_WOB_limit_upper(self, WOB_limit_upper):
+    def set_WOB_limit_upper(self, edit):
         self.threads = []
+        client_thread = SetUpperWOBLimitThread(float(edit.text()))
+        self.threads.append(client_thread)
+        client_thread.start()
 
-    def set_RPM_limit_lower(self, RPM_limit_lower):
-        self.threads = []
+    def get_WOB_limit_upper(self, edit):
+        client_thread = GetUpperWOBLimitThread(edit)
+        self.threads.append(client_thread)
+        client_thread.start() 
 
-    def set_RPM_limit_upper(self, RPM_limit_upper):
+    def set_RPM_limit_lower(self, edit):
         self.threads = []
+        client_thread = SetLowerRPMLimitThread(float(edit.text()))
+        self.threads.append(client_thread)
+        client_thread.start()
 
-    def set_Z1_servo_torque(self, Z1_servo_torque):
+    def get_RPM_limit_lower(self, edit):
+        client_thread = GetLowerRPMLimitThread(edit)
+        self.threads.append(client_thread)
+        client_thread.start() 
+    
+    def set_RPM_limit_upper(self, edit):
         self.threads = []
+        client_thread = SetUpperRPMLimitThread(float(edit.text()))
+        self.threads.append(client_thread)
+        client_thread.start()
 
-    def set_Z2_servo_torque(self, Z2_servo_torque):
+    def get_RPM_limit_upper(self, edit):
+        client_thread = GetUpperRPMLimitThread(edit)
+        self.threads.append(client_thread)
+        client_thread.start() 
+    
+    def set_Z1_servo_torque(self, edit):
         self.threads = []
+        client_thread = SetZ1ServoTorqueLimitThread(float(edit.text()))
+        self.threads.append(client_thread)
+        client_thread.start()
 
-    def set_X_servo_torque(self, X_servo_torque):
+    def get_Z1_servo_torque(self, edit):
+        client_thread = GetZ1ServoTorqueLimitThread(edit)
+        self.threads.append(client_thread)
+        client_thread.start() 
+    
+    def set_Z2_servo_torque(self, edit):
         self.threads = []
+        client_thread = SetZ2ServoTorqueLimitThread(float(edit.text()))
+        self.threads.append(client_thread)
+        client_thread.start()
 
-    def set_Y_servo_torque(self, Y_servo_torque):
+    def get_Z2_servo_torque(self, edit):
+        client_thread = GetZ2ServoTorqueLimitThread(edit)
+        self.threads.append(client_thread)
+        client_thread.start()
+
+    def set_X_servo_torque(self, edit):
         self.threads = []
+        client_thread = SetXServoTorqueLimitThread(float(edit.text()))
+        self.threads.append(client_thread)
+        client_thread.start()
+
+    def get_X_servo_torque(self, edit):
+        client_thread = GetXServoTorqueLimitThread(edit)
+        self.threads.append(client_thread)
+        client_thread.start()
+
+    def set_Y_servo_torque(self, edit):
+        self.threads = []
+        client_thread = SetYServoTorqueLimitThread(float(edit.text()))
+        self.threads.append(client_thread)
+        client_thread.start()
+
+    def get_Y_servo_torque(self, edit):
+        client_thread = GetYServoTorqueLimitThread(edit)
+        self.threads.append(client_thread)
+        client_thread.start()
