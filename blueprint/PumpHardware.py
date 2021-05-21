@@ -20,12 +20,13 @@ DIR = 27
 ENA = 22  # Controller Enable Bit (High to Enable / LOW to Disable).
 SIG = 26  # Pin receiving the Hall Effect signal
 
-GPIO.setmode(GPIO.BCM)
+if config.getboolean('Operating System', 'RunningInRPi'):
+    GPIO.setmode(GPIO.BCM)
 
-#GPIO.setup(PUL, GPIO.OUT)
-#GPIO.setup(DIR, GPIO.OUT)
-#GPIO.setup(ENA, GPIO.OUT)
-GPIO.setup(SIG, GPIO.IN)
+    #GPIO.setup(PUL, GPIO.OUT)
+    #GPIO.setup(DIR, GPIO.OUT)
+    #GPIO.setup(ENA, GPIO.OUT)
+    GPIO.setup(SIG, GPIO.IN)
 
 class PumpMode:
     MANUAL = 0  # manually set speed, direction, cleaning sequence, stop
@@ -156,12 +157,14 @@ class MockPump(AbstractPump):
 class Pump(AbstractPump):
     duration = 400
     delay = 0.0000001
-    pump_pwm = PWMLED(PUL)
+    if config.getboolean('Operating System', 'RunningInRPi'):
+        pump_pwm = PWMLED(PUL)
     speed_rpm = 0
     MAX_RPM = 150
     MOTOR_PULSES_PER_REV = 400
     LITERS_PER_REV = 0.055
-    direction_pin = DigitalOutputDevice(DIR)
+    if config.getboolean('Operating System', 'RunningInRPi'):
+        direction_pin = DigitalOutputDevice(DIR)
         
     class FlowSensorThread(threading.Thread):
         N = 1000

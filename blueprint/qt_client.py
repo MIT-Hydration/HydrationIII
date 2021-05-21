@@ -47,8 +47,8 @@ class RPiHeartBeat(QtCore.QThread):
                 response = stub.HeartBeat (
                     mission_control_pb2.HeartBeatRequest(request_timestamp = timestamp),
                     timeout = GRPC_CALL_TIMEOUT )
-                print("Mission Control RPi HeartBeat received at: " + str(datetime.now()))
-                print(response)
+                #print("Mission Control RPi HeartBeat received at: " + str(datetime.now()))
+                #print(response)
         
         except Exception as e:
             info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"

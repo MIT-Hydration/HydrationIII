@@ -43,13 +43,13 @@ class SetAirGapThread(QtCore.QThread):
         response = None
         try:
             timestamp = int(time.time()*1000)
+            print(f"Setting value {self.value} at " + str(datetime.now()))
             with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
                 stub = mission_control_pb2_grpc.MissionControlStub(channel)
                 response = stub.SetAirGap(
                     mission_control_pb2.LimitChangeRequest(
                         request_timestamp = timestamp, value = self.value),
                     timeout = GRPC_CALL_TIMEOUT )
-                print("Mission Control RPi Start Mission Control Command received at: " + str(datetime.now()))
                 print(response)
         
         except Exception as e:
@@ -83,8 +83,14 @@ class LimitsDisplay:
         label1 = QtWidgets.QLabel(self.limits_list[i][0])
         if (self.limits_list[i][2]):
             edit1 = QtWidgets.QLineEdit()
-            edit1.editingFinished.connect(self.limits_list[i][1])
+            edit1.editingFinished.connect(
+                partial(self.limits_list[i][1], edit1))
+            edit1.setValidator(QtGui.QDoubleValidator())
             edit2 = QtWidgets.QLineEdit()
+            edit2.editingFinished.connect(
+                partial(self.limits_list[i][4], edit1))
+            edit2.setValidator(QtGui.QDoubleValidator())
+            
             label2 = QtWidgets.QLabel(self.limits_list[i][3])        
             hboxlayout = QtWidgets.QHBoxLayout()
 
@@ -96,6 +102,9 @@ class LimitsDisplay:
         else:
             edit1 = QtWidgets.QLineEdit()
             self.layout.addRow(label1, edit1)
+            edit1.editingFinished.connect(
+                partial(self.limits_list[i][1], edit1))
+            edit1.setValidator(QtGui.QDoubleValidator())
             
     def _initWidgets(self):
         for i in range(len(self.limits_list)):
@@ -103,7 +112,7 @@ class LimitsDisplay:
 
     def set_air_gap(self, air_gap):
         self.threads = []
-        client_thread = SetAirGapThread()
+        client_thread = SetAirGapThread(float(air_gap.text()))
         self.threads.append(client_thread)
         client_thread.start() 
 
@@ -117,8 +126,9 @@ class LimitsDisplay:
         self.threads = []
 
     def set_WOB_limit_lower(self, WOB_limit_lower):
-        self.threads = []
-
+        print("I am here!")
+        print(WOB_limit_lower.text())
+        
     def set_WOB_limit_upper(self, WOB_limit_upper):
         self.threads = []
 
