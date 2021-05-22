@@ -16,7 +16,7 @@ from datetime import datetime, timedelta
 import time
 import configparser
 
-from . import mode_display, status_display, startup_diagnostics_display
+from . import mode_display, status_display, startup_diagnostics_display, limits_display
 from . import hole_position_display
 
 config = configparser.ConfigParser()
@@ -47,8 +47,8 @@ class RPiHeartBeat(QtCore.QThread):
                 response = stub.HeartBeat (
                     mission_control_pb2.HeartBeatRequest(request_timestamp = timestamp),
                     timeout = GRPC_CALL_TIMEOUT )
-                print("Mission Control RPi HeartBeat received at: " + str(datetime.now()))
-                print(response)
+                #print("Mission Control RPi HeartBeat received at: " + str(datetime.now()))
+                #print(response)
         
         except Exception as e:
             info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"
@@ -93,35 +93,43 @@ class MainWindow(QtWidgets.QWidget):
         self.emergency_button.clicked.connect \
             (self.emergency_stop)
 
-    
+    def _initModeDisplay(self):
+        self.mode_groupbox = QtWidgets.QGroupBox("Mode Selection")
+        self.mode_layout = QtWidgets.QVBoxLayout()
+        self.mode_groupbox.setLayout(self.mode_layout)
+        self.main_grid_layout.addWidget(
+            self.mode_groupbox, 1, 0, 6, 1)
+
+        self.mode_display = mode_display.ModeDisplay(
+            self.mode_layout)
+  
     def _initStatusDisplay(self):
         self.status_groupbox = QtWidgets.QGroupBox("System Status")
         self.status_layout = QtWidgets.QVBoxLayout()
         self.status_groupbox.setLayout(self.status_layout)
         self.main_grid_layout.addWidget(
-            self.status_groupbox, 3, 0, 7, 1)
+            self.status_groupbox, 7, 0, 14, 1)
 
         self.status_display = status_display.StatusDisplay(
             self.status_layout)
 
     def _initDiagnostics(self):
         self.startup_diagnostics_groupbox = QtWidgets.QGroupBox("P01 Startup and Diagnostics")
-        layout = QtWidgets.QGridLayout()
-        self.startup_diagnostics_groupbox.setLayout(layout)
+        self.diagnostics_layout = QtWidgets.QGridLayout()
+        self.startup_diagnostics_groupbox.setLayout(self.diagnostics_layout)
         self.main_grid_layout.addWidget(
-            self.startup_diagnostics_groupbox, 0, 1, 4, 5)
+            self.startup_diagnostics_groupbox, 0, 1, 7, 5)
 
-        self.startup_display = startup_diagnostics_display.StartupDiagnosticsDisplay(layout)
+        self.startup_display = startup_diagnostics_display.StartupDiagnosticsDisplay(self.diagnostics_layout)
 
-    def _initModeDisplay(self):
-        self.mode_groupbox = QtWidgets.QGroupBox("Mode Selection")
-        self.mode_layout = QtWidgets.QVBoxLayout()
-        self.mode_groupbox.setLayout(self.mode_layout)
+    def _initLimits(self):
+        self.limits_groupbox = QtWidgets.QGroupBox("P01 Limits")
+        self.limits_layout = QtWidgets.QFormLayout()
+        self.limits_groupbox.setLayout(self.limits_layout)
         self.main_grid_layout.addWidget(
-            self.mode_groupbox, 1, 0, 2, 1)
+            self.limits_groupbox, 0, 6, 7, 5)
 
-        self.mode_display = mode_display.ModeDisplay(
-            self.mode_layout)
+        self.limits_display = limits_display.LimitsDisplay(self.limits_layout)       
 
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -130,6 +138,7 @@ class MainWindow(QtWidgets.QWidget):
         self._initModeDisplay()
         self._initStatusDisplay()
         self._initDiagnostics()
+        self._initLimits()
         self._initHolePos()
         self.setLayout(self.main_grid_layout)
         
@@ -142,7 +151,7 @@ class MainWindow(QtWidgets.QWidget):
         self.hole_pos_layout = QtWidgets.QGridLayout()
         self.hole_pos_groupbox.setLayout(self.hole_pos_layout)
         self.main_grid_layout.addWidget(
-            self.hole_pos_groupbox, 4, 1, 6, 10)
+            self.hole_pos_groupbox, 7, 1, 14, 10)
 
         self.hole_pos_display = hole_position_display.HolePositionDisplay(
             self.hole_pos_layout

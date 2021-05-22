@@ -106,6 +106,20 @@ message DrillAssemblyStatusResponse {
     bool calibration_error_state = 21;  // are we in calibration error state? if yes, the valid commands are limited
 }
 
+message LimitChangeRequest {
+    uint64 request_timestamp = 1;
+    float value = 2;
+}
+
+message GetLimitRequest {
+    uint64 request_timestamp = 1;
+}
+
+message LimitResponse {
+    uint64 request_timestamp = 1;
+    float value = 2;
+}
+
 message RigMoveCommandRequest {
     uint64 request_timestamp = 1;
     float x = 2;
@@ -191,7 +205,6 @@ service MissionControl {
     rpc StopSpinPump (StartCommandRequest) returns (CommandResponse);
     rpc StartHeater (StartCommandRequest) returns (CommandResponse);
     rpc StopHeater (StartCommandRequest) returns (CommandResponse);
-
     
     rpc RigMove (RigMoveCommandRequest) returns (CommandResponse);
     rpc DrillMode (DrillModeRequest) returns (CommandResponse);
@@ -202,6 +215,31 @@ service MissionControl {
     rpc EmergencyStop (EmergencyStopRequest) returns (CommandResponse);
 
     rpc DrillAssemblyStatus (DrillAssemblyStatusRequest) returns (DrillAssemblyStatusResponse);
+
+    rpc SetAirGap (LimitChangeRequest) returns (CommandResponse);
+    rpc GetAirGap (GetLimitRequest) returns (LimitResponse);
+    rpc SetMaxZ1Travel (LimitChangeRequest) returns (CommandResponse);
+    rpc GetMaxZ1Travel (GetLimitRequest) returns (LimitResponse);
+    rpc SetLowerCurrentLimit (LimitChangeRequest) returns (CommandResponse);
+    rpc GetLowerCurrentLimit (GetLimitRequest) returns (LimitResponse);
+    rpc SetUpperCurrentLimit (LimitChangeRequest) returns (CommandResponse);
+    rpc GetUpperCurrentLimit (GetLimitRequest) returns (LimitResponse);
+    rpc SetLowerWOBLimit (LimitChangeRequest) returns (CommandResponse);
+    rpc GetLowerWOBLimit (GetLimitRequest) returns (LimitResponse);
+    rpc SetUpperWOBLimit (LimitChangeRequest) returns (CommandResponse);
+    rpc GetUpperWOBLimit (GetLimitRequest) returns (LimitResponse);
+    rpc SetLowerRPMLimit (LimitChangeRequest) returns (CommandResponse);
+    rpc GetLowerRPMLimit (GetLimitRequest) returns (LimitResponse);
+    rpc SetUpperRPMLimit (LimitChangeRequest) returns (CommandResponse);
+    rpc GetUpperRPMLimit (GetLimitRequest) returns (LimitResponse);
+    rpc SetZ1ServoTorqueLimit (LimitChangeRequest) returns (CommandResponse);
+    rpc GetZ1ServoTorqueLimit (GetLimitRequest) returns (LimitResponse);
+    rpc SetZ2ServoTorqueLimit (LimitChangeRequest) returns (CommandResponse);
+    rpc GetZ2ServoTorqueLimit (GetLimitRequest) returns (LimitResponse);
+    rpc SetXServoTorqueLimit (LimitChangeRequest) returns (CommandResponse);
+    rpc GetXServoTorqueLimit (GetLimitRequest) returns (LimitResponse);
+    rpc SetYServoTorqueLimit (LimitChangeRequest) returns (CommandResponse);
+    rpc GetYServoTorqueLimit (GetLimitRequest) returns (LimitResponse);
 }
 
 service DrillControl {

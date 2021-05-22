@@ -301,6 +301,7 @@ class StartupDiagnosticsDisplay:
         self.buttons = [None] * len(self.startup_list)
         self.layout = layout
         self._initWidgets()
+        layout.setSpacing(0.5)
 
     def _initWidgets(self):
         i = 0
@@ -328,6 +329,9 @@ class StartupDiagnosticsDisplay:
                     i += 1
                     line += 1
         self.layout.rowStretch(5)
+        for i in range (len(self.startup_list)):
+            self.buttons[i].setFixedHeight(1)
+
 
     def start_mission_clock(self):
         self.threads = []

@@ -124,6 +124,126 @@ class MissionControlStub(object):
                 request_serializer=mission__control__pb2.DrillAssemblyStatusRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.DrillAssemblyStatusResponse.FromString,
                 )
+        self.SetAirGap = channel.unary_unary(
+                '/mission_control.MissionControl/SetAirGap',
+                request_serializer=mission__control__pb2.LimitChangeRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.GetAirGap = channel.unary_unary(
+                '/mission_control.MissionControl/GetAirGap',
+                request_serializer=mission__control__pb2.GetLimitRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.LimitResponse.FromString,
+                )
+        self.SetMaxZ1Travel = channel.unary_unary(
+                '/mission_control.MissionControl/SetMaxZ1Travel',
+                request_serializer=mission__control__pb2.LimitChangeRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.GetMaxZ1Travel = channel.unary_unary(
+                '/mission_control.MissionControl/GetMaxZ1Travel',
+                request_serializer=mission__control__pb2.GetLimitRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.LimitResponse.FromString,
+                )
+        self.SetLowerCurrentLimit = channel.unary_unary(
+                '/mission_control.MissionControl/SetLowerCurrentLimit',
+                request_serializer=mission__control__pb2.LimitChangeRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.GetLowerCurrentLimit = channel.unary_unary(
+                '/mission_control.MissionControl/GetLowerCurrentLimit',
+                request_serializer=mission__control__pb2.GetLimitRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.LimitResponse.FromString,
+                )
+        self.SetUpperCurrentLimit = channel.unary_unary(
+                '/mission_control.MissionControl/SetUpperCurrentLimit',
+                request_serializer=mission__control__pb2.LimitChangeRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.GetUpperCurrentLimit = channel.unary_unary(
+                '/mission_control.MissionControl/GetUpperCurrentLimit',
+                request_serializer=mission__control__pb2.GetLimitRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.LimitResponse.FromString,
+                )
+        self.SetLowerWOBLimit = channel.unary_unary(
+                '/mission_control.MissionControl/SetLowerWOBLimit',
+                request_serializer=mission__control__pb2.LimitChangeRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.GetLowerWOBLimit = channel.unary_unary(
+                '/mission_control.MissionControl/GetLowerWOBLimit',
+                request_serializer=mission__control__pb2.GetLimitRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.LimitResponse.FromString,
+                )
+        self.SetUpperWOBLimit = channel.unary_unary(
+                '/mission_control.MissionControl/SetUpperWOBLimit',
+                request_serializer=mission__control__pb2.LimitChangeRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.GetUpperWOBLimit = channel.unary_unary(
+                '/mission_control.MissionControl/GetUpperWOBLimit',
+                request_serializer=mission__control__pb2.GetLimitRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.LimitResponse.FromString,
+                )
+        self.SetLowerRPMLimit = channel.unary_unary(
+                '/mission_control.MissionControl/SetLowerRPMLimit',
+                request_serializer=mission__control__pb2.LimitChangeRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.GetLowerRPMLimit = channel.unary_unary(
+                '/mission_control.MissionControl/GetLowerRPMLimit',
+                request_serializer=mission__control__pb2.GetLimitRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.LimitResponse.FromString,
+                )
+        self.SetUpperRPMLimit = channel.unary_unary(
+                '/mission_control.MissionControl/SetUpperRPMLimit',
+                request_serializer=mission__control__pb2.LimitChangeRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.GetUpperRPMLimit = channel.unary_unary(
+                '/mission_control.MissionControl/GetUpperRPMLimit',
+                request_serializer=mission__control__pb2.GetLimitRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.LimitResponse.FromString,
+                )
+        self.SetZ1ServoTorqueLimit = channel.unary_unary(
+                '/mission_control.MissionControl/SetZ1ServoTorqueLimit',
+                request_serializer=mission__control__pb2.LimitChangeRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.GetZ1ServoTorqueLimit = channel.unary_unary(
+                '/mission_control.MissionControl/GetZ1ServoTorqueLimit',
+                request_serializer=mission__control__pb2.GetLimitRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.LimitResponse.FromString,
+                )
+        self.SetZ2ServoTorqueLimit = channel.unary_unary(
+                '/mission_control.MissionControl/SetZ2ServoTorqueLimit',
+                request_serializer=mission__control__pb2.LimitChangeRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.GetZ2ServoTorqueLimit = channel.unary_unary(
+                '/mission_control.MissionControl/GetZ2ServoTorqueLimit',
+                request_serializer=mission__control__pb2.GetLimitRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.LimitResponse.FromString,
+                )
+        self.SetXServoTorqueLimit = channel.unary_unary(
+                '/mission_control.MissionControl/SetXServoTorqueLimit',
+                request_serializer=mission__control__pb2.LimitChangeRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.GetXServoTorqueLimit = channel.unary_unary(
+                '/mission_control.MissionControl/GetXServoTorqueLimit',
+                request_serializer=mission__control__pb2.GetLimitRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.LimitResponse.FromString,
+                )
+        self.SetYServoTorqueLimit = channel.unary_unary(
+                '/mission_control.MissionControl/SetYServoTorqueLimit',
+                request_serializer=mission__control__pb2.LimitChangeRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.GetYServoTorqueLimit = channel.unary_unary(
+                '/mission_control.MissionControl/GetYServoTorqueLimit',
+                request_serializer=mission__control__pb2.GetLimitRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.LimitResponse.FromString,
+                )
 
 
 class MissionControlServicer(object):
@@ -261,6 +381,150 @@ class MissionControlServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SetAirGap(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetAirGap(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetMaxZ1Travel(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetMaxZ1Travel(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetLowerCurrentLimit(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetLowerCurrentLimit(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetUpperCurrentLimit(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetUpperCurrentLimit(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetLowerWOBLimit(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetLowerWOBLimit(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetUpperWOBLimit(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetUpperWOBLimit(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetLowerRPMLimit(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetLowerRPMLimit(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetUpperRPMLimit(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetUpperRPMLimit(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetZ1ServoTorqueLimit(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetZ1ServoTorqueLimit(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetZ2ServoTorqueLimit(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetZ2ServoTorqueLimit(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetXServoTorqueLimit(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetXServoTorqueLimit(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetYServoTorqueLimit(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetYServoTorqueLimit(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_MissionControlServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -373,6 +637,126 @@ def add_MissionControlServicer_to_server(servicer, server):
                     servicer.DrillAssemblyStatus,
                     request_deserializer=mission__control__pb2.DrillAssemblyStatusRequest.FromString,
                     response_serializer=mission__control__pb2.DrillAssemblyStatusResponse.SerializeToString,
+            ),
+            'SetAirGap': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetAirGap,
+                    request_deserializer=mission__control__pb2.LimitChangeRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'GetAirGap': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetAirGap,
+                    request_deserializer=mission__control__pb2.GetLimitRequest.FromString,
+                    response_serializer=mission__control__pb2.LimitResponse.SerializeToString,
+            ),
+            'SetMaxZ1Travel': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetMaxZ1Travel,
+                    request_deserializer=mission__control__pb2.LimitChangeRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'GetMaxZ1Travel': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetMaxZ1Travel,
+                    request_deserializer=mission__control__pb2.GetLimitRequest.FromString,
+                    response_serializer=mission__control__pb2.LimitResponse.SerializeToString,
+            ),
+            'SetLowerCurrentLimit': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetLowerCurrentLimit,
+                    request_deserializer=mission__control__pb2.LimitChangeRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'GetLowerCurrentLimit': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetLowerCurrentLimit,
+                    request_deserializer=mission__control__pb2.GetLimitRequest.FromString,
+                    response_serializer=mission__control__pb2.LimitResponse.SerializeToString,
+            ),
+            'SetUpperCurrentLimit': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetUpperCurrentLimit,
+                    request_deserializer=mission__control__pb2.LimitChangeRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'GetUpperCurrentLimit': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetUpperCurrentLimit,
+                    request_deserializer=mission__control__pb2.GetLimitRequest.FromString,
+                    response_serializer=mission__control__pb2.LimitResponse.SerializeToString,
+            ),
+            'SetLowerWOBLimit': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetLowerWOBLimit,
+                    request_deserializer=mission__control__pb2.LimitChangeRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'GetLowerWOBLimit': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetLowerWOBLimit,
+                    request_deserializer=mission__control__pb2.GetLimitRequest.FromString,
+                    response_serializer=mission__control__pb2.LimitResponse.SerializeToString,
+            ),
+            'SetUpperWOBLimit': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetUpperWOBLimit,
+                    request_deserializer=mission__control__pb2.LimitChangeRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'GetUpperWOBLimit': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetUpperWOBLimit,
+                    request_deserializer=mission__control__pb2.GetLimitRequest.FromString,
+                    response_serializer=mission__control__pb2.LimitResponse.SerializeToString,
+            ),
+            'SetLowerRPMLimit': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetLowerRPMLimit,
+                    request_deserializer=mission__control__pb2.LimitChangeRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'GetLowerRPMLimit': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetLowerRPMLimit,
+                    request_deserializer=mission__control__pb2.GetLimitRequest.FromString,
+                    response_serializer=mission__control__pb2.LimitResponse.SerializeToString,
+            ),
+            'SetUpperRPMLimit': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetUpperRPMLimit,
+                    request_deserializer=mission__control__pb2.LimitChangeRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'GetUpperRPMLimit': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetUpperRPMLimit,
+                    request_deserializer=mission__control__pb2.GetLimitRequest.FromString,
+                    response_serializer=mission__control__pb2.LimitResponse.SerializeToString,
+            ),
+            'SetZ1ServoTorqueLimit': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetZ1ServoTorqueLimit,
+                    request_deserializer=mission__control__pb2.LimitChangeRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'GetZ1ServoTorqueLimit': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetZ1ServoTorqueLimit,
+                    request_deserializer=mission__control__pb2.GetLimitRequest.FromString,
+                    response_serializer=mission__control__pb2.LimitResponse.SerializeToString,
+            ),
+            'SetZ2ServoTorqueLimit': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetZ2ServoTorqueLimit,
+                    request_deserializer=mission__control__pb2.LimitChangeRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'GetZ2ServoTorqueLimit': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetZ2ServoTorqueLimit,
+                    request_deserializer=mission__control__pb2.GetLimitRequest.FromString,
+                    response_serializer=mission__control__pb2.LimitResponse.SerializeToString,
+            ),
+            'SetXServoTorqueLimit': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetXServoTorqueLimit,
+                    request_deserializer=mission__control__pb2.LimitChangeRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'GetXServoTorqueLimit': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetXServoTorqueLimit,
+                    request_deserializer=mission__control__pb2.GetLimitRequest.FromString,
+                    response_serializer=mission__control__pb2.LimitResponse.SerializeToString,
+            ),
+            'SetYServoTorqueLimit': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetYServoTorqueLimit,
+                    request_deserializer=mission__control__pb2.LimitChangeRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'GetYServoTorqueLimit': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetYServoTorqueLimit,
+                    request_deserializer=mission__control__pb2.GetLimitRequest.FromString,
+                    response_serializer=mission__control__pb2.LimitResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -755,6 +1139,414 @@ class MissionControl(object):
         return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/DrillAssemblyStatus',
             mission__control__pb2.DrillAssemblyStatusRequest.SerializeToString,
             mission__control__pb2.DrillAssemblyStatusResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetAirGap(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/SetAirGap',
+            mission__control__pb2.LimitChangeRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetAirGap(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/GetAirGap',
+            mission__control__pb2.GetLimitRequest.SerializeToString,
+            mission__control__pb2.LimitResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetMaxZ1Travel(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/SetMaxZ1Travel',
+            mission__control__pb2.LimitChangeRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetMaxZ1Travel(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/GetMaxZ1Travel',
+            mission__control__pb2.GetLimitRequest.SerializeToString,
+            mission__control__pb2.LimitResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetLowerCurrentLimit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/SetLowerCurrentLimit',
+            mission__control__pb2.LimitChangeRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetLowerCurrentLimit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/GetLowerCurrentLimit',
+            mission__control__pb2.GetLimitRequest.SerializeToString,
+            mission__control__pb2.LimitResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetUpperCurrentLimit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/SetUpperCurrentLimit',
+            mission__control__pb2.LimitChangeRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetUpperCurrentLimit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/GetUpperCurrentLimit',
+            mission__control__pb2.GetLimitRequest.SerializeToString,
+            mission__control__pb2.LimitResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetLowerWOBLimit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/SetLowerWOBLimit',
+            mission__control__pb2.LimitChangeRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetLowerWOBLimit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/GetLowerWOBLimit',
+            mission__control__pb2.GetLimitRequest.SerializeToString,
+            mission__control__pb2.LimitResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetUpperWOBLimit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/SetUpperWOBLimit',
+            mission__control__pb2.LimitChangeRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetUpperWOBLimit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/GetUpperWOBLimit',
+            mission__control__pb2.GetLimitRequest.SerializeToString,
+            mission__control__pb2.LimitResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetLowerRPMLimit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/SetLowerRPMLimit',
+            mission__control__pb2.LimitChangeRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetLowerRPMLimit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/GetLowerRPMLimit',
+            mission__control__pb2.GetLimitRequest.SerializeToString,
+            mission__control__pb2.LimitResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetUpperRPMLimit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/SetUpperRPMLimit',
+            mission__control__pb2.LimitChangeRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetUpperRPMLimit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/GetUpperRPMLimit',
+            mission__control__pb2.GetLimitRequest.SerializeToString,
+            mission__control__pb2.LimitResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetZ1ServoTorqueLimit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/SetZ1ServoTorqueLimit',
+            mission__control__pb2.LimitChangeRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetZ1ServoTorqueLimit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/GetZ1ServoTorqueLimit',
+            mission__control__pb2.GetLimitRequest.SerializeToString,
+            mission__control__pb2.LimitResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetZ2ServoTorqueLimit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/SetZ2ServoTorqueLimit',
+            mission__control__pb2.LimitChangeRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetZ2ServoTorqueLimit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/GetZ2ServoTorqueLimit',
+            mission__control__pb2.GetLimitRequest.SerializeToString,
+            mission__control__pb2.LimitResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetXServoTorqueLimit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/SetXServoTorqueLimit',
+            mission__control__pb2.LimitChangeRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetXServoTorqueLimit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/GetXServoTorqueLimit',
+            mission__control__pb2.GetLimitRequest.SerializeToString,
+            mission__control__pb2.LimitResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetYServoTorqueLimit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/SetYServoTorqueLimit',
+            mission__control__pb2.LimitChangeRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetYServoTorqueLimit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/GetYServoTorqueLimit',
+            mission__control__pb2.GetLimitRequest.SerializeToString,
+            mission__control__pb2.LimitResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
