@@ -32,14 +32,18 @@ class WPStateThread(threading.Thread):
         speed = self.cleaning_speeds[self.state_machine.cleaning_step]
         timer = self.cleaning_speeds[self.state_machine.cleaning_timers]
         pump = HardwareFactory.getWaterPump()
-        pump.set_speed_pom(speed) # TODO respect direction
+        pump.set_speed_pom(speed)
     
         if (delta_time > timer):
+            self.state_machine.cleaning_step_start_time = current_time
             # next step
             if (self.state_machine.cleaning_step == CleaningStates.STEP_1):
                 self.state_machine.cleaning_step == CleaningStates.STEP_2
-            if (self.state_machine.cleaning_step == CleaningStates.STEP_1):
-                self.state_machine.cleaning_step == CleaningStates.STEP_2
+            elif (self.state_machine.cleaning_step == CleaningStates.STEP_2):
+                self.state_machine.cleaning_step == CleaningStates.STEP_3
+            elif (self.state_machine.cleaning_step == CleaningStates.STEP_3):
+                pump.set_speed_pom(self.state_machine.previous_speed)
+                self.state_machine._state = mcpb.WPSTATE_CLEANING
             
 
     def run(self):
@@ -49,6 +53,7 @@ class WPStateThread(threading.Thread):
         while not self.stopped:
             loop_start = time.time()
             if (self.state_machine.state == mcpb.WPSTATE_MANUAL):
+
                 pass
             elif (self.state_machine.state == mcpb.WPSTATE_CLEANING):
                 self._cleaningStep()
@@ -63,14 +68,6 @@ class WPStateThread(threading.Thread):
 
 class WaterProductionStateMachine:
     
-    # 0 -> turn off
-    # 100 -> full power
-    def set_heater_level_percent(self, p):
-        pass # add code to change heater level here
-
-    def set_pump_level_percent(self, p):
-        pass # add code to change pump level here
-
     def get_all_cleaning_sequences(self):
         pass # returns name and id of all cleaning sequences
 
@@ -84,6 +81,13 @@ class WaterProductionStateMachine:
         return [speeds, timers]
 
     def run_cleaning_sequence(self, sequence_id):
+        pump = HardwareFactory.getWaterPump()
+        self.previous_speed = pump.get_speed_pom()
+
+        for th in self.threads:
+            th.stop()
+            th.join()
+        
         if sequence_id == mcpb.CLEANING_SEQ_1:
             [self.cleaning_speeds, self.cleaning_timers] = \
                 self._loadConfigValuesForCleaning(1)
@@ -98,14 +102,22 @@ class WaterProductionStateMachine:
                 self._loadConfigValuesForCleaning(3)
         else:
             return
+        
         self._state = mcpb.WPSTATE_CLEANING
         self.cleaning_step = CleaningStates.STEP_1
         self.cleaning_step_start_time = time.time()
+
+        cleaning_seq_th = WPStateThread(self)
+        self.threads.append(cleaning_seq_th)
+        cleaning_seq_th.start()
 
     def get_state(self):
         return self._state
 
     def emergency_stop(self):
+        for th in self.threads:
+            th.stop()
+            th.join()
         self._state = mcpb.WPSTATE_MANUAL
         self.set_heater_level_percent(0)
         self.set_pump_level_percent(0)
@@ -115,4 +127,4 @@ class WaterProductionStateMachine:
         self._state = mcpb.WPSTATE_MANUAL
         self.set_heater_level_percent(0)
         self.set_pump_level_percent(0)
-
+        self.threads = []
