@@ -40,6 +40,17 @@ enum SystemMode {
     HEATING = 12;
 }
 
+enum WaterProductionStates {
+    WPSTATE_MANUAL = 0;
+    WPSTATE_CLEANING = 1;
+}
+
+enum WaterProductionCleaningSeq {
+    CLEANING_SEQ_1 = 0;
+    CLEANING_SEQ_2 = 1;
+    CLEANING_SEQ_3 = 2;
+}
+
 enum CommandReport {
     EXECUTED = 0;
     INVALID_STATE = 1;

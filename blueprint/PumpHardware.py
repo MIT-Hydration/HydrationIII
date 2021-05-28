@@ -235,8 +235,14 @@ class Pump(AbstractPump):
         self.sensor_thread.start()
 
     def set_speed_pom(self, speedpom):
-        speed_rpm = speedpom*self.MAX_RPM/100
-        self.set_speed_rpm(speed_rpm)
+        if speedpom>0:
+            self.set_direction(1)
+            speed_rpm = speedpom*self.MAX_RPM/100
+            self.set_speed_rpm(speed_rpm)            
+        elif speedpom<0:
+            self.set_direction(0)
+            speed_rpm = -1*speedpom*self.MAX_RPM/100
+            self.set_speed_rpm(speed_rpm)
     
     def set_speed_rpm(self, speed_rpm):
         self.speed_rpm = speed_rpm
