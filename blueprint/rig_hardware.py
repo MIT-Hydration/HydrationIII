@@ -7,6 +7,7 @@ from abc import ABC, abstractmethod
 import configparser
 import time, threading
 import HydrationServo
+import numpy
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -92,17 +93,28 @@ class RigMoveThread(threading.Thread):
             "Rig", "MoveControlLoopTime")
         HOMING_SPEED = configparser.getfloat(
             "Rig", "HomingSpeed")
-        while not self.stopped:
-            loop_start = time.time()
-            current_pos = self.rig.getPosition()
-            if (self.rig.target_pos[1] < current_pos[1]):
+        HOMING_ERROR = configparser.getfloat(
+            "Rig", "HomingError")
+
+        current_pos = numpy.array(self.rig.getPosition())
+        delta_pos = current_pos - self.rig.target_pos
+        
+        if numpy.abs(delta_pos[1]) > HOMING_ERROR:
+            if delta_pos[1] > 0:
                 HydrationServo.set_speed_rpm(3, -HOMING_SPEED)
             else:
                 HydrationServo.set_speed_rpm(3, HOMING_SPEED)
-            loop_end = time.time()
-            delta_time = loop_end - loop_start
-            if (delta_time < CONTROL_LOOP_TIME):
-                time.sleep(CONTROL_LOOP_TIME - delta_time)
+        
+            while (not self.stopped) and \
+                    (numpy.abs(delta_pos[1]) > HOMING_ERROR):
+                loop_start = time.time()
+                current_pos = numpy.array(self.rig.getPosition())
+                delta_pos = current_pos - self.rig.target_pos
+                
+                loop_end = time.time()
+                delta_time = loop_end - loop_start
+                if (delta_time < CONTROL_LOOP_TIME):
+                    time.sleep(CONTROL_LOOP_TIME - delta_time)
 
         self.stopped = True
 
@@ -113,9 +125,9 @@ class RigMoveThread(threading.Thread):
 class RigHardware(AbstractRigHardware):
 
     def __init__(self):
-        self.target_pos = [
+        self.target_pos = numpy.array([
             HydrationServo.get_position(2), 
-            HydrationServo.get_position(3)]
+            HydrationServo.get_position(3)])
         self.threads = []
 
     def homeX(self):
