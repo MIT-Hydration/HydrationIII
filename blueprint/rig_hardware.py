@@ -5,7 +5,8 @@ Hardware Interface and Mock Layers for Hydration project Rig subsystem.
 
 from abc import ABC, abstractmethod
 import configparser
-import time
+import time, threading
+import HydrationServo
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -80,9 +81,61 @@ class MockRigHardware(AbstractRigHardware):
     def isYMoving(self):
         return self.homing[1]
 
+class RigMoveThread(threading.Thread):
+    def __init__(self, rig):
+            super().__init__()
+            self.rig = rig
+
+    def run(self):
+        self.stopped = False
+        CONTROL_LOOP_TIME = configparser.getfloat(
+            "Rig", "MoveControlLoopTime")
+        HOMING_SPEED = configparser.getfloat(
+            "Rig", "HomingSpeed")
+        while not self.stopped:
+            loop_start = time.time()
+            current_pos = self.rig.getPosition()
+            if (self.rig.target_pos[1] < current_pos[1]):
+                HydrationServo.set_speed_rpm(3, -HOMING_SPEED)
+            else:
+                HydrationServo.set_speed_rpm(3, HOMING_SPEED)
+            loop_end = time.time()
+            delta_time = loop_end - loop_start
+            if (delta_time < CONTROL_LOOP_TIME):
+                time.sleep(CONTROL_LOOP_TIME - delta_time)
+
+        self.stopped = True
+
+    def stop(self):
+        HydrationServo.set_speed_rpm(3, 0)
+        self.stopped = True
+
 class RigHardware(AbstractRigHardware):
+
+    def __init__(self):
+        self.target_pos = [
+            HydrationServo.get_position(2), 
+            HydrationServo.get_position(3)]
+        self.threads = []
+
     def homeX(self):
         pass
 
     def homeY(self):
-        pass
+        self.target_pos[1] = 0.0
+        homing_thread = RigMoveThread(self)
+        self.threads.append(homing_thread)
+        homing_thread.start()
+
+    def getPosition(self):
+        x = HydrationServo.get_position(2)
+        y = HydrationServo.get_position(3)
+        return [x, y]
+        
+    def emergencyStop(self):
+        N = HydrationServo.get_num_motors()
+        for n in range(N):
+            HydrationServo.set_speed_rpm(n, 0)
+        for th in self.threads:
+            th.stop()
+        
