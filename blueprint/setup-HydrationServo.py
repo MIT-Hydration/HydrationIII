@@ -2,7 +2,7 @@ from distutils.core import setup, Extension
 
 HydrationServo_module = Extension(
     'HydrationServo',
-    sources=['HydrationServo.cpp'],
+    sources=['blueprint/HydrationServo.cpp'],
     language='C++', 
     include_dirs=['/home/hydration/ClearPath/inc/inc-pub'],
     libraries=['sFoundation20'],
