@@ -6,11 +6,13 @@ Hardware Interface and Mock Layers for Hydration project Rig subsystem.
 from abc import ABC, abstractmethod
 import configparser
 import time, threading
-import HydrationServo
 import numpy
 
 config = configparser.ConfigParser()
 config.read('config.ini')
+
+if config.getboolean('Operating System', 'RunningInRPi'):
+    import HydrationServo
 
 class AbstractRigHardware(ABC):
     current_pos = [0, 0]
@@ -140,8 +142,8 @@ class RigHardware(AbstractRigHardware):
         homing_thread.start()
 
     def getPosition(self):
-        x = HydrationServo.get_position(2)
-        y = HydrationServo.get_position(3)
+        x = HydrationServo.get_position(2)/4.0
+        y = HydrationServo.get_position(3)/4.0
         return [x, y]
         
     def emergencyStop(self):
