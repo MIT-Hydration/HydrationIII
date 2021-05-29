@@ -91,11 +91,11 @@ class RigMoveThread(threading.Thread):
 
     def run(self):
         self.stopped = False
-        CONTROL_LOOP_TIME = configparser.getfloat(
+        CONTROL_LOOP_TIME = config.getfloat(
             "Rig", "MoveControlLoopTime")
-        HOMING_SPEED = configparser.getfloat(
+        HOMING_SPEED = config.getfloat(
             "Rig", "HomingSpeed")
-        HOMING_ERROR = configparser.getfloat(
+        HOMING_ERROR = config.getfloat(
             "Rig", "HomingError")
 
         current_pos = numpy.array(self.rig.getPosition())
@@ -118,6 +118,10 @@ class RigMoveThread(threading.Thread):
                 if (delta_time < CONTROL_LOOP_TIME):
                     time.sleep(CONTROL_LOOP_TIME - delta_time)
 
+        N = HydrationServo.get_num_motors()
+        for n in range(N):
+            HydrationServo.set_speed_rpm(n, 0)
+        
         self.stopped = True
 
     def stop(self):
@@ -128,9 +132,13 @@ class RigHardware(AbstractRigHardware):
 
     def __init__(self):
         self.target_pos = numpy.array([
-            HydrationServo.get_position(2), 
-            HydrationServo.get_position(3)])
+            HydrationServo.get_position(2)*4.0, 
+            HydrationServo.get_position(3)*4.0])
+        self.prev_pos = self.target_pos.copy()
+        self.current_pos = self.target_pos.copy()
         self.threads = []
+        self.move_tolerance = config.getfloat(
+            "Rig", "HomingError")
 
     def homeX(self):
         pass
@@ -142,9 +150,11 @@ class RigHardware(AbstractRigHardware):
         homing_thread.start()
 
     def getPosition(self):
-        x = HydrationServo.get_position(2)/4.0
-        y = HydrationServo.get_position(3)/4.0
-        return [x, y]
+        self.prev_pos = self.current_pos.copy()
+        x = HydrationServo.get_position(2)*4.0
+        y = HydrationServo.get_position(3)*4.0
+        self.current_pos = numpy.array([x, y])
+        return self.current_pos
         
     def emergencyStop(self):
         N = HydrationServo.get_num_motors()
@@ -153,3 +163,9 @@ class RigHardware(AbstractRigHardware):
         for th in self.threads:
             th.stop()
         
+    def isXMoving(self):
+        return numpy.abs(self.prev_pos[0] - self.current_pos[0]) > self.move_tolerance
+
+    def isYMoving(self):
+        return numpy.abs(self.prev_pos[1] - self.current_pos[1]) > self.move_tolerance
+
