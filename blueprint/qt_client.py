@@ -133,6 +133,7 @@ class MainWindow(QtWidgets.QWidget):
 
     def __init__(self):
         super(MainWindow, self).__init__()
+        self.threads = []
         self.main_grid_layout = QtWidgets.QGridLayout()
         self._initEmergencyStop()
         self._initModeDisplay()
@@ -158,7 +159,6 @@ class MainWindow(QtWidgets.QWidget):
         )
 
     def emergency_stop(self):
-        self.threads = []
         client_thread = EmergencyStopThread()
         self.threads.append(client_thread)
         client_thread.start()
@@ -168,7 +168,6 @@ class MainWindow(QtWidgets.QWidget):
         pass
 
     def onHeartBeat(self):
-        self.threads = []
         client_thread = RPiHeartBeat()
         client_thread.done.connect(self.on_heartbeat_received)
         self.threads.append(client_thread)

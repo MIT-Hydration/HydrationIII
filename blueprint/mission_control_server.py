@@ -453,6 +453,17 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             timestamp = timestamp,
             status = mcpb.EXECUTED)
 
+    def EmergencyStop(self, request, context):
+        timestamp = int(time.time()*1000)
+        
+        rig_hardware = HardwareFactory.getRig()
+        rig_hardware.emergencyStop()
+        
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)
+
     def StartSpinPump (self, request, context):
         timestamp = int(time.time()*1000)
         if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \

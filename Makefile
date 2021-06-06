@@ -1,17 +1,6 @@
 # The binary to build (just the basename).
 MODULE := blueprint
 
-# Where to push the docker image.
-REGISTRY ?= docker.pkg.github.com/martinheinz/python-project-blueprint
-
-IMAGE := $(REGISTRY)/$(MODULE)
-
-# This version-strategy uses git tags to set the version string
-TAG := $(shell git describe --tags --always --dirty)
-
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
-
 run-mc-server:
 	@python3 -m $(MODULE)
 
@@ -23,6 +12,9 @@ run-echo-client:
 
 run-water-pump-test:
 	@python3 -m $(MODULE).test.test_water_pump
+
+hydration-servo:
+	@python3 blueprint/setup-HydrationServo.py build_ext --inplace
 
 grpc-gen:
 	@python3 -m grpc_tools.protoc \
