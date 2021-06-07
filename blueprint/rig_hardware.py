@@ -43,12 +43,12 @@ class AbstractRigHardware(ABC):
 class MockRigHardware(AbstractRigHardware):
     
     def __init__(self):
-        self.position = [50.0, 50.0]
+        self.position = [0.50, 0.50]
         self.homing = [False, False]
         self.homingTime = [0.0, 0.0]
     
     def _update(self, i):
-        VEL = -2 # cm/s
+        VEL = -0.02 # m/s
         if self.homing[i]:
             new_t = time.time()
             dt = new_t - self.homingTime[i]

@@ -29,8 +29,8 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.layout = layout
         self.plot = pg.PlotWidget()
         self.plot.showGrid(x = True, y = True, alpha = 1.0)
-        self.plot.setXRange(-5, X_LENGTH + 5, padding=0)
-        self.plot.setYRange(-5, Y_LENGTH + 5, padding=0)
+        self.plot.setXRange(-0.05, X_LENGTH + 0.05, padding=0)
+        self.plot.setYRange(-0.05, Y_LENGTH + 0.05, padding=0)
         self.plot.getAxis('bottom').setLabel(f'X {RIG_UNITS}')
         self.plot.getAxis('left').setLabel(f'Y {RIG_UNITS}')
         self.scatter = pg.ScatterPlotItem(
@@ -38,8 +38,10 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.plot.addItem(self.scatter)
         layout.addWidget(self.plot, 1, 0, 10, 1)
 
+        
+
     def update_display(self, response):
         if (response != None):    
             print(response.rig_x)
             print(response.rig_y)  
-            self.scatter.setData([response.rig_x*100], [response.rig_y*100])
+            self.scatter.setData([response.rig_x], [response.rig_y])

@@ -147,6 +147,11 @@ class MainWindow(QtWidgets.QWidget):
         self.heartbeat_timer.timeout.connect(self.onHeartBeat)
         self.startHeartBeatTimer()
 
+    # def closeEvent(self, event):
+    #     for th in self.threads:
+    #         th.wait()
+    #     event.accept() # let the window close
+
     def _initHolePos(self):
         self.hole_pos_groupbox = QtWidgets.QGroupBox("Rig Holes and Position")
         self.hole_pos_layout = QtWidgets.QGridLayout()
