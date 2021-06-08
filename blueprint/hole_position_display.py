@@ -67,8 +67,11 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.layout.addWidget(QtWidgets.QPushButton("GoTo Target (Z1)"), 3, start_h, 1, 2)
         self.layout.addWidget(QtWidgets.QPushButton("GoTo Target (Z2)"), 3, start_h + 2, 1, 2)
         
-        self.layout.addWidget(QtWidgets.QPushButton("Set Current as Origin (XYZ1Z2)"), 
-            5, start_h, 1, 4)
+        self.layout.addWidget(QtWidgets.QLabel("Current Position (X, Y, Z1, Z2) [m]"), 
+            5, start_h, 1, 2)
+
+        self.layout.addWidget(QtWidgets.QPushButton("Set Current as Origin (X, Y, Z1, Z2)"), 
+            6, start_h, 1, 4)
         
     def _init_z_display(self, zplot, zscatter, start_h, label):
         global X_LENGTH, Y_LENGTH, RIG_UNITS
