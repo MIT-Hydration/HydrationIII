@@ -2,3 +2,5 @@ pyqtgraph
 PySide6
 qt_material
 pymodbus
+grpcio
+grpcio-tools
