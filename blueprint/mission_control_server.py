@@ -129,7 +129,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             timestamp = timestamp,
             status = mcpb.EXECUTED)
 
-    def StartHomeX (self, request, context):
+    def StartHomeAxis (self, request, context, f):
         timestamp = int(time.time()*1000)
         if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
            (self.mission_time_started): # do nothing
@@ -139,13 +139,31 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 status = mcpb.INVALID_STATE)
 
         rig_hardware = HardwareFactory.getRig()
-        rig_hardware.homeX()
+        f()
         
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
             status = mcpb.EXECUTED)
 
+
+    def StartHomeZ1 (self, request, context):
+        rig_hardware = HardwareFactory.getRig()
+        return self.StartHomeAxis(request, context, rig_hardware.homeZ1)
+
+
+    def StartHomeZ2 (self, request, context):
+        rig_hardware = HardwareFactory.getRig()
+        return self.StartHomeAxis(request, context, rig_hardware.homeZ2)
+
+    def StartHomeX (self, request, context):
+        rig_hardware = HardwareFactory.getRig()
+        return self.StartHomeAxis(request, context, rig_hardware.homeX)
+
+    def StartHomeY (self, request, context):
+        rig_hardware = HardwareFactory.getRig()
+        return self.StartHomeAxis(request, context, rig_hardware.homeY)
+        
     def SetAirGap (self, request, context):
         timestamp = int(time.time()*1000)
         if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
@@ -440,22 +458,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             timestamp = timestamp,
             status = mcpb.EXECUTED)
 
-    def StartHomeY (self, request, context):
-        timestamp = int(time.time()*1000)
-        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
-           (self.mission_time_started): # do nothing
-            return mcpb.CommandResponse(
-                request_timestamp = request.request_timestamp,
-                timestamp = timestamp,
-                status = mcpb.INVALID_STATE)
 
-        rig_hardware = HardwareFactory.getRig()
-        rig_hardware.homeY()
-        
-        return mcpb.CommandResponse(
-            request_timestamp = request.request_timestamp,
-            timestamp = timestamp,
-            status = mcpb.EXECUTED)
 
     def EmergencyStop(self, request, context):
         timestamp = int(time.time()*1000)

@@ -62,15 +62,17 @@ class MockRigHardware(AbstractRigHardware):
         self.position = [-0.4, -0.5, 0.50, 0.50]
         self.homing = [False, False, False, False]
         self.homingTime = [0.0, 0.0, 0.0, 0.0]
+        self.move_tolerance = config.getfloat(
+            "Rig", "HomingError")
     
     def _update(self, i):
-        VEL = -0.02 # m/s
+        VEL = -numpy.sign(self.position[i])*0.02 # m/s
         if self.homing[i]:
             new_t = time.time()
             dt = new_t - self.homingTime[i]
             ds = VEL*dt
             s = self.position[i] + ds
-            if s <= 0.0:
+            if numpy.abs(s) <= self.move_tolerance*100:
                 self.homing[i] = False
                 s = 0.0
             self.position[i] = s

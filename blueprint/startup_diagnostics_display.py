@@ -301,37 +301,29 @@ class StartupDiagnosticsDisplay:
         self.buttons = [None] * len(self.startup_list)
         self.layout = layout
         self._initWidgets()
-        layout.setSpacing(0.5)
-
+        
     def _initWidgets(self):
         i = 0
         line = 0
-        while (i < len(self.startup_list)):
-            if (("Start" in self.startup_list[i][0]) and ("Stop" in self.startup_list[i+1][0])):
-                sub1 = self.startup_list[i][0].replace("Start", "")
-                sub2 = self.startup_list[i+1][0].replace("Stop", "")
-                if (sub1 == sub2):
-                    self.buttons[i] = QtWidgets.QPushButton(self.startup_list[i][0])
-                    self.layout.addWidget(self.buttons[i], line, 0)
-                    self.buttons[i].clicked.connect(self.startup_list[i][1])
-                    self.buttons[i].clicked.connect(partial(_changeStyle, self.buttons[i]))
-                    self.buttons[i+1] = QtWidgets.QPushButton(self.startup_list[i+1][0])
-                    self.layout.addWidget(self.buttons[i+1], line, 1)
-                    self.buttons[i+1].clicked.connect(self.startup_list[i+1][1])
-                    self.buttons[i+1].clicked.connect(partial(_changeStyle, self.buttons[i+1]))
-                    i += 2
-                    line += 1
-            else:
-                    self.buttons[i] = QtWidgets.QPushButton(self.startup_list[i][0])
-                    self.layout.addWidget(self.buttons[i], line, 0, 1, 2)
-                    self.buttons[i].clicked.connect(self.startup_list[i][1])
-                    self.buttons[i].clicked.connect(partial(_changeStyle, self.buttons[i]))
-                    i += 1
-                    line += 1
-        self.layout.rowStretch(5)
-        for i in range (len(self.startup_list)):
-            self.buttons[i].setFixedHeight(1)
 
+        self.buttons[i] = QtWidgets.QPushButton(self.startup_list[i][0])
+        self.layout.addWidget(self.buttons[i], line, 0, 1, 2)
+        self.buttons[i].clicked.connect(self.startup_list[i][1])
+        self.buttons[i].clicked.connect(partial(_changeStyle, self.buttons[i]))
+        i += 1
+        line += 1
+
+        while (i < len(self.startup_list)):
+            self.buttons[i] = QtWidgets.QPushButton(self.startup_list[i][0])
+            self.layout.addWidget(self.buttons[i], line, 0)
+            self.buttons[i].clicked.connect(self.startup_list[i][1])
+            self.buttons[i].clicked.connect(partial(_changeStyle, self.buttons[i]))
+            self.buttons[i+1] = QtWidgets.QPushButton(self.startup_list[i+1][0])
+            self.layout.addWidget(self.buttons[i+1], line, 1)
+            self.buttons[i+1].clicked.connect(self.startup_list[i+1][1])
+            self.buttons[i+1].clicked.connect(partial(_changeStyle, self.buttons[i+1]))
+            i += 2
+            line += 1
 
     def start_mission_clock(self):
         self.threads = []
