@@ -3,15 +3,6 @@ hardware.py
 Hardware Interface and Mock Layers for Hydration project.
 """
 
-__author__      = "Prakash Manandhar"
-__copyright__ = "Copyright 2021, Hydration Team"
-__credits__ = ["Prakash Manandhar"]
-__license__ = "Internal"
-__version__ = "1.0.0"
-__maintainer__ = "Prakash Manandhar"
-__email__ = "engineer.manandhar@gmail.com"
-__status__ = "Production"
-
 from abc import ABC, abstractmethod
 import time
 import threading
@@ -35,51 +26,61 @@ class HardwareFactory:
     drill = None
     rpi = None
     rig = None
-    water_pump = None
+    pump = None
 
     @classmethod
     def getDrill(cls):
+        threading.Lock.acquire()
         if cls.drill is None:
             if (config.getboolean('Mocks', 'MockDrill')):
                 cls.drill = MockDrill()
             else:
                 cls.drill = Drill()
+        threading.Lock.release()
         return cls.drill
-
+        
     @classmethod
     def getWaterPump(cls):
-        if cls.drill is None:
+        threading.Lock.acquire()
+        if cls.pump is None:
             if (config.getboolean('Mocks', 'MockWaterPump')):
-                cls.drill = MockPump()
+                cls.pump = MockPump()
             else:
-                cls.drill = Pump()
-        return cls.drill
-    
+                cls.pump = Pump()
+        threading.Lock.release()
+        return cls.pump
+        
     @classmethod
     def getMissionControlRPi(cls):
+        threading.Lock.acquire()
         if cls.rpi is None:
             if (config.getboolean('Mocks', 'MockMissionControlRPi')):
                 cls.rpi = RPiHardware.MockRPiHardware()
             else:
                 cls.rpi = RPiHardware.RPiHardware()
+        threading.Lock.release()
         return cls.rpi
-
+        
     @classmethod
     def getRig(cls):
+        threading.Lock.acquire()
         if cls.rig is None:
             if (config.getboolean('Mocks', 'MockRig')):
                 cls.rig = rig_hardware.MockRigHardware()
             else:
                 cls.rig = rig_hardware.RigHardware()
+        threading.Lock.release()
         return cls.rig
 
     @classmethod
     def getWaterPump(cls):
+        threading.Lock.acquire()
         if cls.drill is None:
             if (config.getboolean('Mocks', 'MockWaterPump')):
                 cls.drill = PumpHardware.MockPump()
             else:
                 cls.drill = PumpHardware.Pump()
+        threading.Lock.release()
         return cls.drill
     
 class AbstractDrill(ABC):
@@ -189,7 +190,7 @@ class Drill(AbstractDrill):
             
         def run(self):
             self.stopped = False
-            fp = open(f"{time_start_s}.csv", "w")
+            fp = open(f"drill_{time_start_s}.csv", "w")
             fp.write("time_s,")
             keys = drill_thread.sensor_readings.keys
             for k in keys:
@@ -205,9 +206,8 @@ class Drill(AbstractDrill):
                 delta_time = loop_end - loop_start
                 if (delta_time < 0.02):
                     time.sleep(0.02 - delta_time)
-
             fp.close()
-                
+
         def stop(self):
             self.stopped = True
             
@@ -240,7 +240,6 @@ class Drill(AbstractDrill):
     @classmethod
     def get_speed_rpm(cls):
         return cls.drill_thread.sensor_readings["speed_rpm"]
-        pass
 
     @classmethod
     def get_active_power_W(cls):

@@ -100,25 +100,33 @@ class RigMoveThread(threading.Thread):
 
         current_pos = numpy.array(self.rig.getPosition())
         delta_pos = current_pos - self.rig.target_pos
+        N = HydrationServo.get_num_motors()
         
-        if numpy.abs(delta_pos[1]) > HOMING_ERROR:
-            if delta_pos[1] > 0:
-                HydrationServo.set_speed_rpm(3, -HOMING_SPEED)
-            else:
-                HydrationServo.set_speed_rpm(3, HOMING_SPEED)
+        if numpy.max(numpy.abs(delta_pos)) > HOMING_ERROR:
+            
+            for n in range(N):
+                if (delta_pos[n] > 0) and (numpy.abs(delta_pos[n]) > HOMING_ERROR):
+                    HydrationServo.set_speed_rpm(n, -HOMING_SPEED)
+                elif (delta_pos[n] < 0) and (numpy.abs(delta_pos[n]) > HOMING_ERROR):
+                    HydrationServo.set_speed_rpm(n, HOMING_SPEED)
         
-            while (not self.stopped) and \
-                    (numpy.abs(delta_pos[1]) > HOMING_ERROR):
+            while (not self.stopped) and numpy.max(numpy.abs(delta_pos)) > HOMING_ERROR:
+
                 loop_start = time.time()
                 current_pos = numpy.array(self.rig.getPosition())
                 delta_pos = current_pos - self.rig.target_pos
                 
+                if (numpy.abs(delta_pos[0]) > HOMING_ERROR):
+                    HydrationServo.set_speed_rpm(2, 0)
+                
+                if (numpy.abs(delta_pos[1]) > HOMING_ERROR):
+                    HydrationServo.set_speed_rpm(3, 0)
+
                 loop_end = time.time()
                 delta_time = loop_end - loop_start
                 if (delta_time < CONTROL_LOOP_TIME):
                     time.sleep(CONTROL_LOOP_TIME - delta_time)
 
-        N = HydrationServo.get_num_motors()
         for n in range(N):
             HydrationServo.set_speed_rpm(n, 0)
         
@@ -132,6 +140,8 @@ class RigHardware(AbstractRigHardware):
 
     def __init__(self):
         self.target_pos = numpy.array([
+            HydrationServo.get_position(0), 
+            HydrationServo.get_position(1),
             HydrationServo.get_position(2)*4.0, 
             HydrationServo.get_position(3)*4.0])
         self.prev_pos = self.target_pos.copy()
@@ -141,9 +151,24 @@ class RigHardware(AbstractRigHardware):
             "Rig", "HomingError")
 
     def homeX(self):
-        pass
+        self.target_pos[2] = 0.0
+        homing_thread = RigMoveThread(self)
+        self.threads.append(homing_thread)
+        homing_thread.start()
 
     def homeY(self):
+        self.target_pos[3] = 0.0
+        homing_thread = RigMoveThread(self)
+        self.threads.append(homing_thread)
+        homing_thread.start()
+
+    def homeZ1(self):
+        self.target_pos[0] = 0.0
+        homing_thread = RigMoveThread(self)
+        self.threads.append(homing_thread)
+        homing_thread.start()
+
+    def homeZ2(self):
         self.target_pos[1] = 0.0
         homing_thread = RigMoveThread(self)
         self.threads.append(homing_thread)
@@ -151,9 +176,11 @@ class RigHardware(AbstractRigHardware):
 
     def getPosition(self):
         self.prev_pos = self.current_pos.copy()
+        z1 = HydrationServo.get_position(0)
+        z2 = HydrationServo.get_position(1)
         x = HydrationServo.get_position(2)*4.0
         y = HydrationServo.get_position(3)*4.0
-        self.current_pos = numpy.array([x, y])
+        self.current_pos = numpy.array([z1, z2, x, y])
         return self.current_pos
         
     def emergencyStop(self):
@@ -162,10 +189,21 @@ class RigHardware(AbstractRigHardware):
             HydrationServo.set_speed_rpm(n, 0)
         for th in self.threads:
             th.stop()
-        
+
+    def isNMoving(self, n):   
+        return numpy.abs(self.prev_pos[n] - self.current_pos[n]) > self.move_tolerance
+    
     def isXMoving(self):
-        return numpy.abs(self.prev_pos[0] - self.current_pos[0]) > self.move_tolerance
+        return self.isNMoving(2)
 
     def isYMoving(self):
-        return numpy.abs(self.prev_pos[1] - self.current_pos[1]) > self.move_tolerance
+        return self.isNMoving(3)
+
+    def isZ1Moving(self):
+        return self.isNMoving(0)
+
+    def isZ2Moving(self):
+        return self.isNMoving(1)
+
+    
 
