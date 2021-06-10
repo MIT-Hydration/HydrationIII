@@ -87,4 +87,3 @@ class ModeDisplay(QtWidgets.QWidget):
                  self.mode_radios[i].setChecked(True)
              else:
                  self.mode_radios[i].setChecked(False)
-        pass

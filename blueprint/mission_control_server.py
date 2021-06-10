@@ -80,8 +80,10 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             zwater_servo_moving = rig_hardware.isZ2Moving(),
             x_servo_moving = rig_hardware.isXMoving(),
             y_servo_moving = rig_hardware.isYMoving(),
-            rig_x = rig_hardware.getPosition()[0],
-            rig_y = rig_hardware.getPosition()[1],
+            rig_x = rig_hardware.getPosition()[2],
+            rig_y = rig_hardware.getPosition()[3],
+            rig_zdrill = rig_hardware.getPosition()[0],
+            rig_zwater = rig_hardware.getPosition()[1],
             mode = self.mode)
 
     def RigMove(self, request, context):

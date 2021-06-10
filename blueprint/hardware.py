@@ -27,60 +27,61 @@ class HardwareFactory:
     rpi = None
     rig = None
     pump = None
+    _lock = threading.Lock()
 
     @classmethod
     def getDrill(cls):
-        threading.Lock.acquire()
+        cls._lock.acquire()
         if cls.drill is None:
             if (config.getboolean('Mocks', 'MockDrill')):
                 cls.drill = MockDrill()
             else:
                 cls.drill = Drill()
-        threading.Lock.release()
+        cls._lock.release()
         return cls.drill
         
     @classmethod
     def getWaterPump(cls):
-        threading.Lock.acquire()
+        cls._lock.acquire()
         if cls.pump is None:
             if (config.getboolean('Mocks', 'MockWaterPump')):
                 cls.pump = MockPump()
             else:
                 cls.pump = Pump()
-        threading.Lock.release()
+        cls._lock.release()
         return cls.pump
         
     @classmethod
     def getMissionControlRPi(cls):
-        threading.Lock.acquire()
+        cls._lock.acquire()
         if cls.rpi is None:
             if (config.getboolean('Mocks', 'MockMissionControlRPi')):
                 cls.rpi = RPiHardware.MockRPiHardware()
             else:
                 cls.rpi = RPiHardware.RPiHardware()
-        threading.Lock.release()
+        cls._lock.release()
         return cls.rpi
         
     @classmethod
     def getRig(cls):
-        threading.Lock.acquire()
+        cls._lock.acquire()
         if cls.rig is None:
             if (config.getboolean('Mocks', 'MockRig')):
                 cls.rig = rig_hardware.MockRigHardware()
             else:
                 cls.rig = rig_hardware.RigHardware()
-        threading.Lock.release()
+        cls._lock.release()
         return cls.rig
 
     @classmethod
     def getWaterPump(cls):
-        threading.Lock.acquire()
+        cls._lock.acquire()
         if cls.drill is None:
             if (config.getboolean('Mocks', 'MockWaterPump')):
                 cls.drill = PumpHardware.MockPump()
             else:
                 cls.drill = PumpHardware.Pump()
-        threading.Lock.release()
+        cls._lock.release()
         return cls.drill
     
 class AbstractDrill(ABC):

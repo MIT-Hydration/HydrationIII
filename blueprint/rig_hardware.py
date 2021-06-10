@@ -59,7 +59,7 @@ class AbstractRigHardware(ABC):
 class MockRigHardware(AbstractRigHardware):
     
     def __init__(self):
-        self.position = [0.1, 0.1, 0.50, 0.50]
+        self.position = [-0.4, -0.5, 0.50, 0.50]
         self.homing = [False, False, False, False]
         self.homingTime = [0.0, 0.0, 0.0, 0.0]
     
