@@ -29,11 +29,27 @@ class AbstractRigHardware(ABC):
         pass
 
     @abstractmethod
+    def homeZ1(self):
+        pass
+
+    @abstractmethod
+    def homeZ2(self):
+        pass
+
+    @abstractmethod
     def isXMoving(self):
         pass
 
     @abstractmethod
     def isYMoving(self):
+        pass
+
+    @abstractmethod
+    def isZ1Moving(self):
+        pass
+
+    @abstractmethod
+    def isZ2Moving(self):
         pass
 
     @abstractmethod
@@ -43,9 +59,9 @@ class AbstractRigHardware(ABC):
 class MockRigHardware(AbstractRigHardware):
     
     def __init__(self):
-        self.position = [0.50, 0.50]
-        self.homing = [False, False]
-        self.homingTime = [0.0, 0.0]
+        self.position = [0.1, 0.1, 0.50, 0.50]
+        self.homing = [False, False, False, False]
+        self.homingTime = [0.0, 0.0, 0.0, 0.0]
     
     def _update(self, i):
         VEL = -0.02 # m/s
@@ -61,28 +77,46 @@ class MockRigHardware(AbstractRigHardware):
             self.homingTime[i] = new_t
             
     def getPosition(self):
-        self._update(0)
-        self._update(1)
+        N = len(self.position)
+        for n in range(N):
+            self._update(n)
         return self.position
 
-    def homeX(self):
+    def homeZ1(self):
         self.homing[0] = True
         self.homingTime[0] = time.time()
         
-    def homeY(self):
+    def homeZ2(self):
         self.homing[1] = True
         self.homingTime[1] = time.time()
+    
+    def homeX(self):
+        self.homing[2] = True
+        self.homingTime[2] = time.time()
+        
+    def homeY(self):
+        self.homing[3] = True
+        self.homingTime[3] = time.time()
         
     def emergencyStop(self):
-        self.homing[0] = False
-        self.homing[1] = False
+        N = len(self.position)
+        for n in range(N):
+            self.homing[n] = False
 
-    def isXMoving(self):
+    def isZ1Moving(self):
         #print(f"X is moving {self.homing[0]}")
         return self.homing[0]
 
-    def isYMoving(self):
+    def isZ2Moving(self):
+        #print(f"X is moving {self.homing[0]}")
         return self.homing[1]
+
+    def isXMoving(self):
+        #print(f"X is moving {self.homing[0]}")
+        return self.homing[2]
+
+    def isYMoving(self):
+        return self.homing[3]
 
 class RigMoveThread(threading.Thread):
     def __init__(self, rig):
