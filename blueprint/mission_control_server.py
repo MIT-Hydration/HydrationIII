@@ -76,6 +76,8 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             timestamp = timestamp,
             cpu_temperature_degC = cpu_temp,
             mission_time_ms = mission_time,
+            zdrill_servo_moving = rig_hardware.isZ1Moving(),
+            zwater_servo_moving = rig_hardware.isZ2Moving(),
             x_servo_moving = rig_hardware.isXMoving(),
             y_servo_moving = rig_hardware.isYMoving(),
             rig_x = rig_hardware.getPosition()[0],

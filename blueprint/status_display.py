@@ -93,6 +93,8 @@ class StatusDisplay:
             for i in [1, 2, 3, 4, 5, 8, 9, 10, 11]:
                 self.checkboxes[i].setChecked(False)
             
+            self._update_bool(4, "Z1 (Drill) servo", response.zdrill_servo_moving)
+            self._update_bool(5, "Z2 (Water) servo", response.zwater_servo_moving)
             self._update_bool(6, "X servo", response.x_servo_moving)
             self._update_bool(7, "Y servo", response.y_servo_moving)
             
