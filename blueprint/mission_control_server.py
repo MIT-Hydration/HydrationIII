@@ -80,6 +80,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             y_servo_moving = rig_hardware.isYMoving(),
             rig_x = rig_hardware.getPosition()[0],
             rig_y = rig_hardware.getPosition()[1],
+            rig_torque_z1 = rig_hardware.getTorque(0),
             mode = self.mode)
 
     def RigMove(self, request, context):

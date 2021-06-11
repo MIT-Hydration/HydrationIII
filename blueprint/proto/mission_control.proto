@@ -81,6 +81,8 @@ message HeartBeatReply {
 
     float rig_x = 100;
     float rig_y = 101;
+
+    float rig_torque_z1 = 120; 
 }
 
 message RigStatusRequest {
