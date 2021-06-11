@@ -33,8 +33,8 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         timestamp = int(time.time()*1000)
         modes = [
                 mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS,
-                mcpb.MAJOR_MODE_HOME_Z1_Z2,
-                mcpb.MAJOR_MODE_MOVE_X_Y,
+                #mcpb.MAJOR_MODE_HOME_Z1_Z2,
+                #mcpb.MAJOR_MODE_MOVE_X_Y,
                 mcpb.MAJOR_MODE_DRILL_BOREHOLE,
                 mcpb.MAJOR_MODE_CASE_BOREHOLE,
                 mcpb.MAJOR_MODE_INSERT_HEATER,
@@ -44,8 +44,8 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             ]
         mode_labels = [
             "01 Startup/calibrate",
-            "02 Home Z1, Z2",
-            "03 Move X, Y",
+            #"02 Home Z1, Z2",
+            #"03 Move X, Y",
             "04 Drill borehole",
             "05 Case borehole",
             "06 Insert heater",
