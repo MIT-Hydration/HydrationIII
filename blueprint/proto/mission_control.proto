@@ -81,6 +81,8 @@ message HeartBeatReply {
 
     float rig_x = 100;
     float rig_y = 101;
+
+    float rig_torque_z1 = 120; 
 }
 
 message RigStatusRequest {
@@ -206,10 +208,17 @@ service MissionControl {
     rpc GetHoles (HoleListRequest) returns (HoleList);
     rpc SetMode (SetModeRequest) returns (CommandResponse);
     rpc StartMissionClock (StartCommandRequest) returns (CommandResponse);
+
     rpc StartHomeZ1 (StartCommandRequest) returns (CommandResponse);
     rpc StartHomeZ2 (StartCommandRequest) returns (CommandResponse);
     rpc StartHomeX (StartCommandRequest) returns (CommandResponse);
     rpc StartHomeY (StartCommandRequest) returns (CommandResponse);
+
+    rpc SetHomeZ1 (StartCommandRequest) returns (CommandResponse);
+    rpc SetHomeZ2 (StartCommandRequest) returns (CommandResponse);
+    rpc SetHomeX (StartCommandRequest) returns (CommandResponse);
+    rpc SetHomeY (StartCommandRequest) returns (CommandResponse);
+
     rpc StartSpinDrillMotor (StartCommandRequest) returns (CommandResponse);
     rpc StopSpinDrillMotor (StartCommandRequest) returns (CommandResponse);
     rpc StartSpinPump (StartCommandRequest) returns (CommandResponse);
