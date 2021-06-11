@@ -45,8 +45,31 @@ class AbstractRigHardware(ABC):
     def getTorque(self, i):
         pass
 
-class MockRigHardware(AbstractRigHardware):
+    @abstractmethod
+    # Returns torque of motor i (0, 1, 2, 3) => (z1, z2, x, y)
+    def getTorque(self, i):
+        pass
+
+    @abstractmethod
+    def setHomeZ1(self):
+        pass
     
+    @abstractmethod
+    def setHomeZ2(self):
+        pass
+
+
+    @abstractmethod
+    def setHomeX(self):
+        pass
+
+
+    @abstractmethod
+    def setHomeY(self):
+        pass
+
+class MockRigHardware(AbstractRigHardware):
+    +
     def __init__(self):
         self.position = [0.50, 0.50]
         self.homing = [False, False]
@@ -91,7 +114,7 @@ class MockRigHardware(AbstractRigHardware):
     
     def getTorque(self, i):
         return 9 # maximum is 3.5, so if we see more it indicates simulated value
-
+     #WHAT TO RETURN for setHome functions in Mock?!??!?!?
 class RigMoveThread(threading.Thread):
     def __init__(self, rig):
             super().__init__()
@@ -179,5 +202,18 @@ class RigHardware(AbstractRigHardware):
 
     def getTorque(self, i):
         return HydrationServo.getTorque(i)    
+    #Do i do a return or just like the function set home ??? 
+    def setHomeZ1(self):
+        return HydrationServo.setHome(0)
+
+    def setHomeZ2(self):
+        return HydrationServo.setHome(1)
+
+    def setHomeX(self):
+        return HydrationServo.setHome(2)
+
+    def setHomeY(self):
+        return HydrationServo.setHome(3)
+    
    
 

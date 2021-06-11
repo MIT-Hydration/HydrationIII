@@ -41,7 +41,7 @@ int _set_home(unsigned long i){
 	printf("Position set to ", posn_measured);
     return 1;
 }
-//Editing this not sure if correct
+
 int _set_speed_rpm(unsigned long i, double speed){
 	/*
 	Parameters
@@ -80,12 +80,7 @@ static PyObject *get_torque(PyObject *self, PyObject *args) {
   return PyFloat_FromDouble(_get_torque(i));
 }
 
-static PyObject *set_speed_rpm(PyObject *self) {
-  unsigned long i;
-  if (!PyArg_ParseTuple(args, "kd", &i, &speed)) {
-    return NULL;
-  }
-  //did not add a args for pyobject 
+
 
 static PyObject *get_num_motors(PyObject *self, PyObject *args) {
 	return PyLong_FromUnsignedLong((unsigned long)numNodesDetected);
@@ -115,10 +110,25 @@ static PyObject *set_speed_rpm(PyObject *self, PyObject *args) {
     Py_RETURN_FALSE;
 }
 
+static PyObject *_set_home(PyObject *self, PyObject *args) {
+  unsigned long i;
+  if (!PyArg_ParseTuple(args, "k", &i,)) {
+    return NULL;
+  }
+  
+  int set_home = _set_home(i);
+  if (set_home > 0)
+    Py_RETURN_TRUE;
+  else
+    Py_RETURN_FALSE;
+}
+
 static PyMethodDef HydrationServo_methods[] = {
     {"get_position", get_position, METH_VARARGS, "Returns servo position"},
     {"set_speed_rpm", set_speed_rpm, 
 	    METH_VARARGS, "Sets servo speed"},
+	{"get_torque", get_torque, METH_VARARGS, "Returns torque value"}, 
+	{"set_home", set_home, METH_VARARGS, "Set home"}
 	{"get_num_motors", get_num_motors, 
 	    METH_VARARGS, "Returns the number of motors"},
 	{"get_motor_id", get_motor_id, METH_VARARGS, "Returns the ID (Name) of the Motor"},
