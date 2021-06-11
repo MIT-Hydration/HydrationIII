@@ -26,22 +26,6 @@ double _get_position(unsigned long i){
   return myPosn;
 }
 
-double _get_torque(unsigned long i){ 
-	INode &theNode = *(pTheNode[i]);
-	theNode.Motion.TrqMeasured.Refresh();
-	double myTorque = theNode.Motion.TrqMeasured.Value();
-	return myTorque;
-
-}
-
-int _set_home(unsigned long i){
-	INode &theNode = *(pTheNode[i]);
-	double posn_measured = theNode.Motion.PosnMeasured;
-    theNode.Motion.AddToPosition(-posn_measured);
-	printf("Position set to ", posn_measured);
-    return 1;
-}
-//Editing this not sure if correct
 int _set_speed_rpm(unsigned long i, double speed){
 	/*
 	Parameters
@@ -71,21 +55,6 @@ static PyObject *get_position(PyObject *self, PyObject *args) {
   }
   return PyFloat_FromDouble(_get_position(i));
 }
-
-static PyObject *get_torque(PyObject *self, PyObject *args) {
-  unsigned long i;
-  if (!PyArg_ParseTuple(args, "k", &i)) {
-    return NULL;
-  }
-  return PyFloat_FromDouble(_get_torque(i));
-}
-
-static PyObject *set_speed_rpm(PyObject *self) {
-  unsigned long i;
-  if (!PyArg_ParseTuple(args, "kd", &i, &speed)) {
-    return NULL;
-  }
-  //did not add a args for pyobject 
 
 static PyObject *get_num_motors(PyObject *self, PyObject *args) {
 	return PyLong_FromUnsignedLong((unsigned long)numNodesDetected);
