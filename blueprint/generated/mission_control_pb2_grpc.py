@@ -59,6 +59,26 @@ class MissionControlStub(object):
                 request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.CommandResponse.FromString,
                 )
+        self.SetHomeZ1 = channel.unary_unary(
+                '/mission_control.MissionControl/SetHomeZ1',
+                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.SetHomeZ2 = channel.unary_unary(
+                '/mission_control.MissionControl/SetHomeZ2',
+                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.SetHomeX = channel.unary_unary(
+                '/mission_control.MissionControl/SetHomeX',
+                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.SetHomeY = channel.unary_unary(
+                '/mission_control.MissionControl/SetHomeY',
+                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
         self.StartSpinDrillMotor = channel.unary_unary(
                 '/mission_control.MissionControl/StartSpinDrillMotor',
                 request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
@@ -298,6 +318,30 @@ class MissionControlServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def StartHomeY(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetHomeZ1(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetHomeZ2(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetHomeX(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetHomeY(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -570,6 +614,26 @@ def add_MissionControlServicer_to_server(servicer, server):
             ),
             'StartHomeY': grpc.unary_unary_rpc_method_handler(
                     servicer.StartHomeY,
+                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'SetHomeZ1': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetHomeZ1,
+                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'SetHomeZ2': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetHomeZ2,
+                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'SetHomeX': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetHomeX,
+                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'SetHomeY': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetHomeY,
                     request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
                     response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
             ),
@@ -916,6 +980,74 @@ class MissionControl(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/StartHomeY',
+            mission__control__pb2.StartCommandRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetHomeZ1(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/SetHomeZ1',
+            mission__control__pb2.StartCommandRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetHomeZ2(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/SetHomeZ2',
+            mission__control__pb2.StartCommandRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetHomeX(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/SetHomeX',
+            mission__control__pb2.StartCommandRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetHomeY(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/SetHomeY',
             mission__control__pb2.StartCommandRequest.SerializeToString,
             mission__control__pb2.CommandResponse.FromString,
             options, channel_credentials,

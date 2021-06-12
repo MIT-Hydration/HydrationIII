@@ -13,10 +13,8 @@ config.read('config.ini')
 if config.getboolean('Operating System', 'RunningInRPi'):
     from gpiozero import PWMLED, DigitalInputDevice, DigitalOutputDevice
     import RPi.GPIO as GPIO
-##use another GPIO     
 
-# Controller Direction Bit (High for Controller default / LOW to Force a Direction Change).
-SIG = config.getint('Tachometer', 'InputPin')  # Pin receiving the Hall Effect signal
+SIG = config.getint('Tachometer', 'InputPin')  # Pin receiving the optical signal
 
 if config.getboolean('Operating System', 'RunningInRPi'):
     GPIO.setmode(GPIO.BCM)
@@ -28,7 +26,7 @@ class AbstractTachometer(ABC):
     def get_rpm(self):
         pass
 
-    # MAXSPEED (Percentage of the Max):
+    # MAXSPEED
     def get_max_rpm(self):
         return 2000 ##not abstract bc known
 

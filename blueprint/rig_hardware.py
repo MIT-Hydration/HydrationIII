@@ -61,12 +61,25 @@ class AbstractRigHardware(ABC):
     def getTorque(self, i):
         pass
 
+    @abstractmethod
+    def gotoPosition(self, x, y):
+        pass
+    
+    @abstractmethod
+    def gotoPositionZ1(self, z):        
+        pass
+
+    @abstractmethod
+    def gotoPositionZ2(self, z):        
+        pass
+
 class MockRigHardware(AbstractRigHardware):
     
     def __init__(self):
         self.position = [-0.4, -0.5, 0.50, 0.50]
         self.homing = [False, False, False, False]
         self.homingTime = [0.0, 0.0, 0.0, 0.0]
+        self.target = [0.0, 0.0, 0.0, 0.0]
         self.move_tolerance = config.getfloat(
             "Rig", "HomingError")
     
@@ -77,9 +90,10 @@ class MockRigHardware(AbstractRigHardware):
             dt = new_t - self.homingTime[i]
             ds = VEL*dt
             s = self.position[i] + ds
-            if numpy.abs(s) <= self.move_tolerance*100:
+            ds = self.target[i] - s
+            if numpy.abs(ds) <= self.move_tolerance*100:
                 self.homing[i] = False
-                s = 0.0
+                s = target[i]
             self.position[i] = s
             self.homingTime[i] = new_t
             
@@ -89,21 +103,22 @@ class MockRigHardware(AbstractRigHardware):
             self._update(n)
         return self.position
 
+    def _home(self, i):
+        self.homing[i] = True
+        self.target[i] = 0.0
+        self.homingTime[i] = time.time()
+
     def homeZ1(self):
-        self.homing[0] = True
-        self.homingTime[0] = time.time()
+        self._home(0)
         
     def homeZ2(self):
-        self.homing[1] = True
-        self.homingTime[1] = time.time()
+        self._home(1)
     
     def homeX(self):
-        self.homing[2] = True
-        self.homingTime[2] = time.time()
+        self._home(2)
         
     def homeY(self):
-        self.homing[3] = True
-        self.homingTime[3] = time.time()
+        self._home(2)
         
     def emergencyStop(self):
         N = len(self.position)
@@ -127,6 +142,21 @@ class MockRigHardware(AbstractRigHardware):
 
     def isYMoving(self):
         return self.homing[3]
+
+    def gotoPosition(self, x, y):
+        t = time.time()
+        self.homing[2] = True
+        self.homingTime[2] = t
+        self.homing[3] = True
+        self.homingTime[3] = t
+    
+    def gotoPositionZ1(self, z):     
+        self.homing[0] = True
+        self.homingTime[0] = time.time()
+        
+    def gotoPositionZ2(self, z):        
+        self.homing[1] = True
+        self.homingTime[1] = time.time()
 
 class RigMoveThread(threading.Thread):
     def __init__(self, rig):
@@ -194,6 +224,43 @@ class RigHardware(AbstractRigHardware):
         self.move_tolerance = config.getfloat(
             "Rig", "HomingError")
 
+    def gotoPosition(self, x, y):
+        # ensure Z-poisions are zero within tolerance
+        pos = self.getPosition()
+        if (numpy.abs(pos[0]) > self.move_tolerance) or \
+            (numpy.abs(pos[1]) > self.move_tolerance):
+            return
+        
+        # stop existing threads
+        self.emergencyStop()
+
+        self.target_pos[2] = x
+        self.target_pos[3] = y
+
+        move_thread = RigMoveThread(self)
+        self.threads.append(move_thread)
+        move_thread.start()
+
+    def gotoPositionZ1(self, z):        
+        # stop existing threads
+        self.emergencyStop()
+
+        self.target_pos[0] = z
+        
+        move_thread = RigMoveThread(self)
+        self.threads.append(move_thread)
+        move_thread.start()
+
+    def gotoPositionZ2(self, z):        
+        # stop existing threads
+        self.emergencyStop()
+
+        self.target_pos[1] = z
+        
+        move_thread = RigMoveThread(self)
+        self.threads.append(move_thread)
+        move_thread.start()
+    
     def homeX(self):
         self.target_pos[2] = 0.0
         homing_thread = RigMoveThread(self)
@@ -248,8 +315,6 @@ class RigHardware(AbstractRigHardware):
 
     def isZ2Moving(self):
         return self.isNMoving(1)
-
-    
 
     def getTorque(self, i):
         return HydrationServo.getTorque(i)    
