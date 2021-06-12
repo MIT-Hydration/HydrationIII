@@ -201,7 +201,7 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.layout.addWidget(self.goto_z1, 3, start_h, 1, 2)
         self.layout.addWidget(self.goto_z2, 3, start_h + 2, 1, 2)
         
-        self.curr_pos_label = QtWidgets.QLabel("Current Position (Z1, Z2, X, Y) [m]")
+        self.cur_pos_label = QtWidgets.QLabel("Current Position (Z1, Z2, X, Y) [m]")
         self.layout.addWidget(self.cur_pos_label, 5, start_h, 1, 2)
 
         self.set_home = QtWidgets.QPushButton("Set Current as Origin (Z1, Z2, X, Y)")

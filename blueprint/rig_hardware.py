@@ -8,6 +8,9 @@ import configparser
 import time, threading
 import numpy
 
+from pymodbus.client.sync import ModbusSerialClient
+from pymodbus.payload import BinaryPayloadDecoder
+
 config = configparser.ConfigParser()
 config.read('config.ini')
 
