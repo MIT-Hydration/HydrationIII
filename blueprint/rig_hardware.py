@@ -341,6 +341,12 @@ class RigHardware(AbstractRigHardware):
 
         self.motor = PWMLED(12)
         self.cpu_temperature_degC = CPUTemperature()
+        self.wob_sensor = hx711.HX711(5, 6)
+        self.referenceWOBUnit = 2848264.0/15300.0
+        self.wob_sensor.set_reading_format("MSB", "MSB")
+        self.wob_sensor.set_reference_unit(self.referenceWOBUnit)
+        self.wob_sensor.reset()
+        self.wob_sensor.tare()
 
         self.pm_thread = PowerMeterThread()
         self.ad_thread = ArduinoThread()
