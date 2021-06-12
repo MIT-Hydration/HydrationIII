@@ -1,0 +1,2 @@
+time_s,cpu_t_degC,motor_command,Z1_m,Z2_m,X_m,Y_m,TZ1,TZ2,TX,TY,WOB_gm,active_power_W,current_mA,arduino_timestamp_ms,tacho_rpm,imu_x_g,imu_y_g,imu_z_g,
+1623529101.8219428,

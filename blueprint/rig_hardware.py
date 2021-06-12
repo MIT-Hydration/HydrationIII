@@ -6,7 +6,8 @@ Hardware Interface and Mock Layers for Hydration project Rig subsystem.
 from abc import ABC, abstractmethod
 import configparser
 import time, threading
-import numpy
+import numpy, serial
+import re
 
 from pymodbus.client.sync import ModbusSerialClient
 from pymodbus.payload import BinaryPayloadDecoder
@@ -297,6 +298,7 @@ class FileWriterThread(threading.Thread):
         self.stopped = True
         
     def run(self):
+        rig = self.rig
         self.stopped = False
         time_start_s = time.time()
         fp = open(f"all_data_{time_start_s}.csv", "w")
@@ -352,14 +354,14 @@ class RigHardware(AbstractRigHardware):
         self.wob_sensor.reset()
         self.wob_sensor.tare()
 
-        self.pm_thread = PowerMeterThread()
-        self.ad_thread = ArduinoThread()
-        self.writer_thread = FileWriterThread(
-            pm_thread, ad_thread, self)
+        #self.pm_thread = PowerMeterThread()
+        #self.ad_thread = ArduinoThread()
+        #self.writer_thread = FileWriterThread(
+        #    self.pm_thread, self.ad_thread, self)
 
-        self.pm_thread.start()
-        self.ad_thread.start()
-        self.writer_thread.start()
+        #self.pm_thread.start()
+        #self.ad_thread.start()
+        #self.writer_thread.start()
 
     def gotoPosition(self, x, y):
         # ensure Z-poisions are zero within tolerance
