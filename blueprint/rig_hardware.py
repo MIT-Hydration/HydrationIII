@@ -14,8 +14,12 @@ config.read('config.ini')
 if config.getboolean('Operating System', 'RunningInRPi'):
     import HydrationServo
 
+Z1Cal = config.getfloat('Rig', 'Z1Cal'):
+Z2Cal = config.getfloat('Rig', 'Z2Cal'):
+XCal = config.getfloat('Rig', 'XCal'):
+YCal = config.getfloat('Rig', 'YCal'):
+
 class AbstractRigHardware(ABC):
-    current_pos = [0, 0]
     
     def getPosition(self):
         return self.current_pos
@@ -242,14 +246,12 @@ class RigMoveThread(threading.Thread):
 class RigHardware(AbstractRigHardware):
 
     def __init__(self):
-        self.target_pos = numpy.array([
-            HydrationServo.get_position(0), 
-            HydrationServo.get_position(1)*1.05,
-            HydrationServo.get_position(2)*4.0, 
-            HydrationServo.get_position(3)*4.0])
-        self.prev_pos = self.target_pos.copy()
-        self.current_pos = self.target_pos.copy()
-        self.threads = []
+        self.current_pos = numpy.array([
+            HydrationServo.get_position(0)*Z1Cal, 
+            HydrationServo.get_position(1)*Z2Cal,
+            HydrationServo.get_position(2)*XCal, 
+            HydrationServo.get_position(3)*YCal])
+        self.prev_pos = self.current_pos.copy()
         self.move_tolerance = config.getfloat(
             "Rig", "HomingError")
 
@@ -262,66 +264,39 @@ class RigHardware(AbstractRigHardware):
         
         # stop existing threads
         self.emergencyStop()
-
-        self.target_pos[0] = pos[0]
-        self.target_pos[1] = pos[1]
-        self.target_pos[2] = x
-        self.target_pos[3] = y
-
-        move_thread = RigMoveThread(self)
-        self.threads.append(move_thread)
-        move_thread.start()
-
+        HydrationServo.set_position(2, x/XCal)
+        HydrationServo.set_position(3, y/YCal)
+        
     def gotoPositionZ1(self, z):        
         # stop existing threads
         self.emergencyStop()
-
-        self.target_pos[0] = z
+        HydrationServo.set_position(2, z/Z1Cal)
         
-        move_thread = RigMoveThread(self)
-        self.threads.append(move_thread)
-        move_thread.start()
-
     def gotoPositionZ2(self, z):        
         # stop existing threads
         self.emergencyStop()
-
-        self.target_pos[1] = z
+        HydrationServo.set_position(2, z/Z2Cal)
         
-        move_thread = RigMoveThread(self)
-        self.threads.append(move_thread)
-        move_thread.start()
-    
     def homeX(self):
-        self.target_pos[2] = 0.0
-        homing_thread = RigMoveThread(self)
-        self.threads.append(homing_thread)
-        homing_thread.start()
+        pos = self.getPosition()
+        self.gotoPosition(0, pos[3])
 
     def homeY(self):
-        self.target_pos[3] = 0.0
-        homing_thread = RigMoveThread(self)
-        self.threads.append(homing_thread)
-        homing_thread.start()
+        pos = self.getPosition()
+        self.gotoPosition(pos[2], 0)
 
     def homeZ1(self):
-        self.target_pos[0] = 0.0
-        homing_thread = RigMoveThread(self)
-        self.threads.append(homing_thread)
-        homing_thread.start()
+        self.gotoPositionZ1(0)
 
     def homeZ2(self):
-        self.target_pos[1] = 0.0
-        homing_thread = RigMoveThread(self)
-        self.threads.append(homing_thread)
-        homing_thread.start()
+        self.gotoPositionZ2(0)
 
     def getPosition(self):
         self.prev_pos = self.current_pos.copy()
-        z1 = HydrationServo.get_position(0)
-        z2 = HydrationServo.get_position(1)*1.05
-        x = HydrationServo.get_position(2)*4.0
-        y = HydrationServo.get_position(3)*4.0
+        z1 = HydrationServo.get_position(0)*Z1Cal
+        z2 = HydrationServo.get_position(1)*Z2Cal
+        x = HydrationServo.get_position(2)*XCal
+        y = HydrationServo.get_position(3)*YCal
         self.current_pos = numpy.array([z1, z2, x, y])
         return self.current_pos
         
@@ -329,9 +304,7 @@ class RigHardware(AbstractRigHardware):
         N = HydrationServo.get_num_motors()
         for n in range(N):
             HydrationServo.set_speed_rpm(n, 0)
-        for th in self.threads:
-            th.stop()
-
+        
     def isNMoving(self, n):   
         return numpy.abs(self.prev_pos[n] - self.current_pos[n]) > self.move_tolerance
     
