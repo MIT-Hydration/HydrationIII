@@ -16,7 +16,7 @@ if config.getboolean('Operating System', 'RunningInRPi'):
     from gpiozero import PWMLED
     from gpiozero import CPUTemperature
     import RPi.GPIO as GPIO
-    import hx711
+    from . import hx711
 
 Z1Cal = config.getfloat('Rig', 'Z1Cal')
 Z2Cal = config.getfloat('Rig', 'Z2Cal')

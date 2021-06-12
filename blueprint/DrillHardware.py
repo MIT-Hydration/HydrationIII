@@ -14,8 +14,6 @@ if config.getboolean('Operating System', 'RunningInRPi'):
     from gpiozero import PWMLED
     from gpiozero import CPUTemperature
 
-from . import HardwareFactory
-
 class AbstractDrill(ABC):
 
     @abstractmethod

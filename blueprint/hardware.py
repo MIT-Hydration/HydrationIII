@@ -23,23 +23,23 @@ from . import RPiHardware, rig_hardware, PumpHardware, TachometerHardware
 
 class HardwareFactory:
 
-    drill = None
+    #drill = None
     rpi = None
     rig = None
     pump = None
     tachometer = None
     _lock = threading.Lock()
 
-    @classmethod
-    def getDrill(cls):
-        cls._lock.acquire()
-        if cls.drill is None:
-            if (config.getboolean('Mocks', 'MockDrill')):
-                cls.drill = MockDrill()
-            else:
-                cls.drill = Drill()
-        cls._lock.release()
-        return cls.drill
+    #@classmethod
+    #def getDrill(cls):
+    #    cls._lock.acquire()
+    #    if cls.drill is None:
+    #        if (config.getboolean('Mocks', 'MockDrill')):
+    #            cls.drill = DrillHardware.MockDrill()
+    #        else:
+    #            cls.drill = DrillHardware.Drill()
+    #    cls._lock.release()
+    #    return cls.drill
         
     @classmethod
     def getWaterPump(cls):
