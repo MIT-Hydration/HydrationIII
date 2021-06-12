@@ -270,12 +270,12 @@ class RigHardware(AbstractRigHardware):
     def gotoPositionZ1(self, z):        
         # stop existing threads
         self.emergencyStop()
-        HydrationServo.set_position(2, z/Z1Cal)
+        HydrationServo.set_position(0, z/Z1Cal)
         
     def gotoPositionZ2(self, z):        
         # stop existing threads
         self.emergencyStop()
-        HydrationServo.set_position(2, z/Z2Cal)
+        HydrationServo.set_position(1, z/Z2Cal)
         
     def homeX(self):
         pos = self.getPosition()
