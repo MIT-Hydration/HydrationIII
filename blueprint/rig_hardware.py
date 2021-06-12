@@ -222,7 +222,7 @@ class RigMoveThread(threading.Thread):
                 delta_pos = current_pos - self.rig.target_pos
                 
                 for n in range(N):
-                    if (numpy.abs(delta_pos[n]) > HOMING_ERROR):
+                    if (numpy.abs(delta_pos[n]) < HOMING_ERROR):
                         HydrationServo.set_speed_rpm(n, 0)
 
                 loop_end = time.time()
@@ -244,7 +244,7 @@ class RigHardware(AbstractRigHardware):
     def __init__(self):
         self.target_pos = numpy.array([
             HydrationServo.get_position(0), 
-            HydrationServo.get_position(1),
+            HydrationServo.get_position(1)*1.05,
             HydrationServo.get_position(2)*4.0, 
             HydrationServo.get_position(3)*4.0])
         self.prev_pos = self.target_pos.copy()
