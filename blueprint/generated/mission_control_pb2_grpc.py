@@ -114,6 +114,16 @@ class MissionControlStub(object):
                 request_serializer=mission__control__pb2.RigMoveCommandRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.CommandResponse.FromString,
                 )
+        self.Z1Move = channel.unary_unary(
+                '/mission_control.MissionControl/Z1Move',
+                request_serializer=mission__control__pb2.ZMoveRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.Z2Move = channel.unary_unary(
+                '/mission_control.MissionControl/Z2Move',
+                request_serializer=mission__control__pb2.ZMoveRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
         self.DrillMode = channel.unary_unary(
                 '/mission_control.MissionControl/DrillMode',
                 request_serializer=mission__control__pb2.DrillModeRequest.SerializeToString,
@@ -384,6 +394,18 @@ class MissionControlServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def RigMove(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def Z1Move(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def Z2Move(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -670,6 +692,16 @@ def add_MissionControlServicer_to_server(servicer, server):
             'RigMove': grpc.unary_unary_rpc_method_handler(
                     servicer.RigMove,
                     request_deserializer=mission__control__pb2.RigMoveCommandRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'Z1Move': grpc.unary_unary_rpc_method_handler(
+                    servicer.Z1Move,
+                    request_deserializer=mission__control__pb2.ZMoveRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'Z2Move': grpc.unary_unary_rpc_method_handler(
+                    servicer.Z2Move,
+                    request_deserializer=mission__control__pb2.ZMoveRequest.FromString,
                     response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
             ),
             'DrillMode': grpc.unary_unary_rpc_method_handler(
@@ -1168,6 +1200,40 @@ class MissionControl(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/RigMove',
             mission__control__pb2.RigMoveCommandRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def Z1Move(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/Z1Move',
+            mission__control__pb2.ZMoveRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def Z2Move(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/Z2Move',
+            mission__control__pb2.ZMoveRequest.SerializeToString,
             mission__control__pb2.CommandResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

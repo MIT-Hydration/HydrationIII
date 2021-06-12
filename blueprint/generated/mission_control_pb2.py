@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x15mission_control.proto\x12\x0fmission_control\"-\n\x10HeartBeatRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"\x85\x04\n\x0eHeartBeatReply\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\x14\n\x0cmain_suppy_V\x18\x03 \x01(\x02\x12\x12\n\nbus_24V_dc\x18\x04 \x01(\x08\x12\x12\n\nbus_75V_dc\x18\x05 \x01(\x08\x12\x1c\n\x14\x63pu_temperature_degC\x18\x06 \x01(\x02\x12)\n\x04mode\x18\x07 \x01(\x0e\x32\x1b.mission_control.SystemMode\x12\x17\n\x0fmission_time_ms\x18\x08 \x01(\x04\x12\x1b\n\x13zdrill_servo_moving\x18\t \x01(\x08\x12\x1b\n\x13zwater_servo_moving\x18\n \x01(\x08\x12\x16\n\x0ex_servo_moving\x18\x0b \x01(\x08\x12\x16\n\x0ey_servo_moving\x18\x0c \x01(\x08\x12\x1b\n\x13\x64rill_motor_setting\x18\r \x01(\x02\x12\x0f\n\x07pump_on\x18\x0e \x01(\x08\x12\x16\n\x0eheater_setting\x18\x0f \x01(\x08\x12\x18\n\x10total_current_mA\x18\x10 \x01(\x02\x12\r\n\x05rig_x\x18\x64 \x01(\x02\x12\r\n\x05rig_y\x18\x65 \x01(\x02\x12\x12\n\nrig_zdrill\x18\x66 \x01(\x02\x12\x12\n\nrig_zwater\x18g \x01(\x02\x12\x15\n\rrig_torque_z1\x18x \x01(\x02\"0\n\x10RigStatusRequest\x12\x1c\n\x14request_timestamp_ms\x18\x01 \x01(\x04\"\xc5\x01\n\x11RigStatusResponse\x12\x14\n\x0ctimestamp_ms\x18\x01 \x01(\x04\x12\x1c\n\x14request_timestamp_ms\x18\x02 \x01(\x04\x12\x14\n\x0cx_position_m\x18\n \x01(\x02\x12\x16\n\x0ex_velocity_m_s\x18\x0b \x01(\x02\x12\x14\n\x0cy_position_m\x18\x0c \x01(\x02\x12\x16\n\x0ey_velocity_m_s\x18\r \x01(\x02\x12 \n\x18last_calibration_success\x18\x14 \x01(\x08\":\n\x1a\x44rillAssemblyStatusRequest\x12\x1c\n\x14request_timestamp_ms\x18\x01 \x01(\x04\"\xc3\x02\n\x1b\x44rillAssemblyStatusResponse\x12\x14\n\x0ctimestamp_ms\x18\x01 \x01(\x04\x12\x1c\n\x14request_timestamp_ms\x18\x02 \x01(\x04\x12\x15\n\rdrill_setting\x18\x03 \x01(\x02\x12\x16\n\x0etachometer_RPM\x18\x04 \x01(\x02\x12\x17\n\x0f\x64rill_e_power_W\x18\x05 \x01(\x02\x12\x19\n\x11\x64rill_e_current_A\x18\x06 \x01(\x02\x12\x14\n\x0cz_position_m\x18\x07 \x01(\x02\x12\x16\n\x0ez_velocity_m_s\x18\x08 \x01(\x02\x12\x1c\n\x14\x63pu_temperature_degC\x18\t \x01(\x02\x12 \n\x18last_calibration_success\x18\x14 \x01(\x08\x12\x1f\n\x17\x63\x61libration_error_state\x18\x15 \x01(\x08\">\n\x12LimitChangeRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\r\n\x05value\x18\x02 \x01(\x02\",\n\x0fGetLimitRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"9\n\rLimitResponse\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\r\n\x05value\x18\x02 \x01(\x02\"H\n\x15RigMoveCommandRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\t\n\x01x\x18\x02 \x01(\x02\x12\t\n\x01y\x18\x03 \x01(\x02\"A\n\x10\x44rillModeRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\x12\n\ndrill_mode\x18\x02 \x01(\x08\"4\n\x17\x44rillCalibrationRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"J\n\x19\x44rillDescendingOffRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\x12\n\ntarget_z_m\x18\x02 \x01(\x02\"O\n\x1e\x44rillDescendingDrillingRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\x12\n\ntarget_z_m\x18\x02 \x01(\x02\"o\n\x0f\x43ommandResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12.\n\x06status\x18\x03 \x01(\x0e\x32\x1e.mission_control.CommandReport\"1\n\x14\x45mergencyStopRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"+\n\x0eSetModeRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"0\n\x13StartCommandRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"1\n\x14GetMajorModesRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"b\n\x0eMajorModesList\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\r\n\x05modes\x18\x03 \x03(\x05\x12\x13\n\x0bmode_labels\x18\x04 \x03(\t\",\n\x0fHoleListRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"\x98\x01\n\x08HoleList\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\r\n\x05order\x18\x03 \x03(\x05\x12\x0b\n\x03x_m\x18\x04 \x03(\x02\x12\x0b\n\x03y_m\x18\x05 \x03(\x02\x12\x0f\n\x07max_z_m\x18\x06 \x03(\x02\x12\x10\n\x08water_ml\x18\x07 \x03(\x02\x12\x12\n\ndiameter_m\x18\x08 \x03(\x02*\xbc\x04\n\nSystemMode\x12\x0b\n\x07UNKNOWN\x10\x00\x12\"\n\x1eMAJOR_MODE_STARTUP_DIAGNOSTICS\x10\x64\x12\x1a\n\x15MAJOR_MODE_HOME_Z1_Z2\x10\xc8\x01\x12\x18\n\x13MAJOR_MODE_MOVE_X_Y\x10\xac\x02\x12\x1e\n\x19MAJOR_MODE_DRILL_BOREHOLE\x10\x90\x03\x12\x1d\n\x18MAJOR_MODE_CASE_BOREHOLE\x10\xf4\x03\x12\x1d\n\x18MAJOR_MODE_INSERT_HEATER\x10\xd8\x04\x12\x1a\n\x15MAJOR_MODE_MINE_WATER\x10\xbc\x05\x12\x1d\n\x18MAJOR_MODE_DATA_DOWNLOAD\x10\xa0\x06\x12\x1c\n\x17MAJOR_MODE_TROUBLESHOOT\x10\x84\x07\x12\x0f\n\x0bRIG_STANDBY\x10\x65\x12\x1c\n\x18RIG_DRILL_POSITIONING_XY\x10\x66\x12\x1c\n\x18RIG_WATER_POSITIONING_XY\x10g\x12\x12\n\rDRILL_STANDBY\x10\xc9\x01\x12\x16\n\x11\x44RILL_CALIBRATING\x10\xca\x01\x12\x19\n\x14\x44RILL_DESCENDING_OFF\x10\xcb\x01\x12\x1e\n\x19\x44RILL_DESCENDING_DRILLING\x10\xcc\x01\x12\x18\n\x13\x44RILL_ASCENDING_OFF\x10\xcd\x01\x12\x17\n\x12\x44RILL_ASCENDING_ON\x10\xce\x01\x12\x1c\n\x17\x44RILL_CALIBRATION_ERROR\x10\xfa\x01\x12\x0b\n\x07HEATING\x10\x0c*A\n\x15WaterProductionStates\x12\x12\n\x0eWPSTATE_MANUAL\x10\x00\x12\x14\n\x10WPSTATE_CLEANING\x10\x01*X\n\x1aWaterProductionCleaningSeq\x12\x12\n\x0e\x43LEANING_SEQ_1\x10\x00\x12\x12\n\x0e\x43LEANING_SEQ_2\x10\x01\x12\x12\n\x0e\x43LEANING_SEQ_3\x10\x02*E\n\rCommandReport\x12\x0c\n\x08\x45XECUTED\x10\x00\x12\x11\n\rINVALID_STATE\x10\x01\x12\x13\n\x0f\x45XECUTION_ERROR\x10\x02\x32\x88#\n\x0eMissionControl\x12W\n\rGetMajorModes\x12%.mission_control.GetMajorModesRequest\x1a\x1f.mission_control.MajorModesList\x12O\n\tHeartBeat\x12!.mission_control.HeartBeatRequest\x1a\x1f.mission_control.HeartBeatReply\x12G\n\x08GetHoles\x12 .mission_control.HoleListRequest\x1a\x19.mission_control.HoleList\x12L\n\x07SetMode\x12\x1f.mission_control.SetModeRequest\x1a .mission_control.CommandResponse\x12[\n\x11StartMissionClock\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12U\n\x0bStartHomeZ1\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12U\n\x0bStartHomeZ2\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12T\n\nStartHomeX\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12T\n\nStartHomeY\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12S\n\tSetHomeZ1\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12S\n\tSetHomeZ2\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12R\n\x08SetHomeX\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12R\n\x08SetHomeY\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12]\n\x13StartSpinDrillMotor\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12\\\n\x12StopSpinDrillMotor\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12W\n\rStartSpinPump\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12V\n\x0cStopSpinPump\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12U\n\x0bStartHeater\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12T\n\nStopHeater\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12S\n\x07RigMove\x12&.mission_control.RigMoveCommandRequest\x1a .mission_control.CommandResponse\x12P\n\tDrillMode\x12!.mission_control.DrillModeRequest\x1a .mission_control.CommandResponse\x12^\n\x10\x44rillCalibration\x12(.mission_control.DrillCalibrationRequest\x1a .mission_control.CommandResponse\x12\x62\n\x12\x44rillDescendingOff\x12*.mission_control.DrillDescendingOffRequest\x1a .mission_control.CommandResponse\x12l\n\x17\x44rillDescendingDrilling\x12/.mission_control.DrillDescendingDrillingRequest\x1a .mission_control.CommandResponse\x12X\n\rEmergencyStop\x12%.mission_control.EmergencyStopRequest\x1a .mission_control.CommandResponse\x12p\n\x13\x44rillAssemblyStatus\x12+.mission_control.DrillAssemblyStatusRequest\x1a,.mission_control.DrillAssemblyStatusResponse\x12R\n\tSetAirGap\x12#.mission_control.LimitChangeRequest\x1a .mission_control.CommandResponse\x12M\n\tGetAirGap\x12 .mission_control.GetLimitRequest\x1a\x1e.mission_control.LimitResponse\x12W\n\x0eSetMaxZ1Travel\x12#.mission_control.LimitChangeRequest\x1a .mission_control.CommandResponse\x12R\n\x0eGetMaxZ1Travel\x12 .mission_control.GetLimitRequest\x1a\x1e.mission_control.LimitResponse\x12]\n\x14SetLowerCurrentLimit\x12#.mission_control.LimitChangeRequest\x1a .mission_control.CommandResponse\x12X\n\x14GetLowerCurrentLimit\x12 .mission_control.GetLimitRequest\x1a\x1e.mission_control.LimitResponse\x12]\n\x14SetUpperCurrentLimit\x12#.mission_control.LimitChangeRequest\x1a .mission_control.CommandResponse\x12X\n\x14GetUpperCurrentLimit\x12 .mission_control.GetLimitRequest\x1a\x1e.mission_control.LimitResponse\x12Y\n\x10SetLowerWOBLimit\x12#.mission_control.LimitChangeRequest\x1a .mission_control.CommandResponse\x12T\n\x10GetLowerWOBLimit\x12 .mission_control.GetLimitRequest\x1a\x1e.mission_control.LimitResponse\x12Y\n\x10SetUpperWOBLimit\x12#.mission_control.LimitChangeRequest\x1a .mission_control.CommandResponse\x12T\n\x10GetUpperWOBLimit\x12 .mission_control.GetLimitRequest\x1a\x1e.mission_control.LimitResponse\x12Y\n\x10SetLowerRPMLimit\x12#.mission_control.LimitChangeRequest\x1a .mission_control.CommandResponse\x12T\n\x10GetLowerRPMLimit\x12 .mission_control.GetLimitRequest\x1a\x1e.mission_control.LimitResponse\x12Y\n\x10SetUpperRPMLimit\x12#.mission_control.LimitChangeRequest\x1a .mission_control.CommandResponse\x12T\n\x10GetUpperRPMLimit\x12 .mission_control.GetLimitRequest\x1a\x1e.mission_control.LimitResponse\x12^\n\x15SetZ1ServoTorqueLimit\x12#.mission_control.LimitChangeRequest\x1a .mission_control.CommandResponse\x12Y\n\x15GetZ1ServoTorqueLimit\x12 .mission_control.GetLimitRequest\x1a\x1e.mission_control.LimitResponse\x12^\n\x15SetZ2ServoTorqueLimit\x12#.mission_control.LimitChangeRequest\x1a .mission_control.CommandResponse\x12Y\n\x15GetZ2ServoTorqueLimit\x12 .mission_control.GetLimitRequest\x1a\x1e.mission_control.LimitResponse\x12]\n\x14SetXServoTorqueLimit\x12#.mission_control.LimitChangeRequest\x1a .mission_control.CommandResponse\x12X\n\x14GetXServoTorqueLimit\x12 .mission_control.GetLimitRequest\x1a\x1e.mission_control.LimitResponse\x12]\n\x14SetYServoTorqueLimit\x12#.mission_control.LimitChangeRequest\x1a .mission_control.CommandResponse\x12X\n\x14GetYServoTorqueLimit\x12 .mission_control.GetLimitRequest\x1a\x1e.mission_control.LimitResponse2\xdd\x03\n\x0c\x44rillControl\x12O\n\tHeartBeat\x12!.mission_control.HeartBeatRequest\x1a\x1f.mission_control.HeartBeatReply\x12p\n\x13\x44rillAssemblyStatus\x12+.mission_control.DrillAssemblyStatusRequest\x1a,.mission_control.DrillAssemblyStatusResponse\x12P\n\tDrillMode\x12!.mission_control.DrillModeRequest\x1a .mission_control.CommandResponse\x12X\n\rEmergencyStop\x12%.mission_control.EmergencyStopRequest\x1a .mission_control.CommandResponse\x12^\n\x10\x44rillCalibration\x12(.mission_control.DrillCalibrationRequest\x1a .mission_control.CommandResponseb\x06proto3'
+  serialized_pb=b'\n\x15mission_control.proto\x12\x0fmission_control\"-\n\x10HeartBeatRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"\x85\x04\n\x0eHeartBeatReply\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\x14\n\x0cmain_suppy_V\x18\x03 \x01(\x02\x12\x12\n\nbus_24V_dc\x18\x04 \x01(\x08\x12\x12\n\nbus_75V_dc\x18\x05 \x01(\x08\x12\x1c\n\x14\x63pu_temperature_degC\x18\x06 \x01(\x02\x12)\n\x04mode\x18\x07 \x01(\x0e\x32\x1b.mission_control.SystemMode\x12\x17\n\x0fmission_time_ms\x18\x08 \x01(\x04\x12\x1b\n\x13zdrill_servo_moving\x18\t \x01(\x08\x12\x1b\n\x13zwater_servo_moving\x18\n \x01(\x08\x12\x16\n\x0ex_servo_moving\x18\x0b \x01(\x08\x12\x16\n\x0ey_servo_moving\x18\x0c \x01(\x08\x12\x1b\n\x13\x64rill_motor_setting\x18\r \x01(\x02\x12\x0f\n\x07pump_on\x18\x0e \x01(\x08\x12\x16\n\x0eheater_setting\x18\x0f \x01(\x08\x12\x18\n\x10total_current_mA\x18\x10 \x01(\x02\x12\r\n\x05rig_x\x18\x64 \x01(\x02\x12\r\n\x05rig_y\x18\x65 \x01(\x02\x12\x12\n\nrig_zdrill\x18\x66 \x01(\x02\x12\x12\n\nrig_zwater\x18g \x01(\x02\x12\x15\n\rrig_torque_z1\x18x \x01(\x02\"0\n\x10RigStatusRequest\x12\x1c\n\x14request_timestamp_ms\x18\x01 \x01(\x04\"\xc5\x01\n\x11RigStatusResponse\x12\x14\n\x0ctimestamp_ms\x18\x01 \x01(\x04\x12\x1c\n\x14request_timestamp_ms\x18\x02 \x01(\x04\x12\x14\n\x0cx_position_m\x18\n \x01(\x02\x12\x16\n\x0ex_velocity_m_s\x18\x0b \x01(\x02\x12\x14\n\x0cy_position_m\x18\x0c \x01(\x02\x12\x16\n\x0ey_velocity_m_s\x18\r \x01(\x02\x12 \n\x18last_calibration_success\x18\x14 \x01(\x08\":\n\x1a\x44rillAssemblyStatusRequest\x12\x1c\n\x14request_timestamp_ms\x18\x01 \x01(\x04\"\xc3\x02\n\x1b\x44rillAssemblyStatusResponse\x12\x14\n\x0ctimestamp_ms\x18\x01 \x01(\x04\x12\x1c\n\x14request_timestamp_ms\x18\x02 \x01(\x04\x12\x15\n\rdrill_setting\x18\x03 \x01(\x02\x12\x16\n\x0etachometer_RPM\x18\x04 \x01(\x02\x12\x17\n\x0f\x64rill_e_power_W\x18\x05 \x01(\x02\x12\x19\n\x11\x64rill_e_current_A\x18\x06 \x01(\x02\x12\x14\n\x0cz_position_m\x18\x07 \x01(\x02\x12\x16\n\x0ez_velocity_m_s\x18\x08 \x01(\x02\x12\x1c\n\x14\x63pu_temperature_degC\x18\t \x01(\x02\x12 \n\x18last_calibration_success\x18\x14 \x01(\x08\x12\x1f\n\x17\x63\x61libration_error_state\x18\x15 \x01(\x08\">\n\x12LimitChangeRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\r\n\x05value\x18\x02 \x01(\x02\",\n\x0fGetLimitRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"9\n\rLimitResponse\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\r\n\x05value\x18\x02 \x01(\x02\"H\n\x15RigMoveCommandRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\t\n\x01x\x18\x02 \x01(\x02\x12\t\n\x01y\x18\x03 \x01(\x02\"4\n\x0cZMoveRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\t\n\x01z\x18\x02 \x01(\x02\"A\n\x10\x44rillModeRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\x12\n\ndrill_mode\x18\x02 \x01(\x08\"4\n\x17\x44rillCalibrationRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"J\n\x19\x44rillDescendingOffRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\x12\n\ntarget_z_m\x18\x02 \x01(\x02\"O\n\x1e\x44rillDescendingDrillingRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\x12\n\ntarget_z_m\x18\x02 \x01(\x02\"o\n\x0f\x43ommandResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12.\n\x06status\x18\x03 \x01(\x0e\x32\x1e.mission_control.CommandReport\"1\n\x14\x45mergencyStopRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"+\n\x0eSetModeRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"0\n\x13StartCommandRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"1\n\x14GetMajorModesRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"b\n\x0eMajorModesList\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\r\n\x05modes\x18\x03 \x03(\x05\x12\x13\n\x0bmode_labels\x18\x04 \x03(\t\",\n\x0fHoleListRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"\x98\x01\n\x08HoleList\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\r\n\x05order\x18\x03 \x03(\x05\x12\x0b\n\x03x_m\x18\x04 \x03(\x02\x12\x0b\n\x03y_m\x18\x05 \x03(\x02\x12\x0f\n\x07max_z_m\x18\x06 \x03(\x02\x12\x10\n\x08water_ml\x18\x07 \x03(\x02\x12\x12\n\ndiameter_m\x18\x08 \x03(\x02*\xbc\x04\n\nSystemMode\x12\x0b\n\x07UNKNOWN\x10\x00\x12\"\n\x1eMAJOR_MODE_STARTUP_DIAGNOSTICS\x10\x64\x12\x1a\n\x15MAJOR_MODE_HOME_Z1_Z2\x10\xc8\x01\x12\x18\n\x13MAJOR_MODE_MOVE_X_Y\x10\xac\x02\x12\x1e\n\x19MAJOR_MODE_DRILL_BOREHOLE\x10\x90\x03\x12\x1d\n\x18MAJOR_MODE_CASE_BOREHOLE\x10\xf4\x03\x12\x1d\n\x18MAJOR_MODE_INSERT_HEATER\x10\xd8\x04\x12\x1a\n\x15MAJOR_MODE_MINE_WATER\x10\xbc\x05\x12\x1d\n\x18MAJOR_MODE_DATA_DOWNLOAD\x10\xa0\x06\x12\x1c\n\x17MAJOR_MODE_TROUBLESHOOT\x10\x84\x07\x12\x0f\n\x0bRIG_STANDBY\x10\x65\x12\x1c\n\x18RIG_DRILL_POSITIONING_XY\x10\x66\x12\x1c\n\x18RIG_WATER_POSITIONING_XY\x10g\x12\x12\n\rDRILL_STANDBY\x10\xc9\x01\x12\x16\n\x11\x44RILL_CALIBRATING\x10\xca\x01\x12\x19\n\x14\x44RILL_DESCENDING_OFF\x10\xcb\x01\x12\x1e\n\x19\x44RILL_DESCENDING_DRILLING\x10\xcc\x01\x12\x18\n\x13\x44RILL_ASCENDING_OFF\x10\xcd\x01\x12\x17\n\x12\x44RILL_ASCENDING_ON\x10\xce\x01\x12\x1c\n\x17\x44RILL_CALIBRATION_ERROR\x10\xfa\x01\x12\x0b\n\x07HEATING\x10\x0c*A\n\x15WaterProductionStates\x12\x12\n\x0eWPSTATE_MANUAL\x10\x00\x12\x14\n\x10WPSTATE_CLEANING\x10\x01*X\n\x1aWaterProductionCleaningSeq\x12\x12\n\x0e\x43LEANING_SEQ_1\x10\x00\x12\x12\n\x0e\x43LEANING_SEQ_2\x10\x01\x12\x12\n\x0e\x43LEANING_SEQ_3\x10\x02*E\n\rCommandReport\x12\x0c\n\x08\x45XECUTED\x10\x00\x12\x11\n\rINVALID_STATE\x10\x01\x12\x13\n\x0f\x45XECUTION_ERROR\x10\x02\x32\x9e$\n\x0eMissionControl\x12W\n\rGetMajorModes\x12%.mission_control.GetMajorModesRequest\x1a\x1f.mission_control.MajorModesList\x12O\n\tHeartBeat\x12!.mission_control.HeartBeatRequest\x1a\x1f.mission_control.HeartBeatReply\x12G\n\x08GetHoles\x12 .mission_control.HoleListRequest\x1a\x19.mission_control.HoleList\x12L\n\x07SetMode\x12\x1f.mission_control.SetModeRequest\x1a .mission_control.CommandResponse\x12[\n\x11StartMissionClock\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12U\n\x0bStartHomeZ1\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12U\n\x0bStartHomeZ2\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12T\n\nStartHomeX\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12T\n\nStartHomeY\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12S\n\tSetHomeZ1\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12S\n\tSetHomeZ2\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12R\n\x08SetHomeX\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12R\n\x08SetHomeY\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12]\n\x13StartSpinDrillMotor\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12\\\n\x12StopSpinDrillMotor\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12W\n\rStartSpinPump\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12V\n\x0cStopSpinPump\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12U\n\x0bStartHeater\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12T\n\nStopHeater\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12S\n\x07RigMove\x12&.mission_control.RigMoveCommandRequest\x1a .mission_control.CommandResponse\x12I\n\x06Z1Move\x12\x1d.mission_control.ZMoveRequest\x1a .mission_control.CommandResponse\x12I\n\x06Z2Move\x12\x1d.mission_control.ZMoveRequest\x1a .mission_control.CommandResponse\x12P\n\tDrillMode\x12!.mission_control.DrillModeRequest\x1a .mission_control.CommandResponse\x12^\n\x10\x44rillCalibration\x12(.mission_control.DrillCalibrationRequest\x1a .mission_control.CommandResponse\x12\x62\n\x12\x44rillDescendingOff\x12*.mission_control.DrillDescendingOffRequest\x1a .mission_control.CommandResponse\x12l\n\x17\x44rillDescendingDrilling\x12/.mission_control.DrillDescendingDrillingRequest\x1a .mission_control.CommandResponse\x12X\n\rEmergencyStop\x12%.mission_control.EmergencyStopRequest\x1a .mission_control.CommandResponse\x12p\n\x13\x44rillAssemblyStatus\x12+.mission_control.DrillAssemblyStatusRequest\x1a,.mission_control.DrillAssemblyStatusResponse\x12R\n\tSetAirGap\x12#.mission_control.LimitChangeRequest\x1a .mission_control.CommandResponse\x12M\n\tGetAirGap\x12 .mission_control.GetLimitRequest\x1a\x1e.mission_control.LimitResponse\x12W\n\x0eSetMaxZ1Travel\x12#.mission_control.LimitChangeRequest\x1a .mission_control.CommandResponse\x12R\n\x0eGetMaxZ1Travel\x12 .mission_control.GetLimitRequest\x1a\x1e.mission_control.LimitResponse\x12]\n\x14SetLowerCurrentLimit\x12#.mission_control.LimitChangeRequest\x1a .mission_control.CommandResponse\x12X\n\x14GetLowerCurrentLimit\x12 .mission_control.GetLimitRequest\x1a\x1e.mission_control.LimitResponse\x12]\n\x14SetUpperCurrentLimit\x12#.mission_control.LimitChangeRequest\x1a .mission_control.CommandResponse\x12X\n\x14GetUpperCurrentLimit\x12 .mission_control.GetLimitRequest\x1a\x1e.mission_control.LimitResponse\x12Y\n\x10SetLowerWOBLimit\x12#.mission_control.LimitChangeRequest\x1a .mission_control.CommandResponse\x12T\n\x10GetLowerWOBLimit\x12 .mission_control.GetLimitRequest\x1a\x1e.mission_control.LimitResponse\x12Y\n\x10SetUpperWOBLimit\x12#.mission_control.LimitChangeRequest\x1a .mission_control.CommandResponse\x12T\n\x10GetUpperWOBLimit\x12 .mission_control.GetLimitRequest\x1a\x1e.mission_control.LimitResponse\x12Y\n\x10SetLowerRPMLimit\x12#.mission_control.LimitChangeRequest\x1a .mission_control.CommandResponse\x12T\n\x10GetLowerRPMLimit\x12 .mission_control.GetLimitRequest\x1a\x1e.mission_control.LimitResponse\x12Y\n\x10SetUpperRPMLimit\x12#.mission_control.LimitChangeRequest\x1a .mission_control.CommandResponse\x12T\n\x10GetUpperRPMLimit\x12 .mission_control.GetLimitRequest\x1a\x1e.mission_control.LimitResponse\x12^\n\x15SetZ1ServoTorqueLimit\x12#.mission_control.LimitChangeRequest\x1a .mission_control.CommandResponse\x12Y\n\x15GetZ1ServoTorqueLimit\x12 .mission_control.GetLimitRequest\x1a\x1e.mission_control.LimitResponse\x12^\n\x15SetZ2ServoTorqueLimit\x12#.mission_control.LimitChangeRequest\x1a .mission_control.CommandResponse\x12Y\n\x15GetZ2ServoTorqueLimit\x12 .mission_control.GetLimitRequest\x1a\x1e.mission_control.LimitResponse\x12]\n\x14SetXServoTorqueLimit\x12#.mission_control.LimitChangeRequest\x1a .mission_control.CommandResponse\x12X\n\x14GetXServoTorqueLimit\x12 .mission_control.GetLimitRequest\x1a\x1e.mission_control.LimitResponse\x12]\n\x14SetYServoTorqueLimit\x12#.mission_control.LimitChangeRequest\x1a .mission_control.CommandResponse\x12X\n\x14GetYServoTorqueLimit\x12 .mission_control.GetLimitRequest\x1a\x1e.mission_control.LimitResponse2\xdd\x03\n\x0c\x44rillControl\x12O\n\tHeartBeat\x12!.mission_control.HeartBeatRequest\x1a\x1f.mission_control.HeartBeatReply\x12p\n\x13\x44rillAssemblyStatus\x12+.mission_control.DrillAssemblyStatusRequest\x1a,.mission_control.DrillAssemblyStatusResponse\x12P\n\tDrillMode\x12!.mission_control.DrillModeRequest\x1a .mission_control.CommandResponse\x12X\n\rEmergencyStop\x12%.mission_control.EmergencyStopRequest\x1a .mission_control.CommandResponse\x12^\n\x10\x44rillCalibration\x12(.mission_control.DrillCalibrationRequest\x1a .mission_control.CommandResponseb\x06proto3'
 )
 
 _SYSTEMMODE = _descriptor.EnumDescriptor(
@@ -138,8 +138,8 @@ _SYSTEMMODE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=2378,
-  serialized_end=2950,
+  serialized_start=2432,
+  serialized_end=3004,
 )
 _sym_db.RegisterEnumDescriptor(_SYSTEMMODE)
 
@@ -164,8 +164,8 @@ _WATERPRODUCTIONSTATES = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=2952,
-  serialized_end=3017,
+  serialized_start=3006,
+  serialized_end=3071,
 )
 _sym_db.RegisterEnumDescriptor(_WATERPRODUCTIONSTATES)
 
@@ -195,8 +195,8 @@ _WATERPRODUCTIONCLEANINGSEQ = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=3019,
-  serialized_end=3107,
+  serialized_start=3073,
+  serialized_end=3161,
 )
 _sym_db.RegisterEnumDescriptor(_WATERPRODUCTIONCLEANINGSEQ)
 
@@ -226,8 +226,8 @@ _COMMANDREPORT = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=3109,
-  serialized_end=3178,
+  serialized_start=3163,
+  serialized_end=3232,
 )
 _sym_db.RegisterEnumDescriptor(_COMMANDREPORT)
 
@@ -864,6 +864,45 @@ _RIGMOVECOMMANDREQUEST = _descriptor.Descriptor(
 )
 
 
+_ZMOVEREQUEST = _descriptor.Descriptor(
+  name='ZMoveRequest',
+  full_name='mission_control.ZMoveRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='request_timestamp', full_name='mission_control.ZMoveRequest.request_timestamp', index=0,
+      number=1, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='z', full_name='mission_control.ZMoveRequest.z', index=1,
+      number=2, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1488,
+  serialized_end=1540,
+)
+
+
 _DRILLMODEREQUEST = _descriptor.Descriptor(
   name='DrillModeRequest',
   full_name='mission_control.DrillModeRequest',
@@ -898,8 +937,8 @@ _DRILLMODEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1488,
-  serialized_end=1553,
+  serialized_start=1542,
+  serialized_end=1607,
 )
 
 
@@ -930,8 +969,8 @@ _DRILLCALIBRATIONREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1555,
-  serialized_end=1607,
+  serialized_start=1609,
+  serialized_end=1661,
 )
 
 
@@ -969,8 +1008,8 @@ _DRILLDESCENDINGOFFREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1609,
-  serialized_end=1683,
+  serialized_start=1663,
+  serialized_end=1737,
 )
 
 
@@ -1008,8 +1047,8 @@ _DRILLDESCENDINGDRILLINGREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1685,
-  serialized_end=1764,
+  serialized_start=1739,
+  serialized_end=1818,
 )
 
 
@@ -1054,8 +1093,8 @@ _COMMANDRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1766,
-  serialized_end=1877,
+  serialized_start=1820,
+  serialized_end=1931,
 )
 
 
@@ -1086,8 +1125,8 @@ _EMERGENCYSTOPREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1879,
-  serialized_end=1928,
+  serialized_start=1933,
+  serialized_end=1982,
 )
 
 
@@ -1118,8 +1157,8 @@ _SETMODEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1930,
-  serialized_end=1973,
+  serialized_start=1984,
+  serialized_end=2027,
 )
 
 
@@ -1150,8 +1189,8 @@ _STARTCOMMANDREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1975,
-  serialized_end=2023,
+  serialized_start=2029,
+  serialized_end=2077,
 )
 
 
@@ -1182,8 +1221,8 @@ _GETMAJORMODESREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2025,
-  serialized_end=2074,
+  serialized_start=2079,
+  serialized_end=2128,
 )
 
 
@@ -1235,8 +1274,8 @@ _MAJORMODESLIST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2076,
-  serialized_end=2174,
+  serialized_start=2130,
+  serialized_end=2228,
 )
 
 
@@ -1267,8 +1306,8 @@ _HOLELISTREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2176,
-  serialized_end=2220,
+  serialized_start=2230,
+  serialized_end=2274,
 )
 
 
@@ -1348,8 +1387,8 @@ _HOLELIST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2223,
-  serialized_end=2375,
+  serialized_start=2277,
+  serialized_end=2429,
 )
 
 _HEARTBEATREPLY.fields_by_name['mode'].enum_type = _SYSTEMMODE
@@ -1364,6 +1403,7 @@ DESCRIPTOR.message_types_by_name['LimitChangeRequest'] = _LIMITCHANGEREQUEST
 DESCRIPTOR.message_types_by_name['GetLimitRequest'] = _GETLIMITREQUEST
 DESCRIPTOR.message_types_by_name['LimitResponse'] = _LIMITRESPONSE
 DESCRIPTOR.message_types_by_name['RigMoveCommandRequest'] = _RIGMOVECOMMANDREQUEST
+DESCRIPTOR.message_types_by_name['ZMoveRequest'] = _ZMOVEREQUEST
 DESCRIPTOR.message_types_by_name['DrillModeRequest'] = _DRILLMODEREQUEST
 DESCRIPTOR.message_types_by_name['DrillCalibrationRequest'] = _DRILLCALIBRATIONREQUEST
 DESCRIPTOR.message_types_by_name['DrillDescendingOffRequest'] = _DRILLDESCENDINGOFFREQUEST
@@ -1451,6 +1491,13 @@ RigMoveCommandRequest = _reflection.GeneratedProtocolMessageType('RigMoveCommand
   # @@protoc_insertion_point(class_scope:mission_control.RigMoveCommandRequest)
   })
 _sym_db.RegisterMessage(RigMoveCommandRequest)
+
+ZMoveRequest = _reflection.GeneratedProtocolMessageType('ZMoveRequest', (_message.Message,), {
+  'DESCRIPTOR' : _ZMOVEREQUEST,
+  '__module__' : 'mission_control_pb2'
+  # @@protoc_insertion_point(class_scope:mission_control.ZMoveRequest)
+  })
+_sym_db.RegisterMessage(ZMoveRequest)
 
 DrillModeRequest = _reflection.GeneratedProtocolMessageType('DrillModeRequest', (_message.Message,), {
   'DESCRIPTOR' : _DRILLMODEREQUEST,
@@ -1545,8 +1592,8 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=3181,
-  serialized_end=7669,
+  serialized_start=3235,
+  serialized_end=7873,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetMajorModes',
@@ -1749,9 +1796,29 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
     create_key=_descriptor._internal_create_key,
   ),
   _descriptor.MethodDescriptor(
+    name='Z1Move',
+    full_name='mission_control.MissionControl.Z1Move',
+    index=20,
+    containing_service=None,
+    input_type=_ZMOVEREQUEST,
+    output_type=_COMMANDRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='Z2Move',
+    full_name='mission_control.MissionControl.Z2Move',
+    index=21,
+    containing_service=None,
+    input_type=_ZMOVEREQUEST,
+    output_type=_COMMANDRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
     name='DrillMode',
     full_name='mission_control.MissionControl.DrillMode',
-    index=20,
+    index=22,
     containing_service=None,
     input_type=_DRILLMODEREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -1761,7 +1828,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='DrillCalibration',
     full_name='mission_control.MissionControl.DrillCalibration',
-    index=21,
+    index=23,
     containing_service=None,
     input_type=_DRILLCALIBRATIONREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -1771,7 +1838,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='DrillDescendingOff',
     full_name='mission_control.MissionControl.DrillDescendingOff',
-    index=22,
+    index=24,
     containing_service=None,
     input_type=_DRILLDESCENDINGOFFREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -1781,7 +1848,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='DrillDescendingDrilling',
     full_name='mission_control.MissionControl.DrillDescendingDrilling',
-    index=23,
+    index=25,
     containing_service=None,
     input_type=_DRILLDESCENDINGDRILLINGREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -1791,7 +1858,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='EmergencyStop',
     full_name='mission_control.MissionControl.EmergencyStop',
-    index=24,
+    index=26,
     containing_service=None,
     input_type=_EMERGENCYSTOPREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -1801,7 +1868,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='DrillAssemblyStatus',
     full_name='mission_control.MissionControl.DrillAssemblyStatus',
-    index=25,
+    index=27,
     containing_service=None,
     input_type=_DRILLASSEMBLYSTATUSREQUEST,
     output_type=_DRILLASSEMBLYSTATUSRESPONSE,
@@ -1811,7 +1878,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='SetAirGap',
     full_name='mission_control.MissionControl.SetAirGap',
-    index=26,
+    index=28,
     containing_service=None,
     input_type=_LIMITCHANGEREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -1821,7 +1888,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GetAirGap',
     full_name='mission_control.MissionControl.GetAirGap',
-    index=27,
+    index=29,
     containing_service=None,
     input_type=_GETLIMITREQUEST,
     output_type=_LIMITRESPONSE,
@@ -1831,7 +1898,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='SetMaxZ1Travel',
     full_name='mission_control.MissionControl.SetMaxZ1Travel',
-    index=28,
+    index=30,
     containing_service=None,
     input_type=_LIMITCHANGEREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -1841,7 +1908,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GetMaxZ1Travel',
     full_name='mission_control.MissionControl.GetMaxZ1Travel',
-    index=29,
+    index=31,
     containing_service=None,
     input_type=_GETLIMITREQUEST,
     output_type=_LIMITRESPONSE,
@@ -1851,7 +1918,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='SetLowerCurrentLimit',
     full_name='mission_control.MissionControl.SetLowerCurrentLimit',
-    index=30,
+    index=32,
     containing_service=None,
     input_type=_LIMITCHANGEREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -1861,7 +1928,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GetLowerCurrentLimit',
     full_name='mission_control.MissionControl.GetLowerCurrentLimit',
-    index=31,
+    index=33,
     containing_service=None,
     input_type=_GETLIMITREQUEST,
     output_type=_LIMITRESPONSE,
@@ -1871,7 +1938,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='SetUpperCurrentLimit',
     full_name='mission_control.MissionControl.SetUpperCurrentLimit',
-    index=32,
+    index=34,
     containing_service=None,
     input_type=_LIMITCHANGEREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -1881,7 +1948,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GetUpperCurrentLimit',
     full_name='mission_control.MissionControl.GetUpperCurrentLimit',
-    index=33,
+    index=35,
     containing_service=None,
     input_type=_GETLIMITREQUEST,
     output_type=_LIMITRESPONSE,
@@ -1891,7 +1958,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='SetLowerWOBLimit',
     full_name='mission_control.MissionControl.SetLowerWOBLimit',
-    index=34,
+    index=36,
     containing_service=None,
     input_type=_LIMITCHANGEREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -1901,7 +1968,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GetLowerWOBLimit',
     full_name='mission_control.MissionControl.GetLowerWOBLimit',
-    index=35,
+    index=37,
     containing_service=None,
     input_type=_GETLIMITREQUEST,
     output_type=_LIMITRESPONSE,
@@ -1911,7 +1978,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='SetUpperWOBLimit',
     full_name='mission_control.MissionControl.SetUpperWOBLimit',
-    index=36,
+    index=38,
     containing_service=None,
     input_type=_LIMITCHANGEREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -1921,7 +1988,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GetUpperWOBLimit',
     full_name='mission_control.MissionControl.GetUpperWOBLimit',
-    index=37,
+    index=39,
     containing_service=None,
     input_type=_GETLIMITREQUEST,
     output_type=_LIMITRESPONSE,
@@ -1931,7 +1998,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='SetLowerRPMLimit',
     full_name='mission_control.MissionControl.SetLowerRPMLimit',
-    index=38,
+    index=40,
     containing_service=None,
     input_type=_LIMITCHANGEREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -1941,7 +2008,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GetLowerRPMLimit',
     full_name='mission_control.MissionControl.GetLowerRPMLimit',
-    index=39,
+    index=41,
     containing_service=None,
     input_type=_GETLIMITREQUEST,
     output_type=_LIMITRESPONSE,
@@ -1951,7 +2018,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='SetUpperRPMLimit',
     full_name='mission_control.MissionControl.SetUpperRPMLimit',
-    index=40,
+    index=42,
     containing_service=None,
     input_type=_LIMITCHANGEREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -1961,7 +2028,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GetUpperRPMLimit',
     full_name='mission_control.MissionControl.GetUpperRPMLimit',
-    index=41,
+    index=43,
     containing_service=None,
     input_type=_GETLIMITREQUEST,
     output_type=_LIMITRESPONSE,
@@ -1971,7 +2038,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='SetZ1ServoTorqueLimit',
     full_name='mission_control.MissionControl.SetZ1ServoTorqueLimit',
-    index=42,
+    index=44,
     containing_service=None,
     input_type=_LIMITCHANGEREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -1981,7 +2048,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GetZ1ServoTorqueLimit',
     full_name='mission_control.MissionControl.GetZ1ServoTorqueLimit',
-    index=43,
+    index=45,
     containing_service=None,
     input_type=_GETLIMITREQUEST,
     output_type=_LIMITRESPONSE,
@@ -1991,7 +2058,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='SetZ2ServoTorqueLimit',
     full_name='mission_control.MissionControl.SetZ2ServoTorqueLimit',
-    index=44,
+    index=46,
     containing_service=None,
     input_type=_LIMITCHANGEREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -2001,7 +2068,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GetZ2ServoTorqueLimit',
     full_name='mission_control.MissionControl.GetZ2ServoTorqueLimit',
-    index=45,
+    index=47,
     containing_service=None,
     input_type=_GETLIMITREQUEST,
     output_type=_LIMITRESPONSE,
@@ -2011,7 +2078,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='SetXServoTorqueLimit',
     full_name='mission_control.MissionControl.SetXServoTorqueLimit',
-    index=46,
+    index=48,
     containing_service=None,
     input_type=_LIMITCHANGEREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -2021,7 +2088,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GetXServoTorqueLimit',
     full_name='mission_control.MissionControl.GetXServoTorqueLimit',
-    index=47,
+    index=49,
     containing_service=None,
     input_type=_GETLIMITREQUEST,
     output_type=_LIMITRESPONSE,
@@ -2031,7 +2098,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='SetYServoTorqueLimit',
     full_name='mission_control.MissionControl.SetYServoTorqueLimit',
-    index=48,
+    index=50,
     containing_service=None,
     input_type=_LIMITCHANGEREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -2041,7 +2108,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='GetYServoTorqueLimit',
     full_name='mission_control.MissionControl.GetYServoTorqueLimit',
-    index=49,
+    index=51,
     containing_service=None,
     input_type=_GETLIMITREQUEST,
     output_type=_LIMITRESPONSE,
@@ -2061,8 +2128,8 @@ _DRILLCONTROL = _descriptor.ServiceDescriptor(
   index=1,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=7672,
-  serialized_end=8149,
+  serialized_start=7876,
+  serialized_end=8353,
   methods=[
   _descriptor.MethodDescriptor(
     name='HeartBeat',

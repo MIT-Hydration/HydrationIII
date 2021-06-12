@@ -116,6 +116,30 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             timestamp = timestamp,
             status = mcpb.EXECUTED)
 
+    def ZMove(self, request, context, f):
+        timestamp = int(time.time()*1000)
+        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
+           (self.mission_time_started): # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+
+        f(request.z)
+
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)
+
+    def Z1Move(self, request, context):
+        rig_hardware = HardwareFactory.getRig()
+        return self.ZMove(request, context, rig_hardware.gotoPositionZ1)
+
+    def Z2Move(self, request, context):
+        rig_hardware = HardwareFactory.getRig()
+        return self.ZMove(request, context, rig_hardware.gotoPositionZ2)
+
     def _stopMotors(self):
         # todo stop motors
         pass

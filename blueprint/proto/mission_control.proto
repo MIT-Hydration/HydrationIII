@@ -141,6 +141,11 @@ message RigMoveCommandRequest {
     float y = 3;
 }
 
+message ZMoveRequest {
+    uint64 request_timestamp = 1;
+    float z = 2;
+}
+
 message DrillModeRequest {
     uint64 request_timestamp = 1;
     bool drill_mode = 2;
@@ -229,6 +234,9 @@ service MissionControl {
     rpc StopHeater (StartCommandRequest) returns (CommandResponse);
     
     rpc RigMove (RigMoveCommandRequest) returns (CommandResponse);
+    rpc Z1Move (ZMoveRequest) returns (CommandResponse);
+    rpc Z2Move (ZMoveRequest) returns (CommandResponse);
+    
     rpc DrillMode (DrillModeRequest) returns (CommandResponse);
     rpc DrillCalibration (DrillCalibrationRequest) returns (CommandResponse);
     rpc DrillDescendingOff (DrillDescendingOffRequest) returns (CommandResponse);

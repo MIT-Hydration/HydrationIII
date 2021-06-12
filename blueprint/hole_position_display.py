@@ -59,6 +59,46 @@ class GotoXYThread(QtCore.QThread):
             info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
 
+
+class GotoZThread(QtCore.QThread):    
+    def __init__(self, z):
+        QtCore.QThread.__init__(self)
+        self.z = z
+        
+    def run(self):
+        global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
+        response = None
+        #print(f"Moving to {self.z}")
+        try:
+            timestamp = int(time.time()*1000)
+            with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
+                stub = mission_control_pb2_grpc.MissionControlStub(channel)
+                response = self._request_response(stub, timestamp)
+                
+        except Exception as e:
+            info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
+            print(info)
+
+    def _request_response(self, stub):
+        pass
+
+class GotoZ1Thread(GotoZThread):    
+    def _request_response(self, stub, timestamp):
+        return stub.Z1Move (
+                    mission_control_pb2.ZMoveRequest(
+                        request_timestamp = timestamp,
+                        z = self.z),
+                    timeout = GRPC_CALL_TIMEOUT )
+
+class GotoZ2Thread(GotoZThread):    
+    def _request_response(self, stub, timestamp):
+        return stub.Z2Move (
+                    mission_control_pb2.ZMoveRequest(
+                        request_timestamp = timestamp,
+                        z = self.z),
+                    timeout = GRPC_CALL_TIMEOUT )
+
+
 class HolePositionDisplay(QtWidgets.QWidget):
     def __init__(self, layout):
         global X_LENGTH, Y_LENGTH, RIG_UNITS
@@ -108,11 +148,24 @@ class HolePositionDisplay(QtWidgets.QWidget):
 
         self.layout.addWidget(QtWidgets.QLabel("Z1: "), 2, start_h, 1, 1)
         self.layout.addWidget(QtWidgets.QLabel("Z2: "), 2, start_h + 2, 1, 1)
-        self.layout.addWidget(QtWidgets.QLineEdit(""), 2, start_h + 1, 1, 1)
-        self.layout.addWidget(QtWidgets.QLineEdit(""), 2, start_h + 3, 1, 1)
+        
+        self.target_z1 = QtWidgets.QLineEdit("")
+        self.target_z1.setValidator(QtGui.QDoubleValidator())
+        
+        self.target_z2 = QtWidgets.QLineEdit("")
+        self.target_z2.setValidator(QtGui.QDoubleValidator())
 
-        self.layout.addWidget(QtWidgets.QPushButton("GoTo Target (Z1)"), 3, start_h, 1, 2)
-        self.layout.addWidget(QtWidgets.QPushButton("GoTo Target (Z2)"), 3, start_h + 2, 1, 2)
+        self.layout.addWidget(self.target_z1, 2, start_h + 1, 1, 1)
+        self.layout.addWidget(self.target_z2, 2, start_h + 3, 1, 1)
+
+        self.goto_z1 = QtWidgets.QPushButton("GoTo Target (Z1)")
+        self.goto_z1.clicked.connect(self._goto_z1)
+
+        self.goto_z2 = QtWidgets.QPushButton("GoTo Target (Z2)")
+        self.goto_z2.clicked.connect(self._goto_z2)
+        
+        self.layout.addWidget(self.goto_z1, 3, start_h, 1, 2)
+        self.layout.addWidget(self.goto_z2, 3, start_h + 2, 1, 2)
         
         self.layout.addWidget(QtWidgets.QLabel("Current Position (X, Y, Z1, Z2) [m]"), 
             5, start_h, 1, 2)
@@ -127,6 +180,18 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.threads.append(client_thread)
         client_thread.start() 
         
+    def _goto_z1(self):
+        client_thread = GotoZ1Thread(
+            float(self.target_z1.text()))
+        self.threads.append(client_thread)
+        client_thread.start() 
+
+    def _goto_z2(self):
+        client_thread = GotoZ2Thread(
+            float(self.target_z2.text()))
+        self.threads.append(client_thread)
+        client_thread.start() 
+
     def _init_z_display(self, zplot, zscatter, start_h, label):
         global X_LENGTH, Y_LENGTH, RIG_UNITS
         zplot.showGrid(x = False, y = True, alpha = 1.0)
