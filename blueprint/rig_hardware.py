@@ -56,6 +56,11 @@ class AbstractRigHardware(ABC):
     def emergencyStop(self):
         pass
 
+    @abstractmethod
+    # Returns torque of motor i (0, 1, 2, 3) => (z1, z2, x, y)
+    def getTorque(self, i):
+        pass
+
 class MockRigHardware(AbstractRigHardware):
     
     def __init__(self):
@@ -112,6 +117,9 @@ class MockRigHardware(AbstractRigHardware):
     def isZ2Moving(self):
         #print(f"X is moving {self.homing[0]}")
         return self.homing[1]
+    
+    def getTorque(self, i):
+        return 9 # maximum is 3.5, so if we see more it indicates simulated value
 
     def isXMoving(self):
         #print(f"X is moving {self.homing[0]}")
@@ -242,4 +250,8 @@ class RigHardware(AbstractRigHardware):
         return self.isNMoving(1)
 
     
+
+    def getTorque(self, i):
+        return HydrationServo.getTorque(i)    
+   
 

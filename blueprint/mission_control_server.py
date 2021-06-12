@@ -59,6 +59,18 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             modes = modes,
             mode_labels = mode_labels)
 
+    def DrillAssemblyStatus(self, request, context):
+        #(DrillAssemblyStatusRequest) returns (DrillAssemblyStatusResponse);
+        timestamp = int(time.time()*1000)
+
+        tachometer_hardware = HardwareFactory.getTachometer()
+
+        return mcpb.DrillAssemblyStatusResponse(
+            request_timestamp_ms = request.request_timestamp_ms,
+            timestamp_ms = timestamp,
+            tachometer_RPM = tachometer_hardware.get_rpm()
+            )
+
     def HeartBeat(self, request, context):
         timestamp = int(time.time()*1000)
         cpu_temp = HardwareFactory.getMissionControlRPi() \
@@ -80,10 +92,11 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             zwater_servo_moving = rig_hardware.isZ2Moving(),
             x_servo_moving = rig_hardware.isXMoving(),
             y_servo_moving = rig_hardware.isYMoving(),
-            rig_x = rig_hardware.getPosition()[2],
-            rig_y = rig_hardware.getPosition()[3],
             rig_zdrill = rig_hardware.getPosition()[0],
             rig_zwater = rig_hardware.getPosition()[1],
+            rig_x = rig_hardware.getPosition()[2],
+            rig_y = rig_hardware.getPosition()[3],
+            rig_torque_z1 = rig_hardware.getTorque(0),
             mode = self.mode)
 
     def RigMove(self, request, context):
