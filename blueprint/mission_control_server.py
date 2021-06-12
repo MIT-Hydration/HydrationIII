@@ -33,8 +33,8 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         timestamp = int(time.time()*1000)
         modes = [
                 mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS,
-                mcpb.MAJOR_MODE_HOME_Z1_Z2,
-                mcpb.MAJOR_MODE_MOVE_X_Y,
+                #mcpb.MAJOR_MODE_HOME_Z1_Z2,
+                #mcpb.MAJOR_MODE_MOVE_X_Y,
                 mcpb.MAJOR_MODE_DRILL_BOREHOLE,
                 mcpb.MAJOR_MODE_CASE_BOREHOLE,
                 mcpb.MAJOR_MODE_INSERT_HEATER,
@@ -44,8 +44,8 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             ]
         mode_labels = [
             "01 Startup/calibrate",
-            "02 Home Z1, Z2",
-            "03 Move X, Y",
+            #"02 Home Z1, Z2",
+            #"03 Move X, Y",
             "04 Drill borehole",
             "05 Case borehole",
             "06 Insert heater",
@@ -88,10 +88,14 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             timestamp = timestamp,
             cpu_temperature_degC = cpu_temp,
             mission_time_ms = mission_time,
+            zdrill_servo_moving = rig_hardware.isZ1Moving(),
+            zwater_servo_moving = rig_hardware.isZ2Moving(),
             x_servo_moving = rig_hardware.isXMoving(),
             y_servo_moving = rig_hardware.isYMoving(),
-            rig_x = rig_hardware.getPosition()[0],
-            rig_y = rig_hardware.getPosition()[1],
+            rig_zdrill = rig_hardware.getPosition()[0],
+            rig_zwater = rig_hardware.getPosition()[1],
+            rig_x = rig_hardware.getPosition()[2],
+            rig_y = rig_hardware.getPosition()[3],
             rig_torque_z1 = rig_hardware.getTorque(0),
             mode = self.mode)
 
@@ -138,7 +142,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             timestamp = timestamp,
             status = mcpb.EXECUTED)
 
-    def StartHomeX (self, request, context):
+    def StartHomeAxis (self, request, context, f):
         timestamp = int(time.time()*1000)
         if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
            (self.mission_time_started): # do nothing
@@ -148,13 +152,31 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 status = mcpb.INVALID_STATE)
 
         rig_hardware = HardwareFactory.getRig()
-        rig_hardware.homeX()
+        f()
         
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
             status = mcpb.EXECUTED)
 
+
+    def StartHomeZ1 (self, request, context):
+        rig_hardware = HardwareFactory.getRig()
+        return self.StartHomeAxis(request, context, rig_hardware.homeZ1)
+
+
+    def StartHomeZ2 (self, request, context):
+        rig_hardware = HardwareFactory.getRig()
+        return self.StartHomeAxis(request, context, rig_hardware.homeZ2)
+
+    def StartHomeX (self, request, context):
+        rig_hardware = HardwareFactory.getRig()
+        return self.StartHomeAxis(request, context, rig_hardware.homeX)
+
+    def StartHomeY (self, request, context):
+        rig_hardware = HardwareFactory.getRig()
+        return self.StartHomeAxis(request, context, rig_hardware.homeY)
+        
     def SetAirGap (self, request, context):
         timestamp = int(time.time()*1000)
         if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
@@ -449,22 +471,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             timestamp = timestamp,
             status = mcpb.EXECUTED)
 
-    def StartHomeY (self, request, context):
-        timestamp = int(time.time()*1000)
-        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
-           (self.mission_time_started): # do nothing
-            return mcpb.CommandResponse(
-                request_timestamp = request.request_timestamp,
-                timestamp = timestamp,
-                status = mcpb.INVALID_STATE)
 
-        rig_hardware = HardwareFactory.getRig()
-        rig_hardware.homeY()
-        
-        return mcpb.CommandResponse(
-            request_timestamp = request.request_timestamp,
-            timestamp = timestamp,
-            status = mcpb.EXECUTED)
 
     def EmergencyStop(self, request, context):
         timestamp = int(time.time()*1000)

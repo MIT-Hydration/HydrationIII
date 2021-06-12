@@ -77,7 +77,7 @@ class HolePositionDisplay(QtWidgets.QWidget):
         global X_LENGTH, Y_LENGTH, RIG_UNITS
         zplot.showGrid(x = False, y = True, alpha = 1.0)
         zplot.setXRange(-0.0, 0.0, padding=0)
-        zplot.setYRange(-0.05, Y_LENGTH + 0.05, padding=0)
+        zplot.setYRange(-Y_LENGTH + 0.05, 0.05, padding=0)
         zplot.getAxis('left').setLabel(f'{label} {RIG_UNITS}')
         zplot.addItem(zscatter)
         zplot.setMaximumWidth(120)
@@ -102,6 +102,8 @@ class HolePositionDisplay(QtWidgets.QWidget):
 
     def update_display(self, response):
         if (response != None):    
-            print(response.rig_x)
-            print(response.rig_y)  
             self.scatter.setData([response.rig_x], [response.rig_y])
+            self.z1scatter.setData([0.0], [response.rig_zdrill])
+            self.z2scatter.setData([0.0], [response.rig_zwater])
+
+
