@@ -14,10 +14,10 @@ config.read('config.ini')
 if config.getboolean('Operating System', 'RunningInRPi'):
     import HydrationServo
 
-Z1Cal = config.getfloat('Rig', 'Z1Cal'):
-Z2Cal = config.getfloat('Rig', 'Z2Cal'):
-XCal = config.getfloat('Rig', 'XCal'):
-YCal = config.getfloat('Rig', 'YCal'):
+Z1Cal = config.getfloat('Rig', 'Z1Cal')
+Z2Cal = config.getfloat('Rig', 'Z2Cal')
+XCal = config.getfloat('Rig', 'XCal')
+YCal = config.getfloat('Rig', 'YCal')
 
 class AbstractRigHardware(ABC):
     
