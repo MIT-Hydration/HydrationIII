@@ -62,6 +62,10 @@ class AbstractRigHardware(ABC):
         pass
 
     @abstractmethod
+    def setHomeZ1(self):
+        pass
+
+    @abstractmethod
     def gotoPosition(self, x, y):
         pass
     
@@ -74,7 +78,6 @@ class AbstractRigHardware(ABC):
         pass
 
 class MockRigHardware(AbstractRigHardware):
-    
     def __init__(self):
         self.position = [-0.4, -0.5, 0.50, 0.50]
         self.homing = [False, False, False, False]
@@ -135,7 +138,7 @@ class MockRigHardware(AbstractRigHardware):
     
     def getTorque(self, i):
         return 9 # maximum is 3.5, so if we see more it indicates simulated value
-
+      
     def isXMoving(self):
         #print(f"X is moving {self.homing[0]}")
         return self.homing[2]
@@ -322,5 +325,18 @@ class RigHardware(AbstractRigHardware):
 
     def getTorque(self, i):
         return HydrationServo.getTorque(i)    
+    #Do i do a return or just like the function set home ??? 
+    def setHomeZ1(self):
+        return HydrationServo.setHome(0)
+
+    def setHomeZ2(self):
+        return HydrationServo.setHome(1)
+
+    def setHomeX(self):
+        return HydrationServo.setHome(2)
+
+    def setHomeY(self):
+        return HydrationServo.setHome(3)
+    
    
 

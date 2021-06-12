@@ -270,6 +270,8 @@ service MissionControl {
     rpc GetXServoTorqueLimit (GetLimitRequest) returns (LimitResponse);
     rpc SetYServoTorqueLimit (LimitChangeRequest) returns (CommandResponse);
     rpc GetYServoTorqueLimit (GetLimitRequest) returns (LimitResponse);
+    rpc GetTorque (StartCommandRequest) returns (CommandResponse);
+
 }
 
 service DrillControl {

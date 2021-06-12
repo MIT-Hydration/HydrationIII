@@ -180,6 +180,74 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             timestamp = timestamp,
             status = mcpb.EXECUTED)
 
+    def SetHomeZ1 (self, request, context):
+        timestamp = int(time.time()*1000)
+        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
+           (self.mission_time_started): # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+
+        rig_hardware = HardwareFactory.getRig()
+        rig_hardware.setHomeZ1()
+        
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)
+
+    def SetHomeZ2 (self, request, context):
+        timestamp = int(time.time()*1000)
+        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
+           (self.mission_time_started): # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+
+        rig_hardware = HardwareFactory.getRig()
+        rig_hardware.setHomeZ2()
+        
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)
+
+    def SetHomeX (self, request, context):
+        timestamp = int(time.time()*1000)
+        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
+           (self.mission_time_started): # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+
+        rig_hardware = HardwareFactory.getRig()
+        rig_hardware.setHomeX()
+        
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)
+
+    def SetHomeY (self, request, context):
+        timestamp = int(time.time()*1000)
+        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
+           (self.mission_time_started): # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+
+        rig_hardware = HardwareFactory.getRig()
+        rig_hardware.setHomeY()
+        
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)                        
+
     def StartHomeAxis (self, request, context, f):
         timestamp = int(time.time()*1000)
         if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
