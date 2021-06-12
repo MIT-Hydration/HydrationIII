@@ -263,6 +263,8 @@ class RigHardware(AbstractRigHardware):
         # stop existing threads
         self.emergencyStop()
 
+        self.target_pos[0] = pos[0]
+        self.target_pos[1] = pos[1]
         self.target_pos[2] = x
         self.target_pos[3] = y
 
@@ -317,7 +319,7 @@ class RigHardware(AbstractRigHardware):
     def getPosition(self):
         self.prev_pos = self.current_pos.copy()
         z1 = HydrationServo.get_position(0)
-        z2 = HydrationServo.get_position(1)
+        z2 = HydrationServo.get_position(1)*1.05
         x = HydrationServo.get_position(2)*4.0
         y = HydrationServo.get_position(3)*4.0
         self.current_pos = numpy.array([z1, z2, x, y])
