@@ -129,7 +129,7 @@ static PyObject *set_position(PyObject *self, PyObject *args) {
     return NULL;
   }
   
-  int ret_val = _set_posiiton(i, position);
+  int ret_val = _set_position(i, position);
   if (ret_val >= 0)
     Py_RETURN_TRUE;
   else
