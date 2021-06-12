@@ -297,7 +297,7 @@ class FileWriterThread(threading.Thread):
         self.stopped = False
         time_start_s = time.time()
         fp = open(f"all_data_{time_start_s}.csv", "w")
-        fp.write("time_s,cpu_t_degC,motor_command,Z1_m,Z2_m,X_m,Y_m,TZ1,TZ2,TX,TY,")
+        fp.write("time_s,cpu_t_degC,motor_command,Z1_m,Z2_m,X_m,Y_m,TZ1,TZ2,TX,TY,WOB_gm,")
         for k in self.drill_pm_thread.sensor_readings:
             fp.write(f"{k},")
         for k in self.drill_ad_thread.sensor_readings:
@@ -311,7 +311,8 @@ class FileWriterThread(threading.Thread):
             pos = rig.getPosition()
             fp.write(f"{pos[0]},{pos[1]},{pos[2]},{pos[3]},")
             for n in range(4):
-                fp.write(f"{rig.getTorque(i)},")    
+                fp.write(f"{rig.getTorque(n)},")    
+            fp.write(f"{rig.wob_sensor.get_weight(5)},")
             for k in self.drill_pm_thread.sensor_readings:
                 fp.write(f"{self.drill_pm_thread.sensor_readings[k]},")
             for k in self.drill_ad_thread.sensor_readings:
