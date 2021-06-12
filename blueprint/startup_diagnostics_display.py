@@ -297,7 +297,7 @@ class StartupDiagnosticsDisplay:
             ("Start heater", self.start_heater),
             ("Stop heater", self.stop_heater),        
         ]
-        
+        self.threads = []
         self.buttons = [None] * len(self.startup_list)
         self.layout = layout
         self._initWidgets()
@@ -326,67 +326,56 @@ class StartupDiagnosticsDisplay:
             line += 1
 
     def start_mission_clock(self):
-        self.threads = []
         client_thread = StartMissionClockThread()
         self.threads.append(client_thread)
         client_thread.start()      
 
     def start_home_Z1(self):
-        self.threads = []
         client_thread = StartHomeZ1Thread()
         self.threads.append(client_thread)
         client_thread.start() 
 
     def start_home_Z2(self):
-        self.threads = []
         client_thread = StartHomeZ2Thread()
         self.threads.append(client_thread)
         client_thread.start() 
 
     def start_home_X(self):
-        self.threads = []
         client_thread = StartHomeXThread()
         self.threads.append(client_thread)
         client_thread.start() 
 
     def start_home_Y(self):
-        self.threads = []
         client_thread = StartHomeYThread()
         self.threads.append(client_thread)
         client_thread.start() 
 
     def start_spin_drill_motor(self):
-        self.threads = []
         client_thread = StartSpinDrillMotorThread()
         self.threads.append(client_thread)
         client_thread.start()
 
     def stop_spin_drill_motor(self):
-        self.threads = []
         client_thread = StopSpinDrillMotorThread()
         self.threads.append(client_thread)
         client_thread.start()  
 
     def start_spin_pump(self):
-        self.threads = []
         client_thread = StartSpinPumpThread()
         self.threads.append(client_thread)
         client_thread.start()
 
     def stop_spin_pump(self):
-        self.threads = []
         client_thread = StopSpinPumpThread()
         self.threads.append(client_thread)
         client_thread.start() 
 
     def start_heater(self):
-        self.threads = []
         client_thread = StartHeaterThread()
         self.threads.append(client_thread)
         client_thread.start()
    
     def stop_heater(self):
-        self.threads = []
         client_thread = StopHeaterThread()
         self.threads.append(client_thread)
         client_thread.start() 

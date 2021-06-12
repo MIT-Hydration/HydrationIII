@@ -100,7 +100,21 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             mode = self.mode)
 
     def RigMove(self, request, context):
-        return # no implementation currently
+        timestamp = int(time.time()*1000)
+        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
+           (self.mission_time_started): # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+
+        rig_hardware = HardwareFactory.getRig()
+        rig_hardware.gotoPosition(request.x, request.y)
+
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)
 
     def _stopMotors(self):
         # todo stop motors
