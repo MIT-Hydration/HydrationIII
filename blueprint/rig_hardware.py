@@ -15,6 +15,8 @@ if config.getboolean('Operating System', 'RunningInRPi'):
     import HydrationServo
     from gpiozero import PWMLED
     from gpiozero import CPUTemperature
+    import RPi.GPIO as GPIO
+    import hx711
 
 Z1Cal = config.getfloat('Rig', 'Z1Cal')
 Z2Cal = config.getfloat('Rig', 'Z2Cal')
@@ -281,20 +283,21 @@ class PowerMeterThread(threading.Thread):
 
 class FileWriterThread(threading.Thread):
 
-    def __init__(self, drill_pm_thread, drill_ad_thread):
+    def __init__(self, drill_pm_thread, drill_ad_thread, rig):
         self.delay = 0.0007856988543367034
         self.sample_time = 0.02
         self.sleep_time = self.sample_time - self.delay
         threading.Thread.__init__(self)
         self.drill_pm_thread = drill_pm_thread
         self.drill_ad_thread = drill_ad_thread
+        self.rig = rig
         self.stopped = True
         
     def run(self):
         self.stopped = False
         time_start_s = time.time()
-        fp = open(f"{time_start_s}.csv", "w")
-        fp.write("time_s,cpu_t_degC,motor_command,")
+        fp = open(f"all_data_{time_start_s}.csv", "w")
+        fp.write("time_s,cpu_t_degC,motor_command,Z1_m,Z2_m,X_m,Y_m,TZ1,TZ2,TX,TY,")
         for k in self.drill_pm_thread.sensor_readings:
             fp.write(f"{k},")
         for k in self.drill_ad_thread.sensor_readings:
@@ -303,8 +306,12 @@ class FileWriterThread(threading.Thread):
         while not self.stopped:
             loop_start = time.time()
             fp.write(f"{loop_start},")
-            fp.write(f"{Drill.cpu_temperature_degC.temperature},")
-            fp.write(f"{Drill.motor.value},")
+            fp.write(f"{rig.cpu_temperature_degC.temperature},")
+            fp.write(f"{rig.motor.value},")
+            pos = rig.getPosition()
+            fp.write(f"{pos[0]},{pos[1]},{pos[2]},{pos[3]},")
+            for n in range(4):
+                fp.write(f"{rig.getTorque(i)},")    
             for k in self.drill_pm_thread.sensor_readings:
                 fp.write(f"{self.drill_pm_thread.sensor_readings[k]},")
             for k in self.drill_ad_thread.sensor_readings:
@@ -321,7 +328,6 @@ class FileWriterThread(threading.Thread):
         self.stopped = True
 
 class RigHardware(AbstractRigHardware):
-
     
     def __init__(self):
         self.current_pos = numpy.array([
@@ -338,7 +344,8 @@ class RigHardware(AbstractRigHardware):
 
         self.pm_thread = PowerMeterThread()
         self.ad_thread = ArduinoThread()
-        self.writer_thread = FileWriterThread(pm_thread, ad_thread, self)
+        self.writer_thread = FileWriterThread(
+            pm_thread, ad_thread, self)
 
         self.pm_thread.start()
         self.ad_thread.start()
