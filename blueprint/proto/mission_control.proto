@@ -81,6 +81,8 @@ message HeartBeatReply {
 
     float rig_x = 100;
     float rig_y = 101;
+    float rig_zdrill = 102;
+    float rig_zwater = 103;
 
     float rig_torque_z1 = 120; 
 }
@@ -137,6 +139,11 @@ message RigMoveCommandRequest {
     uint64 request_timestamp = 1;
     float x = 2;
     float y = 3;
+}
+
+message ZMoveRequest {
+    uint64 request_timestamp = 1;
+    float z = 2;
 }
 
 message DrillModeRequest {
@@ -227,6 +234,9 @@ service MissionControl {
     rpc StopHeater (StartCommandRequest) returns (CommandResponse);
     
     rpc RigMove (RigMoveCommandRequest) returns (CommandResponse);
+    rpc Z1Move (ZMoveRequest) returns (CommandResponse);
+    rpc Z2Move (ZMoveRequest) returns (CommandResponse);
+    
     rpc DrillMode (DrillModeRequest) returns (CommandResponse);
     rpc DrillCalibration (DrillCalibrationRequest) returns (CommandResponse);
     rpc DrillDescendingOff (DrillDescendingOffRequest) returns (CommandResponse);

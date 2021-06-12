@@ -63,7 +63,6 @@ class ModeDisplay(QtWidgets.QWidget):
         client_thread.start()
         self.modes = []
         self.layout = layout
-        layout.setSpacing(0.5)
         
     def _initStatusWidgets(self):
         print("Initializing Status Widgets")
@@ -73,8 +72,7 @@ class ModeDisplay(QtWidgets.QWidget):
                      QtWidgets.QRadioButton(self.mode_labels[i])
                  )
             self.layout.addWidget(self.mode_radios[i])
-        self.layout.addStretch(5)
-
+        
     @QtCore.Slot(object)
     def _on_modes_fetch_done(self, response):
         self.modes = response.modes
@@ -87,4 +85,3 @@ class ModeDisplay(QtWidgets.QWidget):
                  self.mode_radios[i].setChecked(True)
              else:
                  self.mode_radios[i].setChecked(False)
-        pass
