@@ -193,7 +193,7 @@ class MockRigHardware(AbstractRigHardware):
     def setHomeY(self):
         self.position[3] = 0.0
 
-class RigMoveThread(threading.Thread):
+class FileWriterThread(threading.Thread):
     def __init__(self, rig):
             super().__init__()
             self.rig = rig

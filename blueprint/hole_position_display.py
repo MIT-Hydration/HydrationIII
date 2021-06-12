@@ -201,13 +201,14 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.layout.addWidget(self.goto_z1, 3, start_h, 1, 2)
         self.layout.addWidget(self.goto_z2, 3, start_h + 2, 1, 2)
         
-        self.layout.addWidget(QtWidgets.QLabel("Current Position (X, Y, Z1, Z2) [m]"), 
-            5, start_h, 1, 2)
+        self.curr_pos_label = QtWidgets.QLabel("Current Position (Z1, Z2, X, Y) [m]")
+        self.layout.addWidget(self.cur_pos_label, 5, start_h, 1, 2)
 
-        self.set_home = QtWidgets.QPushButton("Set Current as Origin (X, Y, Z1, Z2)")
+        self.set_home = QtWidgets.QPushButton("Set Current as Origin (Z1, Z2, X, Y)")
         self.set_home.clicked.connect(self._set_home)
         self.layout.addWidget(self.set_home, 6, start_h, 1, 4)
 
+        
     def _goto_xy(self):
         client_thread = GotoXYThread(
             float(self.target_x.text()), 
@@ -260,9 +261,18 @@ class HolePositionDisplay(QtWidgets.QWidget):
             'Z2 (Heater)')
 
     def update_display(self, response):
-        if (response != None):    
-            self.scatter.setData([response.rig_x], [response.rig_y])
-            self.z1scatter.setData([0.0], [response.rig_zdrill])
-            self.z2scatter.setData([0.0], [response.rig_zwater])
+        if (response != None):  
+            z1 = response.rig_zdrill
+            z2 = response.rig_zwater
+            x = response.rig_x
+            y = response.rig_y
+            
+            self.scatter.setData([x], [y])
+            self.z1scatter.setData([0.0], [z1])
+            self.z2scatter.setData([0.0], [z2])
+            self.cur_pos_label.setText(
+                f"(Z1, Z2, X, Y) = ({z1:0.3f}, {z2:0.3f}{x:0.3f}{y:0.3f}) [m]")
+        
+
 
 
