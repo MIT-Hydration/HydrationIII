@@ -84,7 +84,7 @@ class MockRigHardware(AbstractRigHardware):
             "Rig", "HomingError")
     
     def _update(self, i):
-        VEL = -numpy.sign(self.position[i])*0.02 # m/s
+        VEL = (self.target[i] - self.position[i])*0.02 # m/s
         if self.homing[i]:
             new_t = time.time()
             dt = new_t - self.homingTime[i]
@@ -93,7 +93,7 @@ class MockRigHardware(AbstractRigHardware):
             ds = self.target[i] - s
             if numpy.abs(ds) <= self.move_tolerance*100:
                 self.homing[i] = False
-                s = target[i]
+                s = self.target[i]
             self.position[i] = s
             self.homingTime[i] = new_t
             
@@ -145,16 +145,20 @@ class MockRigHardware(AbstractRigHardware):
 
     def gotoPosition(self, x, y):
         t = time.time()
+        self.target[2] = x
+        self.target[3] = y
         self.homing[2] = True
         self.homingTime[2] = t
         self.homing[3] = True
         self.homingTime[3] = t
     
-    def gotoPositionZ1(self, z):     
+    def gotoPositionZ1(self, z): 
+        self.target[0] = z    
         self.homing[0] = True
         self.homingTime[0] = time.time()
         
-    def gotoPositionZ2(self, z):        
+    def gotoPositionZ2(self, z):
+        self.target[1] = z        
         self.homing[1] = True
         self.homingTime[1] = time.time()
 

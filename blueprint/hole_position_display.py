@@ -16,6 +16,12 @@ __status__ = "Production"
 from PySide6 import QtCore, QtWidgets, QtGui
 import pyqtgraph as pg
 import configparser
+from datetime import datetime, timedelta
+import time
+
+import grpc
+from .generated import mission_control_pb2, mission_control_pb2_grpc
+
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -23,6 +29,12 @@ X_LENGTH = config.getfloat('Rig', 'XLength')
 Y_LENGTH = config.getfloat('Rig', 'YLength')
 RIG_UNITS = config.get('Rig', 'Units')
 
+MC_IP_ADDRESS_PORT = \
+    f"{config.get('Network', 'MissionControlRPiIPAddress')}:" \
+    f"{config.get('Network', 'GRPCPort')}"
+
+GRPC_CALL_TIMEOUT   = \
+    config.getint('Network', 'GRPCTimeout')
 
 class GotoXYThread(QtCore.QThread):    
     def __init__(self, x, y):
@@ -87,8 +99,8 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.target_y = QtWidgets.QLineEdit("")
         self.target_y.setValidator(QtGui.QDoubleValidator())
         
-        self.layout.addWidget(target_x, 1, start_h + 1, 1, 1)
-        self.layout.addWidget(target_y, 1, start_h + 3, 1, 1)
+        self.layout.addWidget(self.target_x, 1, start_h + 1, 1, 1)
+        self.layout.addWidget(self.target_y, 1, start_h + 3, 1, 1)
 
         self.goto_target_xy = QtWidgets.QPushButton("GoTo Target (X, Y)")
         self.goto_target_xy.clicked.connect(self._goto_xy)
