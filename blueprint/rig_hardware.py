@@ -66,6 +66,18 @@ class AbstractRigHardware(ABC):
         pass
 
     @abstractmethod
+    def setHomeZ2(self):
+        pass
+
+    @abstractmethod
+    def setHomeX(self):
+        pass
+
+    @abstractmethod
+    def setHomeY(self):
+        pass
+
+    @abstractmethod
     def gotoPosition(self, x, y):
         pass
     
@@ -164,6 +176,18 @@ class MockRigHardware(AbstractRigHardware):
         self.target[1] = z        
         self.homing[1] = True
         self.homingTime[1] = time.time()
+
+    def setHomeZ1(self):
+        self.position[0] = 0.0
+
+    def setHomeZ2(self):
+        self.position[1] = 0.0
+
+    def setHomeX(self):
+        self.position[2] = 0.0
+
+    def setHomeY(self):
+        self.position[3] = 0.0
 
 class RigMoveThread(threading.Thread):
     def __init__(self, rig):
@@ -325,18 +349,18 @@ class RigHardware(AbstractRigHardware):
 
     def getTorque(self, i):
         return HydrationServo.getTorque(i)    
-    #Do i do a return or just like the function set home ??? 
+    
     def setHomeZ1(self):
-        return HydrationServo.setHome(0)
+        HydrationServo.setHome(0)
 
     def setHomeZ2(self):
-        return HydrationServo.setHome(1)
+        HydrationServo.setHome(1)
 
     def setHomeX(self):
-        return HydrationServo.setHome(2)
+        HydrationServo.setHome(2)
 
     def setHomeY(self):
-        return HydrationServo.setHome(3)
+        HydrationServo.setHome(3)
     
    
 

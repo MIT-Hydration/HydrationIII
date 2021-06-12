@@ -59,6 +59,40 @@ class GotoXYThread(QtCore.QThread):
             info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
 
+class SetHomeThread(QtCore.QThread):    
+    def __init__(self):
+        QtCore.QThread.__init__(self)
+        
+    def run(self):
+        global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
+        response = None
+        try:
+            timestamp = int(time.time()*1000)
+            with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
+                stub = mission_control_pb2_grpc.MissionControlStub(channel)
+                response = stub.SetHomeZ1 (
+                    mission_control_pb2.StartCommandRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+                
+                response = stub.SetHomeZ2 (
+                    mission_control_pb2.StartCommandRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+                
+                response = stub.SetHomeX (
+                    mission_control_pb2.StartCommandRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+
+                response = stub.SetHomeY (
+                    mission_control_pb2.StartCommandRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+                
+        except Exception as e:
+            info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
+            print(info)
 
 class GotoZThread(QtCore.QThread):    
     def __init__(self, z):
@@ -170,8 +204,9 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.layout.addWidget(QtWidgets.QLabel("Current Position (X, Y, Z1, Z2) [m]"), 
             5, start_h, 1, 2)
 
-        self.layout.addWidget(QtWidgets.QPushButton("Set Current as Origin (X, Y, Z1, Z2)"), 
-            6, start_h, 1, 4)
+        self.set_home = QtWidgets.QPushButton("Set Current as Origin (X, Y, Z1, Z2)")
+        self.set_home.clicked.connect(self._set_home)
+        self.layout.addWidget(self.set_home, 6, start_h, 1, 4)
 
     def _goto_xy(self):
         client_thread = GotoXYThread(
@@ -189,6 +224,11 @@ class HolePositionDisplay(QtWidgets.QWidget):
     def _goto_z2(self):
         client_thread = GotoZ2Thread(
             float(self.target_z2.text()))
+        self.threads.append(client_thread)
+        client_thread.start() 
+
+    def _set_home(self):
+        client_thread = SetHomeThread()
         self.threads.append(client_thread)
         client_thread.start() 
 
