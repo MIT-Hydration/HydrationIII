@@ -224,7 +224,7 @@ class RigMoveThread(threading.Thread):
                 for n in range(N):
                     if (numpy.abs(delta_pos[n]) > HOMING_ERROR):
                         HydrationServo.set_speed_rpm(n, 0)
-                        
+
                 loop_end = time.time()
                 delta_time = loop_end - loop_start
                 if (delta_time < CONTROL_LOOP_TIME):
@@ -346,19 +346,19 @@ class RigHardware(AbstractRigHardware):
         return self.isNMoving(1)
 
     def getTorque(self, i):
-        return HydrationServo.getTorque(i)    
+        return HydrationServo.get_torque(i)    
     
     def setHomeZ1(self):
-        HydrationServo.setHome(0)
+        HydrationServo.set_home(0)
 
     def setHomeZ2(self):
-        HydrationServo.setHome(1)
+        HydrationServo.set_home(1)
 
     def setHomeX(self):
-        HydrationServo.setHome(2)
+        HydrationServo.set_home(2)
 
     def setHomeY(self):
-        HydrationServo.setHome(3)
+        HydrationServo.set_home(3)
     
    
 
