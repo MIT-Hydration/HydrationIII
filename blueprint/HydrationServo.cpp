@@ -64,9 +64,9 @@ int _set_speed_rpm(unsigned long i, double speed){
   return 1;
 }
 
-int _set_position(unsigned long i, double pos){
+int _set_position(unsigned long i, double pos) {
   INode &theNode = *(pTheNode[i]);
-  int32_t target = (int32_t)(pos * CNTS_PER_MM * 1000)
+  int32_t target = (int32_t)(pos * CNTS_PER_MM * 1000);
   theNode.Motion.MoveWentDone(); //Clear the rising edge Move done register
   theNode.AccUnit(INode::RPM_PER_SEC);	//Set the units for Acceleration to RPM/SEC
   theNode.VelUnit(INode::RPM);		//Set the units for Velocity to RPM
