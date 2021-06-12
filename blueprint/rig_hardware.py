@@ -13,6 +13,8 @@ config.read('config.ini')
 
 if config.getboolean('Operating System', 'RunningInRPi'):
     import HydrationServo
+    from gpiozero import PWMLED
+    from gpiozero import CPUTemperature
 
 Z1Cal = config.getfloat('Rig', 'Z1Cal')
 Z2Cal = config.getfloat('Rig', 'Z2Cal')
@@ -193,58 +195,134 @@ class MockRigHardware(AbstractRigHardware):
     def setHomeY(self):
         self.position[3] = 0.0
 
-class FileWriterThread(threading.Thread):
-    def __init__(self, rig):
-            super().__init__()
-            self.rig = rig
+
+class ArduinoThread(threading.Thread):
+
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.stopped = True
+        self.sensor_readings = {
+                "arduino_timestamp_ms": 0.0,
+                "tacho_rpm": 0.0,
+                "imu_x_g": 0.0,
+                "imu_y_g": 0.0,
+                "imu_z_g": 0.0,
+            }
+        self.port = serial.Serial("/dev/ttyACM0", baudrate=9600, timeout=5,
+            bytesize = serial.EIGHTBITS, stopbits = serial.STOPBITS_ONE,
+            parity=serial.PARITY_NONE)
+        self.arduino_primed = False
+        self.pattern = re.compile(
+            b'TS = ([0-9]+) ms, TACHO = ([-0-9.]+) RPM, IMU = \(([-0-9.]+), ([-0-9.]+), ([-0-9.]+)\) g')
 
     def run(self):
         self.stopped = False
-        CONTROL_LOOP_TIME = config.getfloat(
-            "Rig", "MoveControlLoopTime")
-        HOMING_SPEED = config.getfloat(
-            "Rig", "HomingSpeed")
-        HOMING_ERROR = config.getfloat(
-            "Rig", "HomingError")
-
-        current_pos = numpy.array(self.rig.getPosition())
-        delta_pos = current_pos - self.rig.target_pos
-        N = HydrationServo.get_num_motors()
-        
-        if numpy.max(numpy.abs(delta_pos)) > HOMING_ERROR:
+        while not self.stopped:
+            loop_start = time.time()
+            if not self.arduino_primed:
+                self.port.flush()
+                written = self.port.write(b"START_STREAM\n")
+                self.port.flush()
+                print(f"wrote {written}")
+            rcv = self.port.readline()
+            #print(str(rcv))
+            m = self.pattern.match(rcv)
+            if m is not None:    
+                self.sensor_readings["arduino_timestamp_ms"] = int(m.group(1))
+                self.sensor_readings["tacho_rpm"] =  float(m.group(2))
+                self.sensor_readings["imu_x_g"] = float(m.group(3))
+                self.sensor_readings["imu_y_g"] = float(m.group(4))
+                self.sensor_readings["imu_z_g"] = float(m.group(5))
+                self.arduino_primed = True  
+            loop_end = time.time()
+            delta_time = loop_end - loop_start
+            if (delta_time < 0.01):
+                time.sleep(0.01 - delta_time)
             
-            for n in range(N):
-                if (delta_pos[n] > 0) and (numpy.abs(delta_pos[n]) > HOMING_ERROR):
-                    HydrationServo.set_speed_rpm(n, -HOMING_SPEED)
-                elif (delta_pos[n] < 0) and (numpy.abs(delta_pos[n]) > HOMING_ERROR):
-                    HydrationServo.set_speed_rpm(n, HOMING_SPEED)
-        
-            while (not self.stopped) and numpy.max(numpy.abs(delta_pos)) > HOMING_ERROR:
-
-                loop_start = time.time()
-                current_pos = numpy.array(self.rig.getPosition())
-                delta_pos = current_pos - self.rig.target_pos
-                
-                for n in range(N):
-                    if (numpy.abs(delta_pos[n]) < HOMING_ERROR):
-                        HydrationServo.set_speed_rpm(n, 0)
-
-                loop_end = time.time()
-                delta_time = loop_end - loop_start
-                if (delta_time < CONTROL_LOOP_TIME):
-                    time.sleep(CONTROL_LOOP_TIME - delta_time)
-
-        for n in range(N):
-            HydrationServo.set_speed_rpm(n, 0)
-        
+    def stop(self):
         self.stopped = True
 
+class PowerMeterThread(threading.Thread):
+
+    modbus_reg_address = 75
+    modbus_reg_count   = 4
+
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.stopped = True
+        self.sensor_readings = {
+                "active_power_W": 0.0,
+                "current_mA": 0.0,
+            }
+        self.client = ModbusSerialClient(port='/dev/ttyUSB0', method='rtu', baudrate=9600)
+        
+    def run(self):
+        self.stopped = False
+        while not self.stopped:
+            loop_start = time.time()
+            result  = self.client.read_holding_registers(
+                self.modbus_reg_address, self.modbus_reg_count,  unit=1)
+            try:
+                decoder = BinaryPayloadDecoder.fromRegisters(result.registers, 
+                    wordorder = '>', byteorder = '>')
+                current_mA = decoder.decode_32bit_float()
+                power_W = decoder.decode_32bit_float()
+                self.sensor_readings["active_power_W"] = power_W
+                self.sensor_readings["current_mA"] =  current_mA
+            except:
+                pass
+            loop_end = time.time()
+            delta_time = loop_end - loop_start
+            if (delta_time < 0.01):
+                time.sleep(0.01 - delta_time)
+            
     def stop(self):
-        HydrationServo.set_speed_rpm(3, 0)
+        self.stopped = True
+
+class FileWriterThread(threading.Thread):
+
+    def __init__(self, drill_pm_thread, drill_ad_thread):
+        self.delay = 0.0007856988543367034
+        self.sample_time = 0.02
+        self.sleep_time = self.sample_time - self.delay
+        threading.Thread.__init__(self)
+        self.drill_pm_thread = drill_pm_thread
+        self.drill_ad_thread = drill_ad_thread
+        self.stopped = True
+        
+    def run(self):
+        self.stopped = False
+        time_start_s = time.time()
+        fp = open(f"{time_start_s}.csv", "w")
+        fp.write("time_s,cpu_t_degC,motor_command,")
+        for k in self.drill_pm_thread.sensor_readings:
+            fp.write(f"{k},")
+        for k in self.drill_ad_thread.sensor_readings:
+            fp.write(f"{k},")    
+        fp.write("\n")
+        while not self.stopped:
+            loop_start = time.time()
+            fp.write(f"{loop_start},")
+            fp.write(f"{Drill.cpu_temperature_degC.temperature},")
+            fp.write(f"{Drill.motor.value},")
+            for k in self.drill_pm_thread.sensor_readings:
+                fp.write(f"{self.drill_pm_thread.sensor_readings[k]},")
+            for k in self.drill_ad_thread.sensor_readings:
+                fp.write(f"{self.drill_ad_thread.sensor_readings[k]},")
+            fp.write("\n")
+            loop_end = time.time()
+            delta_time = loop_end - loop_start
+            if (delta_time < self.sleep_time):
+                time.sleep(self.sleep_time - delta_time)
+
+        fp.close()
+            
+    def stop(self):
         self.stopped = True
 
 class RigHardware(AbstractRigHardware):
 
+    
     def __init__(self):
         self.current_pos = numpy.array([
             HydrationServo.get_position(0)*Z1Cal, 
@@ -254,6 +332,17 @@ class RigHardware(AbstractRigHardware):
         self.prev_pos = self.current_pos.copy()
         self.move_tolerance = config.getfloat(
             "Rig", "HomingError")
+
+        self.motor = PWMLED(12)
+        self.cpu_temperature_degC = CPUTemperature()
+
+        self.pm_thread = PowerMeterThread()
+        self.ad_thread = ArduinoThread()
+        self.writer_thread = FileWriterThread(pm_thread, ad_thread, self)
+
+        self.pm_thread.start()
+        self.ad_thread.start()
+        self.writer_thread.start()
 
     def gotoPosition(self, x, y):
         # ensure Z-poisions are zero within tolerance
