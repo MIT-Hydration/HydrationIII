@@ -26,6 +26,22 @@ double _get_position(unsigned long i){
   return myPosn;
 }
 
+double _get_torque(unsigned long i){ 
+	INode &theNode = *(pTheNode[i]);
+	theNode.Motion.TrqMeasured.Refresh();
+	double myTorque = theNode.Motion.TrqMeasured.Value();
+	return myTorque;
+
+}
+
+int _set_home(unsigned long i){
+	INode &theNode = *(pTheNode[i]);
+	double posn_measured = theNode.Motion.PosnMeasured;
+    theNode.Motion.AddToPosition(-posn_measured);
+	/* printf("Position set to %f", posn_measured); */
+    return 1;
+}
+
 int _set_speed_rpm(unsigned long i, double speed){
 	/*
 	Parameters
@@ -48,6 +64,18 @@ int _set_speed_rpm(unsigned long i, double speed){
   return 1;
 }
 
+int _set_position(unsigned long i, double pos) {
+  INode &theNode = *(pTheNode[i]);
+  int32_t target = (int32_t)(pos * CNTS_PER_MM * 1000);
+  theNode.Motion.MoveWentDone(); //Clear the rising edge Move done register
+  theNode.AccUnit(INode::RPM_PER_SEC);	//Set the units for Acceleration to RPM/SEC
+  theNode.VelUnit(INode::RPM);		//Set the units for Velocity to RPM
+  theNode.Motion.AccLimit = ACC_LIM_RPM_PER_SEC; //Set Acceleration Limit (RPM/Sec)
+  theNode.Motion.VelLimit = VEL_LIM_RPM;	 //Set Velocity Limit (RPM)
+  theNode.Motion.MovePosnStart(target, true);
+  return 1;
+}
+
 static PyObject *get_position(PyObject *self, PyObject *args) {
   unsigned long i;
   if (!PyArg_ParseTuple(args, "k", &i)) {
@@ -55,6 +83,16 @@ static PyObject *get_position(PyObject *self, PyObject *args) {
   }
   return PyFloat_FromDouble(_get_position(i));
 }
+
+static PyObject *get_torque(PyObject *self, PyObject *args) {
+  unsigned long i;
+  if (!PyArg_ParseTuple(args, "k", &i)) {
+    return NULL;
+  }
+  return PyFloat_FromDouble(_get_torque(i));
+}
+
+
 
 static PyObject *get_num_motors(PyObject *self, PyObject *args) {
 	return PyLong_FromUnsignedLong((unsigned long)numNodesDetected);
@@ -84,10 +122,41 @@ static PyObject *set_speed_rpm(PyObject *self, PyObject *args) {
     Py_RETURN_FALSE;
 }
 
+static PyObject *set_position(PyObject *self, PyObject *args) {
+  unsigned long i;
+  double position;
+  if (!PyArg_ParseTuple(args, "kd", &i, &position)) {
+    return NULL;
+  }
+  
+  int ret_val = _set_position(i, position);
+  if (ret_val >= 0)
+    Py_RETURN_TRUE;
+  else
+    Py_RETURN_FALSE;
+}
+
+static PyObject *set_home(PyObject *self, PyObject *args) {
+  unsigned long i;
+  if (!PyArg_ParseTuple(args, "k", &i)) {
+    return NULL;
+  }
+  
+  int set_home = _set_home(i);
+  if (set_home > 0)
+    Py_RETURN_TRUE;
+  else
+    Py_RETURN_FALSE;
+}
+
+
 static PyMethodDef HydrationServo_methods[] = {
     {"get_position", get_position, METH_VARARGS, "Returns servo position"},
+	{"set_position", set_position, METH_VARARGS, "Sets given servo to given position using MovePosnStart"},
     {"set_speed_rpm", set_speed_rpm, 
 	    METH_VARARGS, "Sets servo speed"},
+	{"get_torque", get_torque, METH_VARARGS, "Returns torque value"}, 
+	{"set_home", set_home, METH_VARARGS, "Set home"},
 	{"get_num_motors", get_num_motors, 
 	    METH_VARARGS, "Returns the number of motors"},
 	{"get_motor_id", get_motor_id, METH_VARARGS, "Returns the ID (Name) of the Motor"},

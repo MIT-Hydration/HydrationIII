@@ -98,7 +98,7 @@ class MainWindow(QtWidgets.QWidget):
         self.mode_layout = QtWidgets.QVBoxLayout()
         self.mode_groupbox.setLayout(self.mode_layout)
         self.main_grid_layout.addWidget(
-            self.mode_groupbox, 1, 0, 6, 1)
+            self.mode_groupbox, 1, 0, 2, 1)
 
         self.mode_display = mode_display.ModeDisplay(
             self.mode_layout)
@@ -108,7 +108,7 @@ class MainWindow(QtWidgets.QWidget):
         self.status_layout = QtWidgets.QVBoxLayout()
         self.status_groupbox.setLayout(self.status_layout)
         self.main_grid_layout.addWidget(
-            self.status_groupbox, 7, 0, 14, 1)
+            self.status_groupbox, 4, 0, 10, 1)
 
         self.status_display = status_display.StatusDisplay(
             self.status_layout)
@@ -118,7 +118,7 @@ class MainWindow(QtWidgets.QWidget):
         self.diagnostics_layout = QtWidgets.QGridLayout()
         self.startup_diagnostics_groupbox.setLayout(self.diagnostics_layout)
         self.main_grid_layout.addWidget(
-            self.startup_diagnostics_groupbox, 0, 1, 7, 5)
+            self.startup_diagnostics_groupbox, 0, 1, 3, 5)
 
         self.startup_display = startup_diagnostics_display.StartupDiagnosticsDisplay(self.diagnostics_layout)
 
@@ -127,7 +127,7 @@ class MainWindow(QtWidgets.QWidget):
         self.limits_layout = QtWidgets.QFormLayout()
         self.limits_groupbox.setLayout(self.limits_layout)
         self.main_grid_layout.addWidget(
-            self.limits_groupbox, 0, 6, 7, 5)
+            self.limits_groupbox, 0, 6, 3, 5)
 
         self.limits_display = limits_display.LimitsDisplay(self.limits_layout)       
 
@@ -147,12 +147,17 @@ class MainWindow(QtWidgets.QWidget):
         self.heartbeat_timer.timeout.connect(self.onHeartBeat)
         self.startHeartBeatTimer()
 
+    # def closeEvent(self, event):
+    #     for th in self.threads:
+    #         th.wait()
+    #     event.accept() # let the window close
+
     def _initHolePos(self):
         self.hole_pos_groupbox = QtWidgets.QGroupBox("Rig Holes and Position")
         self.hole_pos_layout = QtWidgets.QGridLayout()
         self.hole_pos_groupbox.setLayout(self.hole_pos_layout)
         self.main_grid_layout.addWidget(
-            self.hole_pos_groupbox, 7, 1, 14, 10)
+            self.hole_pos_groupbox, 4, 1, 10, 10)
 
         self.hole_pos_display = hole_position_display.HolePositionDisplay(
             self.hole_pos_layout
@@ -199,6 +204,6 @@ if __name__ == "__main__":
     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps)
     
     window = MainWindow()
-    window.resize(1500, 740)
+    window.resize(1500, 680)
     window.show()
     sys.exit(app.exec_())

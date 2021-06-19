@@ -297,104 +297,85 @@ class StartupDiagnosticsDisplay:
             ("Start heater", self.start_heater),
             ("Stop heater", self.stop_heater),        
         ]
-        
+        self.threads = []
         self.buttons = [None] * len(self.startup_list)
         self.layout = layout
         self._initWidgets()
-        layout.setSpacing(0.5)
-
+        
     def _initWidgets(self):
         i = 0
         line = 0
-        while (i < len(self.startup_list)):
-            if (("Start" in self.startup_list[i][0]) and ("Stop" in self.startup_list[i+1][0])):
-                sub1 = self.startup_list[i][0].replace("Start", "")
-                sub2 = self.startup_list[i+1][0].replace("Stop", "")
-                if (sub1 == sub2):
-                    self.buttons[i] = QtWidgets.QPushButton(self.startup_list[i][0])
-                    self.layout.addWidget(self.buttons[i], line, 0)
-                    self.buttons[i].clicked.connect(self.startup_list[i][1])
-                    self.buttons[i].clicked.connect(partial(_changeStyle, self.buttons[i]))
-                    self.buttons[i+1] = QtWidgets.QPushButton(self.startup_list[i+1][0])
-                    self.layout.addWidget(self.buttons[i+1], line, 1)
-                    self.buttons[i+1].clicked.connect(self.startup_list[i+1][1])
-                    self.buttons[i+1].clicked.connect(partial(_changeStyle, self.buttons[i+1]))
-                    i += 2
-                    line += 1
-            else:
-                    self.buttons[i] = QtWidgets.QPushButton(self.startup_list[i][0])
-                    self.layout.addWidget(self.buttons[i], line, 0, 1, 2)
-                    self.buttons[i].clicked.connect(self.startup_list[i][1])
-                    self.buttons[i].clicked.connect(partial(_changeStyle, self.buttons[i]))
-                    i += 1
-                    line += 1
-        self.layout.rowStretch(5)
-        for i in range (len(self.startup_list)):
-            self.buttons[i].setFixedHeight(1)
 
+        self.buttons[i] = QtWidgets.QPushButton(self.startup_list[i][0])
+        self.layout.addWidget(self.buttons[i], line, 0, 1, 2)
+        self.buttons[i].clicked.connect(self.startup_list[i][1])
+        self.buttons[i].clicked.connect(partial(_changeStyle, self.buttons[i]))
+        i += 1
+        line += 1
+
+        while (i < len(self.startup_list)):
+            self.buttons[i] = QtWidgets.QPushButton(self.startup_list[i][0])
+            self.layout.addWidget(self.buttons[i], line, 0)
+            self.buttons[i].clicked.connect(self.startup_list[i][1])
+            self.buttons[i].clicked.connect(partial(_changeStyle, self.buttons[i]))
+            self.buttons[i+1] = QtWidgets.QPushButton(self.startup_list[i+1][0])
+            self.layout.addWidget(self.buttons[i+1], line, 1)
+            self.buttons[i+1].clicked.connect(self.startup_list[i+1][1])
+            self.buttons[i+1].clicked.connect(partial(_changeStyle, self.buttons[i+1]))
+            i += 2
+            line += 1
 
     def start_mission_clock(self):
-        self.threads = []
         client_thread = StartMissionClockThread()
         self.threads.append(client_thread)
         client_thread.start()      
 
     def start_home_Z1(self):
-        self.threads = []
         client_thread = StartHomeZ1Thread()
         self.threads.append(client_thread)
         client_thread.start() 
 
     def start_home_Z2(self):
-        self.threads = []
         client_thread = StartHomeZ2Thread()
         self.threads.append(client_thread)
         client_thread.start() 
 
     def start_home_X(self):
-        self.threads = []
         client_thread = StartHomeXThread()
         self.threads.append(client_thread)
         client_thread.start() 
 
     def start_home_Y(self):
-        self.threads = []
         client_thread = StartHomeYThread()
         self.threads.append(client_thread)
         client_thread.start() 
 
     def start_spin_drill_motor(self):
-        self.threads = []
         client_thread = StartSpinDrillMotorThread()
         self.threads.append(client_thread)
         client_thread.start()
 
     def stop_spin_drill_motor(self):
-        self.threads = []
         client_thread = StopSpinDrillMotorThread()
         self.threads.append(client_thread)
         client_thread.start()  
 
     def start_spin_pump(self):
-        self.threads = []
         client_thread = StartSpinPumpThread()
         self.threads.append(client_thread)
         client_thread.start()
 
     def stop_spin_pump(self):
-        self.threads = []
         client_thread = StopSpinPumpThread()
         self.threads.append(client_thread)
         client_thread.start() 
 
     def start_heater(self):
-        self.threads = []
         client_thread = StartHeaterThread()
         self.threads.append(client_thread)
         client_thread.start()
    
     def stop_heater(self):
-        self.threads = []
         client_thread = StopHeaterThread()
         self.threads.append(client_thread)
         client_thread.start() 

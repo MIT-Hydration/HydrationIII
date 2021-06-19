@@ -81,6 +81,10 @@ message HeartBeatReply {
 
     float rig_x = 100;
     float rig_y = 101;
+    float rig_zdrill = 102;
+    float rig_zwater = 103;
+
+    float rig_torque_z1 = 120; 
 }
 
 message RigStatusRequest {
@@ -135,6 +139,11 @@ message RigMoveCommandRequest {
     uint64 request_timestamp = 1;
     float x = 2;
     float y = 3;
+}
+
+message ZMoveRequest {
+    uint64 request_timestamp = 1;
+    float z = 2;
 }
 
 message DrillModeRequest {
@@ -206,10 +215,17 @@ service MissionControl {
     rpc GetHoles (HoleListRequest) returns (HoleList);
     rpc SetMode (SetModeRequest) returns (CommandResponse);
     rpc StartMissionClock (StartCommandRequest) returns (CommandResponse);
+
     rpc StartHomeZ1 (StartCommandRequest) returns (CommandResponse);
     rpc StartHomeZ2 (StartCommandRequest) returns (CommandResponse);
     rpc StartHomeX (StartCommandRequest) returns (CommandResponse);
     rpc StartHomeY (StartCommandRequest) returns (CommandResponse);
+
+    rpc SetHomeZ1 (StartCommandRequest) returns (CommandResponse);
+    rpc SetHomeZ2 (StartCommandRequest) returns (CommandResponse);
+    rpc SetHomeX (StartCommandRequest) returns (CommandResponse);
+    rpc SetHomeY (StartCommandRequest) returns (CommandResponse);
+
     rpc StartSpinDrillMotor (StartCommandRequest) returns (CommandResponse);
     rpc StopSpinDrillMotor (StartCommandRequest) returns (CommandResponse);
     rpc StartSpinPump (StartCommandRequest) returns (CommandResponse);
@@ -218,6 +234,9 @@ service MissionControl {
     rpc StopHeater (StartCommandRequest) returns (CommandResponse);
     
     rpc RigMove (RigMoveCommandRequest) returns (CommandResponse);
+    rpc Z1Move (ZMoveRequest) returns (CommandResponse);
+    rpc Z2Move (ZMoveRequest) returns (CommandResponse);
+    
     rpc DrillMode (DrillModeRequest) returns (CommandResponse);
     rpc DrillCalibration (DrillCalibrationRequest) returns (CommandResponse);
     rpc DrillDescendingOff (DrillDescendingOffRequest) returns (CommandResponse);
@@ -251,6 +270,8 @@ service MissionControl {
     rpc GetXServoTorqueLimit (GetLimitRequest) returns (LimitResponse);
     rpc SetYServoTorqueLimit (LimitChangeRequest) returns (CommandResponse);
     rpc GetYServoTorqueLimit (GetLimitRequest) returns (LimitResponse);
+    rpc GetTorque (StartCommandRequest) returns (CommandResponse);
+
 }
 
 service DrillControl {
