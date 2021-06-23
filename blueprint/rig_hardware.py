@@ -339,17 +339,19 @@ class FileWriterThread(threading.Thread):
 class RigHardware(AbstractRigHardware):
     
     def __init__(self):
+        print("Initializing Rig Hardware ...")
         self.current_pos = numpy.array([
             HydrationServo.get_position(0)*Z1Cal, 
             HydrationServo.get_position(1)*Z2Cal,
             HydrationServo.get_position(2)*XCal, 
             HydrationServo.get_position(3)*YCal])
+        print(f"Position found {self.current_pos}")
         self.prev_pos = self.current_pos.copy()
         self.move_tolerance = config.getfloat(
             "Rig", "HomingError")
 
-        self.motor = PWMLED(12)
-        self.motor = 0
+        #self.motor = PWMLED(12)
+        #self.motor = 0
         self.cpu_temperature_degC = CPUTemperature()
 
         #self.pm_thread = PowerMeterThread()
