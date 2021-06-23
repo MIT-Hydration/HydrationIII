@@ -26,6 +26,7 @@ Z1Cal = config.getfloat('Rig', 'Z1Cal')
 Z2Cal = config.getfloat('Rig', 'Z2Cal')
 XCal = config.getfloat('Rig', 'XCal')
 YCal = config.getfloat('Rig', 'YCal')
+print("Here")
 
 class AbstractRigHardware(ABC):
     
