@@ -53,8 +53,7 @@ class HardwareFactory:
         cls._lock.release()
         return cls.pump
     
-        @classmethod
-
+    @classmethod
     def getWOBSensor(cls):
         cls._lock.acquire()
         if cls.wob is None:
