@@ -19,7 +19,7 @@ if config.getboolean('Operating System', 'RunningInRPi'):
     from gpiozero import PWMLED
     from gpiozero import CPUTemperature
 
-from . import RPiHardware, rig_hardware, PumpHardware, TachometerHardware
+from . import RPiHardware, rig_hardware, PumpHardware, TachometerHardware, wob_hardware
 
 class HardwareFactory:
 
@@ -27,6 +27,7 @@ class HardwareFactory:
     rpi = None
     rig = None
     pump = None
+    wob = None
     tachometer = None
     _lock = threading.Lock()
 
@@ -52,7 +53,18 @@ class HardwareFactory:
         cls._lock.release()
         return cls.pump
     
-            
+        @classmethod
+
+    def getWOBSensor(cls):
+        cls._lock.acquire()
+        if cls.wob is None:
+            if (config.getboolean('Mocks', 'MockWOBSensor')):
+                cls.wob = wob_hardware.MockWOBSensor()
+            else:
+                cls.wob = wob_hardware.WOBSensor()
+        cls._lock.release()
+        return cls.wob
+
     @classmethod
     def getTachometer(cls):
         cls._lock.acquire()

@@ -11,6 +11,7 @@ import re
 
 from pymodbus.client.sync import ModbusSerialClient
 from pymodbus.payload import BinaryPayloadDecoder
+from . import hardware
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -20,8 +21,7 @@ if config.getboolean('Operating System', 'RunningInRPi'):
     from gpiozero import PWMLED
     from gpiozero import CPUTemperature
     import RPi.GPIO as GPIO
-    from . import hx711
-
+    
 Z1Cal = config.getfloat('Rig', 'Z1Cal')
 Z2Cal = config.getfloat('Rig', 'Z2Cal')
 XCal = config.getfloat('Rig', 'XCal')
@@ -295,6 +295,7 @@ class FileWriterThread(threading.Thread):
         self.drill_pm_thread = drill_pm_thread
         self.drill_ad_thread = drill_ad_thread
         self.rig = rig
+        self.wob_sensor = hardware.HardwareFactory.getWOBSensor()
         self.stopped = True
         
     def run(self):
@@ -302,7 +303,7 @@ class FileWriterThread(threading.Thread):
         self.stopped = False
         time_start_s = time.time()
         fp = open(f"all_data_{time_start_s}.csv", "w")
-        fp.write("time_s,cpu_t_degC,motor_command,Z1_m,Z2_m,X_m,Y_m,TZ1,TZ2,TX,TY,WOB_gm,")
+        fp.write("time_s,cpu_t_degC,motor_command,Z1_m,Z2_m,X_m,Y_m,TZ1,TZ2,TX,TY,WOB_ts,WOB_N,")
         for k in self.drill_pm_thread.sensor_readings:
             fp.write(f"{k},")
         for k in self.drill_ad_thread.sensor_readings:
@@ -316,8 +317,10 @@ class FileWriterThread(threading.Thread):
             pos = rig.getPosition()
             fp.write(f"{pos[0]},{pos[1]},{pos[2]},{pos[3]},")
             for n in range(4):
-                fp.write(f"{rig.getTorque(n)},")    
-            fp.write(f"{rig.wob_sensor.get_weight(5)},")
+                fp.write(f"{rig.getTorque(n)},") 
+            force_N = self.wob_sensor.get_force_N()
+            fp.write(f"{force_N[0]},")       
+            fp.write(f"{force_N[1]},")
             for k in self.drill_pm_thread.sensor_readings:
                 fp.write(f"{self.drill_pm_thread.sensor_readings[k]},")
             for k in self.drill_ad_thread.sensor_readings:
@@ -346,13 +349,8 @@ class RigHardware(AbstractRigHardware):
             "Rig", "HomingError")
 
         self.motor = PWMLED(12)
+        self.motor = 0
         self.cpu_temperature_degC = CPUTemperature()
-        self.wob_sensor = hx711.HX711(5, 6)
-        self.referenceWOBUnit = 2848264.0/15300.0
-        self.wob_sensor.set_reading_format("MSB", "MSB")
-        self.wob_sensor.set_reference_unit(self.referenceWOBUnit)
-        self.wob_sensor.reset()
-        self.wob_sensor.tare()
 
         #self.pm_thread = PowerMeterThread()
         #self.ad_thread = ArduinoThread()
