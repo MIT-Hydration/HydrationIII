@@ -16,7 +16,7 @@ class Server:
     def run():
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
         echo_pb2_grpc.add_EchoServicer_to_server(Echoer(), server)
-        mission_control_pb2_grpc.add_MissionControlServicer_to_server(MissionController(), server)
+        #mission_control_pb2_grpc.add_MissionControlServicer_to_server(MissionController(), server)
         server.add_insecure_port('0.0.0.0:50051')
         server.start()
         print("Mission Control Server Started [OK], Use Ctrl-C to close")
