@@ -28,50 +28,50 @@ class MockWOBSensor(AbstractWOB):
     def get_force_N(self):
       return [time.time(), -5.0]
 
-class WOBSensor(AbstractWOB):
-        
-    class WOBThread(threading.Thread):
+if config.getboolean('Operating System', 'RunningInRPi'):
+
+    class WOBSensor(AbstractWOB):
+
+        class WOBThread(threading.Thread):
+
+            def __init__(self):
+                self.DTPin = config.getint('WOBSensor', 'DTPin')
+                self.SCKPin = config.getint('WOBSensor', 'SCKPin')
+                self.wob_sensor = hx711.HX711(self.DTPin, self.SCKPin)
+                self.referenceWOBUnit = \
+                    config.getfloat('WOBSensor', 'CalReading') / config.getfloat('WOBSensor', 'CalNewtons')
+                self.wob_sensor.set_reading_format("MSB", "MSB")
+                self.wob_sensor.set_reference_unit(self.referenceWOBUnit)
+                self.wob_sensor.reset()
+                self.wob_sensor.tare()
+                self.sampling_time = config.getfloat('WOBSensor', 'SamplingTime')
+                self.reading = 0.0
+                self.last_reading = 0.0
+
+                threading.Thread.__init__(self)
+                self.stopped = True
+
+            def run(self):
+                self.stopped = False
+                while not self.stopped:
+                    loop_start = time.time()
+                    self.reading = self.wob_sensor.get_weight(self.DTPin)
+                    loop_end = time.time()
+                    self.last_reading = loop_end
+                    delta_time = loop_end - loop_start
+                    if (delta_time < self.sampling_time):
+                        time.sleep(self.sampling_time - delta_time)
+
+            def stop(self):
+                self.stopped = True
+
+            def get_force_N(self):
+                return [self.last_reading, self.reading]
+
+        sensor_thread = WOBThread()
 
         def __init__(self):
-            self.DTPin = config.getint('WOBSensor', 'DTPin')
-            self.SCKPin = config.getint('WOBSensor', 'SCKPin')
-            self.wob_sensor = hx711.HX711(self.DTPin, self.SCKPin)
-            self.referenceWOBUnit = \
-                config.getfloat('WOBSensor', 'CalReading') / config.getfloat('WOBSensor', 'CalNewtons')
-            self.wob_sensor.set_reading_format("MSB", "MSB")
-            self.wob_sensor.set_reference_unit(self.referenceWOBUnit)
-            self.wob_sensor.reset()
-            self.wob_sensor.tare()
-            self.sampling_time = config.getfloat('WOBSensor', 'SamplingTime')
-            self.reading = 0.0
-            self.last_reading = 0.0
-
-            threading.Thread.__init__(self)
-            self.stopped = True
-            
-        def run(self):
-            self.stopped = False
-            while not self.stopped:
-                loop_start = time.time()
-                self.reading = self.wob_sensor.get_weight(self.DTPin)
-                loop_end = time.time()
-                self.last_reading = loop_end
-                delta_time = loop_end - loop_start
-                if (delta_time < self.sampling_time):
-                    time.sleep(self.sampling_time - delta_time)
-                
-        def stop(self):
-            self.stopped = True
+            cls.sensor_thread.start()
 
         def get_force_N(self):
-            return [self.last_reading, self.reading]
-    
-    sensor_thread = WOBThread()
-    
-    def __init__(self):
-        cls.sensor_thread.start()
-        
-    def get_force_N(self):
-        return cls.sensor_thread.get_rpm()
-
-      
+            return cls.sensor_thread.get_rpm()
