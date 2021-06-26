@@ -24,12 +24,34 @@ class LightWidget(QtWidgets.QWidget):
     def turnOn(self):
         self.setOn(True)
     def paintEvent(self, e):
-        if not self.onVal:
-            return
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
         painter.setBrush(self.colour)
-        painter.drawEllipse(0, 0, self.width(), self.height())
+
+        if self.onVal:
+            painter.setBrush(self.colour)
+        else:
+            painter.setBrush(Qt.blue)
+
+        painter.drawEllipse(0, 0, self.width(), self.width())
+
+        font = painter.font()
+        font.setPixelSize(48)
+        painter.setFont(font)
+        rectangle = QRect(0, 0, 100, 50)
+        boundingRect = QRect()
+        painter.drawText(rectangle, str("Hello"))
+        pen = painter.pen()
+        pen.setColor(Qt.white)
+        pen.setStyle(Qt.DotLine)
+        painter.setPen(pen)
+        painter.drawRect(boundingRect.adjusted(0, 0, -pen.width(), -pen.width()))
+        pen.setStyle(Qt.DashLine)
+        painter.setPen(pen)
+        painter.drawRect(rectangle.adjusted(0, 0, -pen.width(), -pen.width()))
+
+        painter.setBrush(Qt.white)
+        painter.drawText(50, 50, "hello")
 
     on = Property(bool, isOn, setOn)
 

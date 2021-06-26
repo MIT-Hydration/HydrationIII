@@ -36,22 +36,22 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 #mcpb.MAJOR_MODE_HOME_Z1_Z2,
                 #mcpb.MAJOR_MODE_MOVE_X_Y,
                 mcpb.MAJOR_MODE_DRILL_BOREHOLE,
-                mcpb.MAJOR_MODE_CASE_BOREHOLE,
-                mcpb.MAJOR_MODE_INSERT_HEATER,
-                mcpb.MAJOR_MODE_MINE_WATER,
-                mcpb.MAJOR_MODE_DATA_DOWNLOAD,
-                mcpb.MAJOR_MODE_TROUBLESHOOT,
+                # mcpb.MAJOR_MODE_CASE_BOREHOLE,
+                # mcpb.MAJOR_MODE_INSERT_HEATER,
+                # mcpb.MAJOR_MODE_MINE_WATER,
+                # mcpb.MAJOR_MODE_DATA_DOWNLOAD,
+                # mcpb.MAJOR_MODE_TROUBLESHOOT,
             ]
         mode_labels = [
             "01 Startup/calibrate",
             #"02 Home Z1, Z2",
             #"03 Move X, Y",
             "04 Drill borehole",
-            "05 Case borehole",
-            "06 Insert heater",
-            "07 Mine water",
-            "08 Data download",
-            "09 Troubleshoot"       
+            # "05 Case borehole",
+            # "06 Insert heater",
+            # "07 Mine water",
+            # "08 Data download",
+            # "09 Troubleshoot"
             ]
         return mcpb.MajorModesList(
             request_timestamp = request.request_timestamp,
@@ -174,7 +174,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
         self.mission_time = timestamp
         self.mission_time_started = True
-        
+
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
@@ -191,7 +191,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
         rig_hardware = HardwareFactory.getRig()
         rig_hardware.setHomeZ1()
-        
+
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
@@ -208,7 +208,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
         rig_hardware = HardwareFactory.getRig()
         rig_hardware.setHomeZ2()
-        
+
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
@@ -225,7 +225,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
         rig_hardware = HardwareFactory.getRig()
         rig_hardware.setHomeX()
-        
+
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
@@ -242,11 +242,11 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
         rig_hardware = HardwareFactory.getRig()
         rig_hardware.setHomeY()
-        
+
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
-            status = mcpb.EXECUTED)                        
+            status = mcpb.EXECUTED)
 
     def StartHomeAxis (self, request, context, f):
         timestamp = int(time.time()*1000)
@@ -259,7 +259,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
         rig_hardware = HardwareFactory.getRig()
         f()
-        
+
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
@@ -282,7 +282,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
     def StartHomeY (self, request, context):
         rig_hardware = HardwareFactory.getRig()
         return self.StartHomeAxis(request, context, rig_hardware.homeY)
-        
+
     def SetAirGap (self, request, context):
         timestamp = int(time.time()*1000)
         if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
@@ -293,7 +293,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 status = mcpb.INVALID_STATE)
 
         self.air_gap = request.value
-        
+
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
@@ -316,7 +316,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 status = mcpb.INVALID_STATE)
 
         self.max_z1_travel = request.value
-        
+
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
@@ -324,7 +324,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
     def GetMaxZ1Travel(self, request, context):
         timestamp = int(time.time()*1000)
-        
+
         return mcpb.LimitResponse(
             request_timestamp = request.request_timestamp,
             value = self.max_z1_travel)
@@ -339,7 +339,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 status = mcpb.INVALID_STATE)
 
         self.current_limit_lower = request.value
-        
+
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
@@ -347,7 +347,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
     def GetLowerCurrentLimit(self, request, context):
         timestamp = int(time.time()*1000)
-        
+
         return mcpb.LimitResponse(
             request_timestamp = request.request_timestamp,
             value = self.current_limit_lower)
@@ -362,7 +362,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 status = mcpb.INVALID_STATE)
 
         self.current_limit_upper = request.value
-        
+
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
@@ -370,7 +370,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
     def GetUpperCurrentLimit(self, request, context):
         timestamp = int(time.time()*1000)
-        
+
         return mcpb.LimitResponse(
             request_timestamp = request.request_timestamp,
             value = self.current_limit_upper)
@@ -385,7 +385,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 status = mcpb.INVALID_STATE)
 
         self.WOB_limit_lower = request.value
-        
+
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
@@ -393,7 +393,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
     def GetLowerWOBLimit(self, request, context):
         timestamp = int(time.time()*1000)
-        
+
         return mcpb.LimitResponse(
             request_timestamp = request.request_timestamp,
             value = self.WOB_limit_lower)
@@ -408,7 +408,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 status = mcpb.INVALID_STATE)
 
         self.WOB_limit_upper = request.value
-        
+
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
@@ -416,7 +416,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
     def GetUpperWOBLimit(self, request, context):
         timestamp = int(time.time()*1000)
-        
+
         return mcpb.LimitResponse(
             request_timestamp = request.request_timestamp,
             value = self.WOB_limit_upper)
@@ -431,7 +431,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 status = mcpb.INVALID_STATE)
 
         self.RPM_limit_lower = request.value
-        
+
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
@@ -439,7 +439,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
     def GetLowerRPMLimit(self, request, context):
         timestamp = int(time.time()*1000)
-        
+
         return mcpb.LimitResponse(
             request_timestamp = request.request_timestamp,
             value = self.RPM_limit_lower)
@@ -454,7 +454,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 status = mcpb.INVALID_STATE)
 
         self.RPM_limit_upper = request.value
-        
+
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
@@ -462,7 +462,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
     def GetUpperRPMLimit(self, request, context):
         timestamp = int(time.time()*1000)
-        
+
         return mcpb.LimitResponse(
             request_timestamp = request.request_timestamp,
             value = self.RPM_limit_upper)
@@ -477,7 +477,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 status = mcpb.INVALID_STATE)
 
         self.Z1_servo_torque= request.value
-        
+
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
@@ -485,7 +485,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
     def GetZ1ServoTorqueLimit(self, request, context):
         timestamp = int(time.time()*1000)
-        
+
         return mcpb.LimitResponse(
             request_timestamp = request.request_timestamp,
             value = self.Z1_servo_torque)
@@ -500,7 +500,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 status = mcpb.INVALID_STATE)
 
         self.Z2_servo_torque= request.value
-        
+
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
@@ -508,7 +508,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
     def GetZ2ServoTorqueLimit(self, request, context):
         timestamp = int(time.time()*1000)
-        
+
         return mcpb.LimitResponse(
             request_timestamp = request.request_timestamp,
             value = self.Z2_servo_torque)
@@ -523,7 +523,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 status = mcpb.INVALID_STATE)
 
         self.X_servo_torque= request.value
-        
+
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
@@ -531,7 +531,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
     def GetXServoTorqueLimit(self, request, context):
         timestamp = int(time.time()*1000)
-        
+
         return mcpb.LimitResponse(
             request_timestamp = request.request_timestamp,
             value = self.X_servo_torque)
@@ -546,7 +546,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 status = mcpb.INVALID_STATE)
 
         self.Y_servo_torque= request.value
-        
+
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
@@ -554,10 +554,10 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
     def GetYServoTorqueLimit(self, request, context):
         timestamp = int(time.time()*1000)
-        
+
         return mcpb.LimitResponse(
             request_timestamp = request.request_timestamp,
-            value = self.Y_servo_torque)          
+            value = self.Y_servo_torque)
 
     def StartSpinPump (self, request, context):
         timestamp = int(time.time()*1000)
@@ -571,7 +571,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         pump = HardwareFactory.getPump()
         pump.set_direction(1)
         pump.set_speed_pom(66)
-        
+
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
@@ -581,10 +581,10 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
     def EmergencyStop(self, request, context):
         timestamp = int(time.time()*1000)
-        
+
         rig_hardware = HardwareFactory.getRig()
         rig_hardware.emergencyStop()
-        
+
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
@@ -602,7 +602,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         pump = HardwareFactory.getPump()
         pump.set_direction(1)
         pump.set_speed_pom(66)
-        
+
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
@@ -620,7 +620,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         pump = HardwareFactory.getPump()
         pump.set_direction(1)
         pump.set_speed_pom(66)
-        
+
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
@@ -638,10 +638,8 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         pump = HardwareFactory.getPump()
         pump.set_direction(1)
         pump.set_speed_pom(0)
-        
+
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
             status = mcpb.EXECUTED)
-
-

@@ -4,40 +4,31 @@ package mission_control;
 enum SystemMode {
     UNKNOWN = 0;
     MAJOR_MODE_STARTUP_DIAGNOSTICS = 100;
-    MAJOR_MODE_HOME_Z1_Z2 = 200;
-    MAJOR_MODE_MOVE_X_Y = 300;
+    // MAJOR_MODE_HOME_Z1_Z2 = 200;
+    // MAJOR_MODE_MOVE_X_Y = 300;
     MAJOR_MODE_DRILL_BOREHOLE = 400;
-    MAJOR_MODE_CASE_BOREHOLE = 500;
-    MAJOR_MODE_INSERT_HEATER = 600;
-    MAJOR_MODE_MINE_WATER = 700;
-    MAJOR_MODE_DATA_DOWNLOAD = 800;
-    MAJOR_MODE_TROUBLESHOOT = 900;
+    // MAJOR_MODE_CASE_BOREHOLE = 500;
+    // MAJOR_MODE_INSERT_HEATER = 600;
+    // MAJOR_MODE_MINE_WATER = 700;
+    // MAJOR_MODE_DATA_DOWNLOAD = 800;
+    // MAJOR_MODE_TROUBLESHOOT = 900;
 
-    RIG_STANDBY = 101;
-    RIG_DRILL_POSITIONING_XY = 102; // user has requested to move the rig to drill at position XY
-    RIG_WATER_POSITIONING_XY = 103; // user has requested to move the rig to extract water at position XY
-    
-    DRILL_STANDBY = 201; // ready to receive user input, could be stopped due to emergency stop
+    // refer to "State Diagram for 2021-Jul-06" PDF in Hydration Google Drive for state diagram
+    STARTUP_IDLE = 101; //ready to receive user input for startups and diagnostics, if emergency stop button is pressed at any point system will return to this state
+    STARTUP_START_MISSION_CLOCK_COMPLETED = 102 //after pressing "Start Mission Clock Button", clock has completed starting
+    STARTUP_HOMING_Z1 = 103 //after pressing "Home Z1" button, begin homing z1 axis
+    STARTUP_HOME_Z1_COMPLETED = 104 //z1 has completed homing
+    STARTUP_HOMING_Y = 105 //after pressing "Home Y" button, Y axis begins homing
+    STARTUP_HOME_Y_COMPLETD = 106 //y axis has completd homing
 
-    // moves to the top and makes sure that the limit switch is hit, and other calibration can also be done
-    DRILL_CALIBRATING = 202; 
-    
-    // user has asked to descend without turning on the drill with a given target position
-    DRILL_DESCENDING_OFF = 203;
-
-    // user has asked to descend with the drill on, drill is being controlled through a control loop
-    DRILL_DESCENDING_DRILLING = 204;
-    
-    // drill is withdrawing with the drill motor off to a target position
-    DRILL_ASCENDING_OFF = 205;
-
-    // drill is withdrawing with the drill motor on to a target position
-    DRILL_ASCENDING_ON = 206;
-
-    // drill calibration had an error
-    DRILL_CALIBRATION_ERROR = 250;
-    
-    HEATING = 12;
+    // refer to "State Diagram for 2021-Jul-06" PDF in Hydration Google Drive for state diagram
+    DRILL_IDLE = 401; // ready to receive user input, could be stopped due to emergency stop
+    DRILL_MOVING_Y = 402; //after pressing "Move" button, will move y axis to appropriate location
+    DRILL_MOVE_Y_COMPLETED = 403; //y axis moving is completed and y axis is in position
+    DRILLING_HOLE_IDLE = 404 //after pressing "Start Drill" button, drill is ready to receive user input for next action
+    DRILLING_HOLE_DRILLING_DOWN = 405 //From DRILLING_HOLE_IDLE, user can drill down with the "Drill Down" button
+    DRILLING_HOLE_REAMING_UP = 406 //From DRILLING_HOLE_IDLE, user can ream up with the "Reaming Up" button
+    DRILLING_HOLE_HOMING_Y = 407 //After pressing "Finish Drill" button, return to homing the y axis
 }
 
 enum WaterProductionStates {
@@ -64,27 +55,29 @@ message HeartBeatRequest {
 message HeartBeatReply {
     uint64 timestamp = 1;
     uint64 request_timestamp = 2;
-    float main_suppy_V = 3;
-    bool bus_24V_dc = 4;
-    bool bus_75V_dc = 5;
+    // float main_suppy_V = 3;
+    // bool bus_24V_dc = 4;
+    //bool bus_75V_dc = 5;
+    uint32 number_of_servos_detected = 1001;
     float cpu_temperature_degC = 6;
-    SystemMode mode = 7;
+    SystemMode mode = 71;
+    SystemMode major_mode = 70;
     uint64 mission_time_ms = 8;
     bool zdrill_servo_moving = 9;
-    bool zwater_servo_moving = 10;
-    bool x_servo_moving = 11;
+    //bool zwater_servo_moving = 10;
+    //bool x_servo_moving = 11;
     bool y_servo_moving = 12;
-    float drill_motor_setting = 13;
-    bool pump_on = 14;
-    bool heater_setting = 15;
-    float total_current_mA = 16;
+    //float drill_motor_setting = 13;
+    //bool pump_on = 14;
+    //bool heater_setting = 15;
+    //float total_current_mA = 16;
 
-    float rig_x = 100;
+    //float rig_x = 100;
     float rig_y = 101;
     float rig_zdrill = 102;
-    float rig_zwater = 103;
+    //float rig_zwater = 103;
 
-    float rig_torque_z1 = 120; 
+    //float rig_torque_z1 = 120;
 }
 
 message RigStatusRequest {
@@ -94,12 +87,12 @@ message RigStatusRequest {
 message RigStatusResponse {
     uint64 timestamp_ms = 1;
     uint64 request_timestamp_ms = 2;
-    
+
     float x_position_m = 10;        // position with the left limit switch being position zero, and rightward is positive
     float x_velocity_m_s = 11;      // velocity in meter per second
     float y_position_m = 12;        // position with the front limit switch being position zero, and behind is negative
     float y_velocity_m_s = 13;      // velocity in meter per second
-    
+
     bool last_calibration_success = 20; // whether the last calibration command was successful
 }
 
@@ -232,16 +225,16 @@ service MissionControl {
     rpc StopSpinPump (StartCommandRequest) returns (CommandResponse);
     rpc StartHeater (StartCommandRequest) returns (CommandResponse);
     rpc StopHeater (StartCommandRequest) returns (CommandResponse);
-    
+
     rpc RigMove (RigMoveCommandRequest) returns (CommandResponse);
     rpc Z1Move (ZMoveRequest) returns (CommandResponse);
     rpc Z2Move (ZMoveRequest) returns (CommandResponse);
-    
+
     rpc DrillMode (DrillModeRequest) returns (CommandResponse);
     rpc DrillCalibration (DrillCalibrationRequest) returns (CommandResponse);
     rpc DrillDescendingOff (DrillDescendingOffRequest) returns (CommandResponse);
     rpc DrillDescendingDrilling (DrillDescendingDrillingRequest) returns (CommandResponse);
-    
+
     rpc EmergencyStop (EmergencyStopRequest) returns (CommandResponse);
 
     rpc DrillAssemblyStatus (DrillAssemblyStatusRequest) returns (DrillAssemblyStatusResponse);
