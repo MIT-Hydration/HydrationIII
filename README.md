@@ -1,12 +1,28 @@
 # Running
 
-## Generate ProtoBuf Interface Files
-`make grpc-gen`
-
 ## Client
 
+### Client installation
+
+Make sure you have python 3.8 or higher. For example, in my system I have three or more Python versions installed. If I use just `python`, I get Python 2.7, `python3` gives me Python 3.8, and `python3.9` gives me Python 3.9. Install the packages below in the python that you are planning to use.
+
+```
+python3.9 -m pip install grpcio
+python3.9 -m pip install PySide6
+python3.9 -m pip install qt_material
+python3.9 -m pip install pymodbus
+```
+
+### Get the version of code you are planning to run
+For example:
+```git checkout tags/V0.4```
+
 ### Main QT GUI Client
-`make run-qt-client`
+Run the following from the repository folder.
+```make run-qt-client```
+
+## Generate ProtoBuf Interface Files
+`make grpc-gen`
 
 ### Hello World Test
 Test to make sure that the server is accesible and running without GUI complications
