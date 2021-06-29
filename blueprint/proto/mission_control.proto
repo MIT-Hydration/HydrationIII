@@ -15,20 +15,20 @@ enum SystemMode {
 
     // refer to "State Diagram for 2021-Jul-06" PDF in Hydration Google Drive for state diagram
     STARTUP_IDLE = 101; //ready to receive user input for startups and diagnostics, if emergency stop button is pressed at any point system will return to this state
-    STARTUP_START_MISSION_CLOCK_COMPLETED = 102 //after pressing "Start Mission Clock Button", clock has completed starting
-    STARTUP_HOMING_Z1 = 103 //after pressing "Home Z1" button, begin homing z1 axis
-    STARTUP_HOME_Z1_COMPLETED = 104 //z1 has completed homing
-    STARTUP_HOMING_Y = 105 //after pressing "Home Y" button, Y axis begins homing
-    STARTUP_HOME_Y_COMPLETD = 106 //y axis has completd homing
+    STARTUP_START_MISSION_CLOCK_COMPLETED = 102; //after pressing "Start Mission Clock Button", clock has completed starting
+    STARTUP_HOMING_Z1 = 103; //after pressing "Home Z1" button, begin homing z1 axis
+    STARTUP_HOME_Z1_COMPLETED = 104; //z1 has completed homing
+    STARTUP_HOMING_Y = 105; //after pressing "Home Y" button, Y axis begins homing
+    STARTUP_HOME_Y_COMPLETD = 106; //y axis has completd homing
 
     // refer to "State Diagram for 2021-Jul-06" PDF in Hydration Google Drive for state diagram
     DRILL_IDLE = 401; // ready to receive user input, could be stopped due to emergency stop
     DRILL_MOVING_Y = 402; //after pressing "Move" button, will move y axis to appropriate location
     DRILL_MOVE_Y_COMPLETED = 403; //y axis moving is completed and y axis is in position
-    DRILLING_HOLE_IDLE = 404 //after pressing "Start Drill" button, drill is ready to receive user input for next action
-    DRILLING_HOLE_DRILLING_DOWN = 405 //From DRILLING_HOLE_IDLE, user can drill down with the "Drill Down" button
-    DRILLING_HOLE_REAMING_UP = 406 //From DRILLING_HOLE_IDLE, user can ream up with the "Reaming Up" button
-    DRILLING_HOLE_HOMING_Y = 407 //After pressing "Finish Drill" button, return to homing the y axis
+    DRILLING_HOLE_IDLE = 404; //after pressing "Start Drill" button, drill is ready to receive user input for next action
+    DRILLING_HOLE_DRILLING_DOWN = 405; //From DRILLING_HOLE_IDLE, user can drill down with the "Drill Down" button
+    DRILLING_HOLE_REAMING_UP = 406; //From DRILLING_HOLE_IDLE, user can ream up with the "Reaming Up" button
+    DRILLING_HOLE_HOMING_Y = 407; //After pressing "Finish Drill" button, return to homing the y axis
 }
 
 enum WaterProductionStates {
