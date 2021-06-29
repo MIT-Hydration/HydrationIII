@@ -114,18 +114,15 @@ message DrillAssemblyStatusResponse {
     bool calibration_error_state = 21;  // are we in calibration error state? if yes, the valid commands are limited
 }
 
-message LimitChangeRequest {
+message Limits {
     uint64 request_timestamp = 1;
-    float value = 2;
+    float air_gap = 2;
+    float max_z1 = 3;
+    float ice_depth = 4;
 }
 
 message GetLimitRequest {
     uint64 request_timestamp = 1;
-}
-
-message LimitResponse {
-    uint64 request_timestamp = 1;
-    float value = 2;
 }
 
 message RigMoveCommandRequest {
@@ -205,6 +202,10 @@ message HoleList {
 service MissionControl {
     rpc GetMajorModes (GetMajorModesRequest) returns (MajorModesList);
     rpc HeartBeat (HeartBeatRequest) returns (HeartBeatReply);
+    
+    rpc GetLimits (GetLimitRequest) returns (Limits);
+    rpc SetLimits (Limits) returns (CommandResponse);
+    
     rpc GetHoles (HoleListRequest) returns (HoleList);
     rpc SetMode (SetModeRequest) returns (CommandResponse);
     rpc StartMissionClock (StartCommandRequest) returns (CommandResponse);

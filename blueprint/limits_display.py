@@ -103,7 +103,7 @@ class LimitsDisplay:
         self.layout.addRow(QtWidgets.QLabel("Ice Start Depth [m]: "), self.ice_start_edit)
         self.layout.addRow(self.save_button)
 
-    def _updateLimits(self):
+    def _updateLimits(self, connection):
         pass
         
         
