@@ -239,30 +239,6 @@ service MissionControl {
 
     rpc DrillAssemblyStatus (DrillAssemblyStatusRequest) returns (DrillAssemblyStatusResponse);
 
-    rpc SetAirGap (LimitChangeRequest) returns (CommandResponse);
-    rpc GetAirGap (GetLimitRequest) returns (LimitResponse);
-    rpc SetMaxZ1Travel (LimitChangeRequest) returns (CommandResponse);
-    rpc GetMaxZ1Travel (GetLimitRequest) returns (LimitResponse);
-    rpc SetLowerCurrentLimit (LimitChangeRequest) returns (CommandResponse);
-    rpc GetLowerCurrentLimit (GetLimitRequest) returns (LimitResponse);
-    rpc SetUpperCurrentLimit (LimitChangeRequest) returns (CommandResponse);
-    rpc GetUpperCurrentLimit (GetLimitRequest) returns (LimitResponse);
-    rpc SetLowerWOBLimit (LimitChangeRequest) returns (CommandResponse);
-    rpc GetLowerWOBLimit (GetLimitRequest) returns (LimitResponse);
-    rpc SetUpperWOBLimit (LimitChangeRequest) returns (CommandResponse);
-    rpc GetUpperWOBLimit (GetLimitRequest) returns (LimitResponse);
-    rpc SetLowerRPMLimit (LimitChangeRequest) returns (CommandResponse);
-    rpc GetLowerRPMLimit (GetLimitRequest) returns (LimitResponse);
-    rpc SetUpperRPMLimit (LimitChangeRequest) returns (CommandResponse);
-    rpc GetUpperRPMLimit (GetLimitRequest) returns (LimitResponse);
-    rpc SetZ1ServoTorqueLimit (LimitChangeRequest) returns (CommandResponse);
-    rpc GetZ1ServoTorqueLimit (GetLimitRequest) returns (LimitResponse);
-    rpc SetZ2ServoTorqueLimit (LimitChangeRequest) returns (CommandResponse);
-    rpc GetZ2ServoTorqueLimit (GetLimitRequest) returns (LimitResponse);
-    rpc SetXServoTorqueLimit (LimitChangeRequest) returns (CommandResponse);
-    rpc GetXServoTorqueLimit (GetLimitRequest) returns (LimitResponse);
-    rpc SetYServoTorqueLimit (LimitChangeRequest) returns (CommandResponse);
-    rpc GetYServoTorqueLimit (GetLimitRequest) returns (LimitResponse);
     rpc GetTorque (StartCommandRequest) returns (CommandResponse);
 
 }
