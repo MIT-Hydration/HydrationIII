@@ -34,9 +34,9 @@ GRPC_CALL_TIMEOUT   = \
 
 class RPiHeartBeat(QtCore.QThread):
     done = Signal(object)
-    def __init__(self, displays):
+    def __init__(self, limit_displays):
         QtCore.QThread.__init__(self)
-        self.displays = displays
+        self.limit_displays = limit_displays
         
     def run(self):
         global RPI_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
@@ -50,9 +50,13 @@ class RPiHeartBeat(QtCore.QThread):
                     timeout = GRPC_CALL_TIMEOUT )
                 print("Mission Control RPi HeartBeat received at: " + str(datetime.now()))
                 print(response)
-                for d in self.displays:
-                    d._updateDisplay(stub, timestamp, GRPC_CALL_TIMEOUT)
-        
+                limits_response = stub.GetLimits (
+                    mission_control_pb2.GetLimitRequest(request_timestamp = timestamp),
+                    timeout = timeout )
+                if limits_response != None:
+                    for d in self.limit_displays:
+                        d._updateLimitDisplay(limits_response)
+            
         except Exception as e:
             info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
@@ -133,12 +137,12 @@ class MainWindow(QtWidgets.QWidget):
             self.limits_groupbox, 0, 6, 3, 5)
 
         self.limits_display = limits_display.LimitsDisplay(self.limits_layout)  
-        self.displays.append(self.limits_display)     
+        self.limit_displays.append(self.limits_display)     
 
     def __init__(self):
         super(MainWindow, self).__init__()
         self.threads = []
-        self.displays = []
+        self.limit_displays = []
         self.main_grid_layout = QtWidgets.QGridLayout()
         self._initEmergencyStop()
         self._initModeDisplay()

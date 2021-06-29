@@ -16,6 +16,9 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
     def __init__(self):
         self._stopMotors()
+        self.air_gap = 0.05
+        self.max_z1  = 0.85
+        self.ice_depth = 0.3
         
     def GetMajorModes(self, request, context):
         timestamp = int(time.time()*1000)
@@ -87,7 +90,9 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         
         return mcpb.Limits(
             request_timestamp = request.request_timestamp,
-            air_gap = 0.05
+            air_gap = self.air_gap,
+            max_z1  = self.max_z1,
+            ice_depth = self.ice_depth
             )
 
     def RigMove(self, request, context):
