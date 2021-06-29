@@ -15,11 +15,18 @@ RPI_IP_ADDRESS_PORT = \
     f"{config.get('Network', 'MissionControlRPiIPAddress')}:" \
     f"{config.get('Network', 'GRPCPort')}"
 
+GRPC_TIMEOUT = config.getint('Network', 'GRPCTimeout')
+
 def run():
+    print(f'timeout = {GRPC_TIMEOUT}')
     print('On Macbook Client')
     with grpc.insecure_channel(RPI_IP_ADDRESS_PORT) as channel:
+        print ('creating stub')
         stub = echo_pb2_grpc.EchoStub(channel)
-        response = stub.Reply(echo_pb2.EchoRequest(message='Hello World!'))
+        print ('trying to communicate ...')
+        response = stub.Reply(
+	                echo_pb2.EchoRequest(message='Hello World!'),
+                        timeout = GRPC_TIMEOUT)
     print("Echo client received: " + response.message)
 
 if __name__ == '__main__':
