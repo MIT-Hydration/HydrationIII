@@ -52,7 +52,7 @@ class RPiHeartBeat(QtCore.QThread):
                 print(response)
                 limits_response = stub.GetLimits (
                     mission_control_pb2.GetLimitRequest(request_timestamp = timestamp),
-                    timeout = timeout )
+                    timeout = GRPC_CALL_TIMEOUT )
                 if limits_response != None:
                     for d in self.limit_displays:
                         d._updateLimitDisplay(limits_response)
@@ -182,7 +182,7 @@ class MainWindow(QtWidgets.QWidget):
         pass
 
     def onHeartBeat(self):
-        client_thread = RPiHeartBeat(self.displays)
+        client_thread = RPiHeartBeat(self.limit_displays)
         client_thread.done.connect(self.on_heartbeat_received)
         self.threads.append(client_thread)
         client_thread.start()

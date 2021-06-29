@@ -14,9 +14,6 @@ __status__ = "Production"
 
 from PySide6 import QtCore, QtWidgets, QtGui
 
-import grpc
-from .generated import mission_control_pb2, mission_control_pb2_grpc
-
 class LimitsDisplay:
 
     def __init__(self, layout):
