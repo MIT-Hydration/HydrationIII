@@ -103,8 +103,10 @@ class LimitsDisplay:
         self.layout.addRow(QtWidgets.QLabel("Ice Start Depth [m]: "), self.ice_start_edit)
         self.layout.addRow(self.save_button)
 
-    def _updateLimits(self, connection):
-        pass
-        
+    def _updateDisplay(self, stub, timestamp, timeout):
+        response = stub.GetLimits (
+                    mission_control_pb2.GetLimitRequest(request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+        self.air_gap_edit.text = reponse.air_gap
         
         

@@ -87,6 +87,15 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             rig_torque_z1 = rig_hardware.getTorque(0),
             mode = self.mode)
 
+    def HeartBeat(self, request, context):
+        timestamp = int(time.time()*1000)
+        
+        return mcpb.Limits(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            air_gap = 0.05
+            )
+
     def RigMove(self, request, context):
         timestamp = int(time.time()*1000)
         if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \

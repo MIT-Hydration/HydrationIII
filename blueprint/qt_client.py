@@ -34,7 +34,7 @@ GRPC_CALL_TIMEOUT   = \
 
 class RPiHeartBeat(QtCore.QThread):
     done = Signal(object)
-    def __init__(self):
+    def __init__(self, limits_display):
         QtCore.QThread.__init__(self)
         
     def run(self):
@@ -49,6 +49,7 @@ class RPiHeartBeat(QtCore.QThread):
                     timeout = GRPC_CALL_TIMEOUT )
                 print("Mission Control RPi HeartBeat received at: " + str(datetime.now()))
                 print(response)
+                limits_display._updateDisplay(stub, timestamp, timeout)
         
         except Exception as e:
             info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"
