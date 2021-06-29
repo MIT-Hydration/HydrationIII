@@ -145,8 +145,7 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self._init_hole_display()
         self._init_target()
         self._init_z1_display()
-        self._init_z2_display()
-
+        
     def _init_hole_display(self):
         global X_LENGTH, Y_LENGTH, RIG_UNITS
         self.plot = pg.PlotWidget()
@@ -164,47 +163,34 @@ class HolePositionDisplay(QtWidgets.QWidget):
     def _init_target(self):
         start_h = self.HOLE_DISPLAY_WIDTH + 1
         self.layout.addWidget(QtWidgets.QLabel("Target [m]"), 0, start_h, 1, 2)
-        self.layout.addWidget(QtWidgets.QLabel("X: "), 1, start_h, 1, 1)
         self.layout.addWidget(QtWidgets.QLabel("Y: "), 1, start_h + 2, 1, 1)
 
-        self.target_x = QtWidgets.QLineEdit("")
-        self.target_x.setValidator(QtGui.QDoubleValidator())
-            
         self.target_y = QtWidgets.QLineEdit("")
         self.target_y.setValidator(QtGui.QDoubleValidator())
         
-        self.layout.addWidget(self.target_x, 1, start_h + 1, 1, 1)
         self.layout.addWidget(self.target_y, 1, start_h + 3, 1, 1)
 
-        self.goto_target_xy = QtWidgets.QPushButton("GoTo Target (X, Y)")
+        self.goto_target_xy = QtWidgets.QPushButton("GoTo Target (Y)")
         self.goto_target_xy.clicked.connect(self._goto_xy)
         self.layout.addWidget(self.goto_target_xy, 0, start_h + 2, 1, 2)
 
         self.layout.addWidget(QtWidgets.QLabel("Z1: "), 2, start_h, 1, 1)
-        self.layout.addWidget(QtWidgets.QLabel("Z2: "), 2, start_h + 2, 1, 1)
         
         self.target_z1 = QtWidgets.QLineEdit("")
         self.target_z1.setValidator(QtGui.QDoubleValidator())
         
-        self.target_z2 = QtWidgets.QLineEdit("")
-        self.target_z2.setValidator(QtGui.QDoubleValidator())
 
         self.layout.addWidget(self.target_z1, 2, start_h + 1, 1, 1)
-        self.layout.addWidget(self.target_z2, 2, start_h + 3, 1, 1)
-
+        
         self.goto_z1 = QtWidgets.QPushButton("GoTo Target (Z1)")
         self.goto_z1.clicked.connect(self._goto_z1)
 
-        self.goto_z2 = QtWidgets.QPushButton("GoTo Target (Z2)")
-        self.goto_z2.clicked.connect(self._goto_z2)
-        
         self.layout.addWidget(self.goto_z1, 3, start_h, 1, 2)
-        self.layout.addWidget(self.goto_z2, 3, start_h + 2, 1, 2)
         
-        self.cur_pos_label = QtWidgets.QLabel("Current Position (Z1, Z2, X, Y) [m]")
+        self.cur_pos_label = QtWidgets.QLabel("Current Position (Z1, Y) [m]")
         self.layout.addWidget(self.cur_pos_label, 5, start_h, 1, 2)
 
-        self.set_home = QtWidgets.QPushButton("Set Current as Origin (Z1, Z2, X, Y)")
+        self.set_home = QtWidgets.QPushButton("Set Current as Origin (Z1, Y)")
         self.set_home.clicked.connect(self._set_home)
         self.layout.addWidget(self.set_home, 6, start_h, 1, 4)
 
@@ -219,12 +205,6 @@ class HolePositionDisplay(QtWidgets.QWidget):
     def _goto_z1(self):
         client_thread = GotoZ1Thread(
             float(self.target_z1.text()))
-        self.threads.append(client_thread)
-        client_thread.start() 
-
-    def _goto_z2(self):
-        client_thread = GotoZ2Thread(
-            float(self.target_z2.text()))
         self.threads.append(client_thread)
         client_thread.start() 
 
@@ -252,26 +232,16 @@ class HolePositionDisplay(QtWidgets.QWidget):
             self.HOLE_DISPLAY_WIDTH + self.TARGET_DISPLAY_WIDTH + 1,
             'Z1 (Drill)')
 
-    def _init_z2_display(self):
-        self.z2plot = pg.PlotWidget()
-        self.z2scatter = pg.ScatterPlotItem(
-            pen=pg.mkPen(width=7, color='r'), symbol='o', size=10)
-        self._init_z_display(self.z2plot, self.z2scatter, 
-            self.HOLE_DISPLAY_WIDTH + self.TARGET_DISPLAY_WIDTH + self.Z_DISPLAY_WIDTH + 1,
-            'Z2 (Heater)')
-
+    
     def update_display(self, response):
         if (response != None):  
             z1 = response.rig_zdrill
-            z2 = response.rig_zwater
-            x = response.rig_x
             y = response.rig_y
             
-            self.scatter.setData([x], [y])
+            self.scatter.setData([0.5], [y])
             self.z1scatter.setData([0.0], [z1])
-            self.z2scatter.setData([0.0], [z2])
             self.cur_pos_label.setText(
-                f"(Z1, Z2, X, Y) = ({z1:0.3f}, {z2:0.3f}{x:0.3f}{y:0.3f}) [m]")
+                f"(Z1, Y) = ({z1:0.3f}, {y:0.3f}) [m]")
         
 
 

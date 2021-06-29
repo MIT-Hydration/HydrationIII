@@ -50,8 +50,8 @@ class RPiHeartBeat(QtCore.QThread):
                     timeout = GRPC_CALL_TIMEOUT )
                 print("Mission Control RPi HeartBeat received at: " + str(datetime.now()))
                 print(response)
-                for d in len(self.displays):
-                    d._updateDisplay(stub, timestamp, timeout)
+                for d in self.displays:
+                    d._updateDisplay(stub, timestamp, GRPC_CALL_TIMEOUT)
         
         except Exception as e:
             info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"
@@ -133,7 +133,7 @@ class MainWindow(QtWidgets.QWidget):
             self.limits_groupbox, 0, 6, 3, 5)
 
         self.limits_display = limits_display.LimitsDisplay(self.limits_layout)  
-        self.displays.append(limits_display)     
+        self.displays.append(self.limits_display)     
 
     def __init__(self):
         super(MainWindow, self).__init__()

@@ -29,17 +29,8 @@ class StatusDisplay:
         # True for needing LEDS, and false for values
         self.status_list = [
             ("System HeartBeat", False),
-            ("AC supply (VRms)", True, 120, 130),         
-            ("24VDC bus", False),
-            ("75VDC bus", False),
             ("Z1 (Drill) servo", False),
-            ("Z2 (Water) servo", False),
-            ("X servo", False),
             ("Y servo", False),
-            ("Drill motor (0->1)", True, 0.8, 1.1),
-            ("Heater (0->1)", True, 0.8, 1.1),
-            ("Pump", False),
-            ("Current (A)", True, 6.0, 8.5),
             ("CPU Temp (degC)", True, 60, 75),
             ("Mission Time (H:M:S)", True, 80*60*60*1000, 100*60*60*1000),
             ("Round Trip Time (ms)", True, 300, 5000),
@@ -90,20 +81,18 @@ class StatusDisplay:
     def update_status(self, response):
         if (response != None):
             self._update_bool(0, "System HeartBeat", True)
-            for i in [1, 2, 3, 4, 5, 8, 9, 10, 11]:
+            for i in range(1, len(self.checkboxes)):
                 self.checkboxes[i].setChecked(False)
             
-            self._update_bool(4, "Z1 (Drill) servo", response.zdrill_servo_moving)
-            self._update_bool(5, "Z2 (Water) servo", response.zwater_servo_moving)
-            self._update_bool(6, "X servo", response.x_servo_moving)
-            self._update_bool(7, "Y servo", response.y_servo_moving)
+            self._update_bool(1, "Z1 (Drill) servo", response.zdrill_servo_moving)
+            self._update_bool(2, "Y servo", response.y_servo_moving)
             
-            self._update_value(12, response.cpu_temperature_degC,
+            self._update_value(3, response.cpu_temperature_degC,
                                  "%0.2f [degC]", "CPU Temp (degC)", True)
             mission_time = timedelta(milliseconds=int(response.mission_time_ms / 1000)*1000)
-            self._update_value(13, str(mission_time), "%s", "Mission Time (H:M:S)", False)
+            self._update_value(4, str(mission_time), "%s", "Mission Time (H:M:S)", False)
             rtt_time = response.timestamp - response.request_timestamp
-            self._update_value(14, rtt_time, "%0.2f [ms]", "Round Trip Time (ms)", True)
+            self._update_value(5, rtt_time, "%0.2f [ms]", "Round Trip Time (ms)", True)
             
         else:
             for c in self.checkboxes:
