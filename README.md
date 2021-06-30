@@ -7,7 +7,7 @@
 Make sure you have python 3.8 or higher. For example, in my system I have three or more Python versions installed. If I use just `python`, I get Python 2.7, `python3` gives me Python 3.8, and `python3.9` gives me Python 3.9. Install the packages from the `client_requirements.txt` file in the python that you are planning to use.
 
 ```
-python3.9 -m pip install -r client_requriements.txt
+python3.9 -m pip install -r client_requirements.txt
 ```
 
 ### Get the version of code you are planning to run
