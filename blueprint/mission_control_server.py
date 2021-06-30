@@ -16,19 +16,10 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
     def __init__(self):
         self._stopMotors()
-        self.air_gap = config.getfloat('Rig', 'AirGap')
-        self.max_z1_travel = config.getfloat('Rig', 'MaxZ1Travel')
-        self.current_limit_lower = config.getfloat('Rig', 'CurrentLimitLower')
-        self.current_limit_upper = config.getfloat('Rig', 'CurrentLimitUpper')
-        self.WOB_limit_lower = config.getfloat('Rig', 'WOBLimitLower')
-        self.WOB_limit_upper = config.getfloat('Rig', 'WOBLimitUpper')
-        self.RPM_limit_lower = config.getfloat('Rig', 'RPMLimitLower')
-        self.RPM_limit_upper = config.getfloat('Rig', 'RPMLimitUpper')
-        self.Z1_servo_torque = config.getfloat('Rig', 'Z1ServoTorque')
-        self.Z2_servo_torque = config.getfloat('Rig', 'Z2ServoTorque')
-        self.X_servo_torque = config.getfloat('Rig', 'XServoTorque')
-        self.Y_servo_torque = config.getfloat('Rig', 'YServoTorque')
-
+        self.air_gap = 0.05
+        self.max_z1  = 0.85
+        self.ice_depth = 0.3
+        
     def GetMajorModes(self, request, context):
         timestamp = int(time.time()*1000)
         modes = [
@@ -89,15 +80,32 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             cpu_temperature_degC = cpu_temp,
             mission_time_ms = mission_time,
             zdrill_servo_moving = rig_hardware.isZ1Moving(),
-            zwater_servo_moving = rig_hardware.isZ2Moving(),
-            x_servo_moving = rig_hardware.isXMoving(),
             y_servo_moving = rig_hardware.isYMoving(),
             rig_zdrill = rig_hardware.getPosition()[0],
-            rig_zwater = rig_hardware.getPosition()[1],
-            rig_x = rig_hardware.getPosition()[2],
             rig_y = rig_hardware.getPosition()[3],
-            rig_torque_z1 = rig_hardware.getTorque(0),
             mode = self.mode)
+
+    def GetLimits(self, request, context):
+        timestamp = int(time.time()*1000)
+        
+        return mcpb.Limits(
+            request_timestamp = request.request_timestamp,
+            air_gap = self.air_gap,
+            max_z1  = self.max_z1,
+            ice_depth = self.ice_depth
+            )
+
+    def SetLimits(self, request, context):
+        timestamp = int(time.time()*1000)
+        
+        self.air_gap = request.air_gap
+        self.max_z1 = request.max_z1
+        self.ice_depth = request.ice_depth    
+
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)
 
     def RigMove(self, request, context):
         timestamp = int(time.time()*1000)
@@ -265,11 +273,9 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             timestamp = timestamp,
             status = mcpb.EXECUTED)
 
-
     def StartHomeZ1 (self, request, context):
         rig_hardware = HardwareFactory.getRig()
         return self.StartHomeAxis(request, context, rig_hardware.homeZ1)
-
 
     def StartHomeZ2 (self, request, context):
         rig_hardware = HardwareFactory.getRig()
@@ -282,282 +288,6 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
     def StartHomeY (self, request, context):
         rig_hardware = HardwareFactory.getRig()
         return self.StartHomeAxis(request, context, rig_hardware.homeY)
-
-    def SetAirGap (self, request, context):
-        timestamp = int(time.time()*1000)
-        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
-           (self.mission_time_started): # do nothing
-            return mcpb.CommandResponse(
-                request_timestamp = request.request_timestamp,
-                timestamp = timestamp,
-                status = mcpb.INVALID_STATE)
-
-        self.air_gap = request.value
-
-        return mcpb.CommandResponse(
-            request_timestamp = request.request_timestamp,
-            timestamp = timestamp,
-            status = mcpb.EXECUTED)
-
-    def GetAirGap(self, request, context):
-        timestamp = int(time.time()*1000)
-
-        return mcpb.LimitResponse(
-            request_timestamp = request.request_timestamp,
-            value = self.air_gap)
-
-    def SetMaxZ1Travel (self, request, context):
-        timestamp = int(time.time()*1000)
-        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
-           (self.mission_time_started): # do nothing
-            return mcpb.CommandResponse(
-                request_timestamp = request.request_timestamp,
-                timestamp = timestamp,
-                status = mcpb.INVALID_STATE)
-
-        self.max_z1_travel = request.value
-
-        return mcpb.CommandResponse(
-            request_timestamp = request.request_timestamp,
-            timestamp = timestamp,
-            status = mcpb.EXECUTED)
-
-    def GetMaxZ1Travel(self, request, context):
-        timestamp = int(time.time()*1000)
-
-        return mcpb.LimitResponse(
-            request_timestamp = request.request_timestamp,
-            value = self.max_z1_travel)
-
-    def SetLowerCurrentLimit (self, request, context):
-        timestamp = int(time.time()*1000)
-        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
-           (self.mission_time_started): # do nothing
-            return mcpb.CommandResponse(
-                request_timestamp = request.request_timestamp,
-                timestamp = timestamp,
-                status = mcpb.INVALID_STATE)
-
-        self.current_limit_lower = request.value
-
-        return mcpb.CommandResponse(
-            request_timestamp = request.request_timestamp,
-            timestamp = timestamp,
-            status = mcpb.EXECUTED)
-
-    def GetLowerCurrentLimit(self, request, context):
-        timestamp = int(time.time()*1000)
-
-        return mcpb.LimitResponse(
-            request_timestamp = request.request_timestamp,
-            value = self.current_limit_lower)
-
-    def SetUpperCurrentLimit (self, request, context):
-        timestamp = int(time.time()*1000)
-        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
-           (self.mission_time_started): # do nothing
-            return mcpb.CommandResponse(
-                request_timestamp = request.request_timestamp,
-                timestamp = timestamp,
-                status = mcpb.INVALID_STATE)
-
-        self.current_limit_upper = request.value
-
-        return mcpb.CommandResponse(
-            request_timestamp = request.request_timestamp,
-            timestamp = timestamp,
-            status = mcpb.EXECUTED)
-
-    def GetUpperCurrentLimit(self, request, context):
-        timestamp = int(time.time()*1000)
-
-        return mcpb.LimitResponse(
-            request_timestamp = request.request_timestamp,
-            value = self.current_limit_upper)
-
-    def SetLowerWOBLimit (self, request, context):
-        timestamp = int(time.time()*1000)
-        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
-           (self.mission_time_started): # do nothing
-            return mcpb.CommandResponse(
-                request_timestamp = request.request_timestamp,
-                timestamp = timestamp,
-                status = mcpb.INVALID_STATE)
-
-        self.WOB_limit_lower = request.value
-
-        return mcpb.CommandResponse(
-            request_timestamp = request.request_timestamp,
-            timestamp = timestamp,
-            status = mcpb.EXECUTED)
-
-    def GetLowerWOBLimit(self, request, context):
-        timestamp = int(time.time()*1000)
-
-        return mcpb.LimitResponse(
-            request_timestamp = request.request_timestamp,
-            value = self.WOB_limit_lower)
-
-    def SetUpperWOBLimit (self, request, context):
-        timestamp = int(time.time()*1000)
-        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
-           (self.mission_time_started): # do nothing
-            return mcpb.CommandResponse(
-                request_timestamp = request.request_timestamp,
-                timestamp = timestamp,
-                status = mcpb.INVALID_STATE)
-
-        self.WOB_limit_upper = request.value
-
-        return mcpb.CommandResponse(
-            request_timestamp = request.request_timestamp,
-            timestamp = timestamp,
-            status = mcpb.EXECUTED)
-
-    def GetUpperWOBLimit(self, request, context):
-        timestamp = int(time.time()*1000)
-
-        return mcpb.LimitResponse(
-            request_timestamp = request.request_timestamp,
-            value = self.WOB_limit_upper)
-
-    def SetLowerRPMLimit (self, request, context):
-        timestamp = int(time.time()*1000)
-        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
-           (self.mission_time_started): # do nothing
-            return mcpb.CommandResponse(
-                request_timestamp = request.request_timestamp,
-                timestamp = timestamp,
-                status = mcpb.INVALID_STATE)
-
-        self.RPM_limit_lower = request.value
-
-        return mcpb.CommandResponse(
-            request_timestamp = request.request_timestamp,
-            timestamp = timestamp,
-            status = mcpb.EXECUTED)
-
-    def GetLowerRPMLimit(self, request, context):
-        timestamp = int(time.time()*1000)
-
-        return mcpb.LimitResponse(
-            request_timestamp = request.request_timestamp,
-            value = self.RPM_limit_lower)
-
-    def SetUpperRPMLimit (self, request, context):
-        timestamp = int(time.time()*1000)
-        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
-           (self.mission_time_started): # do nothing
-            return mcpb.CommandResponse(
-                request_timestamp = request.request_timestamp,
-                timestamp = timestamp,
-                status = mcpb.INVALID_STATE)
-
-        self.RPM_limit_upper = request.value
-
-        return mcpb.CommandResponse(
-            request_timestamp = request.request_timestamp,
-            timestamp = timestamp,
-            status = mcpb.EXECUTED)
-
-    def GetUpperRPMLimit(self, request, context):
-        timestamp = int(time.time()*1000)
-
-        return mcpb.LimitResponse(
-            request_timestamp = request.request_timestamp,
-            value = self.RPM_limit_upper)
-
-    def SetZ1ServoTorqueLimit (self, request, context):
-        timestamp = int(time.time()*1000)
-        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
-           (self.mission_time_started): # do nothing
-            return mcpb.CommandResponse(
-                request_timestamp = request.request_timestamp,
-                timestamp = timestamp,
-                status = mcpb.INVALID_STATE)
-
-        self.Z1_servo_torque= request.value
-
-        return mcpb.CommandResponse(
-            request_timestamp = request.request_timestamp,
-            timestamp = timestamp,
-            status = mcpb.EXECUTED)
-
-    def GetZ1ServoTorqueLimit(self, request, context):
-        timestamp = int(time.time()*1000)
-
-        return mcpb.LimitResponse(
-            request_timestamp = request.request_timestamp,
-            value = self.Z1_servo_torque)
-
-    def SetZ2ServoTorqueLimit (self, request, context):
-        timestamp = int(time.time()*1000)
-        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
-           (self.mission_time_started): # do nothing
-            return mcpb.CommandResponse(
-                request_timestamp = request.request_timestamp,
-                timestamp = timestamp,
-                status = mcpb.INVALID_STATE)
-
-        self.Z2_servo_torque= request.value
-
-        return mcpb.CommandResponse(
-            request_timestamp = request.request_timestamp,
-            timestamp = timestamp,
-            status = mcpb.EXECUTED)
-
-    def GetZ2ServoTorqueLimit(self, request, context):
-        timestamp = int(time.time()*1000)
-
-        return mcpb.LimitResponse(
-            request_timestamp = request.request_timestamp,
-            value = self.Z2_servo_torque)
-
-    def SetXServoTorqueLimit (self, request, context):
-        timestamp = int(time.time()*1000)
-        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
-           (self.mission_time_started): # do nothing
-            return mcpb.CommandResponse(
-                request_timestamp = request.request_timestamp,
-                timestamp = timestamp,
-                status = mcpb.INVALID_STATE)
-
-        self.X_servo_torque= request.value
-
-        return mcpb.CommandResponse(
-            request_timestamp = request.request_timestamp,
-            timestamp = timestamp,
-            status = mcpb.EXECUTED)
-
-    def GetXServoTorqueLimit(self, request, context):
-        timestamp = int(time.time()*1000)
-
-        return mcpb.LimitResponse(
-            request_timestamp = request.request_timestamp,
-            value = self.X_servo_torque)
-
-    def SetYServoTorqueLimit (self, request, context):
-        timestamp = int(time.time()*1000)
-        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
-           (self.mission_time_started): # do nothing
-            return mcpb.CommandResponse(
-                request_timestamp = request.request_timestamp,
-                timestamp = timestamp,
-                status = mcpb.INVALID_STATE)
-
-        self.Y_servo_torque= request.value
-
-        return mcpb.CommandResponse(
-            request_timestamp = request.request_timestamp,
-            timestamp = timestamp,
-            status = mcpb.EXECUTED)
-
-    def GetYServoTorqueLimit(self, request, context):
-        timestamp = int(time.time()*1000)
-
-        return mcpb.LimitResponse(
-            request_timestamp = request.request_timestamp,
-            value = self.Y_servo_torque)
 
     def StartSpinPump (self, request, context):
         timestamp = int(time.time()*1000)
