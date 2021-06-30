@@ -95,6 +95,20 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             ice_depth = self.ice_depth
             )
 
+    def SetLimits(self, request, context):
+        timestamp = int(time.time()*1000)
+        
+        self.air_gap = request.air_gap
+        self.max_z1 = request.max_z1
+        self.ice_depth = request.ice_depth    
+
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)
+
+
+
     def RigMove(self, request, context):
         timestamp = int(time.time()*1000)
         if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
