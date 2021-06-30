@@ -22,5 +22,5 @@ grpc-gen:
 			--python_out=./$(MODULE)/generated \
 			--grpc_python_out=./$(MODULE)/generated \
 			./$(MODULE)/proto/*.proto
-	@sed -i -E 's/^\(import.*_pb2\)/from . \1/' ./$(MODULE)/generated/*.py
+	@sed -i.bk 's/^\(import.*_pb2\)/from . \1/' ./$(MODULE)/generated/*.py 
 

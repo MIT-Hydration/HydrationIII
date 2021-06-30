@@ -34,8 +34,9 @@ GRPC_CALL_TIMEOUT   = \
 
 class RPiHeartBeat(QtCore.QThread):
     done = Signal(object)
-    def __init__(self):
+    def __init__(self, limit_displays):
         QtCore.QThread.__init__(self)
+        self.limit_displays = limit_displays
         
     def run(self):
         global RPI_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
@@ -49,7 +50,13 @@ class RPiHeartBeat(QtCore.QThread):
                     timeout = GRPC_CALL_TIMEOUT )
                 print("Mission Control RPi HeartBeat received at: " + str(datetime.now()))
                 print(response)
-        
+                limits_response = stub.GetLimits (
+                    mission_control_pb2.GetLimitRequest(request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+                if limits_response != None:
+                    for d in self.limit_displays:
+                        d._updateLimitDisplay(limits_response)
+            
         except Exception as e:
             info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
@@ -129,11 +136,13 @@ class MainWindow(QtWidgets.QWidget):
         self.main_grid_layout.addWidget(
             self.limits_groupbox, 0, 6, 3, 5)
 
-        self.limits_display = limits_display.LimitsDisplay(self.limits_layout)       
+        self.limits_display = limits_display.LimitsDisplay(self.limits_layout)  
+        self.limit_displays.append(self.limits_display)     
 
     def __init__(self):
         super(MainWindow, self).__init__()
         self.threads = []
+        self.limit_displays = []
         self.main_grid_layout = QtWidgets.QGridLayout()
         self._initEmergencyStop()
         self._initModeDisplay()
@@ -162,6 +171,7 @@ class MainWindow(QtWidgets.QWidget):
         self.hole_pos_display = hole_position_display.HolePositionDisplay(
             self.hole_pos_layout
         )
+        self.limit_displays.append(self.hole_pos_display) 
 
     def emergency_stop(self):
         client_thread = EmergencyStopThread()
@@ -173,7 +183,7 @@ class MainWindow(QtWidgets.QWidget):
         pass
 
     def onHeartBeat(self):
-        client_thread = RPiHeartBeat()
+        client_thread = RPiHeartBeat(self.limit_displays)
         client_thread.done.connect(self.on_heartbeat_received)
         self.threads.append(client_thread)
         client_thread.start()
@@ -197,6 +207,7 @@ class MainWindow(QtWidgets.QWidget):
         self.heartbeat_timer.stop()
         
 if __name__ == "__main__":
+    
     app = QtWidgets.QApplication(sys.argv)
     #apply_stylesheet(app, theme='light_blue.xml')
     apply_stylesheet(app, theme='dark_teal.xml')
