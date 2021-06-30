@@ -206,6 +206,7 @@ class MainWindow(QtWidgets.QWidget):
         self.heartbeat_timer.stop()
         
 if __name__ == "__main__":
+    
     app = QtWidgets.QApplication(sys.argv)
     #apply_stylesheet(app, theme='light_blue.xml')
     apply_stylesheet(app, theme='dark_teal.xml')
