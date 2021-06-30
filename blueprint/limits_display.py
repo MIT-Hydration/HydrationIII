@@ -18,7 +18,7 @@ from PySide6 import QtCore, QtWidgets, QtGui
 from PySide6.QtCore import QTimer, Signal
 
 import configparser
-import threading, time, grpc
+import threading, time, grpc, numpy
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -84,7 +84,8 @@ class LimitsDisplay:
             print(info)
 
     def _setDisplayLine(self, label, edit, label_text, value):
-        if value != str(edit.text()):
+        new_value = float(edit.text())
+        if numpy.abs(value - new_value) > 0.0005:
             new_text = label_text + "(changed) "
             if(label.text() != new_text):
                 label.setText(label_text + "(changed) ")
@@ -95,14 +96,14 @@ class LimitsDisplay:
                 label.setStyleSheet("color: '#ffffff'")
 
     def _updateLimitDisplay(self, response):
-        
-        air_gap = f'{response.air_gap:.4f}'
-        max_z1 = f'{response.max_z1:.4f}'
-        ice_depth = f'{response.ice_depth:.4f}'
+
+        air_gap = response.air_gap
+        max_z1 = response.max_z1
+        ice_depth = response.ice_depth
         if self.first_widget_fill:
-            self.air_gap_edit.setText(air_gap)
-            self.max_z1_edit.setText(max_z1)
-            self.ice_depth_edit.setText(ice_depth)
+            self.air_gap_edit.setText(f'{response.air_gap:.3f}')
+            self.max_z1_edit.setText(f'{response.max_z1:.3f}')
+            self.ice_depth_edit.setText(f'{response.ice_depth:.3f}')
             self.first_widget_fill = False
         else:
             self._setDisplayLine(

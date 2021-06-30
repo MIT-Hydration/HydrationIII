@@ -27,6 +27,7 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 X_LENGTH = config.getfloat('Rig', 'XLength')
 Y_LENGTH = config.getfloat('Rig', 'YLength')
+Z_LENGTH = config.getfloat('Rig', 'ZLength')
 RIG_UNITS = config.get('Rig', 'Units')
 
 MC_IP_ADDRESS_PORT = \
@@ -213,22 +214,38 @@ class HolePositionDisplay(QtWidgets.QWidget):
         client_thread.start() 
 
     def _init_z_display(self, zplot, start_h, label):
-        global X_LENGTH, Y_LENGTH, RIG_UNITS
+        global X_LENGTH, Z_LENGTH, RIG_UNITS
         zplot.showGrid(x = False, y = True, alpha = 1.0)
         zplot.setXRange(-0.0, 0.0, padding=0)
-        zplot.setYRange(-Y_LENGTH + 0.05, 0.05, padding=0)
+        zplot.setYRange(-Z_LENGTH + 0.05, 0.05, padding=0)
         zplot.getAxis('left').setLabel(f'{label} {RIG_UNITS}')
         zplot.setMaximumWidth(120)
         self.layout.addWidget(zplot, 0, start_h, 
             self.DISPLAY_HEIGHT, self.Z_DISPLAY_WIDTH)
 
     def _init_z1_display(self):
+        global Z_LENGTH
         self.z1plot = pg.PlotWidget()
+
+        self.z1_max_rect = pg.QtGui.QGraphicsRectItem(-0.05, -Z_LENGTH, 0.1, Z_LENGTH)
+        self.z1_max_rect.setPen(pg.mkPen(None))
+        self.z1_max_rect.setBrush(pg.mkBrush('#ffffff'))
+        self.z1plot.addItem(self.z1_max_rect)
         
         self.z1_air_pos_rect = pg.QtGui.QGraphicsRectItem(-0.05, -0.1, 0.1, 0.1)
         self.z1_air_pos_rect.setPen(pg.mkPen(None))
-        self.z1_air_pos_rect.setBrush(pg.mkBrush('#87CEEB'))
+        self.z1_air_pos_rect.setBrush(pg.mkBrush('#cfebfd'))
         self.z1plot.addItem(self.z1_air_pos_rect)
+
+        self.z1_rego_rect = pg.QtGui.QGraphicsRectItem(-0.05, -0.1-0.3, 0.1, 0.3)
+        self.z1_rego_rect.setPen(pg.mkPen(None))
+        self.z1_rego_rect.setBrush(pg.mkBrush('#CA8D42'))
+        self.z1plot.addItem(self.z1_rego_rect)
+
+        self.z1_ice_rect = pg.QtGui.QGraphicsRectItem(-0.05, -0.1-0.3-0.3, 0.1, 0.3)
+        self.z1_ice_rect.setPen(pg.mkPen(None))
+        self.z1_ice_rect.setBrush(pg.mkBrush('#4169E1'))
+        self.z1plot.addItem(self.z1_ice_rect)
 
         self.z1_drill_pos_rect = pg.QtGui.QGraphicsRectItem(-0.025, -0.1, 0.05, 0.1)
         self.z1_drill_pos_rect.setPen(pg.mkPen(None))
@@ -251,10 +268,13 @@ class HolePositionDisplay(QtWidgets.QWidget):
                 f"(Z1, Y) = ({z1:0.3f}, {y:0.3f}) [m]")
         
     def _updateLimitDisplay(self, response):
+        global Z_LENGTH
         air_gap = response.air_gap
         max_z1 = response.max_z1
         ice_depth = response.ice_depth
         self.z1_air_pos_rect.setRect(-0.05, -air_gap, 0.1, air_gap)
+        self.z1_rego_rect.setRect(-0.05, -ice_depth, 0.1, ice_depth-air_gap)
+        self.z1_ice_rect.setRect(-0.05, -max_z1, 0.1, max_z1-ice_depth)
         
 
 
