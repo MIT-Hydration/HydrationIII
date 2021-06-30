@@ -4,13 +4,10 @@
 
 ### Client installation
 
-Make sure you have python 3.8 or higher. For example, in my system I have three or more Python versions installed. If I use just `python`, I get Python 2.7, `python3` gives me Python 3.8, and `python3.9` gives me Python 3.9. Install the packages below in the python that you are planning to use.
+Make sure you have python 3.8 or higher. For example, in my system I have three or more Python versions installed. If I use just `python`, I get Python 2.7, `python3` gives me Python 3.8, and `python3.9` gives me Python 3.9. Install the packages from the `client_requirements.txt` file in the python that you are planning to use.
 
 ```
-python3.9 -m pip install grpcio
-python3.9 -m pip install PySide6
-python3.9 -m pip install qt_material
-python3.9 -m pip install pymodbus
+python3.9 -m pip -r client_requriements.txt
 ```
 
 ### Get the version of code you are planning to run
