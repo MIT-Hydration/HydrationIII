@@ -132,7 +132,6 @@ class GotoZ2Thread(GotoZThread):
                         z = self.z),
                     timeout = GRPC_CALL_TIMEOUT )
 
-
 class HolePositionDisplay(QtWidgets.QWidget):
     def __init__(self, layout):
         global X_LENGTH, Y_LENGTH, RIG_UNITS
@@ -213,36 +212,49 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.threads.append(client_thread)
         client_thread.start() 
 
-    def _init_z_display(self, zplot, zscatter, start_h, label):
+    def _init_z_display(self, zplot, start_h, label):
         global X_LENGTH, Y_LENGTH, RIG_UNITS
         zplot.showGrid(x = False, y = True, alpha = 1.0)
         zplot.setXRange(-0.0, 0.0, padding=0)
         zplot.setYRange(-Y_LENGTH + 0.05, 0.05, padding=0)
         zplot.getAxis('left').setLabel(f'{label} {RIG_UNITS}')
-        zplot.addItem(zscatter)
         zplot.setMaximumWidth(120)
         self.layout.addWidget(zplot, 0, start_h, 
             self.DISPLAY_HEIGHT, self.Z_DISPLAY_WIDTH)
 
     def _init_z1_display(self):
         self.z1plot = pg.PlotWidget()
-        self.z1scatter = pg.ScatterPlotItem(
-            pen=pg.mkPen(width=7, color='r'), symbol='o', size=10)
-        self._init_z_display(self.z1plot, self.z1scatter, 
+        
+        self.z1_air_pos_rect = pg.QtGui.QGraphicsRectItem(-0.05, -0.1, 0.1, 0.1)
+        self.z1_air_pos_rect.setPen(pg.mkPen(None))
+        self.z1_air_pos_rect.setBrush(pg.mkBrush('#87CEEB'))
+        self.z1plot.addItem(self.z1_air_pos_rect)
+
+        self.z1_drill_pos_rect = pg.QtGui.QGraphicsRectItem(-0.025, -0.1, 0.05, 0.1)
+        self.z1_drill_pos_rect.setPen(pg.mkPen(None))
+        self.z1_drill_pos_rect.setBrush(pg.mkBrush('#808080'))
+        self.z1plot.addItem(self.z1_drill_pos_rect)
+
+        self._init_z_display(self.z1plot,  
             self.HOLE_DISPLAY_WIDTH + self.TARGET_DISPLAY_WIDTH + 1,
             'Z1 (Drill)')
-
-    
+        
     def update_display(self, response):
         if (response != None):  
             z1 = response.rig_zdrill
             y = response.rig_y
             
             self.scatter.setData([0.5], [y])
-            self.z1scatter.setData([0.0], [z1])
+            self.z1_drill_pos_rect.setRect(-0.025, z1, 0.05, -z1)
+        
             self.cur_pos_label.setText(
                 f"(Z1, Y) = ({z1:0.3f}, {y:0.3f}) [m]")
         
-
+    def _updateLimitDisplay(self, response):
+        air_gap = response.air_gap
+        max_z1 = response.max_z1
+        ice_depth = response.ice_depth
+        self.z1_air_pos_rect.setRect(-0.05, -air_gap, 0.1, air_gap)
+        
 
 

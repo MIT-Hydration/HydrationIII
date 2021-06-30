@@ -171,6 +171,7 @@ class MainWindow(QtWidgets.QWidget):
         self.hole_pos_display = hole_position_display.HolePositionDisplay(
             self.hole_pos_layout
         )
+        self.limit_displays.append(self.hole_pos_display) 
 
     def emergency_stop(self):
         client_thread = EmergencyStopThread()
