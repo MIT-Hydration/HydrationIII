@@ -86,7 +86,7 @@ class LimitsDisplay:
     def _setDisplayLine(self, label, edit, label_text, value):
         new_value = float(edit.text())
         if numpy.abs(value - new_value) > 0.0005:
-            new_text = label_text + f"(changed to {value}) "
+            new_text = label_text + f"(changed to {value:0.3f}) "
             if(label.text() != new_text):
                 label.setText(new_text)
                 label.setStyleSheet("color: '#dc3545'")

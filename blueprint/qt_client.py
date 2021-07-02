@@ -142,7 +142,7 @@ class MainWindow(QtWidgets.QWidget):
         self._log_display = QtWidgets.QPlainTextEdit()
         self._log_display.setMaximumBlockCount(100)
         self.diagnostics_bar_layout.addWidget(self._log_display, stretch=10)
-        self._log_clear_button = QtWidgets.QPushButton("Clear")
+        self._log_clear_button = QtWidgets.QPushButton("Clear Log")
         self._log_clear_button.clicked.connect(self._clearLog)
         self.diagnostics_bar_layout.addWidget(self._log_clear_button, stretch=1)
         
