@@ -18,6 +18,7 @@ import configparser
 
 from . import mode_display, status_display, startup_diagnostics_display, limits_display
 from . import hole_position_display
+import blueprint
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -34,9 +35,11 @@ GRPC_CALL_TIMEOUT   = \
 
 class RPiHeartBeat(QtCore.QThread):
     done = Signal(object)
-    def __init__(self, limit_displays):
+    log = Signal(object)
+    def __init__(self, main_window, limit_displays):
         QtCore.QThread.__init__(self)
         self.limit_displays = limit_displays
+        self.main_window = main_window
         
     def run(self):
         global RPI_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
@@ -48,8 +51,9 @@ class RPiHeartBeat(QtCore.QThread):
                 response = stub.HeartBeat (
                     mission_control_pb2.HeartBeatRequest(request_timestamp = timestamp),
                     timeout = GRPC_CALL_TIMEOUT )
-                print("Mission Control RPi HeartBeat received at: " + str(datetime.now()))
+                print("Mission Control HeartBeat received at: " + str(datetime.now()))
                 print(response)
+                self.log.emit("HeartBeat received at: " + str(datetime.now()))
                 limits_response = stub.GetLimits (
                     mission_control_pb2.GetLimitRequest(request_timestamp = timestamp),
                     timeout = GRPC_CALL_TIMEOUT )
@@ -58,8 +62,9 @@ class RPiHeartBeat(QtCore.QThread):
                         d._updateLimitDisplay(limits_response)
             
         except Exception as e:
-            info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"
+            info = f"Error connecting to Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
+            self.log.emit(info)
 
         self.done.emit(response)
             
@@ -129,6 +134,28 @@ class MainWindow(QtWidgets.QWidget):
 
         self.startup_display = startup_diagnostics_display.StartupDiagnosticsDisplay(self.diagnostics_layout)
 
+    def _initDiagnosticsBar(self):
+        self.diagnostics_bar_groupbox = QtWidgets.QGroupBox(
+            f"Log/Diagnostics (Client Version: {blueprint.HYDRATION_VERSION})")
+        self.diagnostics_bar_layout = QtWidgets.QHBoxLayout()
+        self.diagnostics_bar_groupbox.setLayout(self.diagnostics_bar_layout)
+        self._log_display = QtWidgets.QPlainTextEdit()
+        self._log_display.setMaximumBlockCount(100)
+        self.diagnostics_bar_layout.addWidget(self._log_display, stretch=10)
+        self._log_clear_button = QtWidgets.QPushButton("Clear")
+        self._log_clear_button.clicked.connect(self._clearLog)
+        self.diagnostics_bar_layout.addWidget(self._log_clear_button, stretch=1)
+        
+        self.main_grid_layout.addWidget(
+            self.diagnostics_bar_groupbox, 15, 0, 6, 11)
+    
+    @QtCore.Slot(object)
+    def _clearLog(self):
+        self._log_display.clear()
+
+    def log(self, text):
+        self._log_display.insertPlainText(f"\n{text}")
+
     def _initLimits(self):
         self.limits_groupbox = QtWidgets.QGroupBox("P01 Limits")
         self.limits_layout = QtWidgets.QFormLayout()
@@ -150,6 +177,7 @@ class MainWindow(QtWidgets.QWidget):
         self._initDiagnostics()
         self._initLimits()
         self._initHolePos()
+        self._initDiagnosticsBar()
         self.setLayout(self.main_grid_layout)
         
         self.heartbeat_timer=QTimer()
@@ -183,8 +211,9 @@ class MainWindow(QtWidgets.QWidget):
         pass
 
     def onHeartBeat(self):
-        client_thread = RPiHeartBeat(self.limit_displays)
+        client_thread = RPiHeartBeat(self, self.limit_displays)
         client_thread.done.connect(self.on_heartbeat_received)
+        client_thread.log.connect(self.on_log)
         self.threads.append(client_thread)
         client_thread.start()
 
@@ -194,7 +223,11 @@ class MainWindow(QtWidgets.QWidget):
             self.mode_display.update_mode(response.mode)
         self.status_display.update_status(response)
         self.hole_pos_display.update_display(response)
-            
+
+    @QtCore.Slot(object)
+    def on_log(self, text):
+        self.log(text)
+
     def on_data_ready(self, data):
         print(data)
         self.list_widget.addItem(data)
@@ -217,4 +250,4 @@ if __name__ == "__main__":
     window = MainWindow()
     window.resize(1500, 680)
     window.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
