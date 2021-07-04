@@ -26,11 +26,27 @@ Z1Cal = config.getfloat('Rig', 'Z1Cal')
 Z2Cal = config.getfloat('Rig', 'Z2Cal')
 XCal = config.getfloat('Rig', 'XCal')
 YCal = config.getfloat('Rig', 'YCal')
+HomingError =config.getfloat('Rig', 'HomingError') 
+iZ1 = 0
+iZ2 = 1
+iX = 2
+iY = 3
 
 class AbstractRigHardware(ABC):
     
+    def isHomeZ1(self):
+        current_pos = self.getPosition()
+        return (not self.isZ1Moving()) \
+            and (numpy.abs(current_pos[iZ1]) < HomingError) 
+
+    def isHomeY(self):
+        current_pos = self.getPosition()
+        return (not self.isYMoving()) \
+            and (numpy.abs(current_pos[iY]) < HomingError) 
+    
+    @abstractmethod
     def getPosition(self):
-        return self.current_pos
+        pass
 
     @abstractmethod
     def homeX(self):
