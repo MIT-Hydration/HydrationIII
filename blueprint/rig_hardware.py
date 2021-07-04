@@ -162,16 +162,16 @@ class MockRigHardware(AbstractRigHardware):
         self.homingTime[i] = time.time()
 
     def homeZ1(self):
-        self._home(0)
+        self._home(iZ1)
         
     def homeZ2(self):
-        self._home(1)
+        self._home(iZ2)
     
     def homeX(self):
-        self._home(2)
+        self._home(iX)
         
     def homeY(self):
-        self._home(2)
+        self._home(iY)
         
     def emergencyStop(self):
         N = len(self.position)
@@ -222,16 +222,17 @@ class MockRigHardware(AbstractRigHardware):
         self.homingTime[1] = time.time()
 
     def setHomeZ1(self):
-        self.position[0] = 0.0
+        print("Setting Home Z1")
+        self.position[iZ1] = 0.0
 
     def setHomeZ2(self):
-        self.position[1] = 0.0
+        self.position[iZ2] = 0.0
 
     def setHomeX(self):
-        self.position[2] = 0.0
+        self.position[iX] = 0.0
 
     def setHomeY(self):
-        self.position[3] = 0.0
+        self.position[iY] = 0.0
 
 
 class ArduinoThread(threading.Thread):
@@ -411,26 +412,22 @@ class RigHardware(AbstractRigHardware):
     def gotoPositionZ1(self, z):        
         # stop existing threads
         self.emergencyStop()
-        HydrationServo.set_position(0, z/Z1Cal)
+        HydrationServo.set_position(iZ1, z/Z1Cal)
         
     def gotoPositionZ2(self, z):        
         # stop existing threads
         self.emergencyStop()
-        HydrationServo.set_position(1, z/Z2Cal)
+        HydrationServo.set_position(iZ2, z/Z2Cal)
         
-    def homeX(self):
-        pos = self.getPosition()
-        self.gotoPosition(0, pos[3])
-
     def homeY(self):
         pos = self.getPosition()
-        self.gotoPosition(pos[2], 0)
+        self.gotoPositionY(pos[iX], iY)
 
     def homeZ1(self):
-        self.gotoPositionZ1(0)
+        self.gotoPositionZ1(iZ1)
 
     def homeZ2(self):
-        self.gotoPositionZ2(0)
+        self.gotoPositionZ2(iZ2)
 
     def getPosition(self):
         self.prev_pos = self.current_pos.copy()

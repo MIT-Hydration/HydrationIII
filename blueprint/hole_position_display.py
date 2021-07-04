@@ -46,6 +46,7 @@ class SetHomeThread(QtCore.QThread):
     def run(self):
         global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
         response = None
+        print("Trying to set Home")
         try:
             timestamp = int(time.time()*1000)
             with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
@@ -54,11 +55,12 @@ class SetHomeThread(QtCore.QThread):
                     mission_control_pb2.StartCommandRequest(
                         request_timestamp = timestamp),
                     timeout = GRPC_CALL_TIMEOUT )
-                
+                print(response)
                 response = stub.SetHomeY (
                     mission_control_pb2.StartCommandRequest(
                         request_timestamp = timestamp),
                     timeout = GRPC_CALL_TIMEOUT )
+                print(response)
                 
         except Exception as e:
             info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
@@ -103,8 +105,9 @@ class GotoYThread(GotoThread):
                     timeout = GRPC_CALL_TIMEOUT )
 
 class HolePositionDisplay(QtWidgets.QWidget):
-    def __init__(self, layout):
+    def __init__(self, main_window, layout):
         global X_LENGTH, Y_LENGTH, RIG_UNITS
+        self.main_window = main_window
         self.threads = []
         self.layout = layout
         self.HOLE_DISPLAY_WIDTH = 4
@@ -175,6 +178,7 @@ class HolePositionDisplay(QtWidgets.QWidget):
         client_thread.start() 
 
     def _set_home(self):
+        self.main_window.log("Setting Home...")
         client_thread = SetHomeThread()
         self.threads.append(client_thread)
         client_thread.start() 

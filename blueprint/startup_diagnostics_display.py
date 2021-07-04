@@ -96,8 +96,8 @@ class StartupDiagnosticsDisplay:
             [mcpb.STARTUP_MISSION_CLOCK_STARTED, QtWidgets.QLabel("2. Mission Clock Started")],
             [mcpb.STARTUP_HOMING_Z1, QtWidgets.QLabel("3. Homing Z1")],
             [mcpb.STARTUP_HOME_Z1_COMPLETED, QtWidgets.QLabel("4. Home Z1 Completed")],
-            [mcpb.STARTUP_HOMING_Y, QtWidgets.QLabel("4. Homing Y")],
-            [mcpb.STARTUP_HOME_Y_COMPLETED, QtWidgets.QLabel("5. Home Y Completed")],
+            [mcpb.STARTUP_HOMING_Y, QtWidgets.QLabel("5. Homing Y")],
+            [mcpb.STARTUP_HOME_Y_COMPLETED, QtWidgets.QLabel("6. Home Y Completed")],
         ]
         self.threads = []
         self.group_box = group_box
@@ -107,8 +107,15 @@ class StartupDiagnosticsDisplay:
         self._initWidgets()
         
     def _initWidgets(self):
+        i = 0
         for l in self.labels:
-            self.layout.addWidget(l[1])
+            if i%2 == 0:
+                h_layout = QtWidgets.QHBoxLayout()
+                h_layout.addWidget(l[1])
+            else:
+                h_layout.addWidget(l[1])
+                self.layout.addLayout(h_layout)
+            i += 1
         self.button_layout = QtWidgets.QHBoxLayout()
         self.next_button = QtWidgets.QPushButton("Next")
         self.next_button.clicked.connect(
@@ -132,10 +139,16 @@ class StartupDiagnosticsDisplay:
                 else:
                     l[1].setStyleSheet("font-style: normal; color: '#ffffff'")
         if (response.state == mcpb.STARTUP_HOMING_Z1) or \
-           (response.state == mcpb.STARTUP_HOMING_Y):
+           (response.state == mcpb.STARTUP_HOMING_Y) or \
+           (response.state == mcpb.STARTUP_HOME_Y_COMPLETED):
             self.next_button.setEnabled(False)
         else:
             self.next_button.setEnabled(True)
+
+        if (response.state == mcpb.STARTUP_HOME_Y_COMPLETED):
+            self.next_button.setText("Goto P04 Drill Borehole")
+        else:
+            self.next_button.setText("Next")
 
     @QtCore.Slot(object)
     def _next(self):

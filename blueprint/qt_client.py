@@ -201,7 +201,7 @@ class MainWindow(QtWidgets.QWidget):
             self.hole_pos_groupbox, 4, 1, 10, 10)
 
         self.hole_pos_display = hole_position_display.HolePositionDisplay(
-            self.hole_pos_layout
+            self, self.hole_pos_layout
         )
         self.limit_receivers.append(self.hole_pos_display) 
         self.heartbeat_receivers.append(self.hole_pos_display) 
