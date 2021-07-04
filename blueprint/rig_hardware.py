@@ -28,9 +28,9 @@ XCal = config.getfloat('Rig', 'XCal')
 YCal = config.getfloat('Rig', 'YCal')
 HomingError =config.getfloat('Rig', 'HomingError') 
 iZ1 = 0
-iZ2 = 1
-iX = 2
-iY = 3
+iZ2 = -1
+iX = -2
+iY = 1
 
 class AbstractRigHardware(ABC):
     
@@ -376,10 +376,10 @@ class RigHardware(AbstractRigHardware):
     def __init__(self):
         print("Initializing Rig Hardware ...")
         self.current_pos = numpy.array([
-            HydrationServo.get_position(0)*Z1Cal, 
-            HydrationServo.get_position(1)*Z2Cal,
-            HydrationServo.get_position(2)*XCal, 
-            HydrationServo.get_position(3)*YCal])
+            HydrationServo.get_position(iZ1)*Z1Cal, 
+            HydrationServo.get_position(iZ2)*Z2Cal,
+            HydrationServo.get_position(iX)*XCal, 
+            HydrationServo.get_position(iY)*YCal])
         print(f"Position found {self.current_pos}")
         self.prev_pos = self.current_pos.copy()
         self.move_tolerance = config.getfloat(
@@ -402,7 +402,7 @@ class RigHardware(AbstractRigHardware):
         # ensure Z-poisions are zero within tolerance
         pos = self.getPosition()
         if (numpy.abs(pos[iZ1]) > self.move_tolerance) or \
-            (numpy.abs(pos[1]) > self.move_tolerance):
+            (numpy.abs(pos[iY]) > self.move_tolerance):
             return
         
         # stop existing threads
@@ -414,27 +414,23 @@ class RigHardware(AbstractRigHardware):
         self.emergencyStop()
         HydrationServo.set_position(iZ1, z/Z1Cal)
         
-    def gotoPositionZ2(self, z):        
-        # stop existing threads
-        self.emergencyStop()
-        HydrationServo.set_position(iZ2, z/Z2Cal)
-        
     def homeY(self):
-        pos = self.getPosition()
-        self.gotoPositionY(pos[iX], iY)
+        self.gotoPositionY(0.0)
 
     def homeZ1(self):
-        self.gotoPositionZ1(iZ1)
-
-    def homeZ2(self):
-        self.gotoPositionZ2(iZ2)
+        self.gotoPositionZ1(0.0)
 
     def getPosition(self):
         self.prev_pos = self.current_pos.copy()
-        z1 = HydrationServo.get_position(0)*Z1Cal
-        z2 = HydrationServo.get_position(1)*Z2Cal
-        x = HydrationServo.get_position(2)*XCal
-        y = HydrationServo.get_position(3)*YCal
+        z1 = z2 = x = y = 0.0
+        if iZ1 < 0:
+            z1 = HydrationServo.get_position(iZ1)*Z1Cal
+        if iZ2 < 0:
+            z2 = HydrationServo.get_position(iZ2)*Z2Cal
+        if iX < 0:
+            x = HydrationServo.get_position(iX)*XCal
+        if iY < 0:
+            y = HydrationServo.get_position(iY)*YCal
         self.current_pos = numpy.array([z1, z2, x, y])
         return self.current_pos
         
@@ -446,32 +442,23 @@ class RigHardware(AbstractRigHardware):
     def isNMoving(self, n):   
         return numpy.abs(self.prev_pos[n] - self.current_pos[n]) > self.move_tolerance
     
-    def isXMoving(self):
-        return self.isNMoving(2)
-
     def isYMoving(self):
-        return self.isNMoving(3)
+        if iY < 0:
+            return False
+        else:
+            return self.isNMoving(iY)
 
     def isZ1Moving(self):
-        return self.isNMoving(0)
-
-    def isZ2Moving(self):
-        return self.isNMoving(1)
+        if iZ1 < 0:
+            return False
+        else:
+            return self.isNMoving(iZ1)
 
     def getTorque(self, i):
         return HydrationServo.get_torque(i)    
     
     def setHomeZ1(self):
-        HydrationServo.set_home(0)
-
-    def setHomeZ2(self):
-        HydrationServo.set_home(1)
-
-    def setHomeX(self):
-        HydrationServo.set_home(2)
+        HydrationServo.set_home(iZ1)
 
     def setHomeY(self):
-        HydrationServo.set_home(3)
-    
-   
-
+        HydrationServo.set_home(iY)
