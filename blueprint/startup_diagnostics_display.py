@@ -21,7 +21,8 @@ import configparser
 from functools import partial
 
 import grpc
-from .generated import mission_control_pb2, mission_control_pb2_grpc
+from .generated import mission_control_pb2_grpc
+from .generated import mission_control_pb2 as mcpb
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -282,48 +283,39 @@ def _changeStyle(button):
 
 class StartupDiagnosticsDisplay:
 
-    def __init__(self, layout):
+    def __init__(self, group_box):
         # Tuple (buttons display text, pointer to functions)     
-        self.startup_list = [
-            ("Start mission clock", self.start_mission_clock),
-            ("Home Z1 axis servo", self.start_home_Z1),  
-            ("Home Z2 axis servo", self.start_home_Z2), 
-            ("Home X axis servo", self.start_home_X), 
-            ("Home Y axis servo", self.start_home_Y), 
-            ("Start Spin Drill motor", self.start_spin_drill_motor),
-            ("Stop Spin Drill motor", self.stop_spin_drill_motor), 
-            ("Start Spin pump", self.start_spin_pump),
-            ("Stop Spin pump", self.stop_spin_pump), 
-            ("Start heater", self.start_heater),
-            ("Stop heater", self.stop_heater),        
+        self.labels = [
+            [mcpb.STARTUP_IDLE, QtWidgets.QLabel("1. Idle")],
+            [mcpb.STARTUP_MISSION_CLOCK_STARTED, QtWidgets.QLabel("2. Mission Clock Started")],
+            [mcpb.STARTUP_HOMING_Z1, QtWidgets.QLabel("3. Homing Z1")],
+            [mcpb.STARTUP_HOME_Z1_COMPLETED, QtWidgets.QLabel("4. Home Z1 Completed")],
+            [mcpb.STARTUP_HOMING_Y, QtWidgets.QLabel("4. Homing Y")],
+            [mcpb.STARTUP_HOME_Y_COMPLETED, QtWidgets.QLabel("5. Home Y Completed")],
         ]
         self.threads = []
-        self.buttons = [None] * len(self.startup_list)
-        self.layout = layout
+        self.group_box = group_box
+        self.layout = QtWidgets.QVBoxLayout()
+        self.group_box.setLayout(self.layout)
         self._initWidgets()
         
     def _initWidgets(self):
-        i = 0
-        line = 0
+        for l in self.labels:
+            self.layout.addWidget(l[1])
+        self.button_layout = QtWidgets.QHBoxLayout()
+        self.next_button = QtWidgets.QPushButton("Next")
+        self.restart_button = QtWidgets.QPushButton("Restart")
+        self.button_layout.addWidget(self.next_button)
+        self.button_layout.addWidget(self.restart_button)
+        self.layout.addLayout(self.button_layout)
 
-        self.buttons[i] = QtWidgets.QPushButton(self.startup_list[i][0])
-        self.layout.addWidget(self.buttons[i], line, 0, 1, 2)
-        self.buttons[i].clicked.connect(self.startup_list[i][1])
-        self.buttons[i].clicked.connect(partial(_changeStyle, self.buttons[i]))
-        i += 1
-        line += 1
-
-        while (i < len(self.startup_list)):
-            self.buttons[i] = QtWidgets.QPushButton(self.startup_list[i][0])
-            self.layout.addWidget(self.buttons[i], line, 0)
-            self.buttons[i].clicked.connect(self.startup_list[i][1])
-            self.buttons[i].clicked.connect(partial(_changeStyle, self.buttons[i]))
-            self.buttons[i+1] = QtWidgets.QPushButton(self.startup_list[i+1][0])
-            self.layout.addWidget(self.buttons[i+1], line, 1)
-            self.buttons[i+1].clicked.connect(self.startup_list[i+1][1])
-            self.buttons[i+1].clicked.connect(partial(_changeStyle, self.buttons[i+1]))
-            i += 2
-            line += 1
+    def update_status(self, response):
+        if (response != None):
+            for l in self.labels:
+                if l[0] == response.state:
+                    l[1].setStyleSheet("font-style: italic; color: '#ffc107'")
+                else:
+                    l[1].setStyleSheet("font-style: normal; color: '#ffffff'")
 
     def start_mission_clock(self):
         client_thread = StartMissionClockThread()

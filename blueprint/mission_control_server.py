@@ -15,11 +15,11 @@ class StateMachine:
         self.state = mcpb.STARTUP_IDLE
 
         self.start_up_states = {
-            mcpb.STARTUP_IDLE: mcpb.STARTUP_START_MISSION_CLOCK_COMPLETED,
-            mcpb.STARTUP_START_MISSION_CLOCK_COMPLETED, mcpb.STARTUP_HOMING_Z1,
+            mcpb.STARTUP_IDLE: mcpb.STARTUP_MISSION_CLOCK_STARTED,
+            mcpb.STARTUP_MISSION_CLOCK_STARTED: mcpb.STARTUP_HOMING_Z1,
             mcpb.STARTUP_HOMING_Z1: mcpb.STARTUP_HOME_Z1_COMPLETED,
             mcpb.STARTUP_HOME_Z1_COMPLETED: mcpb.STARTUP_HOMING_Y,
-            mcpb.STARTUP_HOMING_Y: mcpb.STARTUP_HOME_Y_COMPLETD
+            mcpb.STARTUP_HOMING_Y: mcpb.STARTUP_HOME_Y_COMPLETED
         }
 
     def getMajorMode(self):
@@ -218,7 +218,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         self.mission_time_started = True
         self.state_machine.transitionState(
             mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS,
-            mcpb.STARTUP_START_MISSION_CLOCK_COMPLETED
+            mcpb.STARTUP_MISSION_CLOCK_STARTED
         )
 
         return mcpb.CommandResponse(
@@ -261,7 +261,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
     def StartHomeZ1 (self, request, context):
         timestamp = int(time.time()*1000)
         if self.state_machine.getState() \
-                != mcpb.STARTUP_START_MISSION_CLOCK_COMPLETED: # do nothing
+                != mcpb.STARTUP_MISSION_CLOCK_STARTED: # do nothing
             return mcpb.CommandResponse(
                 request_timestamp = request.request_timestamp,
                 timestamp = timestamp,
@@ -307,5 +307,3 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
             status = mcpb.EXECUTED)
-
-    

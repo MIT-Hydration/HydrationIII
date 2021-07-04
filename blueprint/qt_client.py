@@ -36,14 +36,15 @@ GRPC_CALL_TIMEOUT   = \
 class RPiHeartBeat(QtCore.QThread):
     done = Signal(object)
     log = Signal(object)
-    def __init__(self, main_window, limit_displays):
+    limits_done = Signal(object)
+
+    def __init__(self):
         QtCore.QThread.__init__(self)
-        self.limit_displays = limit_displays
-        self.main_window = main_window
         
     def run(self):
         global RPI_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
         response = None
+        limits_response = None
         try:
             timestamp = int(time.time()*1000)
             with grpc.insecure_channel(RPI_IP_ADDRESS_PORT) as channel:
@@ -57,17 +58,14 @@ class RPiHeartBeat(QtCore.QThread):
                 limits_response = stub.GetLimits (
                     mission_control_pb2.GetLimitRequest(request_timestamp = timestamp),
                     timeout = GRPC_CALL_TIMEOUT )
-                if limits_response != None:
-                    for d in self.limit_displays:
-                        d._updateLimitDisplay(limits_response)
-            
+                
         except Exception as e:
             info = f"Error connecting to Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
             self.log.emit(info)
 
         self.done.emit(response)
-            
+        self.limits_done.emit(limits_response)    
 
 class EmergencyStopThread(QtCore.QThread):
     
@@ -114,6 +112,7 @@ class MainWindow(QtWidgets.QWidget):
 
         self.mode_display = mode_display.ModeDisplay(
             self.mode_layout)
+        self.heartbeat_receivers.append(self.mode_display)
   
     def _initStatusDisplay(self):
         self.status_groupbox = QtWidgets.QGroupBox("System Status")
@@ -124,15 +123,16 @@ class MainWindow(QtWidgets.QWidget):
 
         self.status_display = status_display.StatusDisplay(
             self.status_layout)
+        self.heartbeat_receivers.append(self.status_display)
+  
 
     def _initDiagnostics(self):
         self.startup_diagnostics_groupbox = QtWidgets.QGroupBox("P01 Startup and Diagnostics")
-        self.diagnostics_layout = QtWidgets.QGridLayout()
-        self.startup_diagnostics_groupbox.setLayout(self.diagnostics_layout)
         self.main_grid_layout.addWidget(
             self.startup_diagnostics_groupbox, 0, 1, 3, 5)
-
-        self.startup_display = startup_diagnostics_display.StartupDiagnosticsDisplay(self.diagnostics_layout)
+        self.startup_display = startup_diagnostics_display.StartupDiagnosticsDisplay(
+            self.startup_diagnostics_groupbox)
+        self.heartbeat_receivers.append(self.startup_display)
 
     def _initDiagnosticsBar(self):
         self.diagnostics_bar_groupbox = QtWidgets.QGroupBox(
@@ -164,12 +164,14 @@ class MainWindow(QtWidgets.QWidget):
             self.limits_groupbox, 0, 6, 3, 5)
 
         self.limits_display = limits_display.LimitsDisplay(self.limits_layout)  
-        self.limit_displays.append(self.limits_display)     
+        self.limit_receivers.append(self.limits_display)     
 
     def __init__(self):
         super(MainWindow, self).__init__()
         self.threads = []
-        self.limit_displays = []
+        self.limit_receivers = []
+        self.heartbeat_receivers = []
+
         self.main_grid_layout = QtWidgets.QGridLayout()
         self._initEmergencyStop()
         self._initModeDisplay()
@@ -199,7 +201,8 @@ class MainWindow(QtWidgets.QWidget):
         self.hole_pos_display = hole_position_display.HolePositionDisplay(
             self.hole_pos_layout
         )
-        self.limit_displays.append(self.hole_pos_display) 
+        self.limit_receivers.append(self.hole_pos_display) 
+        self.heartbeat_receivers.append(self.hole_pos_display) 
 
     def emergency_stop(self):
         client_thread = EmergencyStopThread()
@@ -207,23 +210,35 @@ class MainWindow(QtWidgets.QWidget):
         client_thread.start()
         self.emergency_button.setText("ATTEMPTING EMERGENCY STOP [ESC]")
 
+    def keyPressEvent(self, event):
+        if (event.key() == QtCore.Qt.Key_Escape):
+            self.emergency_stop()
+        return super().keyPressEvent(event)
+
     def on_emergency_stop_done(self):
-        pass
+        self.emergency_button.setText("EMERGENCY STOP [ESC]")
 
     def onHeartBeat(self):
-        client_thread = RPiHeartBeat(self, self.limit_displays)
+        client_thread = RPiHeartBeat()
         client_thread.done.connect(self.on_heartbeat_received)
         client_thread.log.connect(self.on_log)
+        client_thread.limits_done.connect(self.on_limit_received)
         self.threads.append(client_thread)
         client_thread.start()
+
+
+    @QtCore.Slot(object)
+    def on_limit_received(self, response):
+        if (response != None):
+            for r in self.limit_receivers:
+                r.update_limits(response)
 
     @QtCore.Slot(object)
     def on_heartbeat_received(self, response):
         if (response != None):
-            self.mode_display.update_mode(response.mode)
-        self.status_display.update_status(response)
-        self.hole_pos_display.update_display(response)
-
+            for r in self.heartbeat_receivers:
+                r.update_status(response)
+            
     @QtCore.Slot(object)
     def on_log(self, text):
         self.log(text)

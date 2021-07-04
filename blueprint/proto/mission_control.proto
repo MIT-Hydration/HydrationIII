@@ -15,11 +15,11 @@ enum SystemMode {
 
     // refer to "State Diagram for 2021-Jul-06" PDF in Hydration Google Drive for state diagram
     STARTUP_IDLE = 101; //ready to receive user input for startups and diagnostics, if emergency stop button is pressed at any point system will return to this state
-    STARTUP_START_MISSION_CLOCK_COMPLETED = 102; //after pressing "Start Mission Clock Button", clock has completed starting
+    STARTUP_MISSION_CLOCK_STARTED = 102; //after pressing "Start Mission Clock Button", clock has completed starting
     STARTUP_HOMING_Z1 = 103; //after pressing "Home Z1" button, begin homing z1 axis
     STARTUP_HOME_Z1_COMPLETED = 104; //z1 has completed homing
     STARTUP_HOMING_Y = 105; //after pressing "Home Y" button, Y axis begins homing
-    STARTUP_HOME_Y_COMPLETD = 106; //y axis has completd homing
+    STARTUP_HOME_Y_COMPLETED = 106; //y axis has completd homing
 
     // refer to "State Diagram for 2021-Jul-06" PDF in Hydration Google Drive for state diagram
     DRILL_IDLE = 401; // ready to receive user input, could be stopped due to emergency stop

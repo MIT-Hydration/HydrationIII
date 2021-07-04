@@ -256,7 +256,7 @@ class HolePositionDisplay(QtWidgets.QWidget):
             self.HOLE_DISPLAY_WIDTH + self.TARGET_DISPLAY_WIDTH + 1,
             'Z1 (Drill)')
         
-    def update_display(self, response):
+    def update_status(self, response):
         if (response != None):  
             z1 = response.rig_zdrill
             y = response.rig_y
@@ -267,7 +267,7 @@ class HolePositionDisplay(QtWidgets.QWidget):
             self.cur_pos_label.setText(
                 f"(Z1, Y) = ({z1:0.3f}, {y:0.3f}) [m]")
         
-    def _updateLimitDisplay(self, response):
+    def update_limits(self, response):
         global Z_LENGTH
         air_gap = response.air_gap
         max_z1 = response.max_z1

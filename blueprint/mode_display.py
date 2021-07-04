@@ -79,7 +79,8 @@ class ModeDisplay(QtWidgets.QWidget):
         self.mode_labels = response.mode_labels
         self._initStatusWidgets()
 
-    def update_mode(self, mode):
+    def update_status(self, response):
+        mode = response.major_mode
         for i in range(len(self.modes)):
              if (self.modes[i] == mode):
                  self.mode_radios[i].setChecked(True)

@@ -95,7 +95,7 @@ class LimitsDisplay:
                 label.setText(label_text)
                 label.setStyleSheet("color: '#ffffff'")
 
-    def _updateLimitDisplay(self, response):
+    def update_limits(self, response):
 
         air_gap = response.air_gap
         max_z1 = response.max_z1

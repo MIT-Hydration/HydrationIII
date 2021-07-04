@@ -39,33 +39,8 @@ class MissionControlStub(object):
                 request_serializer=mission__control__pb2.HoleListRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.HoleList.FromString,
                 )
-        self.SetMode = channel.unary_unary(
-                '/mission_control.MissionControl/SetMode',
-                request_serializer=mission__control__pb2.SetModeRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.CommandResponse.FromString,
-                )
         self.StartMissionClock = channel.unary_unary(
                 '/mission_control.MissionControl/StartMissionClock',
-                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.CommandResponse.FromString,
-                )
-        self.StartHomeZ1 = channel.unary_unary(
-                '/mission_control.MissionControl/StartHomeZ1',
-                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.CommandResponse.FromString,
-                )
-        self.StartHomeZ2 = channel.unary_unary(
-                '/mission_control.MissionControl/StartHomeZ2',
-                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.CommandResponse.FromString,
-                )
-        self.StartHomeX = channel.unary_unary(
-                '/mission_control.MissionControl/StartHomeX',
-                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.CommandResponse.FromString,
-                )
-        self.StartHomeY = channel.unary_unary(
-                '/mission_control.MissionControl/StartHomeY',
                 request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.CommandResponse.FromString,
                 )
@@ -74,99 +49,19 @@ class MissionControlStub(object):
                 request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.CommandResponse.FromString,
                 )
-        self.SetHomeZ2 = channel.unary_unary(
-                '/mission_control.MissionControl/SetHomeZ2',
-                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.CommandResponse.FromString,
-                )
-        self.SetHomeX = channel.unary_unary(
-                '/mission_control.MissionControl/SetHomeX',
-                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.CommandResponse.FromString,
-                )
         self.SetHomeY = channel.unary_unary(
                 '/mission_control.MissionControl/SetHomeY',
                 request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.CommandResponse.FromString,
                 )
-        self.StartSpinDrillMotor = channel.unary_unary(
-                '/mission_control.MissionControl/StartSpinDrillMotor',
-                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.CommandResponse.FromString,
-                )
-        self.StopSpinDrillMotor = channel.unary_unary(
-                '/mission_control.MissionControl/StopSpinDrillMotor',
-                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.CommandResponse.FromString,
-                )
-        self.StartSpinPump = channel.unary_unary(
-                '/mission_control.MissionControl/StartSpinPump',
-                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.CommandResponse.FromString,
-                )
-        self.StopSpinPump = channel.unary_unary(
-                '/mission_control.MissionControl/StopSpinPump',
-                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.CommandResponse.FromString,
-                )
-        self.StartHeater = channel.unary_unary(
-                '/mission_control.MissionControl/StartHeater',
-                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.CommandResponse.FromString,
-                )
-        self.StopHeater = channel.unary_unary(
-                '/mission_control.MissionControl/StopHeater',
-                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.CommandResponse.FromString,
-                )
-        self.RigMove = channel.unary_unary(
-                '/mission_control.MissionControl/RigMove',
-                request_serializer=mission__control__pb2.RigMoveCommandRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.CommandResponse.FromString,
-                )
         self.Z1Move = channel.unary_unary(
                 '/mission_control.MissionControl/Z1Move',
-                request_serializer=mission__control__pb2.ZMoveRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.CommandResponse.FromString,
-                )
-        self.Z2Move = channel.unary_unary(
-                '/mission_control.MissionControl/Z2Move',
-                request_serializer=mission__control__pb2.ZMoveRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.CommandResponse.FromString,
-                )
-        self.DrillMode = channel.unary_unary(
-                '/mission_control.MissionControl/DrillMode',
-                request_serializer=mission__control__pb2.DrillModeRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.CommandResponse.FromString,
-                )
-        self.DrillCalibration = channel.unary_unary(
-                '/mission_control.MissionControl/DrillCalibration',
-                request_serializer=mission__control__pb2.DrillCalibrationRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.CommandResponse.FromString,
-                )
-        self.DrillDescendingOff = channel.unary_unary(
-                '/mission_control.MissionControl/DrillDescendingOff',
-                request_serializer=mission__control__pb2.DrillDescendingOffRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.CommandResponse.FromString,
-                )
-        self.DrillDescendingDrilling = channel.unary_unary(
-                '/mission_control.MissionControl/DrillDescendingDrilling',
-                request_serializer=mission__control__pb2.DrillDescendingDrillingRequest.SerializeToString,
+                request_serializer=mission__control__pb2.MoveRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.CommandResponse.FromString,
                 )
         self.EmergencyStop = channel.unary_unary(
                 '/mission_control.MissionControl/EmergencyStop',
                 request_serializer=mission__control__pb2.EmergencyStopRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.CommandResponse.FromString,
-                )
-        self.DrillAssemblyStatus = channel.unary_unary(
-                '/mission_control.MissionControl/DrillAssemblyStatus',
-                request_serializer=mission__control__pb2.DrillAssemblyStatusRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.DrillAssemblyStatusResponse.FromString,
-                )
-        self.GetTorque = channel.unary_unary(
-                '/mission_control.MissionControl/GetTorque',
-                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.CommandResponse.FromString,
                 )
 
@@ -204,37 +99,7 @@ class MissionControlServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def SetMode(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
     def StartMissionClock(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def StartHomeZ1(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def StartHomeZ2(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def StartHomeX(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def StartHomeY(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -246,61 +111,7 @@ class MissionControlServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def SetHomeZ2(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def SetHomeX(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
     def SetHomeY(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def StartSpinDrillMotor(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def StopSpinDrillMotor(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def StartSpinPump(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def StopSpinPump(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def StartHeater(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def StopHeater(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def RigMove(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -312,49 +123,7 @@ class MissionControlServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def Z2Move(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def DrillMode(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def DrillCalibration(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def DrillDescendingOff(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def DrillDescendingDrilling(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
     def EmergencyStop(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def DrillAssemblyStatus(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def GetTorque(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -388,33 +157,8 @@ def add_MissionControlServicer_to_server(servicer, server):
                     request_deserializer=mission__control__pb2.HoleListRequest.FromString,
                     response_serializer=mission__control__pb2.HoleList.SerializeToString,
             ),
-            'SetMode': grpc.unary_unary_rpc_method_handler(
-                    servicer.SetMode,
-                    request_deserializer=mission__control__pb2.SetModeRequest.FromString,
-                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
-            ),
             'StartMissionClock': grpc.unary_unary_rpc_method_handler(
                     servicer.StartMissionClock,
-                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
-                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
-            ),
-            'StartHomeZ1': grpc.unary_unary_rpc_method_handler(
-                    servicer.StartHomeZ1,
-                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
-                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
-            ),
-            'StartHomeZ2': grpc.unary_unary_rpc_method_handler(
-                    servicer.StartHomeZ2,
-                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
-                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
-            ),
-            'StartHomeX': grpc.unary_unary_rpc_method_handler(
-                    servicer.StartHomeX,
-                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
-                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
-            ),
-            'StartHomeY': grpc.unary_unary_rpc_method_handler(
-                    servicer.StartHomeY,
                     request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
                     response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
             ),
@@ -423,99 +167,19 @@ def add_MissionControlServicer_to_server(servicer, server):
                     request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
                     response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
             ),
-            'SetHomeZ2': grpc.unary_unary_rpc_method_handler(
-                    servicer.SetHomeZ2,
-                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
-                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
-            ),
-            'SetHomeX': grpc.unary_unary_rpc_method_handler(
-                    servicer.SetHomeX,
-                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
-                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
-            ),
             'SetHomeY': grpc.unary_unary_rpc_method_handler(
                     servicer.SetHomeY,
                     request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
                     response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
             ),
-            'StartSpinDrillMotor': grpc.unary_unary_rpc_method_handler(
-                    servicer.StartSpinDrillMotor,
-                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
-                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
-            ),
-            'StopSpinDrillMotor': grpc.unary_unary_rpc_method_handler(
-                    servicer.StopSpinDrillMotor,
-                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
-                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
-            ),
-            'StartSpinPump': grpc.unary_unary_rpc_method_handler(
-                    servicer.StartSpinPump,
-                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
-                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
-            ),
-            'StopSpinPump': grpc.unary_unary_rpc_method_handler(
-                    servicer.StopSpinPump,
-                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
-                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
-            ),
-            'StartHeater': grpc.unary_unary_rpc_method_handler(
-                    servicer.StartHeater,
-                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
-                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
-            ),
-            'StopHeater': grpc.unary_unary_rpc_method_handler(
-                    servicer.StopHeater,
-                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
-                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
-            ),
-            'RigMove': grpc.unary_unary_rpc_method_handler(
-                    servicer.RigMove,
-                    request_deserializer=mission__control__pb2.RigMoveCommandRequest.FromString,
-                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
-            ),
             'Z1Move': grpc.unary_unary_rpc_method_handler(
                     servicer.Z1Move,
-                    request_deserializer=mission__control__pb2.ZMoveRequest.FromString,
-                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
-            ),
-            'Z2Move': grpc.unary_unary_rpc_method_handler(
-                    servicer.Z2Move,
-                    request_deserializer=mission__control__pb2.ZMoveRequest.FromString,
-                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
-            ),
-            'DrillMode': grpc.unary_unary_rpc_method_handler(
-                    servicer.DrillMode,
-                    request_deserializer=mission__control__pb2.DrillModeRequest.FromString,
-                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
-            ),
-            'DrillCalibration': grpc.unary_unary_rpc_method_handler(
-                    servicer.DrillCalibration,
-                    request_deserializer=mission__control__pb2.DrillCalibrationRequest.FromString,
-                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
-            ),
-            'DrillDescendingOff': grpc.unary_unary_rpc_method_handler(
-                    servicer.DrillDescendingOff,
-                    request_deserializer=mission__control__pb2.DrillDescendingOffRequest.FromString,
-                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
-            ),
-            'DrillDescendingDrilling': grpc.unary_unary_rpc_method_handler(
-                    servicer.DrillDescendingDrilling,
-                    request_deserializer=mission__control__pb2.DrillDescendingDrillingRequest.FromString,
+                    request_deserializer=mission__control__pb2.MoveRequest.FromString,
                     response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
             ),
             'EmergencyStop': grpc.unary_unary_rpc_method_handler(
                     servicer.EmergencyStop,
                     request_deserializer=mission__control__pb2.EmergencyStopRequest.FromString,
-                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
-            ),
-            'DrillAssemblyStatus': grpc.unary_unary_rpc_method_handler(
-                    servicer.DrillAssemblyStatus,
-                    request_deserializer=mission__control__pb2.DrillAssemblyStatusRequest.FromString,
-                    response_serializer=mission__control__pb2.DrillAssemblyStatusResponse.SerializeToString,
-            ),
-            'GetTorque': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetTorque,
-                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
                     response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
             ),
     }
@@ -614,23 +278,6 @@ class MissionControl(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def SetMode(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/SetMode',
-            mission__control__pb2.SetModeRequest.SerializeToString,
-            mission__control__pb2.CommandResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
     def StartMissionClock(request,
             target,
             options=(),
@@ -642,74 +289,6 @@ class MissionControl(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/StartMissionClock',
-            mission__control__pb2.StartCommandRequest.SerializeToString,
-            mission__control__pb2.CommandResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def StartHomeZ1(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/StartHomeZ1',
-            mission__control__pb2.StartCommandRequest.SerializeToString,
-            mission__control__pb2.CommandResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def StartHomeZ2(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/StartHomeZ2',
-            mission__control__pb2.StartCommandRequest.SerializeToString,
-            mission__control__pb2.CommandResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def StartHomeX(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/StartHomeX',
-            mission__control__pb2.StartCommandRequest.SerializeToString,
-            mission__control__pb2.CommandResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def StartHomeY(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/StartHomeY',
             mission__control__pb2.StartCommandRequest.SerializeToString,
             mission__control__pb2.CommandResponse.FromString,
             options, channel_credentials,
@@ -733,40 +312,6 @@ class MissionControl(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def SetHomeZ2(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/SetHomeZ2',
-            mission__control__pb2.StartCommandRequest.SerializeToString,
-            mission__control__pb2.CommandResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def SetHomeX(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/SetHomeX',
-            mission__control__pb2.StartCommandRequest.SerializeToString,
-            mission__control__pb2.CommandResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
     def SetHomeY(request,
             target,
             options=(),
@@ -784,125 +329,6 @@ class MissionControl(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def StartSpinDrillMotor(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/StartSpinDrillMotor',
-            mission__control__pb2.StartCommandRequest.SerializeToString,
-            mission__control__pb2.CommandResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def StopSpinDrillMotor(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/StopSpinDrillMotor',
-            mission__control__pb2.StartCommandRequest.SerializeToString,
-            mission__control__pb2.CommandResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def StartSpinPump(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/StartSpinPump',
-            mission__control__pb2.StartCommandRequest.SerializeToString,
-            mission__control__pb2.CommandResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def StopSpinPump(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/StopSpinPump',
-            mission__control__pb2.StartCommandRequest.SerializeToString,
-            mission__control__pb2.CommandResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def StartHeater(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/StartHeater',
-            mission__control__pb2.StartCommandRequest.SerializeToString,
-            mission__control__pb2.CommandResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def StopHeater(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/StopHeater',
-            mission__control__pb2.StartCommandRequest.SerializeToString,
-            mission__control__pb2.CommandResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def RigMove(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/RigMove',
-            mission__control__pb2.RigMoveCommandRequest.SerializeToString,
-            mission__control__pb2.CommandResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
     def Z1Move(request,
             target,
             options=(),
@@ -914,92 +340,7 @@ class MissionControl(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/Z1Move',
-            mission__control__pb2.ZMoveRequest.SerializeToString,
-            mission__control__pb2.CommandResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def Z2Move(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/Z2Move',
-            mission__control__pb2.ZMoveRequest.SerializeToString,
-            mission__control__pb2.CommandResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def DrillMode(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/DrillMode',
-            mission__control__pb2.DrillModeRequest.SerializeToString,
-            mission__control__pb2.CommandResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def DrillCalibration(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/DrillCalibration',
-            mission__control__pb2.DrillCalibrationRequest.SerializeToString,
-            mission__control__pb2.CommandResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def DrillDescendingOff(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/DrillDescendingOff',
-            mission__control__pb2.DrillDescendingOffRequest.SerializeToString,
-            mission__control__pb2.CommandResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def DrillDescendingDrilling(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/DrillDescendingDrilling',
-            mission__control__pb2.DrillDescendingDrillingRequest.SerializeToString,
+            mission__control__pb2.MoveRequest.SerializeToString,
             mission__control__pb2.CommandResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
@@ -1017,233 +358,6 @@ class MissionControl(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/EmergencyStop',
             mission__control__pb2.EmergencyStopRequest.SerializeToString,
-            mission__control__pb2.CommandResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def DrillAssemblyStatus(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/DrillAssemblyStatus',
-            mission__control__pb2.DrillAssemblyStatusRequest.SerializeToString,
-            mission__control__pb2.DrillAssemblyStatusResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def GetTorque(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/GetTorque',
-            mission__control__pb2.StartCommandRequest.SerializeToString,
-            mission__control__pb2.CommandResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-
-class DrillControlStub(object):
-    """Missing associated documentation comment in .proto file."""
-
-    def __init__(self, channel):
-        """Constructor.
-
-        Args:
-            channel: A grpc.Channel.
-        """
-        self.HeartBeat = channel.unary_unary(
-                '/mission_control.DrillControl/HeartBeat',
-                request_serializer=mission__control__pb2.HeartBeatRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.HeartBeatReply.FromString,
-                )
-        self.DrillAssemblyStatus = channel.unary_unary(
-                '/mission_control.DrillControl/DrillAssemblyStatus',
-                request_serializer=mission__control__pb2.DrillAssemblyStatusRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.DrillAssemblyStatusResponse.FromString,
-                )
-        self.DrillMode = channel.unary_unary(
-                '/mission_control.DrillControl/DrillMode',
-                request_serializer=mission__control__pb2.DrillModeRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.CommandResponse.FromString,
-                )
-        self.EmergencyStop = channel.unary_unary(
-                '/mission_control.DrillControl/EmergencyStop',
-                request_serializer=mission__control__pb2.EmergencyStopRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.CommandResponse.FromString,
-                )
-        self.DrillCalibration = channel.unary_unary(
-                '/mission_control.DrillControl/DrillCalibration',
-                request_serializer=mission__control__pb2.DrillCalibrationRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.CommandResponse.FromString,
-                )
-
-
-class DrillControlServicer(object):
-    """Missing associated documentation comment in .proto file."""
-
-    def HeartBeat(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def DrillAssemblyStatus(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def DrillMode(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def EmergencyStop(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def DrillCalibration(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-
-def add_DrillControlServicer_to_server(servicer, server):
-    rpc_method_handlers = {
-            'HeartBeat': grpc.unary_unary_rpc_method_handler(
-                    servicer.HeartBeat,
-                    request_deserializer=mission__control__pb2.HeartBeatRequest.FromString,
-                    response_serializer=mission__control__pb2.HeartBeatReply.SerializeToString,
-            ),
-            'DrillAssemblyStatus': grpc.unary_unary_rpc_method_handler(
-                    servicer.DrillAssemblyStatus,
-                    request_deserializer=mission__control__pb2.DrillAssemblyStatusRequest.FromString,
-                    response_serializer=mission__control__pb2.DrillAssemblyStatusResponse.SerializeToString,
-            ),
-            'DrillMode': grpc.unary_unary_rpc_method_handler(
-                    servicer.DrillMode,
-                    request_deserializer=mission__control__pb2.DrillModeRequest.FromString,
-                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
-            ),
-            'EmergencyStop': grpc.unary_unary_rpc_method_handler(
-                    servicer.EmergencyStop,
-                    request_deserializer=mission__control__pb2.EmergencyStopRequest.FromString,
-                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
-            ),
-            'DrillCalibration': grpc.unary_unary_rpc_method_handler(
-                    servicer.DrillCalibration,
-                    request_deserializer=mission__control__pb2.DrillCalibrationRequest.FromString,
-                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
-            ),
-    }
-    generic_handler = grpc.method_handlers_generic_handler(
-            'mission_control.DrillControl', rpc_method_handlers)
-    server.add_generic_rpc_handlers((generic_handler,))
-
-
- # This class is part of an EXPERIMENTAL API.
-class DrillControl(object):
-    """Missing associated documentation comment in .proto file."""
-
-    @staticmethod
-    def HeartBeat(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.DrillControl/HeartBeat',
-            mission__control__pb2.HeartBeatRequest.SerializeToString,
-            mission__control__pb2.HeartBeatReply.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def DrillAssemblyStatus(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.DrillControl/DrillAssemblyStatus',
-            mission__control__pb2.DrillAssemblyStatusRequest.SerializeToString,
-            mission__control__pb2.DrillAssemblyStatusResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def DrillMode(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.DrillControl/DrillMode',
-            mission__control__pb2.DrillModeRequest.SerializeToString,
-            mission__control__pb2.CommandResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def EmergencyStop(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.DrillControl/EmergencyStop',
-            mission__control__pb2.EmergencyStopRequest.SerializeToString,
-            mission__control__pb2.CommandResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def DrillCalibration(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.DrillControl/DrillCalibration',
-            mission__control__pb2.DrillCalibrationRequest.SerializeToString,
             mission__control__pb2.CommandResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
