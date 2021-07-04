@@ -244,13 +244,13 @@ class RigHardware(AbstractRigHardware):
     def getPosition(self):
         self.prev_pos = self.current_pos.copy()
         z1 = z2 = x = y = 0.0
-        if iZ1 < 0:
+        if iZ1 >= 0:
             z1 = HydrationServo.get_position(iZ1)*Z1Cal
-        if iZ2 < 0:
+        if iZ2 >= 0:
             z2 = HydrationServo.get_position(iZ2)*Z2Cal
-        if iX < 0:
+        if iX >= 0:
             x = HydrationServo.get_position(iX)*XCal
-        if iY < 0:
+        if iY >= 0:
             y = HydrationServo.get_position(iY)*YCal
         self.current_pos = numpy.array([z1, z2, x, y])
         return self.current_pos
