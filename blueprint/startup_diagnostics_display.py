@@ -156,7 +156,7 @@ class StartupDiagnosticsDisplay:
         self.threads.append(client_thread)
         client_thread.done.connect(self.on_done)
         client_thread.log.connect(self.log)
-        client_thread.start()  
+        client_thread.start()
 
     @QtCore.Slot(object)
     def _restart(self):
