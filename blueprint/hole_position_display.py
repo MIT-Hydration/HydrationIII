@@ -37,28 +37,7 @@ MC_IP_ADDRESS_PORT = \
 GRPC_CALL_TIMEOUT   = \
     config.getint('Network', 'GRPCTimeout')
 
-class GotoXYThread(QtCore.QThread):    
-    def __init__(self, x, y):
-        QtCore.QThread.__init__(self)
-        self.x = x
-        self.y = y
-        
-    def run(self):
-        global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
-        response = None
-        try:
-            timestamp = int(time.time()*1000)
-            with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
-                stub = mission_control_pb2_grpc.MissionControlStub(channel)
-                response = stub.RigMove (
-                    mission_control_pb2.RigMoveCommandRequest(
-                        request_timestamp = timestamp,
-                        x = self.x, y = self.y),
-                    timeout = GRPC_CALL_TIMEOUT )
-                
-        except Exception as e:
-            info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
-            print(info)
+
 
 class SetHomeThread(QtCore.QThread):    
     def __init__(self):
@@ -76,16 +55,6 @@ class SetHomeThread(QtCore.QThread):
                         request_timestamp = timestamp),
                     timeout = GRPC_CALL_TIMEOUT )
                 
-                response = stub.SetHomeZ2 (
-                    mission_control_pb2.StartCommandRequest(
-                        request_timestamp = timestamp),
-                    timeout = GRPC_CALL_TIMEOUT )
-                
-                response = stub.SetHomeX (
-                    mission_control_pb2.StartCommandRequest(
-                        request_timestamp = timestamp),
-                    timeout = GRPC_CALL_TIMEOUT )
-
                 response = stub.SetHomeY (
                     mission_control_pb2.StartCommandRequest(
                         request_timestamp = timestamp),
@@ -95,10 +64,10 @@ class SetHomeThread(QtCore.QThread):
             info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
 
-class GotoZThread(QtCore.QThread):    
-    def __init__(self, z):
+class GotoThread(QtCore.QThread):    
+    def __init__(self, delta):
         QtCore.QThread.__init__(self)
-        self.z = z
+        self.delta = delta
         
     def run(self):
         global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
@@ -117,20 +86,20 @@ class GotoZThread(QtCore.QThread):
     def _request_response(self, stub):
         pass
 
-class GotoZ1Thread(GotoZThread):    
+class GotoZ1Thread(GotoThread):    
     def _request_response(self, stub, timestamp):
         return stub.Z1Move (
-                    mission_control_pb2.ZMoveRequest(
+                    mission_control_pb2.MoveRequest(
                         request_timestamp = timestamp,
-                        z = self.z),
+                        delta = self.delta),
                     timeout = GRPC_CALL_TIMEOUT )
 
-class GotoZ2Thread(GotoZThread):    
+class GotoYThread(GotoThread):    
     def _request_response(self, stub, timestamp):
-        return stub.Z2Move (
-                    mission_control_pb2.ZMoveRequest(
+        return stub.YMove (
+                    mission_control_pb2.MoveRequest(
                         request_timestamp = timestamp,
-                        z = self.z),
+                        delta = self.delta),
                     timeout = GRPC_CALL_TIMEOUT )
 
 class HolePositionDisplay(QtWidgets.QWidget):
@@ -162,45 +131,42 @@ class HolePositionDisplay(QtWidgets.QWidget):
 
     def _init_target(self):
         start_h = self.HOLE_DISPLAY_WIDTH + 1
-        self.layout.addWidget(QtWidgets.QLabel("Target [m]"), 0, start_h, 1, 2)
-        self.layout.addWidget(QtWidgets.QLabel("Y: "), 1, start_h + 2, 1, 1)
+        self.layout.addWidget(QtWidgets.QLabel("Relative Motion (During Startup Idle)"), 0, start_h, 1, 4)
+        self.layout.addWidget(QtWidgets.QLabel("Y [m]: "), 1, start_h + 2, 1, 1)
 
         self.target_y = QtWidgets.QLineEdit("")
         self.target_y.setValidator(QtGui.QDoubleValidator())
         
         self.layout.addWidget(self.target_y, 1, start_h + 3, 1, 1)
 
-        self.goto_target_xy = QtWidgets.QPushButton("GoTo Target (Y)")
-        self.goto_target_xy.clicked.connect(self._goto_xy)
-        self.layout.addWidget(self.goto_target_xy, 0, start_h + 2, 1, 2)
+        self.goto_target_y = QtWidgets.QPushButton("Move Y")
+        self.goto_target_y.clicked.connect(self._goto_y)
+        self.layout.addWidget(self.goto_target_y, 2, start_h + 2, 1, 2)
 
-        self.layout.addWidget(QtWidgets.QLabel("Z1: "), 2, start_h, 1, 1)
+        self.layout.addWidget(QtWidgets.QLabel("Z1 [m]: "), 1, start_h, 1, 1)
         
         self.target_z1 = QtWidgets.QLineEdit("")
         self.target_z1.setValidator(QtGui.QDoubleValidator())
+        self.layout.addWidget(self.target_z1, 1, start_h + 1, 1, 1)
         
-
-        self.layout.addWidget(self.target_z1, 2, start_h + 1, 1, 1)
-        
-        self.goto_z1 = QtWidgets.QPushButton("GoTo Target (Z1)")
+        self.goto_z1 = QtWidgets.QPushButton("Move Z1")
         self.goto_z1.clicked.connect(self._goto_z1)
 
-        self.layout.addWidget(self.goto_z1, 3, start_h, 1, 2)
+        self.layout.addWidget(self.goto_z1, 2, start_h, 1, 2)
         
         self.cur_pos_label = QtWidgets.QLabel("Current Position (Z1, Y) [m]")
-        self.layout.addWidget(self.cur_pos_label, 5, start_h, 1, 2)
+        self.cur_pos_label.setStyleSheet("color: '#ffc107'")
+        self.layout.addWidget(self.cur_pos_label, 5, start_h, 1, 4)
 
         self.set_home = QtWidgets.QPushButton("Set Current as Origin (Z1, Y)")
         self.set_home.clicked.connect(self._set_home)
         self.layout.addWidget(self.set_home, 6, start_h, 1, 4)
 
         
-    def _goto_xy(self):
-        client_thread = GotoXYThread(
-            float(self.target_x.text()), 
-            float(self.target_y.text()))
+    def _goto_y(self):
+        client_thread = GotoYThread(float(self.target_y.text()))
         self.threads.append(client_thread)
-        client_thread.start() 
+        client_thread.start()
         
     def _goto_z1(self):
         client_thread = GotoZ1Thread(
@@ -265,7 +231,16 @@ class HolePositionDisplay(QtWidgets.QWidget):
             self.z1_drill_pos_rect.setRect(-0.025, z1, 0.05, -z1)
         
             self.cur_pos_label.setText(
-                f"(Z1, Y) = ({z1:0.3f}, {y:0.3f}) [m]")
+                f"Current Position (Z1, Y) = ({z1:0.3f}, {y:0.3f}) [m]")
+
+            if (response.state != mission_control_pb2.STARTUP_IDLE):
+                self.set_home.setEnabled(False)
+                self.goto_target_y.setEnabled(False)
+                self.goto_z1.setEnabled(False)
+            else:
+                self.set_home.setEnabled(True)
+                self.goto_target_y.setEnabled(True)
+                self.goto_z1.setEnabled(True)
         
     def update_limits(self, response):
         global Z_LENGTH

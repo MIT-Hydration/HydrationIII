@@ -29,12 +29,12 @@ class StateMachine:
         return self.state
     
     def getAllowedStateTransitions(self):
-        next_mode = mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS
-        next_state = mcpb.STARTUP_IDLE
+        next_mode = [mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS]
+        next_state = [mcpb.STARTUP_IDLE]
         if self.major_mode == mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS:
-            if self.state != mcpb.STARTUP_HOME_Y_COMPLETD:
+            if self.state != mcpb.STARTUP_HOME_Y_COMPLETED:
                 next_mode.append(mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS)
-                next_state.append = self.start_up_states[self.state]
+                next_state.append(self.start_up_states[self.state])
             else:
                 next_mode.append(mcpb.MAJOR_MODE_DRILL_BOREHOLE)
                 next_state.append(mcpb.DRILL_IDLE)
@@ -157,39 +157,6 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             timestamp = timestamp,
             status = mcpb.EXECUTED)
 
-    def RigMove(self, request, context):
-        timestamp = int(time.time()*1000)
-        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
-           (self.mission_time_started): # do nothing
-            return mcpb.CommandResponse(
-                request_timestamp = request.request_timestamp,
-                timestamp = timestamp,
-                status = mcpb.INVALID_STATE)
-
-        rig_hardware = HardwareFactory.getRig()
-        rig_hardware.gotoPosition(request.x, request.y)
-
-        return mcpb.CommandResponse(
-            request_timestamp = request.request_timestamp,
-            timestamp = timestamp,
-            status = mcpb.EXECUTED)
-
-    def ZMove(self, request, context, f):
-        timestamp = int(time.time()*1000)
-        if (self.mode != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS) or \
-           (self.mission_time_started): # do nothing
-            return mcpb.CommandResponse(
-                request_timestamp = request.request_timestamp,
-                timestamp = timestamp,
-                status = mcpb.INVALID_STATE)
-
-        f(request.z)
-
-        return mcpb.CommandResponse(
-            request_timestamp = request.request_timestamp,
-            timestamp = timestamp,
-            status = mcpb.EXECUTED)
-
     def Z1Move(self, request, context):
         timestamp = int(time.time()*1000)
         if (self.state_machine.getState() != mcpb.STARTUP_IDLE): # do nothing
@@ -206,7 +173,47 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             timestamp = timestamp,
             status = mcpb.EXECUTED)
         
-    def StartMissionClock (self, request, context):
+    def YMove(self, request, context):
+        timestamp = int(time.time()*1000)
+        if (self.state_machine.getState() != mcpb.STARTUP_IDLE): # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+
+        rig_hardware = HardwareFactory.getRig()
+        rig_hardware.movePositionY(request.delta)
+
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)
+
+    def StartupNext (self, request, context):
+        timestamp = int(time.time()*1000)
+        if (self.state_machine.getMajorMode() != mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS): # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+        state = self.state_machine.getState()
+        if (state == mcpb.STARTUP_IDLE):
+            return self._startMissionClock(request, context)
+        elif (state == mcpb.STARTUP_MISSION_CLOCK_STARTED):
+            return self._StartHomeZ1(request, context)
+        
+        else:
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+        
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)
+
+    def _startMissionClock (self, request, context):
         timestamp = int(time.time()*1000)
         if (self.state_machine.getState() != mcpb.STARTUP_IDLE): # do nothing
             return mcpb.CommandResponse(
@@ -258,7 +265,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             timestamp = timestamp,
             status = mcpb.EXECUTED)
 
-    def StartHomeZ1 (self, request, context):
+    def _StartHomeZ1 (self, request, context):
         timestamp = int(time.time()*1000)
         if self.state_machine.getState() \
                 != mcpb.STARTUP_MISSION_CLOCK_STARTED: # do nothing
@@ -275,7 +282,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             timestamp = timestamp,
             status = mcpb.EXECUTED)
         
-    def StartHomeY (self, request, context):
+    def _StartHomeY (self, request, context):
         timestamp = int(time.time()*1000)
         if self.state_machine.getState() \
                 != mcpb.STARTUP_HOME_Z1_COMPLETED: # do nothing

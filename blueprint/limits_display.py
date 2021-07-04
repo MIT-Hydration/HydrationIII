@@ -89,7 +89,7 @@ class LimitsDisplay:
             new_text = label_text + f"(changed to {value:0.3f}) "
             if(label.text() != new_text):
                 label.setText(new_text)
-                label.setStyleSheet("color: '#dc3545'")
+                label.setStyleSheet("font-style: italic; color: '#ffc107'")
         else:
             if(label.text() != label_text):
                 label.setText(label_text)

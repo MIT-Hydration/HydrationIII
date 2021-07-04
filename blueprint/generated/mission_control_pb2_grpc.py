@@ -39,8 +39,8 @@ class MissionControlStub(object):
                 request_serializer=mission__control__pb2.HoleListRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.HoleList.FromString,
                 )
-        self.StartMissionClock = channel.unary_unary(
-                '/mission_control.MissionControl/StartMissionClock',
+        self.StartupNext = channel.unary_unary(
+                '/mission_control.MissionControl/StartupNext',
                 request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.CommandResponse.FromString,
                 )
@@ -56,6 +56,11 @@ class MissionControlStub(object):
                 )
         self.Z1Move = channel.unary_unary(
                 '/mission_control.MissionControl/Z1Move',
+                request_serializer=mission__control__pb2.MoveRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.YMove = channel.unary_unary(
+                '/mission_control.MissionControl/YMove',
                 request_serializer=mission__control__pb2.MoveRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.CommandResponse.FromString,
                 )
@@ -99,7 +104,7 @@ class MissionControlServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def StartMissionClock(self, request, context):
+    def StartupNext(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -118,6 +123,12 @@ class MissionControlServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def Z1Move(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def YMove(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -157,8 +168,8 @@ def add_MissionControlServicer_to_server(servicer, server):
                     request_deserializer=mission__control__pb2.HoleListRequest.FromString,
                     response_serializer=mission__control__pb2.HoleList.SerializeToString,
             ),
-            'StartMissionClock': grpc.unary_unary_rpc_method_handler(
-                    servicer.StartMissionClock,
+            'StartupNext': grpc.unary_unary_rpc_method_handler(
+                    servicer.StartupNext,
                     request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
                     response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
             ),
@@ -174,6 +185,11 @@ def add_MissionControlServicer_to_server(servicer, server):
             ),
             'Z1Move': grpc.unary_unary_rpc_method_handler(
                     servicer.Z1Move,
+                    request_deserializer=mission__control__pb2.MoveRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'YMove': grpc.unary_unary_rpc_method_handler(
+                    servicer.YMove,
                     request_deserializer=mission__control__pb2.MoveRequest.FromString,
                     response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
             ),
@@ -278,7 +294,7 @@ class MissionControl(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def StartMissionClock(request,
+    def StartupNext(request,
             target,
             options=(),
             channel_credentials=None,
@@ -288,7 +304,7 @@ class MissionControl(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/StartMissionClock',
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/StartupNext',
             mission__control__pb2.StartCommandRequest.SerializeToString,
             mission__control__pb2.CommandResponse.FromString,
             options, channel_credentials,
@@ -340,6 +356,23 @@ class MissionControl(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/Z1Move',
+            mission__control__pb2.MoveRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def YMove(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/YMove',
             mission__control__pb2.MoveRequest.SerializeToString,
             mission__control__pb2.CommandResponse.FromString,
             options, channel_credentials,

@@ -43,6 +43,16 @@ class AbstractRigHardware(ABC):
         current_pos = self.getPosition()
         return (not self.isYMoving()) \
             and (numpy.abs(current_pos[iY]) < HomingError) 
+
+    def movePositionZ1(self, delta):
+        cur_pos = self.getPosition().copy()
+        new_z1 = cur_pos[iZ1] + delta
+        self.gotoPositionZ1(new_z1)
+    
+    def movePositionY(self, delta):
+        cur_pos = self.getPosition().copy()
+        new_y = cur_pos[iY] + delta
+        self.gotoPositionY(new_y)
     
     @abstractmethod
     def getPosition(self):
@@ -106,7 +116,7 @@ class AbstractRigHardware(ABC):
         pass
 
     @abstractmethod
-    def gotoPosition(self, x, y):
+    def gotoPositionY(self, y):        
         pass
     
     @abstractmethod
@@ -119,7 +129,7 @@ class AbstractRigHardware(ABC):
 
 class MockRigHardware(AbstractRigHardware):
     def __init__(self):
-        self.position = [-0.4, -0.5, 0.50, 0.50]
+        self.position = [-0.4, -0.0, 0.25, 0.50]
         self.homing = [False, False, False, False]
         self.homingTime = [0.0, 0.0, 0.0, 0.0]
         self.target = [0.0, 0.0, 0.0, 0.0]
@@ -127,7 +137,7 @@ class MockRigHardware(AbstractRigHardware):
             "Rig", "HomingError")
     
     def _update(self, i):
-        VEL = (self.target[i] - self.position[i])*0.02 # m/s
+        VEL = (self.target[i] - self.position[i])*0.05 # m/s
         if self.homing[i]:
             new_t = time.time()
             dt = new_t - self.homingTime[i]
@@ -195,10 +205,16 @@ class MockRigHardware(AbstractRigHardware):
         self.homing[3] = True
         self.homingTime[3] = t
     
+    def gotoPositionY(self, y):
+        t = time.time()
+        self.target[iY] = y
+        self.homing[iY] = True
+        self.homingTime[iY] = t
+
     def gotoPositionZ1(self, z): 
-        self.target[0] = z    
-        self.homing[0] = True
-        self.homingTime[0] = time.time()
+        self.target[iZ1] = z    
+        self.homing[iZ1] = True
+        self.homingTime[iZ1] = time.time()
         
     def gotoPositionZ2(self, z):
         self.target[1] = z        
@@ -381,17 +397,16 @@ class RigHardware(AbstractRigHardware):
         #self.ad_thread.start()
         #self.writer_thread.start()
 
-    def gotoPosition(self, x, y):
+    def gotoPositionY(self, y):
         # ensure Z-poisions are zero within tolerance
         pos = self.getPosition()
-        if (numpy.abs(pos[0]) > self.move_tolerance) or \
+        if (numpy.abs(pos[iZ1]) > self.move_tolerance) or \
             (numpy.abs(pos[1]) > self.move_tolerance):
             return
         
         # stop existing threads
         self.emergencyStop()
-        HydrationServo.set_position(2, x/XCal)
-        HydrationServo.set_position(3, y/YCal)
+        HydrationServo.set_position(iY, y/YCal)
         
     def gotoPositionZ1(self, z):        
         # stop existing threads

@@ -13,6 +13,7 @@ __email__ = "feasson.marcellin@gmail.com"
 __status__ = "Production"
 
 from PySide6 import QtCore, QtWidgets, QtGui
+from PySide6.QtCore import QTimer, Signal
 
 from datetime import datetime, timedelta
 import time
@@ -34,7 +35,9 @@ MC_IP_ADDRESS_PORT = \
 GRPC_CALL_TIMEOUT   = \
     config.getint('Network', 'GRPCTimeout')
 
-class StartMissionClockThread(QtCore.QThread):    
+class StartupNextThread(QtCore.QThread):    
+    done = Signal(object)
+    log = Signal(object)
     def __init__(self):
         QtCore.QThread.__init__(self)
         
@@ -45,40 +48,22 @@ class StartMissionClockThread(QtCore.QThread):
             timestamp = int(time.time()*1000)
             with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
                 stub = mission_control_pb2_grpc.MissionControlStub(channel)
-                response = stub.StartMissionClock (
-                    mission_control_pb2.StartCommandRequest(
+                response = stub.StartupNext (
+                    mcpb.EmergencyStopRequest(
                         request_timestamp = timestamp),
                     timeout = GRPC_CALL_TIMEOUT )
                 print("Mission Control RPi Start Mission Control Command received at: " + str(datetime.now()))
                 print(response)
+                self.done.emit(response)
         
         except Exception as e:
             info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
-            
-class StartHomeZ1Thread(QtCore.QThread):    
-    def __init__(self):
-        QtCore.QThread.__init__(self)
-        
-    def run(self):
-        global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
-        response = None
-        try:
-            timestamp = int(time.time()*1000)
-            with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
-                stub = mission_control_pb2_grpc.MissionControlStub(channel)
-                response = stub.StartHomeZ1 (
-                    mission_control_pb2.StartCommandRequest(
-                        request_timestamp = timestamp),
-                    timeout = GRPC_CALL_TIMEOUT )
-                print("Mission Control RPi Start Mission Control Command received at: " + str(datetime.now()))
-                print(response)
-        
-        except Exception as e:
-            info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
-            print(info)
+            self.log.emit(info)
 
-class StartHomeZ2Thread(QtCore.QThread):    
+class RestartThread(QtCore.QThread):    
+    done = Signal(object)
+    log = Signal(object)
     def __init__(self):
         QtCore.QThread.__init__(self)
         
@@ -89,201 +74,22 @@ class StartHomeZ2Thread(QtCore.QThread):
             timestamp = int(time.time()*1000)
             with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
                 stub = mission_control_pb2_grpc.MissionControlStub(channel)
-                response = stub.StartHomeZ2 (
-                    mission_control_pb2.StartCommandRequest(
+                response = stub.EmergencyStop (
+                    mcpb.StartCommandRequest(
                         request_timestamp = timestamp),
                     timeout = GRPC_CALL_TIMEOUT )
                 print("Mission Control RPi Start Mission Control Command received at: " + str(datetime.now()))
                 print(response)
+                self.done.emit(response)
         
         except Exception as e:
             info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
-            
-class StartHomeXThread(QtCore.QThread):    
-    def __init__(self):
-        QtCore.QThread.__init__(self)
-        
-    def run(self):
-        global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
-        response = None
-        try:
-            timestamp = int(time.time()*1000)
-            with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
-                stub = mission_control_pb2_grpc.MissionControlStub(channel)
-                response = stub.StartHomeX (
-                    mission_control_pb2.StartCommandRequest(
-                        request_timestamp = timestamp),
-                    timeout = GRPC_CALL_TIMEOUT )
-                print("Mission Control RPi Start Mission Control Command received at: " + str(datetime.now()))
-                print(response)
-        
-        except Exception as e:
-            info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
-            print(info)
-            
-class StartHomeYThread(QtCore.QThread):    
-    def __init__(self):
-        QtCore.QThread.__init__(self)
-        
-    def run(self):
-        global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
-        response = None
-        try:
-            timestamp = int(time.time()*1000)
-            with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
-                stub = mission_control_pb2_grpc.MissionControlStub(channel)
-                response = stub.StartHomeY (
-                    mission_control_pb2.StartCommandRequest(
-                        request_timestamp = timestamp),
-                    timeout = GRPC_CALL_TIMEOUT )
-                print("Mission Control RPi Start Mission Control Command received at: " + str(datetime.now()))
-                print(response)
-        
-        except Exception as e:
-            info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
-            print(info)
-            
-class StartSpinDrillMotorThread(QtCore.QThread):    
-    def __init__(self):
-        QtCore.QThread.__init__(self)
-        
-    def run(self):
-        global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
-        response = None
-        try:
-            timestamp = int(time.time()*1000)
-            with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
-                stub = mission_control_pb2_grpc.MissionControlStub(channel)
-                response = stub.StartSpinDrillMotor (
-                    mission_control_pb2.StartCommandRequest(
-                        request_timestamp = timestamp),
-                    timeout = GRPC_CALL_TIMEOUT )
-                print("Mission Control RPi Start Mission Control Command received at: " + str(datetime.now()))
-                print(response)
-        
-        except Exception as e:
-            info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
-            print(info)
-            
-class StopSpinDrillMotorThread(QtCore.QThread):
-    def __init__(self):
-        QtCore.QThread.__init__(self)
-        
-    def run(self):
-        global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
-        response = None
-        try:
-            timestamp = int(time.time()*1000)
-            with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
-                stub = mission_control_pb2_grpc.MissionControlStub(channel)
-                response = stub.StopSpinDrillMotor (
-                    mission_control_pb2.StartCommandRequest(
-                        request_timestamp = timestamp),
-                    timeout = GRPC_CALL_TIMEOUT )
-                print("Mission Control RPi Start Mission Control Command received at: " + str(datetime.now()))
-                print(response)
-        
-        except Exception as e:
-            info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
-            print(info)
-            
-class StartSpinPumpThread(QtCore.QThread):
-    def __init__(self):
-        QtCore.QThread.__init__(self)
-        
-    def run(self):
-        global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
-        response = None
-        try:
-            timestamp = int(time.time()*1000)
-            with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
-                stub = mission_control_pb2_grpc.MissionControlStub(channel)
-                response = stub.StartSpinPump (
-                    mission_control_pb2.StartCommandRequest(
-                        request_timestamp = timestamp),
-                    timeout = GRPC_CALL_TIMEOUT )
-                print("Mission Control RPi Start Mission Control Command received at: " + str(datetime.now()))
-                print(response)
-        
-        except Exception as e:
-            info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
-            print(info)
-
-class StopSpinPumpThread(QtCore.QThread):
-    def __init__(self):
-        QtCore.QThread.__init__(self)
-        
-    def run(self):
-        global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
-        response = None
-        try:
-            timestamp = int(time.time()*1000)
-            with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
-                stub = mission_control_pb2_grpc.MissionControlStub(channel)
-                response = stub.StopSpinPump (
-                    mission_control_pb2.StartCommandRequest(
-                        request_timestamp = timestamp),
-                    timeout = GRPC_CALL_TIMEOUT )
-                print("Mission Control RPi Start Mission Control Command received at: " + str(datetime.now()))
-                print(response)
-        
-        except Exception as e:
-            info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
-            print(info)
-
-class StartHeaterThread(QtCore.QThread):
-    def __init__(self):
-        QtCore.QThread.__init__(self)
-        
-    def run(self):
-        global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
-        response = None
-        try:
-            timestamp = int(time.time()*1000)
-            with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
-                stub = mission_control_pb2_grpc.MissionControlStub(channel)
-                response = stub.StartHeater (
-                    mission_control_pb2.StartCommandRequest(
-                        request_timestamp = timestamp),
-                    timeout = GRPC_CALL_TIMEOUT )
-                print("Mission Control RPi Start Mission Control Command received at: " + str(datetime.now()))
-                print(response)
-        
-        except Exception as e:
-            info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
-            print(info)
-
-class StopHeaterThread(QtCore.QThread):
-    def __init__(self):
-        QtCore.QThread.__init__(self)
-        
-    def run(self):
-        global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
-        response = None
-        try:
-            timestamp = int(time.time()*1000)
-            with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
-                stub = mission_control_pb2_grpc.MissionControlStub(channel)
-                response = stub.StopHeater (
-                    mission_control_pb2.StartCommandRequest(
-                        request_timestamp = timestamp),
-                    timeout = GRPC_CALL_TIMEOUT )
-                print("Mission Control RPi Start Mission Control Command received at: " + str(datetime.now()))
-                print(response)
-        
-        except Exception as e:
-            info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
-            print(info)
-
-def _changeStyle(button):
-    button.setStyleSheet("color: '#dc3545'")
-    #button.setText(button.text() + " [x]")
-    #button.setChecked(True)
+            self.log.emit(info)
 
 class StartupDiagnosticsDisplay:
 
-    def __init__(self, group_box):
+    def __init__(self, main_window, group_box):
         # Tuple (buttons display text, pointer to functions)     
         self.labels = [
             [mcpb.STARTUP_IDLE, QtWidgets.QLabel("1. Idle")],
@@ -295,6 +101,7 @@ class StartupDiagnosticsDisplay:
         ]
         self.threads = []
         self.group_box = group_box
+        self.main_window = main_window
         self.layout = QtWidgets.QVBoxLayout()
         self.group_box.setLayout(self.layout)
         self._initWidgets()
@@ -304,7 +111,15 @@ class StartupDiagnosticsDisplay:
             self.layout.addWidget(l[1])
         self.button_layout = QtWidgets.QHBoxLayout()
         self.next_button = QtWidgets.QPushButton("Next")
+        self.next_button.clicked.connect(
+            partial(self.next_button.setStyleSheet,"font-style: italic; color: '#ffc107'"))
+        self.next_button.clicked.connect(self._next)
+            
         self.restart_button = QtWidgets.QPushButton("Restart")
+        self.restart_button.clicked.connect(self._restart)
+        self.restart_button.clicked.connect(
+            partial(self.restart_button.setStyleSheet,"font-style: italic; color: '#ffc107'"))
+        
         self.button_layout.addWidget(self.next_button)
         self.button_layout.addWidget(self.restart_button)
         self.layout.addLayout(self.button_layout)
@@ -316,58 +131,36 @@ class StartupDiagnosticsDisplay:
                     l[1].setStyleSheet("font-style: italic; color: '#ffc107'")
                 else:
                     l[1].setStyleSheet("font-style: normal; color: '#ffffff'")
+        if (response.state == mcpb.STARTUP_HOMING_Z1) or \
+           (response.state == mcpb.STARTUP_HOMING_Y):
+            self.next_button.setEnabled(False)
+        else:
+            self.next_button.setEnabled(True)
 
-    def start_mission_clock(self):
-        client_thread = StartMissionClockThread()
+    @QtCore.Slot(object)
+    def _next(self):
+        client_thread = StartupNextThread()
         self.threads.append(client_thread)
-        client_thread.start()      
-
-    def start_home_Z1(self):
-        client_thread = StartHomeZ1Thread()
-        self.threads.append(client_thread)
-        client_thread.start() 
-
-    def start_home_Z2(self):
-        client_thread = StartHomeZ2Thread()
-        self.threads.append(client_thread)
-        client_thread.start() 
-
-    def start_home_X(self):
-        client_thread = StartHomeXThread()
-        self.threads.append(client_thread)
-        client_thread.start() 
-
-    def start_home_Y(self):
-        client_thread = StartHomeYThread()
-        self.threads.append(client_thread)
-        client_thread.start() 
-
-    def start_spin_drill_motor(self):
-        client_thread = StartSpinDrillMotorThread()
-        self.threads.append(client_thread)
-        client_thread.start()
-
-    def stop_spin_drill_motor(self):
-        client_thread = StopSpinDrillMotorThread()
-        self.threads.append(client_thread)
+        client_thread.done.connect(self.on_done)
+        client_thread.log.connect(self.log)
         client_thread.start()  
 
-    def start_spin_pump(self):
-        client_thread = StartSpinPumpThread()
+    @QtCore.Slot(object)
+    def _restart(self):
+        client_thread = RestartThread()
         self.threads.append(client_thread)
-        client_thread.start()
+        client_thread.done.connect(self.on_done)
+        client_thread.log.connect(self.log)
+        client_thread.start()    
 
-    def stop_spin_pump(self):
-        client_thread = StopSpinPumpThread()
-        self.threads.append(client_thread)
-        client_thread.start() 
+    @QtCore.Slot(object)
+    def on_done(self, response):
+        if (response.status == mcpb.INVALID_STATE):
+            self.main_window.log(f"[{str(datetime.now())}] Invalid State for Startup")
+        self.next_button.setStyleSheet("font-style: normal; color: '#1de9b6'")
+        self.restart_button.setStyleSheet("font-style: normal; color: '#1de9b6'")
 
-    def start_heater(self):
-        client_thread = StartHeaterThread()
-        self.threads.append(client_thread)
-        client_thread.start()
-   
-    def stop_heater(self):
-        client_thread = StopHeaterThread()
-        self.threads.append(client_thread)
-        client_thread.start() 
+    @QtCore.Slot(object)
+    def log(self, message):
+        self.main_window.log(message)
+    

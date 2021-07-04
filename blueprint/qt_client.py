@@ -54,7 +54,7 @@ class RPiHeartBeat(QtCore.QThread):
                     timeout = GRPC_CALL_TIMEOUT )
                 print("Mission Control HeartBeat received at: " + str(datetime.now()))
                 print(response)
-                self.log.emit("HeartBeat received at: " + str(datetime.now()))
+                #self.log.emit("HeartBeat received at: " + str(datetime.now()))
                 limits_response = stub.GetLimits (
                     mission_control_pb2.GetLimitRequest(request_timestamp = timestamp),
                     timeout = GRPC_CALL_TIMEOUT )
@@ -68,7 +68,8 @@ class RPiHeartBeat(QtCore.QThread):
         self.limits_done.emit(limits_response)    
 
 class EmergencyStopThread(QtCore.QThread):
-    
+    done = Signal(object)
+
     def __init__(self):
         QtCore.QThread.__init__(self)
         
@@ -89,12 +90,13 @@ class EmergencyStopThread(QtCore.QThread):
         except Exception as e:
             info = f"Error connecting to RPi Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
-            
+
+        self.done.emit(response) 
         
 class MainWindow(QtWidgets.QWidget):
 
     def _initEmergencyStop(self):
-        self.emergency_button = QtWidgets.QPushButton('EMERGENCY STOP [ESC]', self)
+        self.emergency_button = QtWidgets.QPushButton('Emergency Stop [ESC]', self)
         self.emergency_button.setIcon(QtGui.QIcon('./blueprint/Big_Red_Button.png'))
         self.emergency_button.setIconSize(QtCore.QSize(30,30))
         self.emergency_button.setMinimumHeight(75)
@@ -131,7 +133,7 @@ class MainWindow(QtWidgets.QWidget):
         self.main_grid_layout.addWidget(
             self.startup_diagnostics_groupbox, 0, 1, 3, 5)
         self.startup_display = startup_diagnostics_display.StartupDiagnosticsDisplay(
-            self.startup_diagnostics_groupbox)
+            self, self.startup_diagnostics_groupbox)
         self.heartbeat_receivers.append(self.startup_display)
 
     def _initDiagnosticsBar(self):
@@ -207,8 +209,9 @@ class MainWindow(QtWidgets.QWidget):
     def emergency_stop(self):
         client_thread = EmergencyStopThread()
         self.threads.append(client_thread)
+        client_thread.done.connect(self.on_emergency_stop_done)
         client_thread.start()
-        self.emergency_button.setText("ATTEMPTING EMERGENCY STOP [ESC]")
+        self.emergency_button.setText("Attempting Emergency Stop [ESC]")
 
     def keyPressEvent(self, event):
         if (event.key() == QtCore.Qt.Key_Escape):
@@ -216,7 +219,7 @@ class MainWindow(QtWidgets.QWidget):
         return super().keyPressEvent(event)
 
     def on_emergency_stop_done(self):
-        self.emergency_button.setText("EMERGENCY STOP [ESC]")
+        self.emergency_button.setText("Emergency Stop [ESC]")
 
     def onHeartBeat(self):
         client_thread = RPiHeartBeat()
