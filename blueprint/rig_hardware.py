@@ -59,10 +59,6 @@ class AbstractRigHardware(ABC):
         pass
 
     @abstractmethod
-    def homeX(self):
-        pass
-
-    @abstractmethod
     def homeY(self):
         pass
 
@@ -70,24 +66,13 @@ class AbstractRigHardware(ABC):
     def homeZ1(self):
         pass
 
-    @abstractmethod
-    def homeZ2(self):
-        pass
-
-    @abstractmethod
-    def isXMoving(self):
-        pass
-
+    
     @abstractmethod
     def isYMoving(self):
         pass
 
     @abstractmethod
     def isZ1Moving(self):
-        pass
-
-    @abstractmethod
-    def isZ2Moving(self):
         pass
 
     @abstractmethod
@@ -102,15 +87,7 @@ class AbstractRigHardware(ABC):
     @abstractmethod
     def setHomeZ1(self):
         pass
-
-    @abstractmethod
-    def setHomeZ2(self):
-        pass
-
-    @abstractmethod
-    def setHomeX(self):
-        pass
-
+    
     @abstractmethod
     def setHomeY(self):
         pass
@@ -121,10 +98,6 @@ class AbstractRigHardware(ABC):
     
     @abstractmethod
     def gotoPositionZ1(self, z):        
-        pass
-
-    @abstractmethod
-    def gotoPositionZ2(self, z):        
         pass
 
 class MockRigHardware(AbstractRigHardware):
