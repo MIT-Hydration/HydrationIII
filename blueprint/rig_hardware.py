@@ -217,7 +217,7 @@ class RigHardware(AbstractRigHardware):
         print(f"Position found {self.current_pos}")
         self.prev_pos = self.current_pos.copy()
         self.move_tolerance = config.getfloat(
-            "Rig", "HomingError")
+            "Rig", "HomingError")/10.0
 
     def gotoPositionY(self, y):
         # ensure Z-poisions are zero within tolerance

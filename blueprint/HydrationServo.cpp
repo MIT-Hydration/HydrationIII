@@ -8,7 +8,7 @@ using namespace sFnd;
 #define CHANGE_NUMBER_SPACE	2000	//The change to the numberspace after homing (cnts)
 #define TIME_TILL_TIMEOUT	50000	//The timeout used for homing(ms) -- low from bottom
 #define ACC_LIM_RPM_PER_SEC	300
-#define VEL_LIM_RPM			30
+#define VEL_LIM_RPM			300
 #define CNTS_PER_MM			400
 #define RPM_PER_MM_PER_SECOND			30
 #define THREAD_PITCH (2.0/1000.0) // meters (2 mm pitch)
