@@ -212,7 +212,8 @@ class RigHardware(AbstractRigHardware):
     
     def __init__(self):
         print("Initializing Rig Hardware ...")
-        self.current_pos = self.getPosition()
+        self.current_pos = [0.0, 0.0, 0.0, 0.0]
+        self.getPosition()
         print(f"Position found {self.current_pos}")
         self.prev_pos = self.current_pos.copy()
         self.move_tolerance = config.getfloat(
