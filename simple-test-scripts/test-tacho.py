@@ -56,7 +56,7 @@ if __name__ == "__main__":
 
     time_start_s = time.time()
 
-    tach_fp = open(f"{time_start_s}_tachmoeter.csv", "w")
+    tach_fp = open(f"vibration_{time_start_s}.csv", "w")
     tach_fp.write("time_s,arduino_timestamp_ms,tacho_rpm,imu_x_g,imu_y_g,imu_z_g\n")
 
     while time_s < 600:
