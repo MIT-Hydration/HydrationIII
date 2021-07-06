@@ -63,7 +63,7 @@ if __name__ == "__main__":
         s = tacho.sensor_values()
         abs_time_s = time.time()
         tach_fp.write(f"{abs_time_s},")
-        for k in s.sensor_readings:
+        for k in s:
             tach_fp.write(f"{k},")
         tach_fp.write(f"\n")
         print(s)
