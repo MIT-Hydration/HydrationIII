@@ -57,7 +57,7 @@ if __name__ == "__main__":
     time_start_s = time.time()
 
     tach_fp = open(f"{time_start_s}_tachmoeter.csv", "w")
-    tach_fp.write("time_s,arduino_timestamp_ms,tacho_rpm,imu_x_g,imu_y_g,imu_z_g")
+    tach_fp.write("time_s,arduino_timestamp_ms,tacho_rpm,imu_x_g,imu_y_g,imu_z_g\n")
 
     while time_s < 600:
         s = tacho.sensor_values()
@@ -65,7 +65,7 @@ if __name__ == "__main__":
         tach_fp.write(f"{abs_time_s},")
         for k in s:
             tach_fp.write(f"{k},")
-        tach_fp.write(f"\n")
+        tach_fp.write("\n")
         print(s)
         time.sleep(0.01)
         time_s += 0.01
