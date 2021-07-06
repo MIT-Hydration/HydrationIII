@@ -64,7 +64,7 @@ if __name__ == "__main__":
         abs_time_s = time.time()
         tach_fp.write(f"{abs_time_s},")
         for k in s:
-            tach_fp.write(f"{s[k]},")
+            tach_fp.write(f"{s[k]:0.6f},")
         tach_fp.write("\n")
         print(s)
         time.sleep(0.01)
