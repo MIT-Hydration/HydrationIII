@@ -166,13 +166,19 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 status = mcpb.INVALID_STATE)
 
         rig_hardware = HardwareFactory.getRig()
-        rig_hardware.movePositionZ1(request.delta)
+        move_success = rig_hardware.movePositionZ1(request.delta)
 
-        return mcpb.CommandResponse(
-            request_timestamp = request.request_timestamp,
-            timestamp = timestamp,
-            status = mcpb.EXECUTED)
-        
+        if move_sucess:
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.EXECUTED)
+        else:
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.EXECUTION_ERROR)
+            
     def YMove(self, request, context):
         timestamp = int(time.time()*1000)
         if (self.state_machine.getState() != mcpb.STARTUP_IDLE): # do nothing
@@ -182,12 +188,18 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 status = mcpb.INVALID_STATE)
 
         rig_hardware = HardwareFactory.getRig()
-        rig_hardware.movePositionY(request.delta)
+        move_success = rig_hardware.movePositionY(request.delta)
 
-        return mcpb.CommandResponse(
-            request_timestamp = request.request_timestamp,
-            timestamp = timestamp,
-            status = mcpb.EXECUTED)
+        if move_sucess:
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.EXECUTED)
+        else:
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.EXECUTION_ERROR)
 
     def StartupNext (self, request, context):
         timestamp = int(time.time()*1000)

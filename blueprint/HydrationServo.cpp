@@ -5,8 +5,8 @@
 
 using namespace sFnd;
 
-#define CHANGE_NUMBER_SPACE	2000	//The change to the numberspace after homing (cnts)
-#define TIME_TILL_TIMEOUT	50000	//The timeout used for homing(ms) -- low from bottom
+#define INIT_TIMEOUT	1000	//Initialize timeout
+
 #define ACC_LIM_RPM_PER_SEC	300
 #define VEL_LIM_RPM			300
 #define CNTS_PER_MM			400
@@ -76,6 +76,12 @@ int _set_position(unsigned long i, double pos) {
   return 1;
 }
 
+int _stop_all_motors() {
+  INode &theNode = *(pTheNode[i]);
+  theNode.Motion.GroupNodeStop(STOP_TYPE_ABRUPT); 
+  return 1;
+}
+
 static PyObject *get_position(PyObject *self, PyObject *args) {
   unsigned long i;
   if (!PyArg_ParseTuple(args, "k", &i)) {
@@ -122,7 +128,13 @@ static PyObject *set_speed_rpm(PyObject *self, PyObject *args) {
     Py_RETURN_FALSE;
 }
 
-
+static PyObject *stop_all_motors(PyObject *self, PyObject *args) {
+  int ret_val = _stop_all_motors();
+  if (ret_val >= 0)
+    Py_RETURN_TRUE;
+  else
+    Py_RETURN_FALSE;
+}
 
 static PyObject *set_position(PyObject *self, PyObject *args) {
   unsigned long i;
@@ -261,7 +273,7 @@ int connect_clearpath(void) {
 				theNode.Motion.NodeStopClear();	//Clear Nodestops on Node
 				theNode.EnableReq(true);					//Enable node
 
-				double timeout = myMgr.TimeStampMsec() + TIME_TILL_TIMEOUT;	//define a timeout in case the node is unable to enable
+				double timeout = myMgr.TimeStampMsec() + INIT_TIMEOUT;	//define a timeout in case the node is unable to enable
 																			//This will loop checking on the Real time values of the node's Ready status
 				while (!theNode.Motion.IsReady()) {
 					if (myMgr.TimeStampMsec() > timeout) {

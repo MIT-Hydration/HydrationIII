@@ -107,7 +107,7 @@ class MockRigHardware(AbstractRigHardware):
         self.homingTime = [0.0, 0.0, 0.0, 0.0]
         self.target = [0.0, 0.0, 0.0, 0.0]
         self.move_tolerance = config.getfloat(
-            "Rig", "HomingError")
+            "Rig", "MoveDetectionTolerance")
     
     def _update(self, i):
         VEL = (self.target[i] - self.position[i])*0.05 # m/s
@@ -153,21 +153,21 @@ class MockRigHardware(AbstractRigHardware):
 
     def isZ1Moving(self):
         #print(f"X is moving {self.homing[0]}")
-        return self.homing[0]
+        return self.homing[iZ1]
 
     def isZ2Moving(self):
         #print(f"X is moving {self.homing[0]}")
-        return self.homing[1]
+        return self.homing[iZ2]
     
     def getTorque(self, i):
         return 9 # maximum is 3.5, so if we see more it indicates simulated value
       
     def isXMoving(self):
         #print(f"X is moving {self.homing[0]}")
-        return self.homing[2]
+        return self.homing[iX]
 
     def isYMoving(self):
-        return self.homing[3]
+        return self.homing[iY]
 
     def gotoPosition(self, x, y):
         t = time.time()
@@ -217,29 +217,31 @@ class RigHardware(AbstractRigHardware):
         print(f"Position found {self.current_pos}")
         self.prev_pos = self.current_pos.copy()
         self.move_tolerance = config.getfloat(
-            "Rig", "HomingError")/10.0
+            "Rig", "MoveDetectionTolerance")
 
     def gotoPositionY(self, y):
         # ensure Z-poisions are zero within tolerance
+        homing_error = config.getfloat("Rig", "HomingError")
         pos = self.getPosition()
-        if (numpy.abs(pos[iZ1]) > self.move_tolerance) or \
-            (numpy.abs(pos[iY]) > self.move_tolerance):
-            return
+        if (numpy.abs(pos[iZ1]) > homing_error):
+            return False
         
-        # stop existing threads
+        # stop existing moves
         self.emergencyStop()
         HydrationServo.set_position(iY, y/YCal)
-        
+        return True
+
     def gotoPositionZ1(self, z):        
         # stop existing threads
         self.emergencyStop()
         HydrationServo.set_position(iZ1, z/Z1Cal)
+        return True
         
     def homeY(self):
-        self.gotoPositionY(0.0)
+        return self.gotoPositionY(0.0)
 
     def homeZ1(self):
-        self.gotoPositionZ1(0.0)
+        return self.gotoPositionZ1(0.0)
 
     def getPosition(self):
         self.prev_pos = self.current_pos.copy()
@@ -256,9 +258,7 @@ class RigHardware(AbstractRigHardware):
         return self.current_pos
         
     def emergencyStop(self):
-        N = HydrationServo.get_num_motors()
-        for n in range(N):
-            HydrationServo.set_speed_rpm(n, 0)
+        HydrationServo.stop_all_motors()
         
     def isNMoving(self, n):   
         return numpy.abs(self.prev_pos[n] - self.current_pos[n]) > self.move_tolerance
