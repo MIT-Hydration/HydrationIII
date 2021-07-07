@@ -53,14 +53,10 @@ class ModesFetchThread(QtCore.QThread):
         except Exception as e:
             info = f"Error connecting to Mission Control Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
-
+        
 class ModeDisplay(QtWidgets.QWidget):
     def __init__(self, layout):
         self.threads = []
-        client_thread = ModesFetchThread()
-        self.threads.append(client_thread)
-        client_thread.done.connect(self._on_modes_fetch_done)
-        client_thread.start()
         self.modes = []
         self.layout = layout
         
@@ -81,6 +77,12 @@ class ModeDisplay(QtWidgets.QWidget):
 
     def update_status(self, response):
         if response != None:
+            if len(self.modes) == 0:
+                client_thread = ModesFetchThread()
+                self.threads.append(client_thread)
+                client_thread.done.connect(self._on_modes_fetch_done)
+                client_thread.start()
+        
             mode = response.major_mode
             for i in range(len(self.modes)):
                 if (self.modes[i] == mode):

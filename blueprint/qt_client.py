@@ -167,8 +167,13 @@ class MainWindow(QtWidgets.QWidget):
             self.limits_groupbox, 0, 6, 3, 5)
 
         self.limits_display = limits_display.LimitsDisplay(self.limits_layout)  
-        self.limit_receivers.append(self.limits_display)     
+        self.limit_receivers.append(self.limits_display)   
 
+    def _initDrillBorehole(self):
+        self.drill_borehole_groupbox = QtWidgets.QGroupBox("P04 Drill Borehole")
+        self.major_mode_tab.addTab(
+            self.drill_borehole_groupbox, "P04")
+        
     def __init__(self):
         super(MainWindow, self).__init__()
         self.threads = []
@@ -184,6 +189,7 @@ class MainWindow(QtWidgets.QWidget):
         self._initStatusDisplay()
 
         self._initDiagnostics()
+        self._initDrillBorehole()
         
         self._initLimits()
         self._initHolePos()
@@ -243,6 +249,11 @@ class MainWindow(QtWidgets.QWidget):
 
     @QtCore.Slot(object)
     def on_heartbeat_received(self, response):
+        if response != None:
+            if response.major_mode == mission_control_pb2.MAJOR_MODE_DRILL_BOREHOLE:
+                self.major_mode_tab.setCurrentIndex(1)
+            else:
+                self.major_mode_tab.setCurrentIndex(0)
         for r in self.heartbeat_receivers:
             r.update_status(response)
         
