@@ -71,11 +71,11 @@ class StatusDisplay:
             self.values[i].setText(fstr%v)
             if check_value:
                 if (v < self.status_list[i][2]):
-                    self.values[i].setStyleSheet("color: green")
+                    self.values[i].setStyleSheet("color: '#17a2b8'")
                 elif (v < self.status_list[i][3]):
-                    self.values[i].setStyleSheet("color: orange")
+                    self.values[i].setStyleSheet("color: '#ffc107'")
                 else: 
-                    self.values[i].setStyleSheet("color: red") 
+                    self.values[i].setStyleSheet("color: '#dc3545'") 
         
 
     def update_status(self, response):

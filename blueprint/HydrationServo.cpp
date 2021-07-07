@@ -77,7 +77,7 @@ int _set_position(unsigned long i, double pos) {
 }
 
 int _stop_all_motors() {
-  INode &theNode = *(pTheNode[i]);
+  INode &theNode = *(pTheNode[0]);
   theNode.Motion.GroupNodeStop(STOP_TYPE_ABRUPT); 
   return 1;
 }

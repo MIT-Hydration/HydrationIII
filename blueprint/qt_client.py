@@ -130,8 +130,9 @@ class MainWindow(QtWidgets.QWidget):
 
     def _initDiagnostics(self):
         self.startup_diagnostics_groupbox = QtWidgets.QGroupBox("P01 Startup and Diagnostics")
-        self.main_grid_layout.addWidget(
-            self.startup_diagnostics_groupbox, 0, 1, 3, 5)
+        
+        self.major_mode_tab.addTab(
+            self.startup_diagnostics_groupbox, "P1")
         self.startup_display = startup_diagnostics_display.StartupDiagnosticsDisplay(
             self, self.startup_diagnostics_groupbox)
         self.heartbeat_receivers.append(self.startup_display)
@@ -175,10 +176,15 @@ class MainWindow(QtWidgets.QWidget):
         self.heartbeat_receivers = []
 
         self.main_grid_layout = QtWidgets.QGridLayout()
+        self.major_mode_tab = QtGui.QTabWidget()
+        self.main_grid_layout.addWidget(self.major_mode_tab, 0, 1, 3, 5)
+
         self._initEmergencyStop()
         self._initModeDisplay()
         self._initStatusDisplay()
+
         self._initDiagnostics()
+        
         self._initLimits()
         self._initHolePos()
         self._initDiagnosticsBar()
@@ -232,16 +238,14 @@ class MainWindow(QtWidgets.QWidget):
 
     @QtCore.Slot(object)
     def on_limit_received(self, response):
-        if (response != None):
-            for r in self.limit_receivers:
-                r.update_limits(response)
+        for r in self.limit_receivers:
+            r.update_limits(response)
 
     @QtCore.Slot(object)
     def on_heartbeat_received(self, response):
-        if (response != None):
-            for r in self.heartbeat_receivers:
-                r.update_status(response)
-            
+        for r in self.heartbeat_receivers:
+            r.update_status(response)
+        
     @QtCore.Slot(object)
     def on_log(self, text):
         self.log(text)

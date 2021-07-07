@@ -248,12 +248,13 @@ class HolePositionDisplay(QtWidgets.QWidget):
         
     def update_limits(self, response):
         global Z_LENGTH
-        air_gap = response.air_gap
-        max_z1 = response.max_z1
-        ice_depth = response.ice_depth
-        self.z1_air_pos_rect.setRect(-0.05, -air_gap, 0.1, air_gap)
-        self.z1_rego_rect.setRect(-0.05, -ice_depth, 0.1, ice_depth-air_gap)
-        self.z1_ice_rect.setRect(-0.05, -max_z1, 0.1, max_z1-ice_depth)
+        if response != None:
+            air_gap = response.air_gap
+            max_z1 = response.max_z1
+            ice_depth = response.ice_depth
+            self.z1_air_pos_rect.setRect(-0.05, -air_gap, 0.1, air_gap)
+            self.z1_rego_rect.setRect(-0.05, -ice_depth, 0.1, ice_depth-air_gap)
+            self.z1_ice_rect.setRect(-0.05, -max_z1, 0.1, max_z1-ice_depth)
         
 
 

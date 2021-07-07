@@ -138,17 +138,17 @@ class StartupDiagnosticsDisplay:
                     l[1].setStyleSheet("font-style: italic; color: '#ffc107'")
                 else:
                     l[1].setStyleSheet("font-style: normal; color: '#ffffff'")
-        if (response.state == mcpb.STARTUP_HOMING_Z1) or \
-           (response.state == mcpb.STARTUP_HOMING_Y) or \
-           (response.state == mcpb.STARTUP_HOME_Y_COMPLETED):
-            self.next_button.setEnabled(False)
-        else:
-            self.next_button.setEnabled(True)
+            if (response.state == mcpb.STARTUP_HOMING_Z1) or \
+            (response.state == mcpb.STARTUP_HOMING_Y) or \
+            (response.state == mcpb.STARTUP_HOME_Y_COMPLETED):
+                self.next_button.setEnabled(False)
+            else:
+                self.next_button.setEnabled(True)
 
-        if (response.state == mcpb.STARTUP_HOME_Y_COMPLETED):
-            self.next_button.setText("Goto P04 Drill Borehole")
-        else:
-            self.next_button.setText("Next")
+            if (response.state == mcpb.STARTUP_HOME_Y_COMPLETED):
+                self.next_button.setText("Goto P04 Drill Borehole")
+            else:
+                self.next_button.setText("Next")
 
     @QtCore.Slot(object)
     def _next(self):

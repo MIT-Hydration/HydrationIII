@@ -96,23 +96,23 @@ class LimitsDisplay:
                 label.setStyleSheet("color: '#ffffff'")
 
     def update_limits(self, response):
-
-        air_gap = response.air_gap
-        max_z1 = response.max_z1
-        ice_depth = response.ice_depth
-        if self.first_widget_fill:
-            self.air_gap_edit.setText(f'{response.air_gap:.3f}')
-            self.max_z1_edit.setText(f'{response.max_z1:.3f}')
-            self.ice_depth_edit.setText(f'{response.ice_depth:.3f}')
-            self.first_widget_fill = False
-        else:
-            self._setDisplayLine(
-                self.air_gap_label, self.air_gap_edit, 
-                "Air Gap to Regolith [m]: ", air_gap)
-            self._setDisplayLine(
-                self.max_z1_label, self.max_z1_edit, 
-                "Max Z1 (Drill Travel) [m]: ", max_z1)
-            self._setDisplayLine(
-                self.ice_depth_label, self.ice_depth_edit, 
-                "Ice Start Depth [m]: ", ice_depth)
+        if response != None:
+            air_gap = response.air_gap
+            max_z1 = response.max_z1
+            ice_depth = response.ice_depth
+            if self.first_widget_fill:
+                self.air_gap_edit.setText(f'{response.air_gap:.3f}')
+                self.max_z1_edit.setText(f'{response.max_z1:.3f}')
+                self.ice_depth_edit.setText(f'{response.ice_depth:.3f}')
+                self.first_widget_fill = False
+            else:
+                self._setDisplayLine(
+                    self.air_gap_label, self.air_gap_edit, 
+                    "Air Gap to Regolith [m]: ", air_gap)
+                self._setDisplayLine(
+                    self.max_z1_label, self.max_z1_edit, 
+                    "Max Z1 (Drill Travel) [m]: ", max_z1)
+                self._setDisplayLine(
+                    self.ice_depth_label, self.ice_depth_edit, 
+                    "Ice Start Depth [m]: ", ice_depth)
             
