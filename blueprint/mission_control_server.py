@@ -59,6 +59,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         self.state_machine = StateMachine()
         self.mission_time_started = False
         self.mission_start_time = -1
+        self.holes = []
         
     def GetMajorModes(self, request, context):
         timestamp = int(time.time()*1000)
@@ -127,7 +128,8 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             rig_y = rig_hardware.getPosition()[3],
             major_mode = self.state_machine.getMajorMode(),
             state = self.state_machine.getState(),
-            server_version = blueprint.HYDRATION_VERSION)
+            server_version = blueprint.HYDRATION_VERSION,
+            holes = self.holes)
 
     def GetLimits(self, request, context):
         timestamp = int(time.time()*1000)

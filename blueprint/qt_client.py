@@ -261,8 +261,13 @@ class MainWindow(QtWidgets.QWidget):
         #     else:
         #         self.major_mode_tab.setCurrentIndex(0)
         for r in self.heartbeat_receivers:
-            r.update_status(response)
-        
+            try:
+                r.update_status(response)
+            except AttributeError as e:
+                self.log("Missing attributte in update_status: " + str(e))
+            except Exception as e:
+                self.log(str(e))
+
     @QtCore.Slot(object)
     def on_log(self, text):
         self.log(text)

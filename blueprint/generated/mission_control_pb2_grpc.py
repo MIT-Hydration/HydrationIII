@@ -34,11 +34,6 @@ class MissionControlStub(object):
                 request_serializer=mission__control__pb2.Limits.SerializeToString,
                 response_deserializer=mission__control__pb2.CommandResponse.FromString,
                 )
-        self.GetHoles = channel.unary_unary(
-                '/mission_control.MissionControl/GetHoles',
-                request_serializer=mission__control__pb2.HoleListRequest.SerializeToString,
-                response_deserializer=mission__control__pb2.HoleList.FromString,
-                )
         self.StartupNext = channel.unary_unary(
                 '/mission_control.MissionControl/StartupNext',
                 request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
@@ -93,12 +88,6 @@ class MissionControlServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def SetLimits(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def GetHoles(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -162,11 +151,6 @@ def add_MissionControlServicer_to_server(servicer, server):
                     servicer.SetLimits,
                     request_deserializer=mission__control__pb2.Limits.FromString,
                     response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
-            ),
-            'GetHoles': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetHoles,
-                    request_deserializer=mission__control__pb2.HoleListRequest.FromString,
-                    response_serializer=mission__control__pb2.HoleList.SerializeToString,
             ),
             'StartupNext': grpc.unary_unary_rpc_method_handler(
                     servicer.StartupNext,
@@ -273,23 +257,6 @@ class MissionControl(object):
         return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/SetLimits',
             mission__control__pb2.Limits.SerializeToString,
             mission__control__pb2.CommandResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def GetHoles(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/GetHoles',
-            mission__control__pb2.HoleListRequest.SerializeToString,
-            mission__control__pb2.HoleList.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x15mission_control.proto\x12\x0fmission_control\"-\n\x10HeartBeatRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"\xe6\x02\n\x0eHeartBeatReply\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\"\n\x19number_of_servos_detected\x18\xe9\x07 \x01(\r\x12\x1c\n\x14\x63pu_temperature_degC\x18\x06 \x01(\x02\x12*\n\x05state\x18G \x01(\x0e\x32\x1b.mission_control.SystemMode\x12/\n\nmajor_mode\x18\x46 \x01(\x0e\x32\x1b.mission_control.SystemMode\x12\x17\n\x0fmission_time_ms\x18\x08 \x01(\x04\x12\x1b\n\x13zdrill_servo_moving\x18\t \x01(\x08\x12\x16\n\x0ey_servo_moving\x18\x0c \x01(\x08\x12\r\n\x05rig_y\x18\x65 \x01(\x02\x12\x12\n\nrig_zdrill\x18\x66 \x01(\x02\x12\x16\n\x0eserver_version\x18\x32 \x01(\t\"W\n\x06Limits\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\x0f\n\x07\x61ir_gap\x18\x02 \x01(\x02\x12\x0e\n\x06max_z1\x18\x03 \x01(\x02\x12\x11\n\tice_depth\x18\x04 \x01(\x02\",\n\x0fGetLimitRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"7\n\x0bMoveRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\r\n\x05\x64\x65lta\x18\x02 \x01(\x02\"o\n\x0f\x43ommandResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12.\n\x06status\x18\x03 \x01(\x0e\x32\x1e.mission_control.CommandReport\"1\n\x14\x45mergencyStopRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"0\n\x13StartCommandRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"1\n\x14GetMajorModesRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"b\n\x0eMajorModesList\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\r\n\x05modes\x18\x03 \x03(\x05\x12\x13\n\x0bmode_labels\x18\x04 \x03(\t\",\n\x0fHoleListRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"\x98\x01\n\x08HoleList\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\r\n\x05order\x18\x03 \x03(\x05\x12\x0b\n\x03x_m\x18\x04 \x03(\x02\x12\x0b\n\x03y_m\x18\x05 \x03(\x02\x12\x0f\n\x07max_z_m\x18\x06 \x03(\x02\x12\x10\n\x08water_ml\x18\x07 \x03(\x02\x12\x12\n\ndiameter_m\x18\x08 \x03(\x02*\xb6\x03\n\nSystemMode\x12\x0b\n\x07UNKNOWN\x10\x00\x12\"\n\x1eMAJOR_MODE_STARTUP_DIAGNOSTICS\x10\x64\x12\x1e\n\x19MAJOR_MODE_DRILL_BOREHOLE\x10\x90\x03\x12\x10\n\x0cSTARTUP_IDLE\x10\x65\x12!\n\x1dSTARTUP_MISSION_CLOCK_STARTED\x10\x66\x12\x15\n\x11STARTUP_HOMING_Z1\x10g\x12\x1d\n\x19STARTUP_HOME_Z1_COMPLETED\x10h\x12\x14\n\x10STARTUP_HOMING_Y\x10i\x12\x1c\n\x18STARTUP_HOME_Y_COMPLETED\x10j\x12\x0f\n\nDRILL_IDLE\x10\x91\x03\x12\x13\n\x0e\x44RILL_MOVING_Y\x10\x92\x03\x12\x1b\n\x16\x44RILL_MOVE_Y_COMPLETED\x10\x93\x03\x12\x17\n\x12\x44RILLING_HOLE_IDLE\x10\x94\x03\x12 \n\x1b\x44RILLING_HOLE_DRILLING_DOWN\x10\x95\x03\x12\x1d\n\x18\x44RILLING_HOLE_REAMING_UP\x10\x96\x03\x12\x1b\n\x16\x44RILLING_HOLE_HOMING_Y\x10\x97\x03*E\n\rCommandReport\x12\x0c\n\x08\x45XECUTED\x10\x00\x12\x11\n\rINVALID_STATE\x10\x01\x12\x13\n\x0f\x45XECUTION_ERROR\x10\x02\x32\x80\x07\n\x0eMissionControl\x12W\n\rGetMajorModes\x12%.mission_control.GetMajorModesRequest\x1a\x1f.mission_control.MajorModesList\x12O\n\tHeartBeat\x12!.mission_control.HeartBeatRequest\x1a\x1f.mission_control.HeartBeatReply\x12\x46\n\tGetLimits\x12 .mission_control.GetLimitRequest\x1a\x17.mission_control.Limits\x12\x46\n\tSetLimits\x12\x17.mission_control.Limits\x1a .mission_control.CommandResponse\x12G\n\x08GetHoles\x12 .mission_control.HoleListRequest\x1a\x19.mission_control.HoleList\x12U\n\x0bStartupNext\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12S\n\tSetHomeZ1\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12R\n\x08SetHomeY\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12H\n\x06Z1Move\x12\x1c.mission_control.MoveRequest\x1a .mission_control.CommandResponse\x12G\n\x05YMove\x12\x1c.mission_control.MoveRequest\x1a .mission_control.CommandResponse\x12X\n\rEmergencyStop\x12%.mission_control.EmergencyStopRequest\x1a .mission_control.CommandResponseb\x06proto3'
+  serialized_pb=b'\n\x15mission_control.proto\x12\x0fmission_control\"-\n\x10HeartBeatRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"\x90\x03\n\x0eHeartBeatReply\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\"\n\x19number_of_servos_detected\x18\xe9\x07 \x01(\r\x12\x1c\n\x14\x63pu_temperature_degC\x18\x06 \x01(\x02\x12*\n\x05state\x18G \x01(\x0e\x32\x1b.mission_control.SystemMode\x12/\n\nmajor_mode\x18\x46 \x01(\x0e\x32\x1b.mission_control.SystemMode\x12\x17\n\x0fmission_time_ms\x18\x08 \x01(\x04\x12\x1b\n\x13zdrill_servo_moving\x18\t \x01(\x08\x12\x16\n\x0ey_servo_moving\x18\x0c \x01(\x08\x12\r\n\x05rig_y\x18\x65 \x01(\x02\x12\x12\n\nrig_zdrill\x18\x66 \x01(\x02\x12\x16\n\x0eserver_version\x18\x32 \x01(\t\x12(\n\x05holes\x18\x33 \x01(\x0b\x32\x19.mission_control.HoleList\"W\n\x06Limits\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\x0f\n\x07\x61ir_gap\x18\x02 \x01(\x02\x12\x0e\n\x06max_z1\x18\x03 \x01(\x02\x12\x11\n\tice_depth\x18\x04 \x01(\x02\",\n\x0fGetLimitRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"7\n\x0bMoveRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\r\n\x05\x64\x65lta\x18\x02 \x01(\x02\"o\n\x0f\x43ommandResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12.\n\x06status\x18\x03 \x01(\x0e\x32\x1e.mission_control.CommandReport\"1\n\x14\x45mergencyStopRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"0\n\x13StartCommandRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"1\n\x14GetMajorModesRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"b\n\x0eMajorModesList\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\r\n\x05modes\x18\x03 \x03(\x05\x12\x13\n\x0bmode_labels\x18\x04 \x03(\t\"\x98\x01\n\x08HoleList\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\r\n\x05order\x18\x03 \x03(\x05\x12\x0b\n\x03x_m\x18\x04 \x03(\x02\x12\x0b\n\x03y_m\x18\x05 \x03(\x02\x12\x0f\n\x07max_z_m\x18\x06 \x03(\x02\x12\x10\n\x08water_ml\x18\x07 \x03(\x02\x12\x12\n\ndiameter_m\x18\x08 \x03(\x02*\xb6\x03\n\nSystemMode\x12\x0b\n\x07UNKNOWN\x10\x00\x12\"\n\x1eMAJOR_MODE_STARTUP_DIAGNOSTICS\x10\x64\x12\x1e\n\x19MAJOR_MODE_DRILL_BOREHOLE\x10\x90\x03\x12\x10\n\x0cSTARTUP_IDLE\x10\x65\x12!\n\x1dSTARTUP_MISSION_CLOCK_STARTED\x10\x66\x12\x15\n\x11STARTUP_HOMING_Z1\x10g\x12\x1d\n\x19STARTUP_HOME_Z1_COMPLETED\x10h\x12\x14\n\x10STARTUP_HOMING_Y\x10i\x12\x1c\n\x18STARTUP_HOME_Y_COMPLETED\x10j\x12\x0f\n\nDRILL_IDLE\x10\x91\x03\x12\x13\n\x0e\x44RILL_MOVING_Y\x10\x92\x03\x12\x1b\n\x16\x44RILL_MOVE_Y_COMPLETED\x10\x93\x03\x12\x17\n\x12\x44RILLING_HOLE_IDLE\x10\x94\x03\x12 \n\x1b\x44RILLING_HOLE_DRILLING_DOWN\x10\x95\x03\x12\x1d\n\x18\x44RILLING_HOLE_REAMING_UP\x10\x96\x03\x12\x1b\n\x16\x44RILLING_HOLE_HOMING_Y\x10\x97\x03*E\n\rCommandReport\x12\x0c\n\x08\x45XECUTED\x10\x00\x12\x11\n\rINVALID_STATE\x10\x01\x12\x13\n\x0f\x45XECUTION_ERROR\x10\x02\x32\xb7\x06\n\x0eMissionControl\x12W\n\rGetMajorModes\x12%.mission_control.GetMajorModesRequest\x1a\x1f.mission_control.MajorModesList\x12O\n\tHeartBeat\x12!.mission_control.HeartBeatRequest\x1a\x1f.mission_control.HeartBeatReply\x12\x46\n\tGetLimits\x12 .mission_control.GetLimitRequest\x1a\x17.mission_control.Limits\x12\x46\n\tSetLimits\x12\x17.mission_control.Limits\x1a .mission_control.CommandResponse\x12U\n\x0bStartupNext\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12S\n\tSetHomeZ1\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12R\n\x08SetHomeY\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12H\n\x06Z1Move\x12\x1c.mission_control.MoveRequest\x1a .mission_control.CommandResponse\x12G\n\x05YMove\x12\x1c.mission_control.MoveRequest\x1a .mission_control.CommandResponse\x12X\n\rEmergencyStop\x12%.mission_control.EmergencyStopRequest\x1a .mission_control.CommandResponseb\x06proto3'
 )
 
 _SYSTEMMODE = _descriptor.EnumDescriptor(
@@ -113,8 +113,8 @@ _SYSTEMMODE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1209,
-  serialized_end=1647,
+  serialized_start=1205,
+  serialized_end=1643,
 )
 _sym_db.RegisterEnumDescriptor(_SYSTEMMODE)
 
@@ -144,8 +144,8 @@ _COMMANDREPORT = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1649,
-  serialized_end=1718,
+  serialized_start=1645,
+  serialized_end=1714,
 )
 _sym_db.RegisterEnumDescriptor(_COMMANDREPORT)
 
@@ -296,6 +296,13 @@ _HEARTBEATREPLY = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='holes', full_name='mission_control.HeartBeatReply.holes', index=12,
+      number=51, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -309,7 +316,7 @@ _HEARTBEATREPLY = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=90,
-  serialized_end=448,
+  serialized_end=490,
 )
 
 
@@ -361,8 +368,8 @@ _LIMITS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=450,
-  serialized_end=537,
+  serialized_start=492,
+  serialized_end=579,
 )
 
 
@@ -393,8 +400,8 @@ _GETLIMITREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=539,
-  serialized_end=583,
+  serialized_start=581,
+  serialized_end=625,
 )
 
 
@@ -432,8 +439,8 @@ _MOVEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=585,
-  serialized_end=640,
+  serialized_start=627,
+  serialized_end=682,
 )
 
 
@@ -478,8 +485,8 @@ _COMMANDRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=642,
-  serialized_end=753,
+  serialized_start=684,
+  serialized_end=795,
 )
 
 
@@ -510,8 +517,8 @@ _EMERGENCYSTOPREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=755,
-  serialized_end=804,
+  serialized_start=797,
+  serialized_end=846,
 )
 
 
@@ -542,8 +549,8 @@ _STARTCOMMANDREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=806,
-  serialized_end=854,
+  serialized_start=848,
+  serialized_end=896,
 )
 
 
@@ -574,8 +581,8 @@ _GETMAJORMODESREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=856,
-  serialized_end=905,
+  serialized_start=898,
+  serialized_end=947,
 )
 
 
@@ -627,40 +634,8 @@ _MAJORMODESLIST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=907,
-  serialized_end=1005,
-)
-
-
-_HOLELISTREQUEST = _descriptor.Descriptor(
-  name='HoleListRequest',
-  full_name='mission_control.HoleListRequest',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='request_timestamp', full_name='mission_control.HoleListRequest.request_timestamp', index=0,
-      number=1, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1007,
-  serialized_end=1051,
+  serialized_start=949,
+  serialized_end=1047,
 )
 
 
@@ -740,12 +715,13 @@ _HOLELIST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1054,
-  serialized_end=1206,
+  serialized_start=1050,
+  serialized_end=1202,
 )
 
 _HEARTBEATREPLY.fields_by_name['state'].enum_type = _SYSTEMMODE
 _HEARTBEATREPLY.fields_by_name['major_mode'].enum_type = _SYSTEMMODE
+_HEARTBEATREPLY.fields_by_name['holes'].message_type = _HOLELIST
 _COMMANDRESPONSE.fields_by_name['status'].enum_type = _COMMANDREPORT
 DESCRIPTOR.message_types_by_name['HeartBeatRequest'] = _HEARTBEATREQUEST
 DESCRIPTOR.message_types_by_name['HeartBeatReply'] = _HEARTBEATREPLY
@@ -757,7 +733,6 @@ DESCRIPTOR.message_types_by_name['EmergencyStopRequest'] = _EMERGENCYSTOPREQUEST
 DESCRIPTOR.message_types_by_name['StartCommandRequest'] = _STARTCOMMANDREQUEST
 DESCRIPTOR.message_types_by_name['GetMajorModesRequest'] = _GETMAJORMODESREQUEST
 DESCRIPTOR.message_types_by_name['MajorModesList'] = _MAJORMODESLIST
-DESCRIPTOR.message_types_by_name['HoleListRequest'] = _HOLELISTREQUEST
 DESCRIPTOR.message_types_by_name['HoleList'] = _HOLELIST
 DESCRIPTOR.enum_types_by_name['SystemMode'] = _SYSTEMMODE
 DESCRIPTOR.enum_types_by_name['CommandReport'] = _COMMANDREPORT
@@ -833,13 +808,6 @@ MajorModesList = _reflection.GeneratedProtocolMessageType('MajorModesList', (_me
   })
 _sym_db.RegisterMessage(MajorModesList)
 
-HoleListRequest = _reflection.GeneratedProtocolMessageType('HoleListRequest', (_message.Message,), {
-  'DESCRIPTOR' : _HOLELISTREQUEST,
-  '__module__' : 'mission_control_pb2'
-  # @@protoc_insertion_point(class_scope:mission_control.HoleListRequest)
-  })
-_sym_db.RegisterMessage(HoleListRequest)
-
 HoleList = _reflection.GeneratedProtocolMessageType('HoleList', (_message.Message,), {
   'DESCRIPTOR' : _HOLELIST,
   '__module__' : 'mission_control_pb2'
@@ -856,8 +824,8 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=1721,
-  serialized_end=2617,
+  serialized_start=1717,
+  serialized_end=2540,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetMajorModes',
@@ -900,19 +868,9 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
     create_key=_descriptor._internal_create_key,
   ),
   _descriptor.MethodDescriptor(
-    name='GetHoles',
-    full_name='mission_control.MissionControl.GetHoles',
-    index=4,
-    containing_service=None,
-    input_type=_HOLELISTREQUEST,
-    output_type=_HOLELIST,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-  _descriptor.MethodDescriptor(
     name='StartupNext',
     full_name='mission_control.MissionControl.StartupNext',
-    index=5,
+    index=4,
     containing_service=None,
     input_type=_STARTCOMMANDREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -922,7 +880,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='SetHomeZ1',
     full_name='mission_control.MissionControl.SetHomeZ1',
-    index=6,
+    index=5,
     containing_service=None,
     input_type=_STARTCOMMANDREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -932,7 +890,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='SetHomeY',
     full_name='mission_control.MissionControl.SetHomeY',
-    index=7,
+    index=6,
     containing_service=None,
     input_type=_STARTCOMMANDREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -942,7 +900,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='Z1Move',
     full_name='mission_control.MissionControl.Z1Move',
-    index=8,
+    index=7,
     containing_service=None,
     input_type=_MOVEREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -952,7 +910,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='YMove',
     full_name='mission_control.MissionControl.YMove',
-    index=9,
+    index=8,
     containing_service=None,
     input_type=_MOVEREQUEST,
     output_type=_COMMANDRESPONSE,
@@ -962,7 +920,7 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='EmergencyStop',
     full_name='mission_control.MissionControl.EmergencyStop',
-    index=10,
+    index=9,
     containing_service=None,
     input_type=_EMERGENCYSTOPREQUEST,
     output_type=_COMMANDRESPONSE,
