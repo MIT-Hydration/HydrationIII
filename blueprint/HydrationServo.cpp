@@ -122,6 +122,8 @@ static PyObject *set_speed_rpm(PyObject *self, PyObject *args) {
     Py_RETURN_FALSE;
 }
 
+
+
 static PyObject *set_position(PyObject *self, PyObject *args) {
   unsigned long i;
   double position;
@@ -155,6 +157,8 @@ static PyMethodDef HydrationServo_methods[] = {
 	{"set_position", set_position, METH_VARARGS, "Sets given servo to given position using MovePosnStart"},
     {"set_speed_rpm", set_speed_rpm, 
 	    METH_VARARGS, "Sets servo speed"},
+	{"stop_all_motors", stop_all_motors, 
+	    METH_VARARGS, "Stops all motors"},
 	{"get_torque", get_torque, METH_VARARGS, "Returns torque value"}, 
 	{"set_home", set_home, METH_VARARGS, "Set home"},
 	{"get_num_motors", get_num_motors, 
