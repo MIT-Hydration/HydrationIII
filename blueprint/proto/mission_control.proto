@@ -68,7 +68,7 @@ message HeartBeatReply {
 
     //float rig_torque_z1 = 120;
     string server_version = 50;
-    HoleList holes = 51;
+    repeated Hole holes = 51;
 }
 
 
@@ -113,15 +113,13 @@ message MajorModesList {
     repeated string mode_labels = 4;
 }
 
-message HoleList {
-    uint64 timestamp = 1;
-    uint64 request_timestamp = 2;
-    repeated int32 order = 3;
-    repeated float x_m = 4;
-    repeated float y_m = 5;
-    repeated float max_z_m = 6;
-    repeated float water_ml = 7;
-    repeated float diameter_m = 8;
+message Hole {
+    int32 order = 3;
+    float x_m = 4;
+    float y_m = 5;
+    float max_z_m = 6;
+    float water_ml = 7;
+    float diameter_m = 8;
 }
 
 service MissionControl {
