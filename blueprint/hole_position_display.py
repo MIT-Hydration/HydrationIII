@@ -128,9 +128,9 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.plot.getAxis('bottom').setLabel(f'X {RIG_UNITS}')
         self.plot.getAxis('left').setLabel(f'Y {RIG_UNITS}')
         self.scatter = pg.ScatterPlotItem(
-            pen=pg.mkPen(width=7, color='r'), symbol='o', size=10)
+            pen=pg.mkPen(width=3, color='#dc3545'), symbol='x', size=10)
         self.heater_scatter = pg.ScatterPlotItem(
-            pen=pg.mkPen(width=7, color='b'), symbol='o', size=10)
+            pen=pg.mkPen(width=3, color='#cfebfd'), symbol='o', size=10)
         
         self.plot.addItem(self.scatter)
         self.plot.addItem(self.heater_scatter)
@@ -235,7 +235,7 @@ class HolePositionDisplay(QtWidgets.QWidget):
         if (response != None):  
             z1 = response.rig_zdrill
             y = response.rig_y
-            x = 0.5
+            x = 0.25
             
             self.scatter.setData([x], [y])
             self.heater_scatter.setData([x + HeaterDeltaXY[0]], [y + HeaterDeltaXY[1]])
