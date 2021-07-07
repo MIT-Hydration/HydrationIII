@@ -23,12 +23,15 @@ import grpc
 from .generated import mission_control_pb2, mission_control_pb2_grpc
 
 
-config = configparser.ConfigParser()
+config = configparser.ConfigParser(
+    converters={'list': lambda x: [i.strip() for i in x.split(',')]})
 config.read('config.ini')
 X_LENGTH = config.getfloat('Rig', 'XLength')
 Y_LENGTH = config.getfloat('Rig', 'YLength')
 Z_LENGTH = config.getfloat('Rig', 'ZLength')
 RIG_UNITS = config.get('Rig', 'Units')
+HeaterDeltaXY = config.getlist("Rig", "HeaterDeltaXY")
+HeaterDeltaXY = [float(HeaterDeltaXY[0]), float(HeaterDeltaXY[1])]
 
 MC_IP_ADDRESS_PORT = \
     f"{config.get('Network', 'MissionControlRPiIPAddress')}:" \
@@ -36,8 +39,6 @@ MC_IP_ADDRESS_PORT = \
 
 GRPC_CALL_TIMEOUT   = \
     config.getint('Network', 'GRPCTimeout')
-
-
 
 class SetHomeThread(QtCore.QThread):    
     def __init__(self):
@@ -128,7 +129,11 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.plot.getAxis('left').setLabel(f'Y {RIG_UNITS}')
         self.scatter = pg.ScatterPlotItem(
             pen=pg.mkPen(width=7, color='r'), symbol='o', size=10)
+        self.heater_scatter = pg.ScatterPlotItem(
+            pen=pg.mkPen(width=7, color='b'), symbol='o', size=10)
+        
         self.plot.addItem(self.scatter)
+        self.plot.addItem(self.heater_scatter)
         self.layout.addWidget(self.plot, 0, 0, 
             self.DISPLAY_HEIGHT, self.HOLE_DISPLAY_WIDTH)
 
@@ -230,8 +235,10 @@ class HolePositionDisplay(QtWidgets.QWidget):
         if (response != None):  
             z1 = response.rig_zdrill
             y = response.rig_y
+            x = 0.5
             
-            self.scatter.setData([0.5], [y])
+            self.scatter.setData([x], [y])
+            self.heater_scatter.setData([x + HeaterDeltaXY[0]], [y + HeaterDeltaXY[1]])
             self.z1_drill_pos_rect.setRect(-0.025, z1, 0.05, -z1)
         
             self.cur_pos_label.setText(

@@ -68,6 +68,7 @@ message HeartBeatReply {
 
     //float rig_torque_z1 = 120;
     string server_version = 50;
+    HoleList holes = 51;
 }
 
 
@@ -112,10 +113,6 @@ message MajorModesList {
     repeated string mode_labels = 4;
 }
 
-message HoleListRequest {
-    uint64 request_timestamp = 1;
-}
-
 message HoleList {
     uint64 timestamp = 1;
     uint64 request_timestamp = 2;
@@ -134,7 +131,6 @@ service MissionControl {
     rpc GetLimits (GetLimitRequest) returns (Limits);
     rpc SetLimits (Limits) returns (CommandResponse);
     
-    rpc GetHoles (HoleListRequest) returns (HoleList);
     rpc StartupNext (StartCommandRequest) returns (CommandResponse);
 
     rpc SetHomeZ1 (StartCommandRequest) returns (CommandResponse);
