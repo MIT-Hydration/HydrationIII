@@ -17,7 +17,7 @@ import time
 import configparser
 
 from . import mode_display, status_display, startup_diagnostics_display, limits_display
-from . import hole_position_display
+from . import hole_position_display, drillborehole_display
 import blueprint
 
 config = configparser.ConfigParser()
@@ -170,9 +170,15 @@ class MainWindow(QtWidgets.QWidget):
         self.limit_receivers.append(self.limits_display)   
 
     def _initDrillBorehole(self):
-        self.drill_borehole_groupbox = QtWidgets.QGroupBox("P04 Drill Borehole")
+        self.drillborehole_groupbox = QtWidgets.QGroupBox("P04 Drill Borehole")
         self.major_mode_tab.addTab(
-            self.drill_borehole_groupbox, "P04")
+            self.drillborehole_groupbox, "P04")
+
+        self.drillborehole_display = drillborehole_display.DrillBoreholeDisplay(
+            self, self.drillborehole_groupbox)
+
+        self.heartbeat_receivers.append(self.drillborehole_display)
+        
         
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -249,11 +255,11 @@ class MainWindow(QtWidgets.QWidget):
 
     @QtCore.Slot(object)
     def on_heartbeat_received(self, response):
-        if response != None:
-            if response.major_mode == mission_control_pb2.MAJOR_MODE_DRILL_BOREHOLE:
-                self.major_mode_tab.setCurrentIndex(1)
-            else:
-                self.major_mode_tab.setCurrentIndex(0)
+        # if response != None:
+        #     if response.major_mode == mission_control_pb2.MAJOR_MODE_DRILL_BOREHOLE:
+        #         self.major_mode_tab.setCurrentIndex(1)
+        #     else:
+        #         self.major_mode_tab.setCurrentIndex(0)
         for r in self.heartbeat_receivers:
             r.update_status(response)
         

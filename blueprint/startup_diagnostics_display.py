@@ -139,8 +139,8 @@ class StartupDiagnosticsDisplay:
                 else:
                     l[1].setStyleSheet("font-style: normal; color: '#ffffff'")
             if (response.state == mcpb.STARTUP_HOMING_Z1) or \
-            (response.state == mcpb.STARTUP_HOMING_Y) or \
-            (response.state == mcpb.STARTUP_HOME_Y_COMPLETED):
+                    (response.state == mcpb.STARTUP_HOMING_Y) or \
+                    (response.state == mcpb.STARTUP_HOME_Y_COMPLETED):
                 self.next_button.setEnabled(False)
             else:
                 self.next_button.setEnabled(True)
