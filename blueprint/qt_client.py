@@ -132,7 +132,7 @@ class MainWindow(QtWidgets.QWidget):
         self.startup_diagnostics_groupbox = QtWidgets.QGroupBox("P01 Startup and Diagnostics")
         
         self.major_mode_tab.addTab(
-            self.startup_diagnostics_groupbox, "P1")
+            self.startup_diagnostics_groupbox, "P01")
         self.startup_display = startup_diagnostics_display.StartupDiagnosticsDisplay(
             self, self.startup_diagnostics_groupbox)
         self.heartbeat_receivers.append(self.startup_display)

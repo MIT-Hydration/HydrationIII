@@ -67,6 +67,7 @@ message HeartBeatReply {
     //float rig_zwater = 103;
 
     //float rig_torque_z1 = 120;
+    string server_version = 50;
 }
 
 

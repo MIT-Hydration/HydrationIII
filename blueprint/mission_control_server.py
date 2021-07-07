@@ -4,6 +4,7 @@ from .hardware import HardwareFactory
 
 import time
 import configparser
+import blueprint
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -125,7 +126,8 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             rig_zdrill = rig_hardware.getPosition()[0],
             rig_y = rig_hardware.getPosition()[3],
             major_mode = self.state_machine.getMajorMode(),
-            state = self.state_machine.getState())
+            state = self.state_machine.getState(),
+            server_version = blueprint.HYDRATION_VERSION)
 
     def GetLimits(self, request, context):
         timestamp = int(time.time()*1000)
@@ -168,7 +170,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         rig_hardware = HardwareFactory.getRig()
         move_success = rig_hardware.movePositionZ1(request.delta)
 
-        if move_sucess:
+        if move_success:
             return mcpb.CommandResponse(
                 request_timestamp = request.request_timestamp,
                 timestamp = timestamp,
@@ -190,7 +192,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         rig_hardware = HardwareFactory.getRig()
         move_success = rig_hardware.movePositionY(request.delta)
 
-        if move_sucess:
+        if move_success:
             return mcpb.CommandResponse(
                 request_timestamp = request.request_timestamp,
                 timestamp = timestamp,
