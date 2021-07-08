@@ -80,12 +80,23 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
         self.layout.addLayout(line)
         
         self.move_z1_button = QtWidgets.QPushButton("Drill Down/Ream Up")
-        #self.move_z1_button.clicked.connect(self._on_move_z1)
+        self.move_z1_button.clicked.connect(self._on_move_z1)
         line.addWidget (self.move_z1_button)
         
-        self.finish_hole_button = QtWidgets.QPushButton("Finish Hole and Home Z1")
+        self.finish_hole_button = QtWidgets.QPushButton("Home Z1 and Finish Hole")
         line.addWidget (self.finish_hole_button)
-        #self.finish_hole_button.clicked.connect(self._on_finish_hole)
+        self.finish_hole_button.clicked.connect(self._on_finish_hole)
+    
+    @QtCore.Slot(object)
+    def _on_move_z1(self):
+        timestamp = datetime.now() 
+        self.main_window.log(
+            f"[{timestamp}] Attempting to move Z1 by relative"\
+            f" {float(self.target_z1.text()):0.4f} [m]")
+        client_thread = client_common.GotoZ1Thread(float(self.target_z1.text()))
+        client_thread.log.connect(self.main_window.on_log)
+        self.threads.append(client_thread)
+        client_thread.start()
     
     @QtCore.Slot(object)
     def _on_move_y(self):
@@ -99,10 +110,10 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
         client_thread.start()
 
     @QtCore.Slot(object)
-    def _on_new_hole_done(self, response):
+    def _on_hole_done(self, response):
         if (response != None):
             timestamp = datetime.now()
-            self.main_window.log(f"[{timestamp}] New hole result {response}")
+            self.main_window.log(f"[{timestamp}] Hole Start/Finish result {response}")
 
     @QtCore.Slot(object)
     def _on_new_hole(self):
@@ -110,7 +121,17 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
         self.main_window.log(f"[{timestamp}] New Hole Command")
         client_thread = client_common.NewHoleThread()
         client_thread.log.connect(self.main_window.on_log)
-        client_thread.done.connect(self._on_new_hole_done)
+        client_thread.done.connect(self._on_hole_done)
+        self.threads.append(client_thread)
+        client_thread.start()
+
+    @QtCore.Slot(object)
+    def _on_finish_hole(self):
+        timestamp = datetime.now() 
+        self.main_window.log(f"[{timestamp}] End Hole Command")
+        client_thread = client_common.EndHoleThread()
+        client_thread.log.connect(self.main_window.on_log)
+        client_thread.done.connect(self._on_hole_done)
         self.threads.append(client_thread)
         client_thread.start()
     
@@ -122,9 +143,6 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
                 self.move_y_button.setEnabled(True)
                 self.new_hole_button.setEnabled(True)
                 self.target_y.setEnabled(True)
-                self.move_z1_button.setEnabled(False)
-                self.finish_hole_button.setEnabled(False)
-                self.target_z1.setEnabled(False)
             else:
                 self.hole_label.setText(f"Current Hole: {len(holes)}")
                 self.move_y_button.setEnabled(False)
@@ -135,7 +153,10 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
                 self.target_z1.setEnabled(True)
                 self.move_z1_button.setEnabled(True)
                 self.finish_hole_button.setEnabled(True)
-                
+            else:
+                self.target_z1.setEnabled(False)
+                self.move_z1_button.setEnabled(False)
+                self.finish_hole_button.setEnabled(False)
 
             for l in self.state_labels:
                 if l[0] == response.state:

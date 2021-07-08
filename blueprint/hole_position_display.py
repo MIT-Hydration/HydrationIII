@@ -164,11 +164,10 @@ class HolePositionDisplay(QtWidgets.QWidget):
             x = 0.25
             
             holes = response.holes
-            if (len(holes) > 0):
-                holes_x = [h.x_m for h in holes]
-                holes_y = [h.y_m for h in holes]
-                self.holes_scatter.setData(holes_x, holes_y)
-                
+            holes_x = [h.x_m for h in holes]
+            holes_y = [h.y_m for h in holes]
+            self.holes_scatter.setData(holes_x, holes_y)
+            
             self.scatter.setData([x], [y])
             self.heater_scatter.setData([x + HeaterDeltaXY[0]], [y + HeaterDeltaXY[1]])
             self.z1_drill_pos_rect.setRect(-0.025, z1, 0.05, -z1)

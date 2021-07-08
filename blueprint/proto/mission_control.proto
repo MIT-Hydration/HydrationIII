@@ -142,6 +142,7 @@ service MissionControl {
     rpc YMove (MoveRequest) returns (CommandResponse);
 
     rpc StartDrillHole (StartCommandRequest) returns (CommandResponse);
+    rpc EndDrillHole (StartCommandRequest) returns (CommandResponse);
     
     rpc GotoMajorMode (GotoMajorModesRequest) returns (CommandResponse);
     rpc EmergencyStop (EmergencyStopRequest) returns (CommandResponse);
