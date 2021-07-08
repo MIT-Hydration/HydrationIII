@@ -334,3 +334,21 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
             status = mcpb.EXECUTED)
+
+    def GotoMajorMode(self, request, context):
+        timestamp = int(time.time()*1000)
+        if request.new_mode == mcpb.MAJOR_MODE_DRILL_BOREHOLE:
+            self.state_machine.transitionState(
+                mcpb.MAJOR_MODE_DRILL_BOREHOLE,
+                mcpb.DRILL_IDLE
+            )
+        if self.state_machine.getMajorMode() == request.new_mode:
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.EXECUTED)
+        else:
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)

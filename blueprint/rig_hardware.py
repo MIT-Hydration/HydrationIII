@@ -27,10 +27,16 @@ Z2Cal = config.getfloat('Rig', 'Z2Cal')
 XCal = config.getfloat('Rig', 'XCal')
 YCal = config.getfloat('Rig', 'YCal')
 HomingError =config.getfloat('Rig', 'HomingError') 
-iZ1 = 0
-iZ2 = -1
-iX = -2
-iY = 1
+if config.getboolean('Mocks', 'MockRig'):
+    iZ1 = 0
+    iZ2 = 1
+    iX = 2
+    iY = 3
+else:
+    iZ1 = 0
+    iZ2 = -1
+    iX = -2
+    iY = 1
 
 class AbstractRigHardware(ABC):
     
@@ -135,16 +141,16 @@ class MockRigHardware(AbstractRigHardware):
         self.homingTime[i] = time.time()
 
     def homeZ1(self):
-        self._home(iZ1)
+        self._home(0)
         
     def homeZ2(self):
-        self._home(iZ2)
+        self._home(1)
     
     def homeX(self):
-        self._home(iX)
+        self._home(2)
         
     def homeY(self):
-        self._home(iY)
+        self._home(3)
         
     def emergencyStop(self):
         N = len(self.position)
@@ -153,21 +159,21 @@ class MockRigHardware(AbstractRigHardware):
 
     def isZ1Moving(self):
         #print(f"X is moving {self.homing[0]}")
-        return self.homing[iZ1]
+        return self.homing[0]
 
     def isZ2Moving(self):
         #print(f"X is moving {self.homing[0]}")
-        return self.homing[iZ2]
+        return self.homing[1]
     
     def getTorque(self, i):
         return 9 # maximum is 3.5, so if we see more it indicates simulated value
       
     def isXMoving(self):
         #print(f"X is moving {self.homing[0]}")
-        return self.homing[iX]
+        return self.homing[2]
 
     def isYMoving(self):
-        return self.homing[iY]
+        return self.homing[3]
 
     def gotoPosition(self, x, y):
         t = time.time()
@@ -180,14 +186,14 @@ class MockRigHardware(AbstractRigHardware):
     
     def gotoPositionY(self, y):
         t = time.time()
-        self.target[iY] = y
-        self.homing[iY] = True
-        self.homingTime[iY] = t
+        self.target[3] = y
+        self.homing[3] = True
+        self.homingTime[3] = t
 
     def gotoPositionZ1(self, z): 
-        self.target[iZ1] = z    
-        self.homing[iZ1] = True
-        self.homingTime[iZ1] = time.time()
+        self.target[0] = z    
+        self.homing[0] = True
+        self.homingTime[0] = time.time()
         
     def gotoPositionZ2(self, z):
         self.target[1] = z        
@@ -196,16 +202,16 @@ class MockRigHardware(AbstractRigHardware):
 
     def setHomeZ1(self):
         print("Setting Home Z1")
-        self.position[iZ1] = 0.0
+        self.position[0] = 0.0
 
     def setHomeZ2(self):
-        self.position[iZ2] = 0.0
+        self.position[1] = 0.0
 
     def setHomeX(self):
-        self.position[iX] = 0.0
+        self.position[2] = 0.0
 
     def setHomeY(self):
-        self.position[iY] = 0.0
+        self.position[3] = 0.0
 
 
 class RigHardware(AbstractRigHardware):

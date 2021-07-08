@@ -16,7 +16,8 @@ __status__ = "Production"
 from PySide6 import QtCore, QtWidgets, QtGui
 import pyqtgraph as pg
 import configparser
-import client_common
+from . import client_common
+from .generated import mission_control_pb2
 
 config = configparser.ConfigParser(
     converters={'list': lambda x: [i.strip() for i in x.split(',')]})

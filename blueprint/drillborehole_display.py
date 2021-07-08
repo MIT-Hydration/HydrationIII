@@ -14,7 +14,9 @@ __status__ = "Production"
 
 from PySide6 import QtCore, QtWidgets, QtGui
 from PySide6.QtCore import QTimer, Signal
-import client_common
+from . import client_common
+from .generated import mission_control_pb2 as mcpb
+from datetime import datetime
 
 class DrillBoreholeDisplay(QtWidgets.QWidget):
     def __init__(self, main_window, group_box):
@@ -25,11 +27,10 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
         self.state_labels = [
             [mcpb.DRILL_IDLE, QtWidgets.QLabel("1. Idle")],
             [mcpb.DRILL_MOVING_Y, QtWidgets.QLabel("2. Moving Y")],
-            [mcpb.DRILL_MOVE_Y_COMPLETED, QtWidgets.QLabel("3. Moving Y Completed")],
-            [mcpb.DRILLING_HOLE_IDLE, QtWidgets.QLabel("4. Waiting to Start Drill")],
-            [mcpb.DRILLING_HOLE_DRILLING_DOWN, QtWidgets.QLabel("5. Drilling Down")],
-            [mcpb.DRILLING_HOLE_REAMING_UP, QtWidgets.QLabel("6. Reaming Up")],
-            [mcpb.DRILLING_HOLE_HOMING_Y, QtWidgets.QLabel("7. Homing Z1")]
+            [mcpb.DRILLING_HOLE_IDLE, QtWidgets.QLabel("3. Waiting to Start Drill")],
+            [mcpb.DRILLING_HOLE_DRILLING_DOWN, QtWidgets.QLabel("4. Drilling Down")],
+            [mcpb.DRILLING_HOLE_REAMING_UP, QtWidgets.QLabel("5. Reaming Up")],
+            [mcpb.DRILLING_HOLE_HOMING_Y, QtWidgets.QLabel("6. Homing Z1")]
         ]
 
         self.layout = QtWidgets.QVBoxLayout()
@@ -42,7 +43,7 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
         line.addWidget (self.hole_label)
         self.layout.addLayout(line)
         for i in range(len(self.state_labels)):
-            if (i + 1)%3 == 0:
+            if (i + 1)%4 == 0:
                 line = QtWidgets.QHBoxLayout()
                 self.layout.addLayout(line)
             line.addWidget (self.state_labels[i][1])
@@ -59,6 +60,10 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
 
     @QtCore.Slot(object)
     def on_move_y(self):
+        timestamp = datetime.now() 
+        self.main_window.log(
+            f"[{timestamp}] Attempting to move Y by relative"\
+            f" {float(self.target_y.text()):0.4f} [m]")
         client_thread = client_common.GotoYThread(float(self.target_y.text()))
         self.threads.append(client_thread)
         client_thread.start()

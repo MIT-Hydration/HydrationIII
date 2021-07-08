@@ -112,7 +112,7 @@ class MainWindow(QtWidgets.QWidget):
         self.main_grid_layout.addWidget(
             self.mode_groupbox, 1, 0, 2, 1)
 
-        self.mode_display = mode_display.ModeDisplay(
+        self.mode_display = mode_display.ModeDisplay(self,
             self.mode_layout)
         self.heartbeat_receivers.append(self.mode_display)
   
