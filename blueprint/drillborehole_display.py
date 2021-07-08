@@ -38,31 +38,55 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
         self._initWidgets()
 
     def _initWidgets(self):
-        line = QtWidgets.QHBoxLayout()
-        self.hole_label = QtWidgets.QLabel("Next Hole: ")
-        line.addWidget (self.hole_label)
-        self.new_hole_button = QtWidgets.QPushButton("New Hole")
-        self.new_hole_button.clicked.connect(self._on_new_hole)
-        line.addWidget (self.new_hole_button)
         
-        self.layout.addLayout(line)
-        line = QtWidgets.QHBoxLayout()
         for i in range(len(self.state_labels)):
             if i%3 == 0:
                 line = QtWidgets.QHBoxLayout()
                 self.layout.addLayout(line)
             line.addWidget (self.state_labels[i][1])
+        
+        line = QtWidgets.QHBoxLayout()
+        self.layout.addLayout(line)
+
+        self.hole_label = QtWidgets.QLabel("Next Hole: ")
+        self.new_hole_button = QtWidgets.QPushButton("New Hole")
+        self.new_hole_button.clicked.connect(self._on_new_hole)
         self.move_y_label = QtWidgets.QLabel("Relative Move [m]: ")
         self.target_y = QtWidgets.QLineEdit("")
         self.target_y.setValidator(QtGui.QDoubleValidator())
+        
         line = QtWidgets.QHBoxLayout()
+        self.layout.addLayout(line)
+
         line.addWidget (self.move_y_label)
         line.addWidget (self.target_y)
         self.move_y_button = QtWidgets.QPushButton("Move Y")
         line.addWidget (self.move_y_button)
         self.move_y_button.clicked.connect(self._on_move_y)
+
+        line.addWidget (self.hole_label)
+        line.addWidget (self.new_hole_button)
+        
+        line = QtWidgets.QHBoxLayout()
         self.layout.addLayout(line)
 
+        self.target_z1_label = QtWidgets.QLabel("Relative Target Drill Depth (-ve: down, +ve up) [m]: ")
+        self.target_z1 = QtWidgets.QLineEdit("")
+        self.target_z1.setValidator(QtGui.QDoubleValidator())
+        line.addWidget (self.target_z1_label)
+        line.addWidget (self.target_z1)
+        
+        line = QtWidgets.QHBoxLayout()
+        self.layout.addLayout(line)
+        
+        self.move_z1_button = QtWidgets.QPushButton("Drill Down/Ream Up")
+        #self.move_z1_button.clicked.connect(self._on_move_z1)
+        line.addWidget (self.move_z1_button)
+        
+        self.finish_hole_button = QtWidgets.QPushButton("Finish Hole and Home Z1")
+        line.addWidget (self.finish_hole_button)
+        #self.finish_hole_button.clicked.connect(self._on_finish_hole)
+    
     @QtCore.Slot(object)
     def _on_move_y(self):
         timestamp = datetime.now() 
@@ -98,12 +122,20 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
                 self.move_y_button.setEnabled(True)
                 self.new_hole_button.setEnabled(True)
                 self.target_y.setEnabled(True)
-
+                self.move_z1_button.setEnabled(False)
+                self.finish_hole_button.setEnabled(False)
+                self.target_z1.setEnabled(False)
             else:
                 self.hole_label.setText(f"Current Hole: {len(holes)}")
                 self.move_y_button.setEnabled(False)
                 self.new_hole_button.setEnabled(False)
                 self.target_y.setEnabled(False)
+
+            if (response.state == mcpb.DRILLING_HOLE_IDLE):
+                self.target_z1.setEnabled(True)
+                self.move_z1_button.setEnabled(True)
+                self.finish_hole_button.setEnabled(True)
+                
 
             for l in self.state_labels:
                 if l[0] == response.state:

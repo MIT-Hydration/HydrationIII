@@ -26,12 +26,14 @@ class StateMachine:
         self.drill_states = {
             mcpb.DRILL_IDLE: [mcpb.DRILL_MOVING_Y, mcpb.DRILLING_HOLE_IDLE],
             mcpb.DRILL_MOVING_Y: [mcpb.DRILL_IDLE],
-            mcpb.DRILLING_HOLE_IDLE: [mcpb.DRILL_IDLE],
-            mcpb.DRILLING_HOLE_DRILLING_DOWN: [mcpb.DRILL_IDLE],
-            mcpb.DRILLING_HOLE_REAMING_UP: [mcpb.DRILL_IDLE],
+            mcpb.DRILLING_HOLE_IDLE: [
+                mcpb.DRILLING_HOLE_DRILLING_DOWN,
+                mcpb.DRILLING_HOLE_HOMING_Z1,
+                mcpb.DRILLING_HOLE_REAMING_UP],
+            mcpb.DRILLING_HOLE_DRILLING_DOWN: [mcpb.DRILLING_HOLE_IDLE],
+            mcpb.DRILLING_HOLE_REAMING_UP: [mcpb.DRILLING_HOLE_IDLE],
             mcpb.DRILLING_HOLE_HOMING_Z1: [mcpb.DRILL_IDLE],
         }
-
 
     def getMajorMode(self):
         return self.major_mode
@@ -195,7 +197,8 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
     def Z1Move(self, request, context):
         timestamp = int(time.time()*1000)
-        if (self.state_machine.getState() != mcpb.STARTUP_IDLE): # do nothing
+        if (self.state_machine.getState() != mcpb.STARTUP_IDLE) or \
+              (self.state_machine.getState() != mcpb.DRILLING_IDLE): # do nothing
             return mcpb.CommandResponse(
                 request_timestamp = request.request_timestamp,
                 timestamp = timestamp,
@@ -205,6 +208,14 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         move_success = rig_hardware.movePositionZ1(request.delta)
 
         if move_success:
+            if (self.state_machine.getState() != mcpb.DRILLING_IDLE):
+                if (request.delta < 0):
+                    self.state_machine.transitionState(
+                        mcpb.MAJOR_MODE_DRILL_BOREHOLE, mcpb.DRILLING_HOLE_DRILLING_DOWN)
+                else:
+                    self.state_machine.transitionState(
+                        mcpb.MAJOR_MODE_DRILL_BOREHOLE, mcpb.DRILLING_HOLE_REAMING_UP)
+                    
             return mcpb.CommandResponse(
                 request_timestamp = request.request_timestamp,
                 timestamp = timestamp,
