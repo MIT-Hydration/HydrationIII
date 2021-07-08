@@ -314,7 +314,6 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         if move_success:
             self.last_z1_move = timestamp
             if self.state_machine.getState() == mcpb.DRILLING_HOLE_HOMING_Z1:
-                self._create_new_hole()
                 return mcpb.CommandResponse(
                     request_timestamp = request.request_timestamp,
                     timestamp = timestamp,
@@ -323,7 +322,12 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 return mcpb.CommandResponse(
                     request_timestamp = request.request_timestamp,
                     timestamp = timestamp,
-                    status = mcpb.EXECUTION_ERROR)
+                    status = mcpb.INVALID_STATE)
+        else:
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.EXECUTION_ERROR)
 
     def _create_new_hole(self):
         rig_hardware = HardwareFactory.getRig()

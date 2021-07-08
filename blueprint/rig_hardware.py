@@ -71,7 +71,7 @@ class AbstractRigHardware(ABC):
     @abstractmethod
     def homeZ1(self):
         pass
-    
+
     @abstractmethod
     def isYMoving(self):
         pass
@@ -142,16 +142,20 @@ class MockRigHardware(AbstractRigHardware):
         self.homingTime[i] = time.time()
 
     def homeZ1(self):
-        self._home(0)
+        self._home(iZ1)
+        return True
         
     def homeZ2(self):
-        self._home(1)
+        self._home(iZ2)
+        return True
     
     def homeX(self):
-        self._home(2)
+        self._home(iX)
+        return True
         
     def homeY(self):
-        self._home(3)
+        self._home(iY)
+        return True
         
     def emergencyStop(self):
         N = len(self.position)
