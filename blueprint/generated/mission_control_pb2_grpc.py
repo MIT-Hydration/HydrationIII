@@ -59,6 +59,11 @@ class MissionControlStub(object):
                 request_serializer=mission__control__pb2.MoveRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.CommandResponse.FromString,
                 )
+        self.StartDrillHole = channel.unary_unary(
+                '/mission_control.MissionControl/StartDrillHole',
+                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
         self.GotoMajorMode = channel.unary_unary(
                 '/mission_control.MissionControl/GotoMajorMode',
                 request_serializer=mission__control__pb2.GotoMajorModesRequest.SerializeToString,
@@ -128,6 +133,12 @@ class MissionControlServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def StartDrillHole(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def GotoMajorMode(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -186,6 +197,11 @@ def add_MissionControlServicer_to_server(servicer, server):
             'YMove': grpc.unary_unary_rpc_method_handler(
                     servicer.YMove,
                     request_deserializer=mission__control__pb2.MoveRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'StartDrillHole': grpc.unary_unary_rpc_method_handler(
+                    servicer.StartDrillHole,
+                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
                     response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
             ),
             'GotoMajorMode': grpc.unary_unary_rpc_method_handler(
@@ -357,6 +373,23 @@ class MissionControl(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/YMove',
             mission__control__pb2.MoveRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def StartDrillHole(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/StartDrillHole',
+            mission__control__pb2.StartCommandRequest.SerializeToString,
             mission__control__pb2.CommandResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

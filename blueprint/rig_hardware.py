@@ -53,12 +53,12 @@ class AbstractRigHardware(ABC):
     def movePositionZ1(self, delta):
         cur_pos = self.getPosition().copy()
         new_z1 = cur_pos[iZ1] + delta
-        self.gotoPositionZ1(new_z1)
+        return self.gotoPositionZ1(new_z1)
     
     def movePositionY(self, delta):
         cur_pos = self.getPosition().copy()
         new_y = cur_pos[iY] + delta
-        self.gotoPositionY(new_y)
+        return self.gotoPositionY(new_y)
     
     @abstractmethod
     def getPosition(self):
@@ -71,7 +71,6 @@ class AbstractRigHardware(ABC):
     @abstractmethod
     def homeZ1(self):
         pass
-
     
     @abstractmethod
     def isYMoving(self):
@@ -108,7 +107,9 @@ class AbstractRigHardware(ABC):
 
 class MockRigHardware(AbstractRigHardware):
     def __init__(self):
-        self.position = [-0.4, -0.0, 0.25, 0.50]
+        #self.position = [-0.4, -0.0, 0.25, 0.50]
+        self.position = [-0.1, -0.0, 0.25, 0.10]
+        
         self.homing = [False, False, False, False]
         self.homingTime = [0.0, 0.0, 0.0, 0.0]
         self.target = [0.0, 0.0, 0.0, 0.0]
@@ -183,22 +184,26 @@ class MockRigHardware(AbstractRigHardware):
         self.homingTime[2] = t
         self.homing[3] = True
         self.homingTime[3] = t
+        return True
     
     def gotoPositionY(self, y):
         t = time.time()
         self.target[3] = y
         self.homing[3] = True
         self.homingTime[3] = t
+        return True
 
     def gotoPositionZ1(self, z): 
         self.target[0] = z    
         self.homing[0] = True
         self.homingTime[0] = time.time()
+        return True
         
     def gotoPositionZ2(self, z):
         self.target[1] = z        
         self.homing[1] = True
         self.homingTime[1] = time.time()
+        return True
 
     def setHomeZ1(self):
         print("Setting Home Z1")

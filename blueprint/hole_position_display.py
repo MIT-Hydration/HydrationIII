@@ -51,11 +51,14 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.plot.setYRange(-0.05, Y_LENGTH + 0.05, padding=0)
         self.plot.getAxis('bottom').setLabel(f'X {RIG_UNITS}')
         self.plot.getAxis('left').setLabel(f'Y {RIG_UNITS}')
+        self.holes_scatter = pg.ScatterPlotItem(
+            pen=pg.mkPen(width=3, color='#ffc107'), symbol='o', size=20)
         self.scatter = pg.ScatterPlotItem(
             pen=pg.mkPen(width=3, color='#dc3545'), symbol='x', size=10)
         self.heater_scatter = pg.ScatterPlotItem(
-            pen=pg.mkPen(width=3, color='#cfebfd'), symbol='o', size=10)
+            pen=pg.mkPen(width=3, color='#cfebfd'), symbol='+', size=10)
         
+        self.plot.addItem(self.holes_scatter)
         self.plot.addItem(self.scatter)
         self.plot.addItem(self.heater_scatter)
         self.layout.addWidget(self.plot, 0, 0, 
@@ -160,6 +163,12 @@ class HolePositionDisplay(QtWidgets.QWidget):
             y = response.rig_y
             x = 0.25
             
+            holes = response.holes
+            if (len(holes) > 0):
+                holes_x = [h.x_m for h in holes]
+                holes_y = [h.y_m for h in holes]
+                self.holes_scatter.setData(holes_x, holes_y)
+                
             self.scatter.setData([x], [y])
             self.heater_scatter.setData([x + HeaterDeltaXY[0]], [y + HeaterDeltaXY[1]])
             self.z1_drill_pos_rect.setRect(-0.025, z1, 0.05, -z1)

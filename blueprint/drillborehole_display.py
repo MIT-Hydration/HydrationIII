@@ -30,7 +30,7 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
             [mcpb.DRILLING_HOLE_IDLE, QtWidgets.QLabel("3. Waiting to Start Drill")],
             [mcpb.DRILLING_HOLE_DRILLING_DOWN, QtWidgets.QLabel("4. Drilling Down")],
             [mcpb.DRILLING_HOLE_REAMING_UP, QtWidgets.QLabel("5. Reaming Up")],
-            [mcpb.DRILLING_HOLE_HOMING_Y, QtWidgets.QLabel("6. Homing Z1")]
+            [mcpb.DRILLING_HOLE_HOMING_Z1, QtWidgets.QLabel("6. Homing Z1")]
         ]
 
         self.layout = QtWidgets.QVBoxLayout()
@@ -41,9 +41,14 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
         line = QtWidgets.QHBoxLayout()
         self.hole_label = QtWidgets.QLabel("Next Hole: ")
         line.addWidget (self.hole_label)
+        self.new_hole_button = QtWidgets.QPushButton("New Hole")
+        self.new_hole_button.clicked.connect(self._on_new_hole)
+        line.addWidget (self.new_hole_button)
+        
         self.layout.addLayout(line)
+        line = QtWidgets.QHBoxLayout()
         for i in range(len(self.state_labels)):
-            if (i + 1)%4 == 0:
+            if i%3 == 0:
                 line = QtWidgets.QHBoxLayout()
                 self.layout.addLayout(line)
             line.addWidget (self.state_labels[i][1])
@@ -55,16 +60,33 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
         line.addWidget (self.target_y)
         self.move_y_button = QtWidgets.QPushButton("Move Y")
         line.addWidget (self.move_y_button)
-        self.move_y_button.clicked.connect(self.on_move_y)
+        self.move_y_button.clicked.connect(self._on_move_y)
         self.layout.addLayout(line)
 
     @QtCore.Slot(object)
-    def on_move_y(self):
+    def _on_move_y(self):
         timestamp = datetime.now() 
         self.main_window.log(
             f"[{timestamp}] Attempting to move Y by relative"\
             f" {float(self.target_y.text()):0.4f} [m]")
         client_thread = client_common.GotoYThread(float(self.target_y.text()))
+        client_thread.log.connect(self.main_window.on_log)
+        self.threads.append(client_thread)
+        client_thread.start()
+
+    @QtCore.Slot(object)
+    def _on_new_hole_done(self, response):
+        if (response != None):
+            timestamp = datetime.now()
+            self.main_window.log(f"[{timestamp}] New hole result {response}")
+
+    @QtCore.Slot(object)
+    def _on_new_hole(self):
+        timestamp = datetime.now() 
+        self.main_window.log(f"[{timestamp}] New Hole Command")
+        client_thread = client_common.NewHoleThread()
+        client_thread.log.connect(self.main_window.on_log)
+        client_thread.done.connect(self._on_new_hole_done)
         self.threads.append(client_thread)
         client_thread.start()
     
@@ -73,9 +95,16 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
             holes = response.holes
             if (response.state == mcpb.DRILL_IDLE):
                 self.hole_label.setText(f"Next Hole: {len(holes) + 1}")
+                self.move_y_button.setEnabled(True)
+                self.new_hole_button.setEnabled(True)
+                self.target_y.setEnabled(True)
+
             else:
                 self.hole_label.setText(f"Current Hole: {len(holes)}")
-            
+                self.move_y_button.setEnabled(False)
+                self.new_hole_button.setEnabled(False)
+                self.target_y.setEnabled(False)
+
             for l in self.state_labels:
                 if l[0] == response.state:
                     l[1].setStyleSheet("font-style: italic; color: '#ffc107'")

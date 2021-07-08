@@ -255,11 +255,11 @@ class MainWindow(QtWidgets.QWidget):
 
     @QtCore.Slot(object)
     def on_heartbeat_received(self, response):
-        # if response != None:
-        #     if response.major_mode == mission_control_pb2.MAJOR_MODE_DRILL_BOREHOLE:
-        #         self.major_mode_tab.setCurrentIndex(1)
-        #     else:
-        #         self.major_mode_tab.setCurrentIndex(0)
+        if response != None:
+            if response.major_mode == mission_control_pb2.MAJOR_MODE_DRILL_BOREHOLE:
+                self.major_mode_tab.setCurrentIndex(1)
+            else:
+                self.major_mode_tab.setCurrentIndex(0)
         for r in self.heartbeat_receivers:
             try:
                 r.update_status(response)

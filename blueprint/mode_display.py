@@ -82,10 +82,17 @@ class ModeDisplay(QtWidgets.QWidget):
             timestamp = datetime.now()
             self.main_window.log(f"[{timestamp}] Attempting mode change to {b.text()}")
             client_thread = client_common.ModeChangeThread(self._get_button_mode(b))
+            client_thread.done.connect(self._on_mode_change_done)
             client_thread.log.connect(self.main_window.on_log)
             self.threads.append(client_thread)
             client_thread.start()
     
+    @QtCore.Slot(object)
+    def _on_mode_change_done(self, response):
+        if (response != None):
+            timestamp = datetime.now()
+            self.main_window.log(f"[{timestamp}] Mode change result {response}")
+
     def _get_button_mode(self, b):
         for i in range(len(self.mode_radios)):
             if self.mode_radios[i] == b:

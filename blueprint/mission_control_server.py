@@ -23,6 +23,16 @@ class StateMachine:
             mcpb.STARTUP_HOMING_Y: mcpb.STARTUP_HOME_Y_COMPLETED
         }
 
+        self.drill_states = {
+            mcpb.DRILL_IDLE: [mcpb.DRILL_MOVING_Y, mcpb.DRILLING_HOLE_IDLE],
+            mcpb.DRILL_MOVING_Y: [mcpb.DRILL_IDLE],
+            mcpb.DRILLING_HOLE_IDLE: [mcpb.DRILL_IDLE],
+            mcpb.DRILLING_HOLE_DRILLING_DOWN: [mcpb.DRILL_IDLE],
+            mcpb.DRILLING_HOLE_REAMING_UP: [mcpb.DRILL_IDLE],
+            mcpb.DRILLING_HOLE_HOMING_Z1: [mcpb.DRILL_IDLE],
+        }
+
+
     def getMajorMode(self):
         return self.major_mode
     
@@ -39,6 +49,10 @@ class StateMachine:
             else:
                 next_mode.append(mcpb.MAJOR_MODE_DRILL_BOREHOLE)
                 next_state.append(mcpb.DRILL_IDLE)
+        if self.major_mode == mcpb.MAJOR_MODE_DRILL_BOREHOLE:
+            next_mode.append(mcpb.MAJOR_MODE_DRILL_BOREHOLE)
+            for k in self.drill_states[self.state]:
+                next_state.append(k)
 
         return [next_mode, next_state]
 
@@ -60,6 +74,13 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         self.mission_time_started = False
         self.mission_start_time = -1
         self.holes = []
+        self.last_y_move = 0
+
+        self.iZ1 = 0
+        self.iZ2 = 1
+        self.iX = 2
+        self.iY = 3
+
         
     def GetMajorModes(self, request, context):
         timestamp = int(time.time()*1000)
@@ -103,20 +124,31 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         else:
             mission_time = 0
 
-        if (self.state_machine.getState() == mcpb.STARTUP_HOMING_Z1):
+        current_state = self.state_machine.getState()
+        if (current_state == mcpb.STARTUP_HOMING_Z1):
             if rig_hardware.isHomeZ1():
                 self.state_machine.transitionState(
                     mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS, 
                     mcpb.STARTUP_HOME_Z1_COMPLETED
                 )
 
-        if (self.state_machine.getState() == mcpb.STARTUP_HOMING_Y):
+        if (current_state == mcpb.STARTUP_HOMING_Y):
             if rig_hardware.isHomeY():
                 self.state_machine.transitionState(
                     mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS, 
                     mcpb.STARTUP_HOME_Y_COMPLETED
                 )
 
+        if (current_state == mcpb.DRILL_MOVING_Y):
+            move_time_buffer = config.getint("Rig", "MoveTimeBuffer")
+            if ((timestamp - self.last_y_move) > move_time_buffer) and \
+                (not rig_hardware.isYMoving()):
+                self.state_machine.transitionState(
+                    mcpb.MAJOR_MODE_DRILL_BOREHOLE, 
+                    mcpb.DRILL_IDLE
+                )
+
+        position = rig_hardware.getPosition()
         return mcpb.HeartBeatReply(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
@@ -124,8 +156,8 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             mission_time_ms = mission_time,
             zdrill_servo_moving = rig_hardware.isZ1Moving(),
             y_servo_moving = rig_hardware.isYMoving(),
-            rig_zdrill = rig_hardware.getPosition()[0],
-            rig_y = rig_hardware.getPosition()[3],
+            rig_zdrill = position[self.iZ1],
+            rig_y = position[self.iY],
             major_mode = self.state_machine.getMajorMode(),
             state = self.state_machine.getState(),
             server_version = blueprint.HYDRATION_VERSION,
@@ -185,7 +217,8 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             
     def YMove(self, request, context):
         timestamp = int(time.time()*1000)
-        if (self.state_machine.getState() != mcpb.STARTUP_IDLE): # do nothing
+        if (self.state_machine.getState() != mcpb.STARTUP_IDLE) and \
+            (self.state_machine.getState() != mcpb.DRILL_IDLE): # do nothing
             return mcpb.CommandResponse(
                 request_timestamp = request.request_timestamp,
                 timestamp = timestamp,
@@ -194,7 +227,12 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         rig_hardware = HardwareFactory.getRig()
         move_success = rig_hardware.movePositionY(request.delta)
 
+        if (self.state_machine.getState() == mcpb.DRILL_IDLE): 
+            self.state_machine.transitionState(
+                mcpb.MAJOR_MODE_DRILL_BOREHOLE, mcpb.DRILL_MOVING_Y)
+
         if move_success:
+            self.last_y_move = timestamp
             return mcpb.CommandResponse(
                 request_timestamp = request.request_timestamp,
                 timestamp = timestamp,
@@ -204,6 +242,42 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 request_timestamp = request.request_timestamp,
                 timestamp = timestamp,
                 status = mcpb.EXECUTION_ERROR)
+
+    def StartDrillHole(self, request, context):
+        timestamp = int(time.time()*1000)
+        if (self.state_machine.getState() != mcpb.DRILL_IDLE): # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+        
+        self.state_machine.transitionState(
+                mcpb.MAJOR_MODE_DRILL_BOREHOLE, mcpb.DRILLING_HOLE_IDLE)
+
+        if self.state_machine.getState() == mcpb.DRILLING_HOLE_IDLE:
+            self._create_new_hole()
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.EXECUTED)
+        else:
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.EXECUTION_ERROR)
+
+    def _create_new_hole(self):
+        rig_hardware = HardwareFactory.getRig()
+        position = rig_hardware.getPosition()
+        hole = mcpb.Hole(
+            order = len(self.holes) + 1,
+            x_m = position[self.iX],
+            y_m = position[self.iY],
+            max_z_m = 0.0,
+            water_ml = 0.0,
+            diameter_m = 0.03
+        )
+        self.holes.append(hole)
 
     def StartupNext (self, request, context):
         timestamp = int(time.time()*1000)
