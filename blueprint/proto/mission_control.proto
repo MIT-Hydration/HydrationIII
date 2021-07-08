@@ -28,7 +28,7 @@ enum SystemMode {
     DRILLING_HOLE_IDLE = 404; //after pressing "Start Drill" button, drill is ready to receive user input for next action
     DRILLING_HOLE_DRILLING_DOWN = 405; //From DRILLING_HOLE_IDLE, user can drill down with the "Drill Down" button
     DRILLING_HOLE_REAMING_UP = 406; //From DRILLING_HOLE_IDLE, user can ream up with the "Reaming Up" button
-    DRILLING_HOLE_HOMING_Y = 407; //After pressing "Finish Drill" button, return to homing the y axis
+    DRILLING_HOLE_HOMING_Z1 = 407; //After pressing "Finish Drill" button, return to homing the Z1 axis
 }
 
 enum CommandReport {

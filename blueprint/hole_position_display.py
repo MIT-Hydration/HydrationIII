@@ -16,12 +16,7 @@ __status__ = "Production"
 from PySide6 import QtCore, QtWidgets, QtGui
 import pyqtgraph as pg
 import configparser
-from datetime import datetime, timedelta
-import time
-
-import grpc
-from .generated import mission_control_pb2, mission_control_pb2_grpc
-
+import client_common
 
 config = configparser.ConfigParser(
     converters={'list': lambda x: [i.strip() for i in x.split(',')]})
@@ -32,78 +27,6 @@ Z_LENGTH = config.getfloat('Rig', 'ZLength')
 RIG_UNITS = config.get('Rig', 'Units')
 HeaterDeltaXY = config.getlist("Rig", "HeaterDeltaXY")
 HeaterDeltaXY = [float(HeaterDeltaXY[0]), float(HeaterDeltaXY[1])]
-
-MC_IP_ADDRESS_PORT = \
-    f"{config.get('Network', 'MissionControlRPiIPAddress')}:" \
-    f"{config.get('Network', 'GRPCPort')}"
-
-GRPC_CALL_TIMEOUT   = \
-    config.getint('Network', 'GRPCTimeout')
-
-class SetHomeThread(QtCore.QThread):    
-    def __init__(self):
-        QtCore.QThread.__init__(self)
-        
-    def run(self):
-        global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
-        response = None
-        print("Trying to set Home")
-        try:
-            timestamp = int(time.time()*1000)
-            with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
-                stub = mission_control_pb2_grpc.MissionControlStub(channel)
-                response = stub.SetHomeZ1 (
-                    mission_control_pb2.StartCommandRequest(
-                        request_timestamp = timestamp),
-                    timeout = GRPC_CALL_TIMEOUT )
-                print(response)
-                response = stub.SetHomeY (
-                    mission_control_pb2.StartCommandRequest(
-                        request_timestamp = timestamp),
-                    timeout = GRPC_CALL_TIMEOUT )
-                print(response)
-                
-        except Exception as e:
-            info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
-            print(info)
-
-class GotoThread(QtCore.QThread):    
-    def __init__(self, delta):
-        QtCore.QThread.__init__(self)
-        self.delta = delta
-        
-    def run(self):
-        global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
-        response = None
-        #print(f"Moving to {self.z}")
-        try:
-            timestamp = int(time.time()*1000)
-            with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
-                stub = mission_control_pb2_grpc.MissionControlStub(channel)
-                response = self._request_response(stub, timestamp)
-                
-        except Exception as e:
-            info = f"Error connecting to RPi Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
-            print(info)
-
-    def _request_response(self, stub):
-        pass
-
-class GotoZ1Thread(GotoThread):    
-    def _request_response(self, stub, timestamp):
-        return stub.Z1Move (
-                    mission_control_pb2.MoveRequest(
-                        request_timestamp = timestamp,
-                        delta = self.delta),
-                    timeout = GRPC_CALL_TIMEOUT )
-
-class GotoYThread(GotoThread):    
-    def _request_response(self, stub, timestamp):
-        return stub.YMove (
-                    mission_control_pb2.MoveRequest(
-                        request_timestamp = timestamp,
-                        delta = self.delta),
-                    timeout = GRPC_CALL_TIMEOUT )
 
 class HolePositionDisplay(QtWidgets.QWidget):
     def __init__(self, main_window, layout):
@@ -170,21 +93,20 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.set_home.clicked.connect(self._set_home)
         self.layout.addWidget(self.set_home, 6, start_h, 1, 4)
 
-        
     def _goto_y(self):
-        client_thread = GotoYThread(float(self.target_y.text()))
+        client_thread = client_common.GotoYThread(float(self.target_y.text()))
         self.threads.append(client_thread)
         client_thread.start()
         
     def _goto_z1(self):
-        client_thread = GotoZ1Thread(
+        client_thread = client_common.GotoZ1Thread(
             float(self.target_z1.text()))
         self.threads.append(client_thread)
         client_thread.start() 
 
     def _set_home(self):
         self.main_window.log("Setting Home...")
-        client_thread = SetHomeThread()
+        client_thread = client_common.SetHomeThread()
         self.threads.append(client_thread)
         client_thread.start() 
 

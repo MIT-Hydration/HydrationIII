@@ -14,26 +14,7 @@ __status__ = "Production"
 
 from PySide6 import QtCore, QtWidgets, QtGui
 from PySide6.QtCore import QTimer, Signal
-
-from datetime import datetime, timedelta
-import time
-import configparser
-
-from functools import partial
-
-import grpc
-from .generated import mission_control_pb2_grpc
-from .generated import mission_control_pb2 as mcpb
-
-config = configparser.ConfigParser()
-config.read('config.ini')
-
-MC_IP_ADDRESS_PORT = \
-    f"{config.get('Network', 'MissionControlRPiIPAddress')}:" \
-    f"{config.get('Network', 'GRPCPort')}"
-
-GRPC_CALL_TIMEOUT   = \
-    config.getint('Network', 'GRPCTimeout')
+import client_common
 
 class DrillBoreholeDisplay(QtWidgets.QWidget):
     def __init__(self, main_window, group_box):
@@ -41,15 +22,57 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
         self.threads = []
         self.group_box = group_box
         self.main_window = main_window
+        self.state_labels = [
+            [mcpb.DRILL_IDLE, QtWidgets.QLabel("1. Idle")],
+            [mcpb.DRILL_MOVING_Y, QtWidgets.QLabel("2. Moving Y")],
+            [mcpb.DRILL_MOVE_Y_COMPLETED, QtWidgets.QLabel("3. Moving Y Completed")],
+            [mcpb.DRILLING_HOLE_IDLE, QtWidgets.QLabel("4. Waiting to Start Drill")],
+            [mcpb.DRILLING_HOLE_DRILLING_DOWN, QtWidgets.QLabel("5. Drilling Down")],
+            [mcpb.DRILLING_HOLE_REAMING_UP, QtWidgets.QLabel("6. Reaming Up")],
+            [mcpb.DRILLING_HOLE_HOMING_Y, QtWidgets.QLabel("7. Homing Z1")]
+        ]
+
         self.layout = QtWidgets.QVBoxLayout()
         self.group_box.setLayout(self.layout)
         self._initWidgets()
 
     def _initWidgets(self):
+        line = QtWidgets.QHBoxLayout()
         self.hole_label = QtWidgets.QLabel("Next Hole: ")
-        self.layout.addWidget(self.hole_label)
+        line.addWidget (self.hole_label)
+        self.layout.addLayout(line)
+        for i in range(len(self.state_labels)):
+            if (i + 1)%3 == 0:
+                line = QtWidgets.QHBoxLayout()
+                self.layout.addLayout(line)
+            line.addWidget (self.state_labels[i][1])
+        self.move_y_label = QtWidgets.QLabel("Relative Move [m]: ")
+        self.target_y = QtWidgets.QLineEdit("")
+        self.target_y.setValidator(QtGui.QDoubleValidator())
+        line = QtWidgets.QHBoxLayout()
+        line.addWidget (self.move_y_label)
+        line.addWidget (self.target_y)
+        self.move_y_button = QtWidgets.QPushButton("Move Y")
+        line.addWidget (self.move_y_button)
+        self.move_y_button.clicked.connect(self.on_move_y)
+        self.layout.addLayout(line)
 
+    @QtCore.Slot(object)
+    def on_move_y(self):
+        client_thread = client_common.GotoYThread(float(self.target_y.text()))
+        self.threads.append(client_thread)
+        client_thread.start()
+    
     def update_status(self, response):
         if (response != None):
             holes = response.holes
-            self.hole_label.setText(f"Next Hole: {len(holes) + 1}")
+            if (response.state == mcpb.DRILL_IDLE):
+                self.hole_label.setText(f"Next Hole: {len(holes) + 1}")
+            else:
+                self.hole_label.setText(f"Current Hole: {len(holes)}")
+            
+            for l in self.state_labels:
+                if l[0] == response.state:
+                    l[1].setStyleSheet("font-style: italic; color: '#ffc107'")
+                else:
+                    l[1].setStyleSheet("font-style: normal; color: '#ffffff'")
