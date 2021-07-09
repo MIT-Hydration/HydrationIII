@@ -70,7 +70,7 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.layout.addWidget(QtWidgets.QLabel("Y [m]: "), 1, start_h + 2, 1, 1)
 
         self.target_y = QtWidgets.QLineEdit("")
-        self.target_y.setValidator(QtGui.QDoubleValidator())
+        #self.target_y.setValidator(QtGui.QDoubleValidator())
         
         self.layout.addWidget(self.target_y, 1, start_h + 3, 1, 1)
 
@@ -81,7 +81,7 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.layout.addWidget(QtWidgets.QLabel("Z1 [m]: "), 1, start_h, 1, 1)
         
         self.target_z1 = QtWidgets.QLineEdit("")
-        self.target_z1.setValidator(QtGui.QDoubleValidator())
+        #self.target_z1.setValidator(QtGui.QDoubleValidator())
         self.layout.addWidget(self.target_z1, 1, start_h + 1, 1, 1)
         
         self.goto_z1 = QtWidgets.QPushButton("Move Z1")

@@ -45,11 +45,11 @@ class LimitsDisplay:
         self.ice_depth_label = QtWidgets.QLabel("Ice Start Depth [m]: ")
         
         self.air_gap_edit = QtWidgets.QLineEdit()
-        self.air_gap_edit.setValidator(QtGui.QDoubleValidator())
+        #self.air_gap_edit.setValidator(QtGui.QDoubleValidator())
         self.max_z1_edit = QtWidgets.QLineEdit()
-        self.max_z1_edit.setValidator(QtGui.QDoubleValidator())
+        #self.max_z1_edit.setValidator(QtGui.QDoubleValidator())
         self.ice_depth_edit = QtWidgets.QLineEdit()
-        self.ice_depth_edit.setValidator(QtGui.QDoubleValidator())
+        #self.ice_depth_edit.setValidator(QtGui.QDoubleValidator())
         self.save_button = QtWidgets.QPushButton("Set Limits")
         self.save_button.clicked.connect(self._on_save)
         

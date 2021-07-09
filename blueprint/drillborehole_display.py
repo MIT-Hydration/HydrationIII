@@ -53,7 +53,7 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
         self.new_hole_button.clicked.connect(self._on_new_hole)
         self.move_y_label = QtWidgets.QLabel("Relative Move [m]: ")
         self.target_y = QtWidgets.QLineEdit("0.0")
-        self.target_y.setValidator(QtGui.QDoubleValidator())
+        #self.target_y.setValidator(QtGui.QDoubleValidator())
         
         line = QtWidgets.QHBoxLayout()
         self.layout.addLayout(line)
@@ -72,7 +72,7 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
 
         self.target_z1_label = QtWidgets.QLabel("Relative Target Drill Depth (-ve: down, +ve up) [m]: ")
         self.target_z1 = QtWidgets.QLineEdit("0.0")
-        self.target_z1.setValidator(QtGui.QDoubleValidator())
+        #self.target_z1.setValidator(QtGui.QDoubleValidator())
         line.addWidget (self.target_z1_label)
         line.addWidget (self.target_z1)
         
@@ -90,9 +90,7 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
     @QtCore.Slot(object)
     def _on_move_z1(self):
         timestamp = datetime.now()
-        target_z1 = self.target_z1.text()
-        target_z1.replace(",", ".")
-        target_z1 = float(target_z1) 
+        target_z1 = float(self.target_z1.text())
         self.main_window.log(
             f"[{timestamp}] Attempting to move Z1 by relative"\
             f" {target_z1:0.4f} [m]")
@@ -103,17 +101,18 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
     
     @QtCore.Slot(object)
     def _on_move_y(self):
-        timestamp = datetime.now() 
-        target_y = self.target_y.text()
-        target_y.replace(",", ".")
-        target_y = float(target_y)
-        self.main_window.log(
-            f"[{timestamp}] Attempting to move Y by relative"\
-            f" {target_y:0.4f} [m]")
-        client_thread = client_common.GotoYThread(target_y)
-        client_thread.log.connect(self.main_window.on_log)
-        self.threads.append(client_thread)
-        client_thread.start()
+        try:
+            timestamp = datetime.now() 
+            target_y = float(self.target_y.text())
+            self.main_window.log(
+                f"[{timestamp}] Attempting to move Y by relative"\
+                f" {target_y:0.4f} [m]")
+            client_thread = client_common.GotoYThread(target_y)
+            client_thread.log.connect(self.main_window.on_log)
+            self.threads.append(client_thread)
+            client_thread.start()
+        except Exception as e:
+            print(e)
 
     @QtCore.Slot(object)
     def _on_hole_done(self, response):
