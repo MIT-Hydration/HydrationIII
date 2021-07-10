@@ -72,7 +72,7 @@ class ModeDisplay(QtWidgets.QWidget):
         
     @QtCore.Slot(object)
     def _on_modes_fetch_done(self, response):
-        if len(self.modes == 0):
+        if len(self.modes) == 0:
             self.modes = response.modes
             self.mode_labels = response.mode_labels
             self._initStatusWidgets()
