@@ -20,6 +20,7 @@ import time
 import configparser
 
 import grpc
+from . import client_common
 from .generated import mission_control_pb2, mission_control_pb2_grpc
 
 config = configparser.ConfigParser()
@@ -34,6 +35,7 @@ GRPC_CALL_TIMEOUT   = \
 
 class ModesFetchThread(QtCore.QThread):
     done = Signal(object)
+    log = Signal(object)
     def __init__(self):
         QtCore.QThread.__init__(self)
         
@@ -47,41 +49,69 @@ class ModesFetchThread(QtCore.QThread):
                 response = stub.GetMajorModes (
                     mission_control_pb2.GetMajorModesRequest(request_timestamp = timestamp),
                     timeout = GRPC_CALL_TIMEOUT )
-                print("Major Modes received at: " + str(datetime.now()))
-                print(response)
             self.done.emit(response)
         except Exception as e:
-            info = f"Error connecting to Mission Control Server at: {MC_IP_ADDRESS_PORT}: + {str(e)}"
-            print(info)
+            info = f"[Error] {str(e)}"
+            self.log.emit(info)
 
 class ModeDisplay(QtWidgets.QWidget):
-    def __init__(self, layout):
+    def __init__(self, main_window, layout):
         self.threads = []
-        client_thread = ModesFetchThread()
-        self.threads.append(client_thread)
-        client_thread.done.connect(self._on_modes_fetch_done)
-        client_thread.start()
         self.modes = []
+        self.main_window = main_window
         self.layout = layout
         
     def _initStatusWidgets(self):
         print("Initializing Status Widgets")
         self.mode_radios = []
         for i in range(len(self.modes)):
-            self.mode_radios.append(
-                     QtWidgets.QRadioButton(self.mode_labels[i])
-                 )
+            b = QtWidgets.QRadioButton(self.mode_labels[i])
+            self.mode_radios.append(b)
+            b.toggled.connect(lambda:self._on_mode_change(b))
             self.layout.addWidget(self.mode_radios[i])
         
     @QtCore.Slot(object)
     def _on_modes_fetch_done(self, response):
-        self.modes = response.modes
-        self.mode_labels = response.mode_labels
-        self._initStatusWidgets()
+        if len(self.modes) == 0:
+            self.modes = response.modes
+            self.mode_labels = response.mode_labels
+            self._initStatusWidgets()
 
-    def update_mode(self, mode):
-        for i in range(len(self.modes)):
-             if (self.modes[i] == mode):
-                 self.mode_radios[i].setChecked(True)
-             else:
-                 self.mode_radios[i].setChecked(False)
+    @QtCore.Slot(object)
+    def _on_mode_change(self, b):
+        if b.isChecked() == True:
+            timestamp = datetime.now()
+            self.main_window.log(f"[{timestamp}] Attempting mode change to {b.text()}")
+            client_thread = client_common.ModeChangeThread(self._get_button_mode(b))
+            client_thread.done.connect(self._on_mode_change_done)
+            client_thread.log.connect(self.main_window.on_log)
+            self.threads.append(client_thread)
+            client_thread.start()
+    
+    @QtCore.Slot(object)
+    def _on_mode_change_done(self, response):
+        if (response != None):
+            timestamp = datetime.now()
+            self.main_window.log(f"[{timestamp}] Mode change result {response}")
+
+    def _get_button_mode(self, b):
+        for i in range(len(self.mode_radios)):
+            if self.mode_radios[i] == b:
+                return self.modes[i]
+        return 0
+        
+    def update_status(self, response):
+        if response != None:
+            if len(self.modes) == 0:
+                client_thread = ModesFetchThread()
+                self.threads.append(client_thread)
+                client_thread.done.connect(self._on_modes_fetch_done)
+                client_thread.log.connect(self.main_window.on_log)
+                client_thread.start()
+        
+            mode = response.major_mode
+            for i in range(len(self.modes)):
+                if (self.modes[i] == mode):
+                    self.mode_radios[i].setChecked(True)
+                else:
+                    self.mode_radios[i].setChecked(False)

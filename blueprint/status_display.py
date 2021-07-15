@@ -34,6 +34,7 @@ class StatusDisplay:
             ("CPU Temp (degC)", True, 60, 75),
             ("Mission Time (H:M:S)", True, 80*60*60*1000, 100*60*60*1000),
             ("Round Trip Time (ms)", True, 300, 5000),
+            ("Server Version", True, 300, 5000),
         ]
         self.checkboxes = [None] * len(self.status_list)
         self.values = [None] * len(self.status_list)
@@ -71,11 +72,11 @@ class StatusDisplay:
             self.values[i].setText(fstr%v)
             if check_value:
                 if (v < self.status_list[i][2]):
-                    self.values[i].setStyleSheet("color: green")
+                    self.values[i].setStyleSheet("font-weight: bold; color: '#17a2b8'")
                 elif (v < self.status_list[i][3]):
-                    self.values[i].setStyleSheet("color: orange")
+                    self.values[i].setStyleSheet("font-weight: bold; color: '#ffc107'")
                 else: 
-                    self.values[i].setStyleSheet("color: red") 
+                    self.values[i].setStyleSheet("font-weight: bold; color: '#dc3545'") 
         
 
     def update_status(self, response):
@@ -93,6 +94,9 @@ class StatusDisplay:
             self._update_value(4, str(mission_time), "%s", "Mission Time (H:M:S)", False)
             rtt_time = response.timestamp - response.request_timestamp
             self._update_value(5, rtt_time, "%0.2f [ms]", "Round Trip Time (ms)", True)
+            self._update_value(6, response.server_version, 
+                "%s", "Server Version", False)
+            
             
         else:
             for c in self.checkboxes:

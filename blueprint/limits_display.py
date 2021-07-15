@@ -45,11 +45,11 @@ class LimitsDisplay:
         self.ice_depth_label = QtWidgets.QLabel("Ice Start Depth [m]: ")
         
         self.air_gap_edit = QtWidgets.QLineEdit()
-        self.air_gap_edit.setValidator(QtGui.QDoubleValidator())
+        #self.air_gap_edit.setValidator(QtGui.QDoubleValidator())
         self.max_z1_edit = QtWidgets.QLineEdit()
-        self.max_z1_edit.setValidator(QtGui.QDoubleValidator())
+        #self.max_z1_edit.setValidator(QtGui.QDoubleValidator())
         self.ice_depth_edit = QtWidgets.QLineEdit()
-        self.ice_depth_edit.setValidator(QtGui.QDoubleValidator())
+        #self.ice_depth_edit.setValidator(QtGui.QDoubleValidator())
         self.save_button = QtWidgets.QPushButton("Set Limits")
         self.save_button.clicked.connect(self._on_save)
         
@@ -86,33 +86,33 @@ class LimitsDisplay:
     def _setDisplayLine(self, label, edit, label_text, value):
         new_value = float(edit.text())
         if numpy.abs(value - new_value) > 0.0005:
-            new_text = label_text + "(changed) "
+            new_text = label_text + f"(changed to {value:0.3f}) "
             if(label.text() != new_text):
-                label.setText(label_text + "(changed) ")
-                label.setStyleSheet("color: '#dc3545'")
+                label.setText(new_text)
+                label.setStyleSheet("font-style: italic; color: '#ffc107'")
         else:
             if(label.text() != label_text):
                 label.setText(label_text)
                 label.setStyleSheet("color: '#ffffff'")
 
-    def _updateLimitDisplay(self, response):
-
-        air_gap = response.air_gap
-        max_z1 = response.max_z1
-        ice_depth = response.ice_depth
-        if self.first_widget_fill:
-            self.air_gap_edit.setText(f'{response.air_gap:.3f}')
-            self.max_z1_edit.setText(f'{response.max_z1:.3f}')
-            self.ice_depth_edit.setText(f'{response.ice_depth:.3f}')
-            self.first_widget_fill = False
-        else:
-            self._setDisplayLine(
-                self.air_gap_label, self.air_gap_edit, 
-                "Air Gap to Regolith [m]: ", air_gap)
-            self._setDisplayLine(
-                self.max_z1_label, self.max_z1_edit, 
-                "Max Z1 (Drill Travel) [m]: ", max_z1)
-            self._setDisplayLine(
-                self.ice_depth_label, self.ice_depth_edit, 
-                "Ice Start Depth [m]: ", ice_depth)
+    def update_limits(self, response):
+        if response != None:
+            air_gap = response.air_gap
+            max_z1 = response.max_z1
+            ice_depth = response.ice_depth
+            if self.first_widget_fill:
+                self.air_gap_edit.setText(f'{response.air_gap:.3f}')
+                self.max_z1_edit.setText(f'{response.max_z1:.3f}')
+                self.ice_depth_edit.setText(f'{response.ice_depth:.3f}')
+                self.first_widget_fill = False
+            else:
+                self._setDisplayLine(
+                    self.air_gap_label, self.air_gap_edit, 
+                    "Air Gap to Regolith [m]: ", air_gap)
+                self._setDisplayLine(
+                    self.max_z1_label, self.max_z1_edit, 
+                    "Max Z1 (Drill Travel) [m]: ", max_z1)
+                self._setDisplayLine(
+                    self.ice_depth_label, self.ice_depth_edit, 
+                    "Ice Start Depth [m]: ", ice_depth)
             

@@ -15,31 +15,19 @@ enum SystemMode {
 
     // refer to "State Diagram for 2021-Jul-06" PDF in Hydration Google Drive for state diagram
     STARTUP_IDLE = 101; //ready to receive user input for startups and diagnostics, if emergency stop button is pressed at any point system will return to this state
-    STARTUP_START_MISSION_CLOCK_COMPLETED = 102; //after pressing "Start Mission Clock Button", clock has completed starting
+    STARTUP_MISSION_CLOCK_STARTED = 102; //after pressing "Start Mission Clock Button", clock has completed starting
     STARTUP_HOMING_Z1 = 103; //after pressing "Home Z1" button, begin homing z1 axis
     STARTUP_HOME_Z1_COMPLETED = 104; //z1 has completed homing
     STARTUP_HOMING_Y = 105; //after pressing "Home Y" button, Y axis begins homing
-    STARTUP_HOME_Y_COMPLETD = 106; //y axis has completd homing
+    STARTUP_HOME_Y_COMPLETED = 106; //y axis has completd homing
 
     // refer to "State Diagram for 2021-Jul-06" PDF in Hydration Google Drive for state diagram
     DRILL_IDLE = 401; // ready to receive user input, could be stopped due to emergency stop
     DRILL_MOVING_Y = 402; //after pressing "Move" button, will move y axis to appropriate location
-    DRILL_MOVE_Y_COMPLETED = 403; //y axis moving is completed and y axis is in position
     DRILLING_HOLE_IDLE = 404; //after pressing "Start Drill" button, drill is ready to receive user input for next action
     DRILLING_HOLE_DRILLING_DOWN = 405; //From DRILLING_HOLE_IDLE, user can drill down with the "Drill Down" button
     DRILLING_HOLE_REAMING_UP = 406; //From DRILLING_HOLE_IDLE, user can ream up with the "Reaming Up" button
-    DRILLING_HOLE_HOMING_Y = 407; //After pressing "Finish Drill" button, return to homing the y axis
-}
-
-enum WaterProductionStates {
-    WPSTATE_MANUAL = 0;
-    WPSTATE_CLEANING = 1;
-}
-
-enum WaterProductionCleaningSeq {
-    CLEANING_SEQ_1 = 0;
-    CLEANING_SEQ_2 = 1;
-    CLEANING_SEQ_3 = 2;
+    DRILLING_HOLE_HOMING_Z1 = 407; //After pressing "Finish Drill" button, return to homing the Z1 axis
 }
 
 enum CommandReport {
@@ -60,7 +48,7 @@ message HeartBeatReply {
     //bool bus_75V_dc = 5;
     uint32 number_of_servos_detected = 1001;
     float cpu_temperature_degC = 6;
-    SystemMode mode = 71;
+    SystemMode state = 71;
     SystemMode major_mode = 70;
     uint64 mission_time_ms = 8;
     bool zdrill_servo_moving = 9;
@@ -78,41 +66,10 @@ message HeartBeatReply {
     //float rig_zwater = 103;
 
     //float rig_torque_z1 = 120;
+    string server_version = 50;
+    repeated Hole holes = 51;
 }
 
-message RigStatusRequest {
-    uint64 request_timestamp_ms = 1;
-}
-
-message RigStatusResponse {
-    uint64 timestamp_ms = 1;
-    uint64 request_timestamp_ms = 2;
-
-    float x_position_m = 10;        // position with the left limit switch being position zero, and rightward is positive
-    float x_velocity_m_s = 11;      // velocity in meter per second
-    float y_position_m = 12;        // position with the front limit switch being position zero, and behind is negative
-    float y_velocity_m_s = 13;      // velocity in meter per second
-
-    bool last_calibration_success = 20; // whether the last calibration command was successful
-}
-
-message DrillAssemblyStatusRequest {
-    uint64 request_timestamp_ms = 1;
-}
-
-message DrillAssemblyStatusResponse {
-    uint64 timestamp_ms = 1;
-    uint64 request_timestamp_ms = 2;
-    float drill_setting = 3;     // 0.0 == off, 0.5 == half waveform from the triac, 1.0 // fully on
-    float tachometer_RPM = 4;    // current reading from the tachometer
-    float drill_e_power_W   = 5;   // real electric power readimng from drill power meter
-    float drill_e_current_A = 6;   // total electric current (real + imaginary)
-    float z_position_m = 7;        // position with the top limit switch being position zero, and downward is negative
-    float z_velocity_m_s = 8;      // velocity in meter per second
-    float cpu_temperature_degC = 9;     // Raspberry Pi or any other control computer temperature
-    bool last_calibration_success = 20; // whether the last calibration command was successful
-    bool calibration_error_state = 21;  // are we in calibration error state? if yes, the valid commands are limited
-}
 
 message Limits {
     uint64 request_timestamp = 1;
@@ -125,34 +82,9 @@ message GetLimitRequest {
     uint64 request_timestamp = 1;
 }
 
-message RigMoveCommandRequest {
+message MoveRequest {
     uint64 request_timestamp = 1;
-    float x = 2;
-    float y = 3;
-}
-
-message ZMoveRequest {
-    uint64 request_timestamp = 1;
-    float z = 2;
-}
-
-message DrillModeRequest {
-    uint64 request_timestamp = 1;
-    bool drill_mode = 2;
-}
-
-message DrillCalibrationRequest {
-    uint64 request_timestamp = 1;
-}
-
-message DrillDescendingOffRequest {
-    uint64 request_timestamp = 1;
-    float target_z_m = 2; // example -1.3 [m] (negative as we are using top as zero, negative downward direction)
-}
-
-message DrillDescendingDrillingRequest {
-    uint64 request_timestamp = 1;
-    float target_z_m = 2; // example -1.3 [m] (negative as we are using top as zero, negative downward direction)
+    float delta = 2;
 }
 
 message CommandResponse {
@@ -162,10 +94,6 @@ message CommandResponse {
 }
 
 message EmergencyStopRequest {
-    uint64 request_timestamp = 1;
-}
-
-message SetModeRequest {
     uint64 request_timestamp = 1;
 }
 
@@ -184,19 +112,18 @@ message MajorModesList {
     repeated string mode_labels = 4;
 }
 
-message HoleListRequest {
-    uint64 request_timestamp = 1;
+message Hole {
+    int32 order = 3;
+    float x_m = 4;
+    float y_m = 5;
+    float max_z_m = 6;
+    float water_ml = 7;
+    float diameter_m = 8;
 }
 
-message HoleList {
-    uint64 timestamp = 1;
-    uint64 request_timestamp = 2;
-    repeated int32 order = 3;
-    repeated float x_m = 4;
-    repeated float y_m = 5;
-    repeated float max_z_m = 6;
-    repeated float water_ml = 7;
-    repeated float diameter_m = 8;
+message GotoMajorModesRequest {
+    uint64 request_timestamp = 1;
+    SystemMode new_mode = 2;
 }
 
 service MissionControl {
@@ -206,48 +133,18 @@ service MissionControl {
     rpc GetLimits (GetLimitRequest) returns (Limits);
     rpc SetLimits (Limits) returns (CommandResponse);
     
-    rpc GetHoles (HoleListRequest) returns (HoleList);
-    rpc SetMode (SetModeRequest) returns (CommandResponse);
-    rpc StartMissionClock (StartCommandRequest) returns (CommandResponse);
-
-    rpc StartHomeZ1 (StartCommandRequest) returns (CommandResponse);
-    rpc StartHomeZ2 (StartCommandRequest) returns (CommandResponse);
-    rpc StartHomeX (StartCommandRequest) returns (CommandResponse);
-    rpc StartHomeY (StartCommandRequest) returns (CommandResponse);
+    rpc StartupNext (StartCommandRequest) returns (CommandResponse);
 
     rpc SetHomeZ1 (StartCommandRequest) returns (CommandResponse);
-    rpc SetHomeZ2 (StartCommandRequest) returns (CommandResponse);
-    rpc SetHomeX (StartCommandRequest) returns (CommandResponse);
     rpc SetHomeY (StartCommandRequest) returns (CommandResponse);
 
-    rpc StartSpinDrillMotor (StartCommandRequest) returns (CommandResponse);
-    rpc StopSpinDrillMotor (StartCommandRequest) returns (CommandResponse);
-    rpc StartSpinPump (StartCommandRequest) returns (CommandResponse);
-    rpc StopSpinPump (StartCommandRequest) returns (CommandResponse);
-    rpc StartHeater (StartCommandRequest) returns (CommandResponse);
-    rpc StopHeater (StartCommandRequest) returns (CommandResponse);
+    rpc Z1Move (MoveRequest) returns (CommandResponse);
+    rpc YMove (MoveRequest) returns (CommandResponse);
 
-    rpc RigMove (RigMoveCommandRequest) returns (CommandResponse);
-    rpc Z1Move (ZMoveRequest) returns (CommandResponse);
-    rpc Z2Move (ZMoveRequest) returns (CommandResponse);
-
-    rpc DrillMode (DrillModeRequest) returns (CommandResponse);
-    rpc DrillCalibration (DrillCalibrationRequest) returns (CommandResponse);
-    rpc DrillDescendingOff (DrillDescendingOffRequest) returns (CommandResponse);
-    rpc DrillDescendingDrilling (DrillDescendingDrillingRequest) returns (CommandResponse);
-
+    rpc StartDrillHole (StartCommandRequest) returns (CommandResponse);
+    rpc EndDrillHole (StartCommandRequest) returns (CommandResponse);
+    
+    rpc GotoMajorMode (GotoMajorModesRequest) returns (CommandResponse);
     rpc EmergencyStop (EmergencyStopRequest) returns (CommandResponse);
-
-    rpc DrillAssemblyStatus (DrillAssemblyStatusRequest) returns (DrillAssemblyStatusResponse);
-
-    rpc GetTorque (StartCommandRequest) returns (CommandResponse);
-
 }
 
-service DrillControl {
-    rpc HeartBeat (HeartBeatRequest) returns (HeartBeatReply);
-    rpc DrillAssemblyStatus (DrillAssemblyStatusRequest) returns (DrillAssemblyStatusResponse);
-    rpc DrillMode (DrillModeRequest) returns (CommandResponse);
-    rpc EmergencyStop (EmergencyStopRequest) returns (CommandResponse);
-    rpc DrillCalibration (DrillCalibrationRequest) returns (CommandResponse);
-}
