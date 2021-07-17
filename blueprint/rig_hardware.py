@@ -50,15 +50,15 @@ class AbstractRigHardware(ABC):
         return (not self.isYMoving()) \
             and (numpy.abs(current_pos[iY]) < HomingError) 
 
-    def movePositionZ1(self, delta):
+    def movePositionZ1(self, delta, vel):
         cur_pos = self.getPosition().copy()
         new_z1 = cur_pos[iZ1] + delta
-        return self.gotoPositionZ1(new_z1)
+        return self.gotoPositionZ1(new_z1, vel)
     
-    def movePositionY(self, delta):
+    def movePositionY(self, delta, vel):
         cur_pos = self.getPosition().copy()
         new_y = cur_pos[iY] + delta
-        return self.gotoPositionY(new_y)
+        return self.gotoPositionY(new_y, vel)
     
     @abstractmethod
     def getPosition(self):
@@ -98,11 +98,11 @@ class AbstractRigHardware(ABC):
         pass
 
     @abstractmethod
-    def gotoPositionY(self, y):        
+    def gotoPositionY(self, y, v):        
         pass
     
     @abstractmethod
-    def gotoPositionZ1(self, z):        
+    def gotoPositionZ1(self, z, v):        
         pass
 
 class MockRigHardware(AbstractRigHardware):
@@ -221,12 +221,12 @@ class MockRigHardware(AbstractRigHardware):
 
     def setHomeY(self):
         self.position[3] = 0.0
-
+#ERIC WRITE ABSTRACT MOCK HARDWARE PART 
 
 class RigHardware(AbstractRigHardware):
     
     def __init__(self):
-        print("Initializing Rig Hardware ...")
+        print("Initializing Rig Hardware ...")gotoPosition
         self.current_pos = [0.0, 0.0, 0.0, 0.0]
         self.getPosition()
         print(f"Position found {self.current_pos}")
@@ -234,7 +234,7 @@ class RigHardware(AbstractRigHardware):
         self.move_tolerance = config.getfloat(
             "Rig", "MoveDetectionTolerance")
 
-    def gotoPositionY(self, y):
+    def gotoPositionY(self, y, v):
         # ensure Z-poisions are zero within tolerance
         homing_error = config.getfloat("Rig", "HomingError")
         pos = self.getPosition()
@@ -243,13 +243,13 @@ class RigHardware(AbstractRigHardware):
         
         # stop existing moves
         self.emergencyStop()
-        HydrationServo.set_position(iY, y/YCal)
+        HydrationServo.set_position(iY, y/YCal, v)
         return True
 
-    def gotoPositionZ1(self, z):        
+    def gotoPositionZ1(self, z, v):        
         # stop existing threads
         self.emergencyStop()
-        HydrationServo.set_position(iZ1, z/Z1Cal)
+        HydrationServo.set_position(iZ1, z/Z1Cal, v)
         return True
         
     def homeY(self):
