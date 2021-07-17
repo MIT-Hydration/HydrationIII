@@ -226,7 +226,7 @@ class MockRigHardware(AbstractRigHardware):
 class RigHardware(AbstractRigHardware):
     
     def __init__(self):
-        print("Initializing Rig Hardware ...")gotoPosition
+        print("Initializing Rig Hardware ...")
         self.current_pos = [0.0, 0.0, 0.0, 0.0]
         self.getPosition()
         print(f"Position found {self.current_pos}")
@@ -243,13 +243,13 @@ class RigHardware(AbstractRigHardware):
         
         # stop existing moves
         self.emergencyStop()
-        HydrationServo.set_position(iY, y/YCal, v)
+        HydrationServo.set_position_unique(iY, y/YCal, v)
         return True
 
     def gotoPositionZ1(self, z, v):        
         # stop existing threads
         self.emergencyStop()
-        HydrationServo.set_position(iZ1, z/Z1Cal, v)
+        HydrationServo.set_position_unique(iZ1, z/Z1Cal, v)
         return True
         
     def homeY(self):
