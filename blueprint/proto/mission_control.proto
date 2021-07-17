@@ -85,6 +85,7 @@ message GetLimitRequest {
 message MoveRequest {
     uint64 request_timestamp = 1;
     float delta = 2;
+    float vel = 3; 
 }
 
 message CommandResponse {

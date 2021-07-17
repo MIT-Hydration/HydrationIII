@@ -79,7 +79,7 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
         line = QtWidgets.QHBoxLayout()
         self.layout.addLayout(line)
 
-        self.velocity_label = QtWidgets.QLabel("Velocity in (units (Drillboreohole_display) For Both Y and Z) ")
+        self.velocity_label = QtWidgets.QLabel("Velocity in RPM For Both Y and Z) ")
         self.velocitys = QtWidgets.QLineEdit("0.0")
         line.addWidget (self.velocity_label)
         line.addWidget (self.velocitys )
@@ -115,9 +115,12 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
         try:
             timestamp = datetime.now() 
             target_y = float(self.target_y.text())
+            target_vel = float(self.velocitys.text())
+
             self.main_window.log(
                 f"[{timestamp}] Attempting to move Y by relative"\
-                f" {target_y:0.4f} [m]")
+                f" {target_y:0.4f} [m]"\
+                f" {target_vel:0.4f} [m]")
             client_thread = client_common.GotoYThread(target_y)
             client_thread.log.connect(self.main_window.on_log)
             self.threads.append(client_thread)
