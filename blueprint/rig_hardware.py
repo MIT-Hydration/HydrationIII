@@ -109,7 +109,7 @@ class MockRigHardware(AbstractRigHardware):
     def __init__(self):
         #self.position = [-0.4, -0.0, 0.25, 0.50]
         self.position = [-0.1, -0.0, 0.25, 0.10]
-        
+        self.vel = (self.target[i] - self.position[i])*0.05 # m/s
         self.homing = [False, False, False, False]
         self.homingTime = [0.0, 0.0, 0.0, 0.0]
         self.target = [0.0, 0.0, 0.0, 0.0]
@@ -117,7 +117,7 @@ class MockRigHardware(AbstractRigHardware):
             "Rig", "MoveDetectionTolerance")
     
     def _update(self, i):
-        VEL = (self.target[i] - self.position[i])*0.05 # m/s
+        VEL = self.vel
         if self.homing[i]:
             new_t = time.time()
             dt = new_t - self.homingTime[i]
@@ -190,14 +190,16 @@ class MockRigHardware(AbstractRigHardware):
         self.homingTime[3] = t
         return True
     
-    def gotoPositionY(self, y):
+    def gotoPositionY(self, y, v):
         t = time.time()
+        self.vel = v 
         self.target[3] = y
         self.homing[3] = True
         self.homingTime[3] = t
         return True
 
-    def gotoPositionZ1(self, z): 
+    def gotoPositionZ1(self, z, v): 
+        self.vel = v 
         self.target[0] = z    
         self.homing[0] = True
         self.homingTime[0] = time.time()
