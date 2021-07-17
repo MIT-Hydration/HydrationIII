@@ -169,7 +169,7 @@ static PyObject *set_position_unique(PyObject *self, PyObject *args) {
   unsigned long i;
   double position;
   double vel; 
-  if (!PyArg_ParseTuple(args, "kdv", &i, &position, &vel)) {
+  if (!PyArg_ParseTuple(args, "kdd", &i, &position, &vel)) {
     return NULL;
   }
   
@@ -196,7 +196,7 @@ static PyObject *set_home(PyObject *self, PyObject *args) {
 
 static PyMethodDef HydrationServo_methods[] = {
     {"get_position", get_position, METH_VARARGS, "Returns servo position"},
-	{"set_position_unique", get_position_unique, METH_VARARGS, "Returns servo position for Z1 and Y1 in the F04"},
+	{"set_position_unique", set_position_unique, METH_VARARGS, "Returns servo position for Z1 and Y1 in the F04"},
 	{"set_position", set_position, METH_VARARGS, "Sets given servo to given position using MovePosnStart"},
     {"set_speed_rpm", set_speed_rpm, 
 	    METH_VARARGS, "Sets servo speed"},

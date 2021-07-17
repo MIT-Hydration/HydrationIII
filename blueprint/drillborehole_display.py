@@ -103,9 +103,9 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
         self.main_window.log(
             f"[{timestamp}] Attempting to move Z1 by relative"\
             f" {target_z1:0.4f} [m]"\
-            f" {target_vel:0.4f} [m]"
+            f" {target_vel:0.4f} [RPM]"
             )
-        client_thread = client_common.GotoZ1Thread(target_z1)
+        client_thread = client_common.GotoZ1Thread(target_z1, target_vel )
         client_thread.log.connect(self.main_window.on_log)
         self.threads.append(client_thread)
         client_thread.start()
@@ -120,8 +120,8 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
             self.main_window.log(
                 f"[{timestamp}] Attempting to move Y by relative"\
                 f" {target_y:0.4f} [m]"\
-                f" {target_vel:0.4f} [m]")
-            client_thread = client_common.GotoYThread(target_y)
+                f" {target_vel:0.4f} [RPM]")
+            client_thread = client_common.GotoYThread(target_y, target_vel)
             client_thread.log.connect(self.main_window.on_log)
             self.threads.append(client_thread)
             client_thread.start()
