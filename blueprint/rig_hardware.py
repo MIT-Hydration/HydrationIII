@@ -130,10 +130,10 @@ class MockRigHardware(AbstractRigHardware):
     def __init__(self):
         #self.position = [-0.4, -0.3, 0.0, 0.50]
         self.position = [-0.1, -0.0, 0.25, 0.10]
-        self.vel = (self.target[i] - self.position[i])*0.05 # m/s
+        self.target = [0.0, 0.0, 0.0, 0.0]
+        self.vel = 0.05 # m/s
         self.homing = [False, False, False, False]
         self.homingTime = [0.0, 0.0, 0.0, 0.0]
-        self.target = [0.0, 0.0, 0.0, 0.0]
         self.move_tolerance = config.getfloat(
             "Rig", "MoveDetectionTolerance")
     
@@ -319,12 +319,14 @@ class RigHardware(AbstractRigHardware):
         else:
             return self.isNMoving(kZ2)
 
-    
     def getTorque(self, i):
         return HydrationServo.get_torque(i)    
     
     def setHomeZ1(self):
         HydrationServo.set_home(iZ1)
 
+    def setHomeZ2(self):
+        HydrationServo.set_home(iZ2)
+    
     def setHomeY(self):
         HydrationServo.set_home(iY)
