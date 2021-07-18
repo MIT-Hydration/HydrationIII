@@ -3,7 +3,7 @@ drillborehole_display.py
 Settings and state for drilling borehole
 """
 
-__author__      = "Prakash Manandhar"
+__author__      = "Prakash Manandhar and Eric Bui"
 __copyright__ = "Copyright 2021, Hydration Team"
 __credits__ = ["Prakash Manandhar"]
 __license__ = "Internal"
@@ -78,6 +78,14 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
         
         line = QtWidgets.QHBoxLayout()
         self.layout.addLayout(line)
+
+        self.velocity_label = QtWidgets.QLabel("Velocity in RPM For Both Y and Z) ")
+        self.velocitys = QtWidgets.QLineEdit("0.0")
+        line.addWidget (self.velocity_label)
+        line.addWidget (self.velocitys )
+
+        line = QtWidgets.QHBoxLayout()
+        self.layout.addLayout(line)
         
         self.move_z1_button = QtWidgets.QPushButton("Drill Down/Ream Up")
         self.move_z1_button.clicked.connect(self._on_move_z1)
@@ -91,10 +99,13 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
     def _on_move_z1(self):
         timestamp = datetime.now()
         target_z1 = float(self.target_z1.text())
+        target_vel = float(self.velocitys.text())
         self.main_window.log(
             f"[{timestamp}] Attempting to move Z1 by relative"\
-            f" {target_z1:0.4f} [m]")
-        client_thread = client_common.GotoZ1Thread(target_z1)
+            f" {target_z1:0.4f} [m]"\
+            f" {target_vel:0.4f} [RPM]"
+            )
+        client_thread = client_common.GotoZ1Thread(target_z1, target_vel )
         client_thread.log.connect(self.main_window.on_log)
         self.threads.append(client_thread)
         client_thread.start()
@@ -104,10 +115,13 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
         try:
             timestamp = datetime.now() 
             target_y = float(self.target_y.text())
+            target_vel = float(self.velocitys.text())
+
             self.main_window.log(
                 f"[{timestamp}] Attempting to move Y by relative"\
-                f" {target_y:0.4f} [m]")
-            client_thread = client_common.GotoYThread(target_y)
+                f" {target_y:0.4f} [m]"\
+                f" {target_vel:0.4f} [RPM]")
+            client_thread = client_common.GotoYThread(target_y, target_vel)
             client_thread.log.connect(self.main_window.on_log)
             self.threads.append(client_thread)
             client_thread.start()

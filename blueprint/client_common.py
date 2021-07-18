@@ -137,9 +137,10 @@ class GotoThread(QtCore.QThread):
     done = Signal(object)
     log = Signal(object)
     
-    def __init__(self, delta):
+    def __init__(self, delta, vel):
         QtCore.QThread.__init__(self)
         self.delta = delta
+        self.vel = vel 
         
     def run(self):
         global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
@@ -166,7 +167,8 @@ class GotoZ1Thread(GotoThread):
         return stub.Z1Move (
                     mission_control_pb2.MoveRequest(
                         request_timestamp = timestamp,
-                        delta = self.delta),
+                        delta = self.delta, 
+                        vel = self.vel),
                     timeout = GRPC_CALL_TIMEOUT )
 
 class GotoYThread(GotoThread):    
@@ -174,5 +176,6 @@ class GotoYThread(GotoThread):
         return stub.YMove (
                     mission_control_pb2.MoveRequest(
                         request_timestamp = timestamp,
-                        delta = self.delta),
+                        delta = self.delta, 
+                        vel = self.vel),
                     timeout = GRPC_CALL_TIMEOUT )

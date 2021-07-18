@@ -50,15 +50,15 @@ class AbstractRigHardware(ABC):
         return (not self.isYMoving()) \
             and (numpy.abs(current_pos[iY]) < HomingError) 
 
-    def movePositionZ1(self, delta):
+    def movePositionZ1(self, delta, vel):
         cur_pos = self.getPosition().copy()
         new_z1 = cur_pos[iZ1] + delta
-        return self.gotoPositionZ1(new_z1)
+        return self.gotoPositionZ1(new_z1, vel)
     
-    def movePositionY(self, delta):
+    def movePositionY(self, delta, vel):
         cur_pos = self.getPosition().copy()
         new_y = cur_pos[iY] + delta
-        return self.gotoPositionY(new_y)
+        return self.gotoPositionY(new_y, vel)
     
     @abstractmethod
     def getPosition(self):
@@ -98,18 +98,18 @@ class AbstractRigHardware(ABC):
         pass
 
     @abstractmethod
-    def gotoPositionY(self, y):        
+    def gotoPositionY(self, y, v):        
         pass
     
     @abstractmethod
-    def gotoPositionZ1(self, z):        
+    def gotoPositionZ1(self, z, v):        
         pass
 
 class MockRigHardware(AbstractRigHardware):
     def __init__(self):
         #self.position = [-0.4, -0.0, 0.25, 0.50]
         self.position = [-0.1, -0.0, 0.25, 0.10]
-        
+        self.vel = (self.target[i] - self.position[i])*0.05 # m/s
         self.homing = [False, False, False, False]
         self.homingTime = [0.0, 0.0, 0.0, 0.0]
         self.target = [0.0, 0.0, 0.0, 0.0]
@@ -117,7 +117,7 @@ class MockRigHardware(AbstractRigHardware):
             "Rig", "MoveDetectionTolerance")
     
     def _update(self, i):
-        VEL = (self.target[i] - self.position[i])*0.05 # m/s
+        VEL = self.vel
         if self.homing[i]:
             new_t = time.time()
             dt = new_t - self.homingTime[i]
@@ -190,14 +190,16 @@ class MockRigHardware(AbstractRigHardware):
         self.homingTime[3] = t
         return True
     
-    def gotoPositionY(self, y):
+    def gotoPositionY(self, y, v):
         t = time.time()
+        self.vel = v 
         self.target[3] = y
         self.homing[3] = True
         self.homingTime[3] = t
         return True
 
-    def gotoPositionZ1(self, z): 
+    def gotoPositionZ1(self, z, v): 
+        self.vel = v 
         self.target[0] = z    
         self.homing[0] = True
         self.homingTime[0] = time.time()
@@ -221,7 +223,7 @@ class MockRigHardware(AbstractRigHardware):
 
     def setHomeY(self):
         self.position[3] = 0.0
-
+#ERIC WRITE ABSTRACT MOCK HARDWARE PART 
 
 class RigHardware(AbstractRigHardware):
     
@@ -234,7 +236,7 @@ class RigHardware(AbstractRigHardware):
         self.move_tolerance = config.getfloat(
             "Rig", "MoveDetectionTolerance")
 
-    def gotoPositionY(self, y):
+    def gotoPositionY(self, y, v):
         # ensure Z-poisions are zero within tolerance
         homing_error = config.getfloat("Rig", "HomingError")
         pos = self.getPosition()
@@ -243,13 +245,13 @@ class RigHardware(AbstractRigHardware):
         
         # stop existing moves
         self.emergencyStop()
-        HydrationServo.set_position(iY, y/YCal)
+        HydrationServo.set_position_unique(iY, y/YCal, v)
         return True
 
-    def gotoPositionZ1(self, z):        
+    def gotoPositionZ1(self, z, v):        
         # stop existing threads
         self.emergencyStop()
-        HydrationServo.set_position(iZ1, z/Z1Cal)
+        HydrationServo.set_position_unique(iZ1, z/Z1Cal, v)
         return True
         
     def homeY(self):

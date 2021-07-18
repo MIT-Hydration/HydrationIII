@@ -224,7 +224,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 status = mcpb.INVALID_STATE)
 
         rig_hardware = HardwareFactory.getRig()
-        move_success = rig_hardware.movePositionZ1(request.delta)
+        move_success = rig_hardware.movePositionZ1(request.delta, request.vel)
 
         if move_success:
             self.last_z1_move = timestamp
@@ -256,7 +256,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 status = mcpb.INVALID_STATE)
 
         rig_hardware = HardwareFactory.getRig()
-        move_success = rig_hardware.movePositionY(request.delta)
+        move_success = rig_hardware.movePositionY(request.delta, request.vel) #I wonder what would adding in velcoity do to the move sucess portion of hte code below 
 
         if (self.state_machine.getState() == mcpb.DRILL_IDLE): 
             self.state_machine.transitionState(
