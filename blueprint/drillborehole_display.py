@@ -30,7 +30,12 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
             [mcpb.DRILLING_HOLE_IDLE, QtWidgets.QLabel("3. Waiting to Start Drill")],
             [mcpb.DRILLING_HOLE_DRILLING_DOWN, QtWidgets.QLabel("4. Drilling Down")],
             [mcpb.DRILLING_HOLE_REAMING_UP, QtWidgets.QLabel("5. Reaming Up")],
-            [mcpb.DRILLING_HOLE_HOMING_Z1, QtWidgets.QLabel("6. Homing Z1")]
+            [mcpb.DRILLING_HOLE_HOMING_Z1, QtWidgets.QLabel("6. Homing Z1")],
+            [mcpb.HEATER_HOLE_MOVING_TO_Z2, QtWidgets.QLabel("7. Moving to Z2")],
+            [mcpb.HEATER_LOWERING_DOWN, QtWidgets.QLabel("8. Lowering Heater")],
+            [mcpb.HEATER_READY_TO_HEAT, QtWidgets.QLabel("9. Ready to Heat")],
+            [mcpb.HEATER_MELTING, QtWidgets.QLabel("10. Melting")],
+            [mcpb.HEATER_HOMING_Z2, QtWidgets.QLabel("11. Homing Z2")],
         ]
 
         self.layout = QtWidgets.QVBoxLayout()

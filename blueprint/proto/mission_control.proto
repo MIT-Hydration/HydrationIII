@@ -28,7 +28,7 @@ enum SystemMode {
     DRILLING_HOLE_DRILLING_DOWN = 405; //From DRILLING_HOLE_IDLE, user can drill down with the "Drill Down" button
     DRILLING_HOLE_REAMING_UP = 406; //From DRILLING_HOLE_IDLE, user can ream up with the "Reaming Up" button
     DRILLING_HOLE_HOMING_Z1 = 407; //After pressing "Finish Drill" button, return to homing the Z1 axis
-    HEADER_HOLE_MOVING_TO_Z2 = 408; // Move to position Z2 after finishing drilling Z1
+    HEATER_HOLE_MOVING_TO_Z2 = 408; // Move to position Z2 after finishing drilling Z1
     HEATER_LOWERING_DOWN = 409; // Lower header
     HEATER_READY_TO_HEAT = 410; //
     HEATER_MELTING = 411;

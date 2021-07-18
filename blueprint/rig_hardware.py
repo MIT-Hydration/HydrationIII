@@ -34,30 +34,46 @@ if config.getboolean('Mocks', 'MockRig'):
     iY = 3
 else:
     iZ1 = 0
-    iZ2 = -1
+    iZ2 = 1
     iX = -2
-    iY = 1
+    iY = 2
+
+# these indices are used for the current position variables
+kZ1 = 0
+kZ2 = 1
+kX = 2
+kY = 3
 
 class AbstractRigHardware(ABC):
     
     def isHomeZ1(self):
         current_pos = self.getPosition()
         return (not self.isZ1Moving()) \
-            and (numpy.abs(current_pos[iZ1]) < HomingError) 
+            and (numpy.abs(current_pos[kZ1]) < HomingError) 
 
     def isHomeY(self):
         current_pos = self.getPosition()
         return (not self.isYMoving()) \
-            and (numpy.abs(current_pos[iY]) < HomingError) 
+            and (numpy.abs(current_pos[kY]) < HomingError) 
 
+    def isHomeZ2(self):
+        current_pos = self.getPosition()
+        return (not self.isYMoving()) \
+            and (numpy.abs(current_pos[kZ2]) < HomingError) 
+    
     def movePositionZ1(self, delta, vel):
         cur_pos = self.getPosition().copy()
-        new_z1 = cur_pos[iZ1] + delta
+        new_z1 = cur_pos[kZ1] + delta
+        return self.gotoPositionZ1(new_z1, vel)
+    
+    def movePositionZ2(self, delta, vel):
+        cur_pos = self.getPosition().copy()
+        new_z1 = cur_pos[kZ2] + delta
         return self.gotoPositionZ1(new_z1, vel)
     
     def movePositionY(self, delta, vel):
         cur_pos = self.getPosition().copy()
-        new_y = cur_pos[iY] + delta
+        new_y = cur_pos[kY] + delta
         return self.gotoPositionY(new_y, vel)
     
     @abstractmethod
@@ -105,9 +121,14 @@ class AbstractRigHardware(ABC):
     def gotoPositionZ1(self, z, v):        
         pass
 
+    @abstractmethod
+    def gotoPositionZ2(self, z, v):        
+        pass
+
+
 class MockRigHardware(AbstractRigHardware):
     def __init__(self):
-        #self.position = [-0.4, -0.0, 0.25, 0.50]
+        #self.position = [-0.4, -0.3, 0.0, 0.50]
         self.position = [-0.1, -0.0, 0.25, 0.10]
         self.vel = (self.target[i] - self.position[i])*0.05 # m/s
         self.homing = [False, False, False, False]
@@ -240,7 +261,7 @@ class RigHardware(AbstractRigHardware):
         # ensure Z-poisions are zero within tolerance
         homing_error = config.getfloat("Rig", "HomingError")
         pos = self.getPosition()
-        if (numpy.abs(pos[iZ1]) > homing_error):
+        if (numpy.abs(pos[kZ1]) > homing_error):
             return False
         
         # stop existing moves
@@ -284,14 +305,21 @@ class RigHardware(AbstractRigHardware):
         if iY < 0:
             return False
         else:
-            return self.isNMoving(iY)
+            return self.isNMoving(kY)
 
     def isZ1Moving(self):
         if iZ1 < 0:
             return False
         else:
-            return self.isNMoving(iZ1)
+            return self.isNMoving(kZ1)
 
+    def isZ2Moving(self):
+        if iZ2 < 0:
+            return False
+        else:
+            return self.isNMoving(kZ2)
+
+    
     def getTorque(self, i):
         return HydrationServo.get_torque(i)    
     
