@@ -47,7 +47,7 @@ class HolePositionDisplay(QtWidgets.QWidget):
         global X_LENGTH, Y_LENGTH, RIG_UNITS
         self.plot = pg.PlotWidget()
         self.plot.showGrid(x = True, y = True, alpha = 1.0)
-        self.plot.setXRange(-0.05, X_LENGTH + 0.05, padding=0)
+        self.plot.setXRange(-X_LENGTH/2, X_LENGTH/2, padding=0)
         self.plot.setYRange(-0.05, Y_LENGTH + 0.05, padding=0)
         self.plot.getAxis('bottom').setLabel(f'X {RIG_UNITS}')
         self.plot.getAxis('left').setLabel(f'Y {RIG_UNITS}')
@@ -161,8 +161,8 @@ class HolePositionDisplay(QtWidgets.QWidget):
         if (response != None):  
             z1 = response.rig_zdrill
             y = response.rig_y
-            x = 0.25
-            
+            x = 0.0
+              
             holes = response.holes
             holes_x = [h.x_m for h in holes]
             holes_y = [h.y_m for h in holes]
