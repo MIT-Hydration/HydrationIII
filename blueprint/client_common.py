@@ -171,6 +171,15 @@ class GotoZ1Thread(GotoThread):
                         vel = self.vel),
                     timeout = GRPC_CALL_TIMEOUT )
 
+class GotoZ2Thread(GotoThread):    
+    def _request_response(self, stub, timestamp):
+        return stub.Z2Move (
+                    mission_control_pb2.MoveRequest(
+                        request_timestamp = timestamp,
+                        delta = self.delta, 
+                        vel = self.vel),
+                    timeout = GRPC_CALL_TIMEOUT )
+
 class GotoYThread(GotoThread):    
     def _request_response(self, stub, timestamp):
         return stub.YMove (

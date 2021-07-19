@@ -59,7 +59,7 @@ message HeartBeatReply {
     SystemMode major_mode = 70;
     uint64 mission_time_ms = 8;
     bool zdrill_servo_moving = 9;
-    //bool zwater_servo_moving = 10;
+    bool zheater_servo_moving = 10;
     //bool x_servo_moving = 11;
     bool y_servo_moving = 12;
     //float drill_motor_setting = 13;
@@ -70,7 +70,7 @@ message HeartBeatReply {
     //float rig_x = 100;
     float rig_y = 101;
     float rig_zdrill = 102;
-    //float rig_zwater = 103;
+    float rig_zheater = 103;
 
     //float rig_torque_z1 = 120;
     string server_version = 50;
