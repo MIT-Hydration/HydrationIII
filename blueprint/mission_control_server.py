@@ -37,8 +37,9 @@ class StateMachine:
             mcpb.DRILLING_HOLE_REAMING_UP: [mcpb.DRILLING_HOLE_IDLE],
             mcpb.DRILLING_HOLE_HOMING_Z1: [mcpb.DRILL_IDLE],
             mcpb.HEATER_HOLE_MOVING_TO_Z2: [mcpb.HEATER_IDLE],
-            mcpb.HEATER_IDLE: [mcpb.HEATER_LOWERING_DOWN, mcpb.HEATER_MELTING, mcpb.HEATER_HOMING_Z2],
+            mcpb.HEATER_IDLE: [mcpb.HEATER_LOWERING_DOWN, mcpb.HEATER_MELTING],
             mcpb.HEATER_LOWERING_DOWN: [mcpb.HEATER_IDLE],
+            mcpb.HEATER_MELTING: [mcpb.HEATER_HOMING_Z2],
             mcpb.HEATER_HOMING_Z2: [mcpb.DRILL_IDLE],
         }
 
@@ -178,7 +179,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
         if   (current_state == mcpb.DRILLING_HOLE_HOMING_Z1):
             if ((timestamp - self.last_z1_move) > self.move_time_buffer) and \
-                (not rig_hardware.isZ1Moving()):
+                (rig_hardware.isHomeZ1()):
                 self.state_machine.transitionState(
                     mcpb.MAJOR_MODE_DRILL_BOREHOLE, 
                     mcpb.DRILL_IDLE
@@ -198,6 +199,14 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 self.state_machine.transitionState(
                     mcpb.MAJOR_MODE_DRILL_BOREHOLE, 
                     mcpb.HEATER_IDLE
+                )
+
+        if   (current_state == mcpb.HEATER_HOMING_Z2):
+            if ((timestamp - self.last_z2_move) > self.move_time_buffer) and \
+                (rig_hardware.isHomeZ2()):
+                self.state_machine.transitionState(
+                    mcpb.MAJOR_MODE_DRILL_BOREHOLE, 
+                    mcpb.DRILL_IDLE
                 )
         
         position = rig_hardware.getPosition()
@@ -425,6 +434,61 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 timestamp = timestamp,
                 status = mcpb.EXECUTION_ERROR)
 
+
+    def StartMelting(self, request, context):
+        timestamp = int(time.time()*1000)
+        if (self.state_machine.getState() != mcpb.HEATER_IDLE): # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+        
+        self.state_machine.transitionState(
+                mcpb.MAJOR_MODE_DRILL_BOREHOLE, mcpb.HEATER_MELTING)
+
+        if self.state_machine.getState() == mcpb.HEATER_MELTING:
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.EXECUTED)
+        else:
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+
+
+    def EndMelting(self, request, context):
+        timestamp = int(time.time()*1000)
+        if (self.state_machine.getState() != mcpb.HEATER_MELTING): # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+        
+        self.state_machine.transitionState(
+                mcpb.MAJOR_MODE_DRILL_BOREHOLE, mcpb.HEATER_HOMING_Z2)
+
+        if self.state_machine.getState() == mcpb.HEATER_HOMING_Z2:
+            self.last_z2_move = timestamp
+            rig_hardware = HardwareFactory.getRig()
+            move_success = rig_hardware.homeZ2()  
+            if move_success:
+                return mcpb.CommandResponse(
+                    request_timestamp = request.request_timestamp,
+                    timestamp = timestamp,
+                    status = mcpb.EXECUTED)
+            else:
+                return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.EXECUTION_ERROR)
+        else:
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+        
     def _create_new_hole(self):
         rig_hardware = HardwareFactory.getRig()
         position = rig_hardware.getPosition()

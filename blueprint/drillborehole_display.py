@@ -260,6 +260,11 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
             else:
                 self.move_z2_button.setEnabled(False)
                 self.melt_button.setEnabled(False)
+
+            if (response.state == mcpb.HEATER_MELTING):
+                self.end_melt_button.setEnabled(True)
+            else:
+                self.end_melt_button.setEnabled(False)
             
             for l in self.state_labels:
                 if l[0] == response.state:
