@@ -19,7 +19,9 @@ class StateMachine:
             mcpb.STARTUP_IDLE: mcpb.STARTUP_MISSION_CLOCK_STARTED,
             mcpb.STARTUP_MISSION_CLOCK_STARTED: mcpb.STARTUP_HOMING_Z1,
             mcpb.STARTUP_HOMING_Z1: mcpb.STARTUP_HOME_Z1_COMPLETED,
-            mcpb.STARTUP_HOME_Z1_COMPLETED: mcpb.STARTUP_HOMING_Y,
+            mcpb.STARTUP_HOME_Z1_COMPLETED: mcpb.STARTUP_HOMING_Z2,
+            mcpb.STARTUP_HOMING_Z2: mcpb.STARTUP_HOME_Z2_COMPLETED,
+            mcpb.STARTUP_HOME_Z2_COMPLETED: mcpb.STARTUP_HOMING_Y,
             mcpb.STARTUP_HOMING_Y: mcpb.STARTUP_HOME_Y_COMPLETED
         }
 
@@ -78,6 +80,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         self.holes = []
         self.last_y_move = 0
         self.last_z1_move = 0
+        self.last_z2_move = 0
 
         self.iZ1 = 0
         self.iZ2 = 1
@@ -247,6 +250,34 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 request_timestamp = request.request_timestamp,
                 timestamp = timestamp,
                 status = mcpb.EXECUTION_ERROR)
+
+    def Z2Move(self, request, context):
+        timestamp = int(time.time()*1000)
+        if (self.state_machine.getState() != mcpb.STARTUP_IDLE) and \
+              (self.state_machine.getState() != mcpb.DRILLING_HOLE_IDLE): # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+
+        rig_hardware = HardwareFactory.getRig()
+        move_success = rig_hardware.movePositionZ2(request.delta, request.vel)
+
+        if move_success:
+            self.last_z2_move = timestamp
+            if (self.state_machine.getState() == mcpb.DRILLING_HOLE_IDLE):
+                self.state_machine.transitionState(
+                    mcpb.MAJOR_MODE_DRILL_BOREHOLE, mcpb.HEATER_LOWERING_DOWN)
+                
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.EXECUTED)
+        else:
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.EXECUTION_ERROR)
             
     def YMove(self, request, context):
         timestamp = int(time.time()*1000)
@@ -401,6 +432,23 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
         rig_hardware = HardwareFactory.getRig()
         rig_hardware.setHomeZ1()
+
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)
+
+    def SetHomeZ1 (self, request, context):
+        print("Setting Home Z2 ...")
+        timestamp = int(time.time()*1000)
+        if (self.state_machine.getState() != mcpb.STARTUP_IDLE): # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+
+        rig_hardware = HardwareFactory.getRig()
+        rig_hardware.setHomeZ2()
 
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,

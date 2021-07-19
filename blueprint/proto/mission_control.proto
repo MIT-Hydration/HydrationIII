@@ -144,9 +144,11 @@ service MissionControl {
     rpc StartupNext (StartCommandRequest) returns (CommandResponse);
 
     rpc SetHomeZ1 (StartCommandRequest) returns (CommandResponse);
+    rpc SetHomeZ2 (StartCommandRequest) returns (CommandResponse);
     rpc SetHomeY (StartCommandRequest) returns (CommandResponse);
 
     rpc Z1Move (MoveRequest) returns (CommandResponse);
+    rpc Z2Move (MoveRequest) returns (CommandResponse);
     rpc YMove (MoveRequest) returns (CommandResponse);
 
     rpc StartDrillHole (StartCommandRequest) returns (CommandResponse);
