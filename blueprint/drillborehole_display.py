@@ -96,9 +96,14 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
         self.move_z1_button.clicked.connect(self._on_move_z1)
         line.addWidget (self.move_z1_button)
         
-        self.finish_hole_button = QtWidgets.QPushButton("Home Z1 and Finish Hole")
+        self.finish_hole_button = QtWidgets.QPushButton("Home Z1 and Goto Heating")
         line.addWidget (self.finish_hole_button)
         self.finish_hole_button.clicked.connect(self._on_finish_hole)
+
+        self.align_button = QtWidgets.QPushButton("Align Heater")
+        line.addWidget (self.align_button)
+        self.align_button.clicked.connect(self._on_align)
+
     
     @QtCore.Slot(object)
     def _on_move_z1(self):
@@ -111,6 +116,17 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
             f" {target_vel:0.4f} [RPM]"
             )
         client_thread = client_common.GotoZ1Thread(target_z1, target_vel )
+        client_thread.log.connect(self.main_window.on_log)
+        self.threads.append(client_thread)
+        client_thread.start()
+
+    @QtCore.Slot(object)
+    def _on_align(self):
+        timestamp = datetime.now()
+        self.main_window.log(
+            f"[{timestamp}] Attempting to Align Heater"
+            )
+        client_thread = client_common.AlignHeaterThread()
         client_thread.log.connect(self.main_window.on_log)
         self.threads.append(client_thread)
         client_thread.start()

@@ -203,10 +203,14 @@ class HolePositionDisplay(QtWidgets.QWidget):
                 self.set_home.setEnabled(False)
                 self.goto_target_y.setEnabled(False)
                 self.goto_z1.setEnabled(False)
+                self.goto_z2.setEnabled(False)
+                
             else:
                 self.set_home.setEnabled(True)
                 self.goto_target_y.setEnabled(True)
                 self.goto_z1.setEnabled(True)
+                self.goto_z2.setEnabled(True)
+                
         
     def update_limits(self, response):
         global Z_LENGTH

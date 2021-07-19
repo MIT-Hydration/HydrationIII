@@ -6,7 +6,8 @@ import time
 import configparser
 import blueprint
 
-config = configparser.ConfigParser()
+config = configparser.ConfigParser(
+    converters={'list': lambda x: [i.strip() for i in x.split(',')]})
 config.read('config.ini')
 
 class StateMachine:
@@ -182,6 +183,14 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                     mcpb.DRILL_IDLE
                 )
 
+        if   (current_state == mcpb.HEATER_HOLE_MOVING_TO_Z2):
+            if ((timestamp - self.last_y_move) > self.move_time_buffer) and \
+                (not rig_hardware.isYMoving()):
+                self.state_machine.transitionState(
+                    mcpb.MAJOR_MODE_DRILL_BOREHOLE, 
+                    mcpb.HEATER_IDLE
+                )
+        
         position = rig_hardware.getPosition()
         return mcpb.HeartBeatReply(
             request_timestamp = request.request_timestamp,
@@ -357,6 +366,41 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         if move_success:
             self.last_z1_move = timestamp
             if self.state_machine.getState() == mcpb.DRILLING_HOLE_HOMING_Z1:
+                return mcpb.CommandResponse(
+                    request_timestamp = request.request_timestamp,
+                    timestamp = timestamp,
+                    status = mcpb.EXECUTED)
+            else:
+                return mcpb.CommandResponse(
+                    request_timestamp = request.request_timestamp,
+                    timestamp = timestamp,
+                    status = mcpb.INVALID_STATE)
+        else:
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.EXECUTION_ERROR)
+
+    def AlignHeater(self, request, context):
+        timestamp = int(time.time()*1000)
+        if (self.state_machine.getState() != mcpb.DRILL_IDLE): # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+        
+        self.state_machine.transitionState(
+                mcpb.MAJOR_MODE_DRILL_BOREHOLE, mcpb.HEATER_HOLE_MOVING_TO_Z2)
+
+        HeaterDeltaXY = config.getlist("Rig", "HeaterDeltaXY")
+        HeaterDeltaXY = [float(HeaterDeltaXY[0]), float(HeaterDeltaXY[1])]
+
+        rig_hardware = HardwareFactory.getRig()
+        move_success = rig_hardware.movePositionY(-HeaterDeltaXY[1], 300)  
+
+        if move_success:
+            self.last_y_move = timestamp
+            if self.state_machine.getState() == mcpb.HEATER_HOLE_MOVING_TO_Z2:
                 return mcpb.CommandResponse(
                     request_timestamp = request.request_timestamp,
                     timestamp = timestamp,
