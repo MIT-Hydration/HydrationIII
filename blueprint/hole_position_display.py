@@ -53,9 +53,9 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.plot.getAxis('left').setLabel(f'Y {RIG_UNITS}')
         self.holes_scatter = pg.ScatterPlotItem(
             pen=pg.mkPen(width=3, color='#ffc107'), symbol='o', size=20)
-        self.scatter = pg.ScatterPlotItem(
-            pen=pg.mkPen(width=3, color='#dc3545'), symbol='x', size=10)
         self.heater_scatter = pg.ScatterPlotItem(
+            pen=pg.mkPen(width=3, color='#dc3545'), symbol='x', size=10)
+        self.scatter = pg.ScatterPlotItem(
             pen=pg.mkPen(width=3, color='#cfebfd'), symbol='+', size=10)
         
         self.plot.addItem(self.holes_scatter)

@@ -38,6 +38,7 @@ class StateMachine:
             mcpb.DRILLING_HOLE_HOMING_Z1: [mcpb.DRILL_IDLE],
             mcpb.HEATER_HOLE_MOVING_TO_Z2: [mcpb.HEATER_IDLE],
             mcpb.HEATER_IDLE: [mcpb.HEATER_LOWERING_DOWN, mcpb.HEATER_MELTING, mcpb.HEATER_HOMING_Z2],
+            mcpb.HEATER_LOWERING_DOWN: [mcpb.HEATER_IDLE],
             mcpb.HEATER_HOMING_Z2: [mcpb.DRILL_IDLE],
         }
 
@@ -190,6 +191,14 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                     mcpb.MAJOR_MODE_DRILL_BOREHOLE, 
                     mcpb.HEATER_IDLE
                 )
+
+        if   (current_state == mcpb.HEATER_LOWERING_DOWN):
+            if ((timestamp - self.last_z2_move) > self.move_time_buffer) and \
+                (not rig_hardware.isZ2Moving()):
+                self.state_machine.transitionState(
+                    mcpb.MAJOR_MODE_DRILL_BOREHOLE, 
+                    mcpb.HEATER_IDLE
+                )
         
         position = rig_hardware.getPosition()
         return mcpb.HeartBeatReply(
@@ -273,7 +282,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
     def Z2Move(self, request, context):
         timestamp = int(time.time()*1000)
         if (self.state_machine.getState() != mcpb.STARTUP_IDLE) and \
-              (self.state_machine.getState() != mcpb.DRILLING_HOLE_IDLE): # do nothing
+              (self.state_machine.getState() != mcpb.HEATER_IDLE): # do nothing
             return mcpb.CommandResponse(
                 request_timestamp = request.request_timestamp,
                 timestamp = timestamp,
@@ -284,7 +293,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
         if move_success:
             self.last_z2_move = timestamp
-            if (self.state_machine.getState() == mcpb.DRILLING_HOLE_IDLE):
+            if (self.state_machine.getState() == mcpb.HEATER_IDLE):
                 self.state_machine.transitionState(
                     mcpb.MAJOR_MODE_DRILL_BOREHOLE, mcpb.HEATER_LOWERING_DOWN)
                 

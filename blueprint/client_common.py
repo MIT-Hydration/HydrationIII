@@ -80,6 +80,52 @@ class NewHoleThread(QtCore.QThread):
 
         self.done.emit(response)
 
+class StartMeltThread(QtCore.QThread):    
+    done = Signal(object)
+    log = Signal(object)
+    def __init__(self):
+        QtCore.QThread.__init__(self)
+        
+    def run(self):
+        global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
+        response = None
+        try:
+            timestamp = int(time.time()*1000)
+            with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
+                stub = mission_control_pb2_grpc.MissionControlStub(channel)
+                response = stub.StartMelting (
+                    mission_control_pb2.StartCommandRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )      
+        except Exception as e:
+            info = f"[Error] {str(e)}"
+            self.log.emit(info)
+
+        self.done.emit(response)
+
+class EndMeltThread(QtCore.QThread):    
+    done = Signal(object)
+    log = Signal(object)
+    def __init__(self):
+        QtCore.QThread.__init__(self)
+        
+    def run(self):
+        global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
+        response = None
+        try:
+            timestamp = int(time.time()*1000)
+            with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
+                stub = mission_control_pb2_grpc.MissionControlStub(channel)
+                response = stub.EndMelting (
+                    mission_control_pb2.StartCommandRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )      
+        except Exception as e:
+            info = f"[Error] {str(e)}"
+            self.log.emit(info)
+
+        self.done.emit(response)
+
 class EndHoleThread(QtCore.QThread):    
     done = Signal(object)
     log = Signal(object)
