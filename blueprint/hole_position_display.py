@@ -109,19 +109,19 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.layout.addWidget(self.set_home, 6, start_h, 1, 4)
 
     def _goto_y(self):
-        client_thread = client_common.GotoYThread(float(self.target_y.text()))
+        client_thread = client_common.GotoYThread(float(self.target_y.text()), 300)
         self.threads.append(client_thread)
         client_thread.start()
         
     def _goto_z1(self):
         client_thread = client_common.GotoZ1Thread(
-            float(self.target_z1.text()))
+            float(self.target_z1.text()), 300)
         self.threads.append(client_thread)
         client_thread.start() 
     
     def _goto_z2(self):
         client_thread = client_common.GotoZ2Thread(
-            float(self.target_z2.text()))
+            float(self.target_z2.text()), 300)
         self.threads.append(client_thread)
         client_thread.start() 
 

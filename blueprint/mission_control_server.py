@@ -26,7 +26,7 @@ class StateMachine:
         }
 
         self.drill_states = {
-            mcpb.DRILL_IDLE: [mcpb.DRILL_MOVING_Y, mcpb.DRILLING_HOLE_IDLE],
+            mcpb.DRILL_IDLE: [mcpb.DRILL_MOVING_Y, mcpb.DRILLING_HOLE_IDLE, mcpb.HEATER_HOLE_MOVING_TO_Z2],
             mcpb.DRILL_MOVING_Y: [mcpb.DRILL_IDLE],
             mcpb.DRILLING_HOLE_IDLE: [
                 mcpb.DRILLING_HOLE_DRILLING_DOWN,
@@ -35,6 +35,9 @@ class StateMachine:
             mcpb.DRILLING_HOLE_DRILLING_DOWN: [mcpb.DRILLING_HOLE_IDLE],
             mcpb.DRILLING_HOLE_REAMING_UP: [mcpb.DRILLING_HOLE_IDLE],
             mcpb.DRILLING_HOLE_HOMING_Z1: [mcpb.DRILL_IDLE],
+            mcpb.HEATER_HOLE_MOVING_TO_Z2: [mcpb.HEATER_IDLE],
+            mcpb.HEATER_IDLE: [mcpb.HEATER_LOWERING_DOWN, mcpb.HEATER_MELTING, mcpb.HEATER_HOMING_Z2],
+            mcpb.HEATER_HOMING_Z2: [mcpb.DRILL_IDLE],
         }
 
     def getMajorMode(self):
@@ -137,6 +140,13 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 self.state_machine.transitionState(
                     mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS, 
                     mcpb.STARTUP_HOME_Z1_COMPLETED
+                )
+
+        if (current_state == mcpb.STARTUP_HOMING_Z2):
+            if rig_hardware.isHomeZ2():
+                self.state_machine.transitionState(
+                    mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS, 
+                    mcpb.STARTUP_HOME_Z2_COMPLETED
                 )
 
         if (current_state == mcpb.STARTUP_HOMING_Y):
@@ -388,6 +398,8 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         elif (state == mcpb.STARTUP_MISSION_CLOCK_STARTED):
             return self._StartHomeZ1(request, context)
         elif (state == mcpb.STARTUP_HOME_Z1_COMPLETED):
+            return self._StartHomeZ2(request, context)
+        elif (state == mcpb.STARTUP_HOME_Z2_COMPLETED):
             return self._StartHomeY(request, context)
         
         else:
@@ -487,12 +499,29 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
             status = mcpb.EXECUTED)
+
+    def _StartHomeZ2 (self, request, context):
+        timestamp = int(time.time()*1000)
+        if self.state_machine.getState() \
+                != mcpb.STARTUP_HOME_Z1_COMPLETED: # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+        self.state_machine.transitionState(
+            mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS, mcpb.STARTUP_HOMING_Z2)
+        rig_hardware = HardwareFactory.getRig()
+        rig_hardware.homeZ2()
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)
         
     def _StartHomeY (self, request, context):
         print("Homing Y...")
         timestamp = int(time.time()*1000)
         if self.state_machine.getState() \
-                != mcpb.STARTUP_HOME_Z1_COMPLETED: # do nothing
+                != mcpb.STARTUP_HOME_Z2_COMPLETED: # do nothing
             return mcpb.CommandResponse(
                 request_timestamp = request.request_timestamp,
                 timestamp = timestamp,

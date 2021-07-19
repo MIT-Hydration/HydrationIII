@@ -122,6 +122,11 @@ class SetHomeThread(QtCore.QThread):
                         request_timestamp = timestamp),
                     timeout = GRPC_CALL_TIMEOUT )
                 print(response)
+                response = stub.SetHomeZ2 (
+                    mission_control_pb2.StartCommandRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+                print(response)
                 response = stub.SetHomeY (
                     mission_control_pb2.StartCommandRequest(
                         request_timestamp = timestamp),

@@ -32,8 +32,8 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
             [mcpb.DRILLING_HOLE_REAMING_UP, QtWidgets.QLabel("5. Reaming Up")],
             [mcpb.DRILLING_HOLE_HOMING_Z1, QtWidgets.QLabel("6. Homing Z1")],
             [mcpb.HEATER_HOLE_MOVING_TO_Z2, QtWidgets.QLabel("7. Moving to Z2")],
-            [mcpb.HEATER_LOWERING_DOWN, QtWidgets.QLabel("8. Lowering Heater")],
-            [mcpb.HEATER_READY_TO_HEAT, QtWidgets.QLabel("9. Ready to Heat")],
+            [mcpb.HEATER_IDLE, QtWidgets.QLabel("8. Ready to Heat / Lower Heater")],
+            [mcpb.HEATER_LOWERING_DOWN, QtWidgets.QLabel("9. Lowering Heater")],
             [mcpb.HEATER_MELTING, QtWidgets.QLabel("10. Melting")],
             [mcpb.HEATER_HOMING_Z2, QtWidgets.QLabel("11. Homing Z2")],
         ]
@@ -84,8 +84,8 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
         line = QtWidgets.QHBoxLayout()
         self.layout.addLayout(line)
 
-        self.velocity_label = QtWidgets.QLabel("Velocity in RPM For Both Y and Z) ")
-        self.velocitys = QtWidgets.QLineEdit("0.0")
+        self.velocity_label = QtWidgets.QLabel("Velocity in For (Both Y and Z) [RPM]")
+        self.velocitys = QtWidgets.QLineEdit("90")
         line.addWidget (self.velocity_label)
         line.addWidget (self.velocitys )
 
