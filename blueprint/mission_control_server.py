@@ -567,7 +567,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             timestamp = timestamp,
             status = mcpb.EXECUTED)
 
-    def SetHomeZ1 (self, request, context):
+    def SetHomeZ2 (self, request, context):
         print("Setting Home Z2 ...")
         timestamp = int(time.time()*1000)
         if (self.state_machine.getState() != mcpb.STARTUP_IDLE): # do nothing
@@ -585,6 +585,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             status = mcpb.EXECUTED)
 
     def SetHomeY (self, request, context):
+        print("Setting Home Y ...")
         timestamp = int(time.time()*1000)
         if (self.state_machine.getState() != mcpb.STARTUP_IDLE): # do nothing
             return mcpb.CommandResponse(
