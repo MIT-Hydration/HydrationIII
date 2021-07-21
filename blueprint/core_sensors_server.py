@@ -6,11 +6,11 @@ core_sensors_server.py
 
 __author__      = "Prakash Manandhar, and Sophie Yang"
 __copyright__ = "Copyright 2021, Hydration Team"
-__credits__ = ["Prakash Manandhar, and ________"]
+__credits__ = ["Prakash Manandhar, and Sophie Yang"]
 __license__ = "Internal"
 __version__ = "1.0.0"
-__maintainer__ = "______"
-__email__ = "_____"
+__maintainer__ = "Sophie Yang"
+__email__ = "scyang@mit.edu"
 __status__ = "Production"
 
 from .generated import mission_control_pb2_grpc
@@ -45,8 +45,8 @@ class CoreSensorsController(mission_control_pb2_grpc.CoreSensorsServicer):
             wob_reading = wob_hardware.get_force_N()
             self.last_weight_on_bit_drill_timestamp = wob_reading[0]
             self.last_weight_on_bit_drill_N = wob_reading[1]
-
-
+            #GET WOB READING and power reading and retrun it in the return below and cuz its outside it will return both times
+            #even w exception will still go there bc outside exception
         except Exception as e: #return last known
             info = f"[Error] {str(e)}"
             print(info)
@@ -56,12 +56,33 @@ class CoreSensorsController(mission_control_pb2_grpc.CoreSensorsServicer):
             timestamp = timestamp,
             cpu_temperature_degC = cpu_temp,
             )
-uint64 last_weight_on_bit_drill_timestamp = 40;
-float weight_on_bit_drill_N = 41;
 
-uint64 last_weight_on_bit_heater_timestamp = 50;
-float weight_on_bit_heater_N = 51;
+class FileWriterThread(threading.Thread):
 
-uint64 last_power_meter_timestamp = 60;
-float power_W = 61;
-float total_current_mA = 62;
+    def __init__(self, core_sensors_thread):
+        threading.Thread.__init__(self)
+        self.core_sensors_thread = core_sensors_thread
+        self.stopped = True
+
+    def run(self):
+        self.stopped = False
+        fp = open(f"core_sensors{time_start_s}.csv", "w")
+        keys = core_sensors_thread.sensor_readings.keys
+        for k in keys:
+            fp.write(f"{k},")
+        fp.write("\n")
+        sampling_time = config.getfloat("CoreSensors", "SamplingTime")
+
+        while not self.stopped: #read sensor continuously
+            loop_start = time.time()
+            for k in keys:
+                fp.write(f"{core_sensors_thread.sensor_readings[k]},")
+            fp.write("\n")
+            loop_end = time.time()
+            delta_time = loop_end - loop_start
+            if (delta_time < sampling_time):
+                time.sleep(sampling_time - delta_time)
+        fp.close()
+
+    def stop(self):
+        self.stopped = True

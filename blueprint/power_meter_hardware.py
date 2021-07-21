@@ -6,11 +6,11 @@ core_sensors_server.py
 
 __author__      = "Prakash Manandhar, and Sophie Yang"
 __copyright__ = "Copyright 2021, Hydration Team"
-__credits__ = ["Prakash Manandhar, and ________"]
+__credits__ = ["Prakash Manandhar, and Sophie Yang"]
 __license__ = "Internal"
 __version__ = "1.0.0"
-__maintainer__ = "______"
-__email__ = "_____"
+__maintainer__ = "Sophie Yang"
+__email__ = "scyang@mit.edu"
 __status__ = "Production"
 
 from time import sleep  # this lets us have a time delay
@@ -33,7 +33,7 @@ if config.getboolean('Operating System', 'RunningInRPi'):
 class AbstractPowerMeter(ABC):
 
     @abstractmethod
-    # ruturns a timestamped power reading
+    # returns a timestamped power reading
     def get_active_power_W(self):
         pass
 
@@ -132,4 +132,3 @@ class PowerMeter(AbstractPowerMeter):
     def get_current_mA(self):
         return [self.power_meter_thread["time_s"],
                 self.power_meter_thread["current_mA"]]
-        
