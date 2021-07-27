@@ -58,7 +58,7 @@ class PowerMeterThread(threading.Thread):
                 "current_mA": 0.0,
             }
 
-        self.client = ModbusSerialClient(port='/dev/ttyUSB0', method='rtu', baudrate=9600)
+        self.client = ModbusSerialClient(port=config.get('PowerMeter', 'port'), method='rtu', baudrate=config.getint('PowerMeter', 'baudrate'))
 
     def run(self):
         self.stopped = False
