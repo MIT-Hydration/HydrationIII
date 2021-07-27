@@ -24,12 +24,9 @@ import configparser
 
 config = configparser.ConfigParser()
 config.read('config.ini')
-
-if config.getboolean('Operating System', 'RunningInRPi'):
-    from gpiozero import PWMLED, DigitalInputDevice, DigitalOutputDevice
-    import RPi.GPIO as GPIO
-    from . import hx711
-
+        
+from pymodbus.client.sync import ModbusSerialClient
+    
 class AbstractPowerMeter(ABC):
 
     @abstractmethod
