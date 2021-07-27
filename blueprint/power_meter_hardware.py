@@ -123,8 +123,8 @@ class PowerMeter(AbstractPowerMeter):
         self.file_writer_thread.start()
 
     def get_active_power_W(self):
-        return [self.power_meter_thread["time_s"],
-                self.power_meter_thread["active_power_W"]]
+        return [self.power_meter_thread.sensor_readings["time_s"],
+                self.power_meter_thread.sensor_readings["active_power_W"]]
 
     def get_current_mA(self):
         return [self.power_meter_thread["time_s"],
