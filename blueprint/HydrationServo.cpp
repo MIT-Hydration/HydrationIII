@@ -166,10 +166,40 @@ int _set_position_unique(unsigned long i, double pos, double vel) {
 
 
 int _stop_all_motors() {
-  INode &theNode = *(pTheNode[0]);
+  INode &theNode = *(pTheNode[0]); //Where is there a 0 here? 
   theNode.Motion.GroupNodeStop(STOP_TYPE_ABRUPT); 
   return 1;
 }
+
+int _homing_motor(unsigned long i) { //assumption that the configuration files have been loaded 
+ 	INode &theNode = *(pTheNode[i]);
+
+//  INode &theNode = myPort.Nodes(iNode); Does it matter if we use this one that was in the example or the one above?  
+  
+  theNode.EnableReq(false);				//Ensure Node is disabled before loading config file
+  theNode.Motion.PosnMeasured.Refresh();
+  theNode.Motion.Homing.Initiate();
+  theNode.Motion.PosnMeasured.Refresh();
+	double measuredPosition = theNode.Motion.PosnMeasured; 
+	theNode.Motion.AddToPosition(-measuredPosition); 
+	theNode.Motion.PosnMeasured.Refresh();
+	
+  return 1;
+}
+
+static PyObject *homing_motor(PyObject *self, PyObject *args) {
+  unsigned long i;
+  if (!PyArg_ParseTuple(args, "k", &i)) {
+    return NULL;
+  }
+  
+  int ret_val = _homing_motor(i);
+  if (ret_val >= 0)
+    Py_RETURN_TRUE;
+  else
+    Py_RETURN_FALSE;
+}
+
 
 static PyObject *get_position(PyObject *self, PyObject *args) {
   unsigned long i;
@@ -283,6 +313,8 @@ static PyObject *set_home(PyObject *self, PyObject *args) {
 
 static PyMethodDef HydrationServo_methods[] = {
     {"get_position", get_position, METH_VARARGS, "Returns servo position"},
+
+    {"homing_motor", homing_motor, METH_VARARGS, "Homes motor with respective limit switch"},
     {"motor_status", motor_status, METH_VARARGS, "Refreshes servo status and clears alerts"},
 	{"set_position_unique", set_position_unique, METH_VARARGS, "Returns servo position for Z1 and Y1 in the F04"},
 	{"set_position", set_position, METH_VARARGS, "Sets given servo to given position using MovePosnStart"},
@@ -379,6 +411,7 @@ int connect_clearpath(void) {
 				pTheNode[iNode] = &theNode; // store address to the first node
 
 				//theNode.EnableReq(false);				//Ensure Node is disabled before starting
+ 				//theNode.Setup.ConfigLoad("Config File path"); //note for Eric, I do not know if two homing nodes are the same as one, note that for loop above, does that mean I'd have to do seperate cofiguration files for each of them? Must experiment at lab
 
 				printf("   Node[%d]: type=%d\n", iNode, theNode.Info.NodeType());
 				printf("            userID: %s\n", theNode.Info.UserID.Value());
