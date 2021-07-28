@@ -21,11 +21,13 @@ class AbstractWOB(ABC):
     # returns a timestamped force reading
     def get_force_N(self):
         pass
+    
 
 class MockWOBSensor(AbstractWOB):
 
     def get_force_N(self):
       return [time.time(), -5.0]
+
 
 if config.getboolean('Operating System', 'RunningInRPi'):
 
@@ -42,8 +44,10 @@ if config.getboolean('Operating System', 'RunningInRPi'):
             self.wob_sensor.reset()
             self.wob_sensor.tare()
             self.sampling_time = config.getfloat('WOBSensor', 'SamplingTime')
-            self.reading = 0.0
-            self.last_reading = 0.0
+            self.sensor_readings = {
+                "reading": 0.0,
+                "last_reading": 0.0,   
+            }
 
             threading.Thread.__init__(self)
             self.stopped = True
@@ -53,9 +57,9 @@ if config.getboolean('Operating System', 'RunningInRPi'):
             
             while not self.stopped:
                 loop_start = time.time()
-                self.reading = self.wob_sensor.get_weight(self.DTPin)
+                self.sensor_readings["reading"] = self.wob_sensor.get_weight(self.DTPin)
                 loop_end = time.time()
-                self.last_reading = loop_end
+                self.sensor_readings["last_reading"] = loop_end
                 delta_time = loop_end - loop_start
                 if (delta_time < self.sampling_time):
                     time.sleep(self.sampling_time - delta_time)
@@ -63,18 +67,47 @@ if config.getboolean('Operating System', 'RunningInRPi'):
         def stop(self):
             self.stopped = True
 
-        def get_force_N(self):
-            return [self.last_reading, self.reading]
+            
+    class FileWriterThread(threading.Thread):
         
+        def __init__(self, WOB_thread):
+            threading.Thread.__init__(self)
+            self.WOB_thread = WOB_thread
+            self.stopped = True
+            
+        def run(self):
+            self.stopped = False
+            fp = open(f"WOB_{time_start_s}.csv", "w")
+            keys = WOB_thread.sensor_readings.keys
+            for k in keys:
+                fp.write(f"{k},")
+            fp.write("\n")
+            sampling_time = config.getfloat("WOBSensor", "SamplingTime")
+            
+            while not self.stopped:
+                loop_start = time.time()
+                for k in keys:
+                    fp.write(f"{WOB_threahhd.sensor_readings[k]},")
+                fp.write("\n")
+                loop_end = time.time()
+                delta_time = loop_end - loop_start
+                if (delta_time < sampling_time):
+                    time.sleep(sampling_time - delta_time)
+            
+            fp.close()
+          
+        def stop(self):
+            self.stopped = True
         
-   
     class WOBSensor(AbstractWOB):
             
         def __init__(self):
             self.sensor_thread = WOBThread()
+            self.file_writer_thread = FileWriterThread(self.sensor_thread)
             self.sensor_thread.start()
+            self.file_writer_thread.start()
 
         def get_force_N(self):
-            return self.sensor_thread.get_rpm()
-        
+            return [self.sensor_thread["reading"],
+                    self.sensor_thread["last_reading"]]
     
