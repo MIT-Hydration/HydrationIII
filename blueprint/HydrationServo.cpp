@@ -176,14 +176,13 @@ int _homing_motor(unsigned long i) { //assumption that the configuration files h
 
 //  INode &theNode = myPort.Nodes(iNode); Does it matter if we use this one that was in the example or the one above?  
   
-  theNode.EnableReq(false);				//Ensure Node is disabled before loading config file
   theNode.Motion.PosnMeasured.Refresh();
   theNode.Motion.Homing.Initiate();
   theNode.Motion.PosnMeasured.Refresh();
 	double measuredPosition = theNode.Motion.PosnMeasured; 
 	theNode.Motion.AddToPosition(-measuredPosition); 
 	theNode.Motion.PosnMeasured.Refresh();
-	
+	printf("Node %ld has already been homed, current position is: \t%8.0f \n", i, theNode.Motion.PosnMeasured.Value());
   return 1;
 }
 
