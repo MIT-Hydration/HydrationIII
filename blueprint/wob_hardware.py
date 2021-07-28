@@ -69,10 +69,9 @@ if config.getboolean('Operating System', 'RunningInRPi'):
         
    
     class WOBSensor(AbstractWOB):
-
-        self.sensor_thread = WOBThread()
             
         def __init__(self):
+            self.sensor_thread = WOBThread()
             self.sensor_thread.start()
 
         def get_force_N(self):
