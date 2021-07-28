@@ -22,9 +22,5 @@ grpc-gen:
 			--python_out=./$(MODULE)/generated \
 			--grpc_python_out=./$(MODULE)/generated \
 			./$(MODULE)/proto/*.proto
-<<<<<<< Updated upstream
 	@sed -i.bk 's/^\(import.*_pb2\)/from . \1/' ./$(MODULE)/generated/*.py 
-=======
-	@sed -i 's/^\(import.*_pb2\)/from . \1/' ./$(MODULE)/generated/*.py
->>>>>>> Stashed changes
 
