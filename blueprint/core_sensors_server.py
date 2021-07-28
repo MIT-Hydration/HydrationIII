@@ -55,4 +55,10 @@ class CoreSensorsController(mission_control_pb2_grpc.CoreSensorsServicer):
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
             cpu_temperature_degC = cpu_temp,
+            last_weight_on_bit_drill_timestamp = self.last_weight_on_bit_drill_timestamp,
+            weight_on_bit_drill_N = self.weight_on_bit_drill_N,
+            last_power_meter_timestamp = self.last_power_meter_timestamp,
+            power_w = self.power_W, 
+            total_current_mA = self.total_current_mA
+            
             )
