@@ -61,6 +61,10 @@ class AbstractRigHardware(ABC):
         return self.gotoPositionY(new_y, vel)
     
     @abstractmethod
+    def motorStatus(self):
+        pass
+
+    @abstractmethod
     def getPosition(self):
         pass
 
@@ -235,6 +239,12 @@ class RigHardware(AbstractRigHardware):
         self.prev_pos = self.current_pos.copy()
         self.move_tolerance = config.getfloat(
             "Rig", "MoveDetectionTolerance")
+
+    def motorStatus(self) : 
+        responses = [] 
+        for i in range(3): 
+            responses.append(HydrationServo.MotorStatus(i))  #need to somehow make the motor status return into the error at hand  
+        return responses 
 
     def gotoPositionY(self, y, v):
         # ensure Z-poisions are zero within tolerance

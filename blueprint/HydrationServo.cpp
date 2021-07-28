@@ -19,6 +19,80 @@ SysManager myMgr;	//Create System Manager myMgr
 INode * pTheNode[NUM_MOTORS_MAX] ;       // Pointer to the Node
 unsigned numNodesDetected = -1;
 
+int _motor_status(unsigned long i){ 
+
+    char alertList[256];
+    INode &theNode = *(pTheNode[i]); //do i do a copy of stop all motors where the i is == 0  How to make it return an error instead of a number 
+
+
+    printf("Checking for Alerts: \n");
+
+  
+
+    // make sure our registers are up to date
+    theNode.Status.RT.Refresh();
+    theNode.Status.Alerts.Refresh();
+
+    printf("---------\n");
+    printf(" Checking node %i for Alerts:\n", iNode);
+
+    // Check the status register's "AlertPresent" bit
+    // The bit is set true if there are alerts in the alert register
+    if (!theNode.Status.RT.Value().cpm.AlertPresent) {
+      printf("   Node has no alerts!\n");
+    }
+    //Check to see if the node experienced torque saturation
+    if (theNode.Status.HadTorqueSaturation()) {
+      printf("      Node has experienced torque saturation since last checking\n");
+    }
+    // get an alert register reference, check the alert register directly for alerts
+    if (theNode.Status.Alerts.Value().isInAlert()) {
+      // get a copy of the alert register bits and a text description of all bits set
+      theNode.Status.Alerts.Value().StateStr(alertList, 256);
+      printf("   Node has alerts! Alerts:\n%s\n", alertList);
+
+      // can access specific alerts using the method below
+      if (theNode.Status.Alerts.Value().cpm.Common.EStopped) {
+        printf("      Node is e-stopped: Clearing E-Stop\n");
+        theNode.Motion.NodeStopClear();
+      }
+      if (theNode.Status.Alerts.Value().cpm.TrackingShutdown) {
+        printf("      Node exceeded Tracking error limit\n");
+      }
+
+      
+
+      // Check for more alerts and Clear Alerts
+      theNode.Status.Alerts.Refresh();
+      if (theNode.Status.Alerts.Value().isInAlert()) {
+        theNode.Status.Alerts.Value().StateStr(alertList, 256);
+        printf("      Node has non-estop alerts: %s\n", alertList);
+        printf("      Clearing non-serious alerts\n");
+        theNode.Status.AlertsClear(); //require this for future clearalert button
+
+        // Are there still alerts?
+        theNode.Status.Alerts.Refresh();
+        if (theNode.Status.Alerts.Value().isInAlert()) {
+          theNode.Status.Alerts.Value().StateStr(alertList, 256);
+          printf("   Node has serious, non-clearing alerts: %s\n", alertList);
+        }
+        else {
+          printf("   Node %d: all alerts have been cleared\n", theNode.Info.Ex.Addr());
+        }
+      }
+      else {
+        printf("   Node %d: all alerts have been cleared\n", theNode.Info.Ex.Addr());
+      }
+
+    }
+    
+  
+
+    
+  
+  return 1; // ERIC how to make it return an error instead of a number, one of the errors above. 
+}
+
 double _get_position(unsigned long i){
   INode &theNode = *(pTheNode[i]);
   theNode.Motion.PosnMeasured.Refresh();
@@ -151,6 +225,19 @@ static PyObject *stop_all_motors(PyObject *self, PyObject *args) {
     Py_RETURN_FALSE;
 }
 
+static PyObject *motor_status(PyObject *self, PyObject *args) {
+  unsigned long i;
+  if (!PyArg_ParseTuple(args, "k", &i)) {
+    return NULL;
+  }
+  
+  int ret_val = _motor_status(i);
+  if (ret_val >= 0)
+    Py_RETURN_TRUE;
+  else
+    Py_RETURN_FALSE;
+}
+
 static PyObject *set_position(PyObject *self, PyObject *args) {
   unsigned long i;
   double position;
@@ -196,6 +283,7 @@ static PyObject *set_home(PyObject *self, PyObject *args) {
 
 static PyMethodDef HydrationServo_methods[] = {
     {"get_position", get_position, METH_VARARGS, "Returns servo position"},
+    {"motor_status", motor_status, METH_VARARGS, "Refreshes servo status and clears alerts"},
 	{"set_position_unique", set_position_unique, METH_VARARGS, "Returns servo position for Z1 and Y1 in the F04"},
 	{"set_position", set_position, METH_VARARGS, "Sets given servo to given position using MovePosnStart"},
     {"set_speed_rpm", set_speed_rpm, 
