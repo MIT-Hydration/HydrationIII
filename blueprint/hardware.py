@@ -19,7 +19,7 @@ if config.getboolean('Operating System', 'RunningInRPi'):
     from gpiozero import PWMLED
     from gpiozero import CPUTemperature
 
-from . import RPiHardware, rig_hardware, PumpHardware, TachometerHardware, wob_hardware
+from . import RPiHardware, rig_hardware, PumpHardware, TachometerHardware, wob_hardware, power_meter_hardware
 
 class HardwareFactory:
 
@@ -29,6 +29,7 @@ class HardwareFactory:
     pump = None
     wob = None
     tachometer = None
+    power_meter = None
     _lock = threading.Lock()
 
     #@classmethod
@@ -98,14 +99,14 @@ class HardwareFactory:
         return cls.rig
 
     @classmethod
-    def getWaterPump(cls):
+    def getPowerMeter(cls):
         cls._lock.acquire()
-        if cls.drill is None:
-            if (config.getboolean('Mocks', 'MockWaterPump')):
-                cls.drill = PumpHardware.MockPump()
+        if cls.power_meter is None:
+            if (config.getboolean('Mocks', 'MockPowerMeter')):
+                cls.power_meter = power_meter_hardware.MockPowerMeterSensor()
             else:
-                cls.drill = PumpHardware.Pump()
+                cls.power_meter = power_meter_hardware.PowerMeter()
         cls._lock.release()
-        return cls.drill
+        return cls.power_meter
     
 
