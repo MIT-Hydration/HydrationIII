@@ -56,33 +56,3 @@ class CoreSensorsController(mission_control_pb2_grpc.CoreSensorsServicer):
             timestamp = timestamp,
             cpu_temperature_degC = cpu_temp,
             )
-
-class FileWriterThread(threading.Thread):
-
-    def __init__(self, core_sensors_thread):
-        threading.Thread.__init__(self)
-        self.core_sensors_thread = core_sensors_thread
-        self.stopped = True
-
-    def run(self):
-        self.stopped = False
-        fp = open(f"core_sensors{time_start_s}.csv", "w")
-        keys = core_sensors_thread.sensor_readings.keys
-        for k in keys:
-            fp.write(f"{k},")
-        fp.write("\n")
-        sampling_time = config.getfloat("CoreSensors", "SamplingTime")
-
-        while not self.stopped: #read sensor continuously
-            loop_start = time.time()
-            for k in keys:
-                fp.write(f"{core_sensors_thread.sensor_readings[k]},")
-            fp.write("\n")
-            loop_end = time.time()
-            delta_time = loop_end - loop_start
-            if (delta_time < sampling_time):
-                time.sleep(sampling_time - delta_time)
-        fp.close()
-
-    def stop(self):
-        self.stopped = True
