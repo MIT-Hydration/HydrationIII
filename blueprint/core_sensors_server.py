@@ -42,11 +42,20 @@ class CoreSensorsController(mission_control_pb2_grpc.CoreSensorsServicer):
 
         try:
             wob_hardware = HardwareFactory.getWOBSensor()
+            
             wob_reading = wob_hardware.get_force_N()
             self.last_weight_on_bit_drill_timestamp = wob_reading[0]
             self.last_weight_on_bit_drill_N = wob_reading[1]
-            #GET WOB READING and power reading and retrun it in the return below and cuz its outside it will return both times
-            #even w exception will still go there bc outside exception
+            
+            power_meter_hardware = HardwareFactory.getPowerMeterSensor()
+            
+            power_meter_power_reading = power_meter_hardware.get_active_power_W()
+            self.last_power_meter_timestamp = power_meter_power_reading[0]
+            self.power_W = power_meter_power_reading[1]
+            
+            power_meter_current_reading = power_meter_hardware.get_current_mA()
+            self.total_current_mA = power_meter_current_reading[0]
+            
         except Exception as e: #return last known
             info = f"[Error] {str(e)}"
             print(info)
