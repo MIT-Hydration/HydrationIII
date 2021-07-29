@@ -61,6 +61,10 @@ class AbstractRigHardware(ABC):
         return self.gotoPositionY(new_y, vel)
     
     @abstractmethod
+    def motorStatus(self):
+        pass
+
+    @abstractmethod
     def getPosition(self):
         pass
 
@@ -236,6 +240,36 @@ class RigHardware(AbstractRigHardware):
         self.move_tolerance = config.getfloat(
             "Rig", "MoveDetectionTolerance")
 
+    def motorStatus(self) : 
+        responses = [] 
+        for i in range(3): 
+            responses.append(HydrationServo.MotorStatus(i))  #need to somehow make the motor status return into the error at hand  
+        return responses
+
+    def homingMotorZ1(self):
+        # ensure Z-poisions are zero within tolerance
+        homing_error = config.getfloat("Rig", "HomingError")
+        pos = self.getPosition()
+        if (numpy.abs(pos[iZ1]) > homing_error):
+            return False
+        
+        # stop existing moves
+        self.emergencyStop()
+        HydrationServo.homing_motor(iZ1)
+        return True 
+
+    def homingMotorY(self):
+        # ensure Z-poisions are zero within tolerance
+        homing_error = config.getfloat("Rig", "HomingError")
+        pos = self.getPosition()
+        if (numpy.abs(pos[iY]) > homing_error):
+            return False
+        
+        # stop existing moves
+        self.emergencyStop()
+        HydrationServo.homing_motor(iY)
+        return True 
+
     def gotoPositionY(self, y, v):
         # ensure Z-poisions are zero within tolerance
         homing_error = config.getfloat("Rig", "HomingError")
@@ -255,10 +289,10 @@ class RigHardware(AbstractRigHardware):
         return True
         
     def homeY(self):
-        return self.gotoPositionY(0.0)
+        return self.homingMotorY()
 
     def homeZ1(self):
-        return self.gotoPositionZ1(0.0)
+        return self.homingMotorZ1()
 
     def getPosition(self):
         self.prev_pos = self.current_pos.copy()
