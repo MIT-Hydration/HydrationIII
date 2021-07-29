@@ -1,4 +1,4 @@
-# The binary to build (just the basename).
+# The binary to build (just the basename)
 MODULE := blueprint
 
 run-mc-server:
