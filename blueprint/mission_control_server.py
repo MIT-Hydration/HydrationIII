@@ -6,7 +6,8 @@ import time
 import configparser
 import blueprint
 
-config = configparser.ConfigParser()
+config = configparser.ConfigParser(
+    converters={'list': lambda x: [i.strip() for i in x.split(',')]})
 config.read('config.ini')
 
 class StateMachine:
@@ -19,12 +20,14 @@ class StateMachine:
             mcpb.STARTUP_IDLE: mcpb.STARTUP_MISSION_CLOCK_STARTED,
             mcpb.STARTUP_MISSION_CLOCK_STARTED: mcpb.STARTUP_HOMING_Z1,
             mcpb.STARTUP_HOMING_Z1: mcpb.STARTUP_HOME_Z1_COMPLETED,
-            mcpb.STARTUP_HOME_Z1_COMPLETED: mcpb.STARTUP_HOMING_Y,
+            mcpb.STARTUP_HOME_Z1_COMPLETED: mcpb.STARTUP_HOMING_Z2,
+            mcpb.STARTUP_HOMING_Z2: mcpb.STARTUP_HOME_Z2_COMPLETED,
+            mcpb.STARTUP_HOME_Z2_COMPLETED: mcpb.STARTUP_HOMING_Y,
             mcpb.STARTUP_HOMING_Y: mcpb.STARTUP_HOME_Y_COMPLETED
         }
 
         self.drill_states = {
-            mcpb.DRILL_IDLE: [mcpb.DRILL_MOVING_Y, mcpb.DRILLING_HOLE_IDLE],
+            mcpb.DRILL_IDLE: [mcpb.DRILL_MOVING_Y, mcpb.DRILLING_HOLE_IDLE, mcpb.HEATER_HOLE_MOVING_TO_Z2],
             mcpb.DRILL_MOVING_Y: [mcpb.DRILL_IDLE],
             mcpb.DRILLING_HOLE_IDLE: [
                 mcpb.DRILLING_HOLE_DRILLING_DOWN,
@@ -33,6 +36,11 @@ class StateMachine:
             mcpb.DRILLING_HOLE_DRILLING_DOWN: [mcpb.DRILLING_HOLE_IDLE],
             mcpb.DRILLING_HOLE_REAMING_UP: [mcpb.DRILLING_HOLE_IDLE],
             mcpb.DRILLING_HOLE_HOMING_Z1: [mcpb.DRILL_IDLE],
+            mcpb.HEATER_HOLE_MOVING_TO_Z2: [mcpb.HEATER_IDLE],
+            mcpb.HEATER_IDLE: [mcpb.HEATER_LOWERING_DOWN, mcpb.HEATER_MELTING],
+            mcpb.HEATER_LOWERING_DOWN: [mcpb.HEATER_IDLE],
+            mcpb.HEATER_MELTING: [mcpb.HEATER_HOMING_Z2],
+            mcpb.HEATER_HOMING_Z2: [mcpb.DRILL_IDLE],
         }
 
     def getMajorMode(self):
@@ -78,6 +86,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         self.holes = []
         self.last_y_move = 0
         self.last_z1_move = 0
+        self.last_z2_move = 0
 
         self.iZ1 = 0
         self.iZ2 = 1
@@ -136,6 +145,13 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                     mcpb.STARTUP_HOME_Z1_COMPLETED
                 )
 
+        if (current_state == mcpb.STARTUP_HOMING_Z2):
+            if rig_hardware.isHomeZ2():
+                self.state_machine.transitionState(
+                    mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS, 
+                    mcpb.STARTUP_HOME_Z2_COMPLETED
+                )
+
         if (current_state == mcpb.STARTUP_HOMING_Y):
             if rig_hardware.isHomeY():
                 self.state_machine.transitionState(
@@ -163,12 +179,36 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
         if   (current_state == mcpb.DRILLING_HOLE_HOMING_Z1):
             if ((timestamp - self.last_z1_move) > self.move_time_buffer) and \
-                (not rig_hardware.isZ1Moving()):
+                (rig_hardware.isHomeZ1()):
                 self.state_machine.transitionState(
                     mcpb.MAJOR_MODE_DRILL_BOREHOLE, 
                     mcpb.DRILL_IDLE
                 )
 
+        if   (current_state == mcpb.HEATER_HOLE_MOVING_TO_Z2):
+            if ((timestamp - self.last_y_move) > self.move_time_buffer) and \
+                (not rig_hardware.isYMoving()):
+                self.state_machine.transitionState(
+                    mcpb.MAJOR_MODE_DRILL_BOREHOLE, 
+                    mcpb.HEATER_IDLE
+                )
+
+        if   (current_state == mcpb.HEATER_LOWERING_DOWN):
+            if ((timestamp - self.last_z2_move) > self.move_time_buffer) and \
+                (not rig_hardware.isZ2Moving()):
+                self.state_machine.transitionState(
+                    mcpb.MAJOR_MODE_DRILL_BOREHOLE, 
+                    mcpb.HEATER_IDLE
+                )
+
+        if   (current_state == mcpb.HEATER_HOMING_Z2):
+            if ((timestamp - self.last_z2_move) > self.move_time_buffer) and \
+                (rig_hardware.isHomeZ2()):
+                self.state_machine.transitionState(
+                    mcpb.MAJOR_MODE_DRILL_BOREHOLE, 
+                    mcpb.DRILL_IDLE
+                )
+        
         position = rig_hardware.getPosition()
         return mcpb.HeartBeatReply(
             request_timestamp = request.request_timestamp,
@@ -176,8 +216,10 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             cpu_temperature_degC = cpu_temp,
             mission_time_ms = mission_time,
             zdrill_servo_moving = rig_hardware.isZ1Moving(),
+            zheater_servo_moving = rig_hardware.isZ2Moving(),
             y_servo_moving = rig_hardware.isYMoving(),
             rig_zdrill = position[self.iZ1],
+            rig_zheater = position[self.iZ2],
             rig_y = position[self.iY],
             major_mode = self.state_machine.getMajorMode(),
             state = self.state_machine.getState(),
@@ -236,6 +278,34 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                     self.state_machine.transitionState(
                         mcpb.MAJOR_MODE_DRILL_BOREHOLE, mcpb.DRILLING_HOLE_REAMING_UP)
                     
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.EXECUTED)
+        else:
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.EXECUTION_ERROR)
+
+    def Z2Move(self, request, context):
+        timestamp = int(time.time()*1000)
+        if (self.state_machine.getState() != mcpb.STARTUP_IDLE) and \
+              (self.state_machine.getState() != mcpb.HEATER_IDLE): # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+
+        rig_hardware = HardwareFactory.getRig()
+        move_success = rig_hardware.movePositionZ2(request.delta, request.vel)
+
+        if move_success:
+            self.last_z2_move = timestamp
+            if (self.state_machine.getState() == mcpb.HEATER_IDLE):
+                self.state_machine.transitionState(
+                    mcpb.MAJOR_MODE_DRILL_BOREHOLE, mcpb.HEATER_LOWERING_DOWN)
+                
             return mcpb.CommandResponse(
                 request_timestamp = request.request_timestamp,
                 timestamp = timestamp,
@@ -329,6 +399,96 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 timestamp = timestamp,
                 status = mcpb.EXECUTION_ERROR)
 
+    def AlignHeater(self, request, context):
+        timestamp = int(time.time()*1000)
+        if (self.state_machine.getState() != mcpb.DRILL_IDLE): # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+        
+        self.state_machine.transitionState(
+                mcpb.MAJOR_MODE_DRILL_BOREHOLE, mcpb.HEATER_HOLE_MOVING_TO_Z2)
+
+        HeaterDeltaXY = config.getlist("Rig", "HeaterDeltaXY")
+        HeaterDeltaXY = [float(HeaterDeltaXY[0]), float(HeaterDeltaXY[1])]
+
+        rig_hardware = HardwareFactory.getRig()
+        move_success = rig_hardware.movePositionY(-HeaterDeltaXY[1], 300)  
+
+        if move_success:
+            self.last_y_move = timestamp
+            if self.state_machine.getState() == mcpb.HEATER_HOLE_MOVING_TO_Z2:
+                return mcpb.CommandResponse(
+                    request_timestamp = request.request_timestamp,
+                    timestamp = timestamp,
+                    status = mcpb.EXECUTED)
+            else:
+                return mcpb.CommandResponse(
+                    request_timestamp = request.request_timestamp,
+                    timestamp = timestamp,
+                    status = mcpb.INVALID_STATE)
+        else:
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.EXECUTION_ERROR)
+
+
+    def StartMelting(self, request, context):
+        timestamp = int(time.time()*1000)
+        if (self.state_machine.getState() != mcpb.HEATER_IDLE): # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+        
+        self.state_machine.transitionState(
+                mcpb.MAJOR_MODE_DRILL_BOREHOLE, mcpb.HEATER_MELTING)
+
+        if self.state_machine.getState() == mcpb.HEATER_MELTING:
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.EXECUTED)
+        else:
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+
+
+    def EndMelting(self, request, context):
+        timestamp = int(time.time()*1000)
+        if (self.state_machine.getState() != mcpb.HEATER_MELTING): # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+        
+        self.state_machine.transitionState(
+                mcpb.MAJOR_MODE_DRILL_BOREHOLE, mcpb.HEATER_HOMING_Z2)
+
+        if self.state_machine.getState() == mcpb.HEATER_HOMING_Z2:
+            self.last_z2_move = timestamp
+            rig_hardware = HardwareFactory.getRig()
+            move_success = rig_hardware.homeZ2()  
+            if move_success:
+                return mcpb.CommandResponse(
+                    request_timestamp = request.request_timestamp,
+                    timestamp = timestamp,
+                    status = mcpb.EXECUTED)
+            else:
+                return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.EXECUTION_ERROR)
+        else:
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+        
     def _create_new_hole(self):
         rig_hardware = HardwareFactory.getRig()
         position = rig_hardware.getPosition()
@@ -355,6 +515,8 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         elif (state == mcpb.STARTUP_MISSION_CLOCK_STARTED):
             return self._StartHomeZ1(request, context)
         elif (state == mcpb.STARTUP_HOME_Z1_COMPLETED):
+            return self._StartHomeZ2(request, context)
+        elif (state == mcpb.STARTUP_HOME_Z2_COMPLETED):
             return self._StartHomeY(request, context)
         
         else:
@@ -405,7 +567,25 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             timestamp = timestamp,
             status = mcpb.EXECUTED)
 
+    def SetHomeZ2 (self, request, context):
+        print("Setting Home Z2 ...")
+        timestamp = int(time.time()*1000)
+        if (self.state_machine.getState() != mcpb.STARTUP_IDLE): # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+
+        rig_hardware = HardwareFactory.getRig()
+        rig_hardware.setHomeZ2()
+
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)
+
     def SetHomeY (self, request, context):
+        print("Setting Home Y ...")
         timestamp = int(time.time()*1000)
         if (self.state_machine.getState() != mcpb.STARTUP_IDLE): # do nothing
             return mcpb.CommandResponse(
@@ -437,12 +617,29 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
             status = mcpb.EXECUTED)
+
+    def _StartHomeZ2 (self, request, context):
+        timestamp = int(time.time()*1000)
+        if self.state_machine.getState() \
+                != mcpb.STARTUP_HOME_Z1_COMPLETED: # do nothing
+            return mcpb.CommandResponse(
+                request_timestamp = request.request_timestamp,
+                timestamp = timestamp,
+                status = mcpb.INVALID_STATE)
+        self.state_machine.transitionState(
+            mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS, mcpb.STARTUP_HOMING_Z2)
+        rig_hardware = HardwareFactory.getRig()
+        rig_hardware.homeZ2()
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)
         
     def _StartHomeY (self, request, context):
         print("Homing Y...")
         timestamp = int(time.time()*1000)
         if self.state_machine.getState() \
-                != mcpb.STARTUP_HOME_Z1_COMPLETED: # do nothing
+                != mcpb.STARTUP_HOME_Z2_COMPLETED: # do nothing
             return mcpb.CommandResponse(
                 request_timestamp = request.request_timestamp,
                 timestamp = timestamp,

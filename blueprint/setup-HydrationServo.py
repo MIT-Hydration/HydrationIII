@@ -10,6 +10,6 @@ HydrationServo_module = Extension(
 
 setup(
     name='HydrationServo',
-    version='0.1.0',
+    version='0.7.0',
     description='Hydration Servo module written in C++',
     ext_modules=[HydrationServo_module], )

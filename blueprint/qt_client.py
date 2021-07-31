@@ -164,7 +164,7 @@ class MainWindow(QtWidgets.QWidget):
         self.limits_layout = QtWidgets.QFormLayout()
         self.limits_groupbox.setLayout(self.limits_layout)
         self.main_grid_layout.addWidget(
-            self.limits_groupbox, 0, 6, 3, 5)
+            self.limits_groupbox, 0, 8, 3, 3)
 
         self.limits_display = limits_display.LimitsDisplay(self.limits_layout)  
         self.limit_receivers.append(self.limits_display)   
@@ -188,7 +188,7 @@ class MainWindow(QtWidgets.QWidget):
 
         self.main_grid_layout = QtWidgets.QGridLayout()
         self.major_mode_tab = QtGui.QTabWidget()
-        self.main_grid_layout.addWidget(self.major_mode_tab, 0, 1, 3, 5)
+        self.main_grid_layout.addWidget(self.major_mode_tab, 0, 1, 3, 7)
 
         self._initEmergencyStop()
         self._initModeDisplay()

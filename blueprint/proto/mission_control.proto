@@ -18,8 +18,10 @@ enum SystemMode {
     STARTUP_MISSION_CLOCK_STARTED = 102; //after pressing "Start Mission Clock Button", clock has completed starting
     STARTUP_HOMING_Z1 = 103; //after pressing "Home Z1" button, begin homing z1 axis
     STARTUP_HOME_Z1_COMPLETED = 104; //z1 has completed homing
-    STARTUP_HOMING_Y = 105; //after pressing "Home Y" button, Y axis begins homing
-    STARTUP_HOME_Y_COMPLETED = 106; //y axis has completd homing
+    STARTUP_HOMING_Z2 = 105; //after pressing "Home Z1" button, begin homing z1 axis
+    STARTUP_HOME_Z2_COMPLETED = 106; //z1 has completed homing
+    STARTUP_HOMING_Y = 107; //after pressing "Home Y" button, Y axis begins homing
+    STARTUP_HOME_Y_COMPLETED = 108; //y axis has completd homing
 
     // refer to "State Diagram for 2021-Jul-06" PDF in Hydration Google Drive for state diagram
     DRILL_IDLE = 401; // ready to receive user input, could be stopped due to emergency stop
@@ -28,6 +30,11 @@ enum SystemMode {
     DRILLING_HOLE_DRILLING_DOWN = 405; //From DRILLING_HOLE_IDLE, user can drill down with the "Drill Down" button
     DRILLING_HOLE_REAMING_UP = 406; //From DRILLING_HOLE_IDLE, user can ream up with the "Reaming Up" button
     DRILLING_HOLE_HOMING_Z1 = 407; //After pressing "Finish Drill" button, return to homing the Z1 axis
+    HEATER_HOLE_MOVING_TO_Z2 = 408; // Move to position Z2 after finishing drilling Z1
+    HEATER_IDLE = 409; // ready to receive user input, could be stopped due to emergency stop
+    HEATER_LOWERING_DOWN = 410; // Lower heater
+    HEATER_MELTING = 411;
+    HEATER_HOMING_Z2 = 413;
 }
 
 enum CommandReport {
@@ -52,7 +59,7 @@ message HeartBeatReply {
     SystemMode major_mode = 70;
     uint64 mission_time_ms = 8;
     bool zdrill_servo_moving = 9;
-    //bool zwater_servo_moving = 10;
+    bool zheater_servo_moving = 10;
     //bool x_servo_moving = 11;
     bool y_servo_moving = 12;
     //float drill_motor_setting = 13;
@@ -63,7 +70,7 @@ message HeartBeatReply {
     //float rig_x = 100;
     float rig_y = 101;
     float rig_zdrill = 102;
-    //float rig_zwater = 103;
+    float rig_zheater = 103;
 
     //float rig_torque_z1 = 120;
     string server_version = 50;
@@ -137,14 +144,19 @@ service MissionControl {
     rpc StartupNext (StartCommandRequest) returns (CommandResponse);
 
     rpc SetHomeZ1 (StartCommandRequest) returns (CommandResponse);
+    rpc SetHomeZ2 (StartCommandRequest) returns (CommandResponse);
     rpc SetHomeY (StartCommandRequest) returns (CommandResponse);
 
     rpc Z1Move (MoveRequest) returns (CommandResponse);
+    rpc Z2Move (MoveRequest) returns (CommandResponse);
     rpc YMove (MoveRequest) returns (CommandResponse);
 
     rpc StartDrillHole (StartCommandRequest) returns (CommandResponse);
     rpc EndDrillHole (StartCommandRequest) returns (CommandResponse);
-    
+    rpc AlignHeater (StartCommandRequest) returns (CommandResponse);
+    rpc StartMelting (StartCommandRequest) returns (CommandResponse);
+    rpc EndMelting (StartCommandRequest) returns (CommandResponse);
+
     rpc GotoMajorMode (GotoMajorModesRequest) returns (CommandResponse);
     rpc EmergencyStop (EmergencyStopRequest) returns (CommandResponse);
 }
