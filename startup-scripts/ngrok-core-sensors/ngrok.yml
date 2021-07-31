@@ -1,0 +1,8 @@
+authtoken: 1ub1DawoyyxcXTQbfXs5oBS4wH5_7PJ35YLajkgzS5qYWayNC
+tunnels:
+  arbitrary_tunnel_name:
+    proto: tcp
+    remote_addr: 3.tcp.ngrok.io:23386
+    # example forwarding to SSH, you may want to change the port number
+    addr: 22
+    
