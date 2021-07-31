@@ -142,13 +142,6 @@ message GotoMajorModesRequest {
     SystemMode new_mode = 2;
 }
 
-#CoreSensors
-
-message GotoMajorModesRequest {
-    uint64 request_timestamp = 1;
-    SystemMode new_mode = 2;
-}
-
 service MissionControl {
     rpc GetMajorModes (GetMajorModesRequest) returns (MajorModesList);
     rpc HeartBeat (HeartBeatRequest) returns (HeartBeatReply);
