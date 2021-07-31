@@ -45,8 +45,8 @@ if config.getboolean('Operating System', 'RunningInRPi'):
             self.wob_sensor.tare()
             self.sampling_time = config.getfloat('WOBSensor', 'SamplingTime')
             self.sensor_readings = {
-                "reading": 0.0,
-                "last_reading": 0.0,   
+                "time_s": 0.0,
+                "wob_n": 0.0,   
             }
 
             threading.Thread.__init__(self)
@@ -57,9 +57,9 @@ if config.getboolean('Operating System', 'RunningInRPi'):
             
             while not self.stopped:
                 loop_start = time.time()
-                self.sensor_readings["reading"] = self.wob_sensor.get_weight(self.DTPin)
+                self.sensor_readings["wob_n"] = self.wob_sensor.get_weight(self.DTPin)
                 loop_end = time.time()
-                self.sensor_readings["last_reading"] = loop_end
+                self.sensor_readings["time_s"] = loop_start
                 delta_time = loop_end - loop_start
                 if (delta_time < self.sampling_time):
                     time.sleep(self.sampling_time - delta_time)
@@ -77,6 +77,7 @@ if config.getboolean('Operating System', 'RunningInRPi'):
             
         def run(self):
             self.stopped = False
+            time_start_s = time.time()
             fp = open(f"WOB_{time_start_s}.csv", "w")
             keys = WOB_thread.sensor_readings.keys
             for k in keys:
@@ -87,7 +88,7 @@ if config.getboolean('Operating System', 'RunningInRPi'):
             while not self.stopped:
                 loop_start = time.time()
                 for k in keys:
-                    fp.write(f"{WOB_threahhd.sensor_readings[k]},")
+                    fp.write(f"{WOB_thread.sensor_readings[k]},")
                 fp.write("\n")
                 loop_end = time.time()
                 delta_time = loop_end - loop_start
@@ -108,6 +109,6 @@ if config.getboolean('Operating System', 'RunningInRPi'):
             self.file_writer_thread.start()
 
         def get_force_N(self):
-            return [self.sensor_thread["reading"],
-                    self.sensor_thread["last_reading"]]
+            return [self.sensor_thread.sensor_readings["time_s"],
+                    self.sensor_thread.sensor_readings["wob_n"]]
     
