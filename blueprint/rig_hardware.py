@@ -26,14 +26,58 @@ Z1Cal = config.getfloat('Rig', 'Z1Cal')
 Z2Cal = config.getfloat('Rig', 'Z2Cal')
 XCal = config.getfloat('Rig', 'XCal')
 YCal = config.getfloat('Rig', 'YCal')
+HomingError =config.getfloat('Rig', 'HomingError') 
+if config.getboolean('Mocks', 'MockRig'):
+    iZ1 = 0
+    iZ2 = 1
+    iX = 2
+    iY = 3
+else:
+    iZ1 = 0
+    iZ2 = 1
+    iX = -2
+    iY = 2
+
+# these indices are used for the current position variables
+kZ1 = 0
+kZ2 = 1
+kX = 2
+kY = 3
 
 class AbstractRigHardware(ABC):
     
-    def getPosition(self):
-        return self.current_pos
+    def isHomeZ1(self):
+        current_pos = self.getPosition()
+        return (not self.isZ1Moving()) \
+            and (numpy.abs(current_pos[kZ1]) < HomingError) 
 
+    def isHomeY(self):
+        current_pos = self.getPosition()
+        return (not self.isYMoving()) \
+            and (numpy.abs(current_pos[kY]) < HomingError) 
+
+    def isHomeZ2(self):
+        current_pos = self.getPosition()
+        return (not self.isYMoving()) \
+            and (numpy.abs(current_pos[kZ2]) < HomingError) 
+    
+    def movePositionZ1(self, delta, vel):
+        cur_pos = self.getPosition().copy()
+        new_z1 = cur_pos[kZ1] + delta
+        return self.gotoPositionZ1(new_z1, vel)
+    
+    def movePositionZ2(self, delta, vel):
+        cur_pos = self.getPosition().copy()
+        new_z1 = cur_pos[kZ2] + delta
+        return self.gotoPositionZ2(new_z1, vel)
+    
+    def movePositionY(self, delta, vel):
+        cur_pos = self.getPosition().copy()
+        new_y = cur_pos[kY] + delta
+        return self.gotoPositionY(new_y, vel)
+    
     @abstractmethod
-    def homeX(self):
+    def getPosition(self):
         pass
 
     @abstractmethod
@@ -45,23 +89,11 @@ class AbstractRigHardware(ABC):
         pass
 
     @abstractmethod
-    def homeZ2(self):
-        pass
-
-    @abstractmethod
-    def isXMoving(self):
-        pass
-
-    @abstractmethod
     def isYMoving(self):
         pass
 
     @abstractmethod
     def isZ1Moving(self):
-        pass
-
-    @abstractmethod
-    def isZ2Moving(self):
         pass
 
     @abstractmethod
@@ -76,42 +108,37 @@ class AbstractRigHardware(ABC):
     @abstractmethod
     def setHomeZ1(self):
         pass
-
-    @abstractmethod
-    def setHomeZ2(self):
-        pass
-
-    @abstractmethod
-    def setHomeX(self):
-        pass
-
+    
     @abstractmethod
     def setHomeY(self):
         pass
 
     @abstractmethod
-    def gotoPosition(self, x, y):
+    def gotoPositionY(self, y, v):        
         pass
     
     @abstractmethod
-    def gotoPositionZ1(self, z):        
+    def gotoPositionZ1(self, z, v):        
         pass
 
     @abstractmethod
-    def gotoPositionZ2(self, z):        
+    def gotoPositionZ2(self, z, v):        
         pass
+
 
 class MockRigHardware(AbstractRigHardware):
     def __init__(self):
-        self.position = [-0.4, -0.5, 0.50, 0.50]
+        #self.position = [-0.4, -0.3, 0.0, 0.50]
+        self.position = [-0.0, -0.00, 0.0, 0.00]
+        self.target = [0.0, 0.0, 0.0, 0.0]
+        self.vel = 0.05 # m/s
         self.homing = [False, False, False, False]
         self.homingTime = [0.0, 0.0, 0.0, 0.0]
-        self.target = [0.0, 0.0, 0.0, 0.0]
         self.move_tolerance = config.getfloat(
-            "Rig", "HomingError")
+            "Rig", "MoveDetectionTolerance")
     
     def _update(self, i):
-        VEL = (self.target[i] - self.position[i])*0.02 # m/s
+        VEL = (self.target[i] - self.position[i])*self.vel
         if self.homing[i]:
             new_t = time.time()
             dt = new_t - self.homingTime[i]
@@ -131,21 +158,26 @@ class MockRigHardware(AbstractRigHardware):
         return self.position
 
     def _home(self, i):
+        self.vel = 0.05 # m/s
         self.homing[i] = True
         self.target[i] = 0.0
         self.homingTime[i] = time.time()
 
     def homeZ1(self):
-        self._home(0)
+        self._home(iZ1)
+        return True
         
     def homeZ2(self):
-        self._home(1)
+        self._home(iZ2)
+        return True
     
     def homeX(self):
-        self._home(2)
+        self._home(iX)
+        return True
         
     def homeY(self):
-        self._home(2)
+        self._home(iY)
+        return True
         
     def emergencyStop(self):
         N = len(self.position)
@@ -178,18 +210,32 @@ class MockRigHardware(AbstractRigHardware):
         self.homingTime[2] = t
         self.homing[3] = True
         self.homingTime[3] = t
+        return True
     
-    def gotoPositionZ1(self, z): 
+    def gotoPositionY(self, y, v):
+        t = time.time()
+        self.vel = v/5000.0
+        self.target[3] = y
+        self.homing[3] = True
+        self.homingTime[3] = t
+        return True
+
+    def gotoPositionZ1(self, z, v): 
+        self.vel = v/5000.0 
         self.target[0] = z    
         self.homing[0] = True
         self.homingTime[0] = time.time()
+        return True
         
-    def gotoPositionZ2(self, z):
+    def gotoPositionZ2(self, z, v):
+        self.vel = v/5000.0 
         self.target[1] = z        
         self.homing[1] = True
         self.homingTime[1] = time.time()
+        return True
 
     def setHomeZ1(self):
+        print("Setting Home Z1")
         self.position[0] = 0.0
 
     def setHomeZ2(self):
@@ -200,250 +246,98 @@ class MockRigHardware(AbstractRigHardware):
 
     def setHomeY(self):
         self.position[3] = 0.0
-
-
-class ArduinoThread(threading.Thread):
-
-    def __init__(self):
-        threading.Thread.__init__(self)
-        self.stopped = True
-        self.sensor_readings = {
-                "arduino_timestamp_ms": 0.0,
-                "tacho_rpm": 0.0,
-                "imu_x_g": 0.0,
-                "imu_y_g": 0.0,
-                "imu_z_g": 0.0,
-            }
-        self.port = serial.Serial("/dev/ttyACM0", baudrate=9600, timeout=5,
-            bytesize = serial.EIGHTBITS, stopbits = serial.STOPBITS_ONE,
-            parity=serial.PARITY_NONE)
-        self.arduino_primed = False
-        self.pattern = re.compile(
-            b'TS = ([0-9]+) ms, TACHO = ([-0-9.]+) RPM, IMU = \(([-0-9.]+), ([-0-9.]+), ([-0-9.]+)\) g')
-
-    def run(self):
-        self.stopped = False
-        while not self.stopped:
-            loop_start = time.time()
-            if not self.arduino_primed:
-                self.port.flush()
-                written = self.port.write(b"START_STREAM\n")
-                self.port.flush()
-                print(f"wrote {written}")
-            rcv = self.port.readline()
-            #print(str(rcv))
-            m = self.pattern.match(rcv)
-            if m is not None:    
-                self.sensor_readings["arduino_timestamp_ms"] = int(m.group(1))
-                self.sensor_readings["tacho_rpm"] =  float(m.group(2))
-                self.sensor_readings["imu_x_g"] = float(m.group(3))
-                self.sensor_readings["imu_y_g"] = float(m.group(4))
-                self.sensor_readings["imu_z_g"] = float(m.group(5))
-                self.arduino_primed = True  
-            loop_end = time.time()
-            delta_time = loop_end - loop_start
-            if (delta_time < 0.01):
-                time.sleep(0.01 - delta_time)
-            
-    def stop(self):
-        self.stopped = True
-
-class PowerMeterThread(threading.Thread):
-
-    modbus_reg_address = 75
-    modbus_reg_count   = 4
-
-    def __init__(self):
-        threading.Thread.__init__(self)
-        self.stopped = True
-        self.sensor_readings = {
-                "active_power_W": 0.0,
-                "current_mA": 0.0,
-            }
-        self.client = ModbusSerialClient(port='/dev/ttyUSB0', method='rtu', baudrate=9600)
-        
-    def run(self):
-        self.stopped = False
-        while not self.stopped:
-            loop_start = time.time()
-            result  = self.client.read_holding_registers(
-                self.modbus_reg_address, self.modbus_reg_count,  unit=1)
-            try:
-                decoder = BinaryPayloadDecoder.fromRegisters(result.registers, 
-                    wordorder = '>', byteorder = '>')
-                current_mA = decoder.decode_32bit_float()
-                power_W = decoder.decode_32bit_float()
-                self.sensor_readings["active_power_W"] = power_W
-                self.sensor_readings["current_mA"] =  current_mA
-            except:
-                pass
-            loop_end = time.time()
-            delta_time = loop_end - loop_start
-            if (delta_time < 0.01):
-                time.sleep(0.01 - delta_time)
-            
-    def stop(self):
-        self.stopped = True
-
-class FileWriterThread(threading.Thread):
-
-    def __init__(self, drill_pm_thread, drill_ad_thread, rig):
-        self.delay = 0.0007856988543367034
-        self.sample_time = 0.02
-        self.sleep_time = self.sample_time - self.delay
-        threading.Thread.__init__(self)
-        self.drill_pm_thread = drill_pm_thread
-        self.drill_ad_thread = drill_ad_thread
-        self.rig = rig
-        self.wob_sensor = hardware.HardwareFactory.getWOBSensor()
-        self.stopped = True
-        
-    def run(self):
-        rig = self.rig
-        self.stopped = False
-        time_start_s = time.time()
-        fp = open(f"all_data_{time_start_s}.csv", "w")
-        fp.write("time_s,cpu_t_degC,motor_command,Z1_m,Z2_m,X_m,Y_m,TZ1,TZ2,TX,TY,WOB_ts,WOB_N,")
-        for k in self.drill_pm_thread.sensor_readings:
-            fp.write(f"{k},")
-        for k in self.drill_ad_thread.sensor_readings:
-            fp.write(f"{k},")    
-        fp.write("\n")
-        while not self.stopped:
-            loop_start = time.time()
-            fp.write(f"{loop_start},")
-            fp.write(f"{rig.cpu_temperature_degC.temperature},")
-            fp.write(f"{rig.motor.value},")
-            pos = rig.getPosition()
-            fp.write(f"{pos[0]},{pos[1]},{pos[2]},{pos[3]},")
-            for n in range(4):
-                fp.write(f"{rig.getTorque(n)},") 
-            force_N = self.wob_sensor.get_force_N()
-            fp.write(f"{force_N[0]},")       
-            fp.write(f"{force_N[1]},")
-            for k in self.drill_pm_thread.sensor_readings:
-                fp.write(f"{self.drill_pm_thread.sensor_readings[k]},")
-            for k in self.drill_ad_thread.sensor_readings:
-                fp.write(f"{self.drill_ad_thread.sensor_readings[k]},")
-            fp.write("\n")
-            loop_end = time.time()
-            delta_time = loop_end - loop_start
-            if (delta_time < self.sleep_time):
-                time.sleep(self.sleep_time - delta_time)
-
-        fp.close()
-            
-    def stop(self):
-        self.stopped = True
-
-print("Here Before RigHardware")
+#ERIC WRITE ABSTRACT MOCK HARDWARE PART 
 
 class RigHardware(AbstractRigHardware):
     
     def __init__(self):
         print("Initializing Rig Hardware ...")
-        self.current_pos = numpy.array([
-            HydrationServo.get_position(0)*Z1Cal, 
-            HydrationServo.get_position(1)*Z2Cal,
-            HydrationServo.get_position(2)*XCal, 
-            HydrationServo.get_position(3)*YCal])
+        self.current_pos = [0.0, 0.0, 0.0, 0.0]
+        self.getPosition()
         print(f"Position found {self.current_pos}")
         self.prev_pos = self.current_pos.copy()
         self.move_tolerance = config.getfloat(
-            "Rig", "HomingError")
+            "Rig", "MoveDetectionTolerance")
 
-        #self.motor = PWMLED(12)
-        #self.motor = 0
-        self.cpu_temperature_degC = CPUTemperature()
-
-        #self.pm_thread = PowerMeterThread()
-        #self.ad_thread = ArduinoThread()
-        #self.writer_thread = FileWriterThread(
-        #    self.pm_thread, self.ad_thread, self)
-
-        #self.pm_thread.start()
-        #self.ad_thread.start()
-        #self.writer_thread.start()
-
-    def gotoPosition(self, x, y):
+    def gotoPositionY(self, y, v):
         # ensure Z-poisions are zero within tolerance
+        homing_error = config.getfloat("Rig", "HomingError")
         pos = self.getPosition()
-        if (numpy.abs(pos[0]) > self.move_tolerance) or \
-            (numpy.abs(pos[1]) > self.move_tolerance):
-            return
+        if (numpy.abs(pos[kZ1]) > homing_error) or (numpy.abs(pos[kZ2]) > homing_error):
+            return False
         
+        # stop existing moves
+        self.emergencyStop()
+        HydrationServo.set_position_unique(iY, y/YCal, v)
+        return True
+
+    def gotoPositionZ1(self, z, v):        
         # stop existing threads
         self.emergencyStop()
-        HydrationServo.set_position(2, x/XCal)
-        HydrationServo.set_position(3, y/YCal)
+        HydrationServo.set_position_unique(iZ1, z/Z1Cal, v)
+        return True
         
-    def gotoPositionZ1(self, z):        
+    def gotoPositionZ2(self, z, v):        
         # stop existing threads
         self.emergencyStop()
-        HydrationServo.set_position(0, z/Z1Cal)
-        
-    def gotoPositionZ2(self, z):        
-        # stop existing threads
-        self.emergencyStop()
-        HydrationServo.set_position(1, z/Z2Cal)
-        
-    def homeX(self):
-        pos = self.getPosition()
-        self.gotoPosition(0, pos[3])
+        HydrationServo.set_position_unique(iZ2, z/Z2Cal, v)
+        return True
 
     def homeY(self):
-        pos = self.getPosition()
-        self.gotoPosition(pos[2], 0)
+        return self.gotoPositionY(0.0)
 
     def homeZ1(self):
-        self.gotoPositionZ1(0)
+        return self.gotoPositionZ1(0.0)
 
     def homeZ2(self):
-        self.gotoPositionZ2(0)
-
+        return self.gotoPositionZ2(0.0)
+    
     def getPosition(self):
         self.prev_pos = self.current_pos.copy()
-        z1 = HydrationServo.get_position(0)*Z1Cal
-        z2 = HydrationServo.get_position(1)*Z2Cal
-        x = HydrationServo.get_position(2)*XCal
-        y = HydrationServo.get_position(3)*YCal
+        z1 = z2 = x = y = 0.0
+        if iZ1 >= 0:
+            z1 = HydrationServo.get_position(iZ1)*Z1Cal
+        if iZ2 >= 0:
+            z2 = HydrationServo.get_position(iZ2)*Z2Cal
+        if iX >= 0:
+            x = HydrationServo.get_position(iX)*XCal
+        if iY >= 0:
+            y = HydrationServo.get_position(iY)*YCal
         self.current_pos = numpy.array([z1, z2, x, y])
         return self.current_pos
         
     def emergencyStop(self):
-        N = HydrationServo.get_num_motors()
-        for n in range(N):
-            HydrationServo.set_speed_rpm(n, 0)
+        HydrationServo.stop_all_motors()
         
     def isNMoving(self, n):   
         return numpy.abs(self.prev_pos[n] - self.current_pos[n]) > self.move_tolerance
     
-    def isXMoving(self):
-        return self.isNMoving(2)
-
     def isYMoving(self):
-        return self.isNMoving(3)
+        if iY < 0:
+            return False
+        else:
+            return self.isNMoving(kY)
 
     def isZ1Moving(self):
-        return self.isNMoving(0)
+        if iZ1 < 0:
+            return False
+        else:
+            return self.isNMoving(kZ1)
 
     def isZ2Moving(self):
-        return self.isNMoving(1)
+        if iZ2 < 0:
+            return False
+        else:
+            return self.isNMoving(kZ2)
 
     def getTorque(self, i):
         return HydrationServo.get_torque(i)    
     
     def setHomeZ1(self):
-        HydrationServo.set_home(0)
+        HydrationServo.set_home(iZ1)
 
     def setHomeZ2(self):
-        HydrationServo.set_home(1)
-
-    def setHomeX(self):
-        HydrationServo.set_home(2)
-
-    def setHomeY(self):
-        HydrationServo.set_home(3)
+        HydrationServo.set_home(iZ2)
     
-   
-
+    def setHomeY(self):
+        HydrationServo.set_home(iY)

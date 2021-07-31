@@ -30,10 +30,12 @@ class StatusDisplay:
         self.status_list = [
             ("System HeartBeat", False),
             ("Z1 (Drill) servo", False),
+            ("Z2 (Drill) servo", False),
             ("Y servo", False),
             ("CPU Temp (degC)", True, 60, 75),
             ("Mission Time (H:M:S)", True, 80*60*60*1000, 100*60*60*1000),
             ("Round Trip Time (ms)", True, 300, 5000),
+            ("Server Version", True, 300, 5000),
         ]
         self.checkboxes = [None] * len(self.status_list)
         self.values = [None] * len(self.status_list)
@@ -71,11 +73,11 @@ class StatusDisplay:
             self.values[i].setText(fstr%v)
             if check_value:
                 if (v < self.status_list[i][2]):
-                    self.values[i].setStyleSheet("color: green")
+                    self.values[i].setStyleSheet("font-weight: bold; color: '#17a2b8'")
                 elif (v < self.status_list[i][3]):
-                    self.values[i].setStyleSheet("color: orange")
+                    self.values[i].setStyleSheet("font-weight: bold; color: '#ffc107'")
                 else: 
-                    self.values[i].setStyleSheet("color: red") 
+                    self.values[i].setStyleSheet("font-weight: bold; color: '#dc3545'") 
         
 
     def update_status(self, response):
@@ -85,14 +87,18 @@ class StatusDisplay:
                 self.checkboxes[i].setChecked(False)
             
             self._update_bool(1, "Z1 (Drill) servo", response.zdrill_servo_moving)
-            self._update_bool(2, "Y servo", response.y_servo_moving)
+            self._update_bool(2, "Z2 (Drill) servo", response.zheater_servo_moving)
+            self._update_bool(3, "Y servo", response.y_servo_moving)
             
-            self._update_value(3, response.cpu_temperature_degC,
+            self._update_value(4, response.cpu_temperature_degC,
                                  "%0.2f [degC]", "CPU Temp (degC)", True)
             mission_time = timedelta(milliseconds=int(response.mission_time_ms / 1000)*1000)
-            self._update_value(4, str(mission_time), "%s", "Mission Time (H:M:S)", False)
+            self._update_value(5, str(mission_time), "%s", "Mission Time (H:M:S)", False)
             rtt_time = response.timestamp - response.request_timestamp
-            self._update_value(5, rtt_time, "%0.2f [ms]", "Round Trip Time (ms)", True)
+            self._update_value(6, rtt_time, "%0.2f [ms]", "Round Trip Time (ms)", True)
+            self._update_value(7, response.server_version, 
+                "%s", "Server Version", False)
+            
             
         else:
             for c in self.checkboxes:
