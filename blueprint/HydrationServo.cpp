@@ -8,7 +8,7 @@ using namespace sFnd;
 #define INIT_TIMEOUT	1000	//Initialize timeout
 
 #define ACC_LIM_RPM_PER_SEC	300
-#define VEL_LIM_RPM			300
+#define VEL_LIM_RPM			90
 #define CNTS_PER_MM			400
 #define RPM_PER_MM_PER_SECOND			30
 #define THREAD_PITCH (2.0/1000.0) // meters (2 mm pitch)
@@ -75,6 +75,21 @@ int _set_position(unsigned long i, double pos) {
   theNode.Motion.MovePosnStart(target, true);
   return 1;
 }
+
+int _set_position_unique(unsigned long i, double pos, double vel) {
+  INode &theNode = *(pTheNode[i]);
+  int32_t target = (int32_t)(pos * CNTS_PER_MM * 1000);
+  int32_t velocity = vel; 
+  int32_t acc = (vel *2 ) 
+  theNode.Motion.MoveWentDone(); //Clear the rising edge Move done register
+  theNode.AccUnit(INode::RPM_PER_SEC);	//Set the units for Acceleration to RPM/SEC
+  theNode.VelUnit(INode::RPM);		//Set the units for Velocity to RPM
+  theNode.Motion.AccLimit = acc ; //Set Acceleration Limit (RPM/Sec)
+  theNode.Motion.VelLimit = vel;	 //Set Velocity Limit (RPM)
+  theNode.Motion.MovePosnStart(target, true);
+  return 1;
+}
+
 
 int _stop_all_motors() {
   INode &theNode = *(pTheNode[0]);
@@ -150,6 +165,21 @@ static PyObject *set_position(PyObject *self, PyObject *args) {
     Py_RETURN_FALSE;
 }
 
+static PyObject *set_position_unique(PyObject *self, PyObject *args) {
+  unsigned long i;
+  double position;
+  double vel; 
+  if (!PyArg_ParseTuple(args, "kdd", &i, &position, &vel)) {
+    return NULL;
+  }
+  
+  int ret_val = _set_position_unique(i, position, vel);
+  if (ret_val >= 0)
+    Py_RETURN_TRUE;
+  else
+    Py_RETURN_FALSE;
+}
+
 static PyObject *set_home(PyObject *self, PyObject *args) {
   unsigned long i;
   if (!PyArg_ParseTuple(args, "k", &i)) {
@@ -166,6 +196,7 @@ static PyObject *set_home(PyObject *self, PyObject *args) {
 
 static PyMethodDef HydrationServo_methods[] = {
     {"get_position", get_position, METH_VARARGS, "Returns servo position"},
+	{"set_position_unique", set_position_unique, METH_VARARGS, "Returns servo position for Z1 and Y1 in the F04"},
 	{"set_position", set_position, METH_VARARGS, "Sets given servo to given position using MovePosnStart"},
     {"set_speed_rpm", set_speed_rpm, 
 	    METH_VARARGS, "Sets servo speed"},

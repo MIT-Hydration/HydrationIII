@@ -96,8 +96,10 @@ class StartupDiagnosticsDisplay:
             [mcpb.STARTUP_MISSION_CLOCK_STARTED, QtWidgets.QLabel("2. Mission Clock Started")],
             [mcpb.STARTUP_HOMING_Z1, QtWidgets.QLabel("3. Homing Z1")],
             [mcpb.STARTUP_HOME_Z1_COMPLETED, QtWidgets.QLabel("4. Home Z1 Completed")],
-            [mcpb.STARTUP_HOMING_Y, QtWidgets.QLabel("5. Homing Y")],
-            [mcpb.STARTUP_HOME_Y_COMPLETED, QtWidgets.QLabel("6. Home Y Completed")],
+            [mcpb.STARTUP_HOMING_Z2, QtWidgets.QLabel("5. Homing Z2")],
+            [mcpb.STARTUP_HOME_Z2_COMPLETED, QtWidgets.QLabel("6. Home Z2 Completed")],
+            [mcpb.STARTUP_HOMING_Y, QtWidgets.QLabel("7. Homing Y")],
+            [mcpb.STARTUP_HOME_Y_COMPLETED, QtWidgets.QLabel("8. Home Y Completed")],
         ]
         self.threads = []
         self.group_box = group_box

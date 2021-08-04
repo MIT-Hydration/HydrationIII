@@ -80,6 +80,52 @@ class NewHoleThread(QtCore.QThread):
 
         self.done.emit(response)
 
+class StartMeltThread(QtCore.QThread):    
+    done = Signal(object)
+    log = Signal(object)
+    def __init__(self):
+        QtCore.QThread.__init__(self)
+        
+    def run(self):
+        global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
+        response = None
+        try:
+            timestamp = int(time.time()*1000)
+            with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
+                stub = mission_control_pb2_grpc.MissionControlStub(channel)
+                response = stub.StartMelting (
+                    mission_control_pb2.StartCommandRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )      
+        except Exception as e:
+            info = f"[Error] {str(e)}"
+            self.log.emit(info)
+
+        self.done.emit(response)
+
+class EndMeltThread(QtCore.QThread):    
+    done = Signal(object)
+    log = Signal(object)
+    def __init__(self):
+        QtCore.QThread.__init__(self)
+        
+    def run(self):
+        global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
+        response = None
+        try:
+            timestamp = int(time.time()*1000)
+            with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
+                stub = mission_control_pb2_grpc.MissionControlStub(channel)
+                response = stub.EndMelting (
+                    mission_control_pb2.StartCommandRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )      
+        except Exception as e:
+            info = f"[Error] {str(e)}"
+            self.log.emit(info)
+
+        self.done.emit(response)
+
 class EndHoleThread(QtCore.QThread):    
     done = Signal(object)
     log = Signal(object)
@@ -122,7 +168,37 @@ class SetHomeThread(QtCore.QThread):
                         request_timestamp = timestamp),
                     timeout = GRPC_CALL_TIMEOUT )
                 print(response)
+                response = stub.SetHomeZ2 (
+                    mission_control_pb2.StartCommandRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+                print(response)
                 response = stub.SetHomeY (
+                    mission_control_pb2.StartCommandRequest(
+                        request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+                print(response)
+                
+        except Exception as e:
+            info = f"[Error] {str(e)}"
+            self.log.emit(info)
+        self.done.emit(response)
+
+class AlignHeaterThread(QtCore.QThread):    
+    done = Signal(object)
+    log = Signal(object)
+    
+    def __init__(self):
+        QtCore.QThread.__init__(self)
+        
+    def run(self):
+        global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
+        response = None
+        try:
+            timestamp = int(time.time()*1000)
+            with grpc.insecure_channel(MC_IP_ADDRESS_PORT) as channel:
+                stub = mission_control_pb2_grpc.MissionControlStub(channel)
+                response = stub.AlignHeater (
                     mission_control_pb2.StartCommandRequest(
                         request_timestamp = timestamp),
                     timeout = GRPC_CALL_TIMEOUT )
@@ -137,9 +213,10 @@ class GotoThread(QtCore.QThread):
     done = Signal(object)
     log = Signal(object)
     
-    def __init__(self, delta):
+    def __init__(self, delta, vel):
         QtCore.QThread.__init__(self)
         self.delta = delta
+        self.vel = vel 
         
     def run(self):
         global MC_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
@@ -166,7 +243,17 @@ class GotoZ1Thread(GotoThread):
         return stub.Z1Move (
                     mission_control_pb2.MoveRequest(
                         request_timestamp = timestamp,
-                        delta = self.delta),
+                        delta = self.delta, 
+                        vel = self.vel),
+                    timeout = GRPC_CALL_TIMEOUT )
+
+class GotoZ2Thread(GotoThread):    
+    def _request_response(self, stub, timestamp):
+        return stub.Z2Move (
+                    mission_control_pb2.MoveRequest(
+                        request_timestamp = timestamp,
+                        delta = self.delta, 
+                        vel = self.vel),
                     timeout = GRPC_CALL_TIMEOUT )
 
 class GotoYThread(GotoThread):    
@@ -174,5 +261,6 @@ class GotoYThread(GotoThread):
         return stub.YMove (
                     mission_control_pb2.MoveRequest(
                         request_timestamp = timestamp,
-                        delta = self.delta),
+                        delta = self.delta, 
+                        vel = self.vel),
                     timeout = GRPC_CALL_TIMEOUT )

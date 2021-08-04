@@ -44,6 +44,11 @@ class MissionControlStub(object):
                 request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.CommandResponse.FromString,
                 )
+        self.SetHomeZ2 = channel.unary_unary(
+                '/mission_control.MissionControl/SetHomeZ2',
+                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
         self.SetHomeY = channel.unary_unary(
                 '/mission_control.MissionControl/SetHomeY',
                 request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
@@ -51,6 +56,11 @@ class MissionControlStub(object):
                 )
         self.Z1Move = channel.unary_unary(
                 '/mission_control.MissionControl/Z1Move',
+                request_serializer=mission__control__pb2.MoveRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.Z2Move = channel.unary_unary(
+                '/mission_control.MissionControl/Z2Move',
                 request_serializer=mission__control__pb2.MoveRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.CommandResponse.FromString,
                 )
@@ -66,6 +76,21 @@ class MissionControlStub(object):
                 )
         self.EndDrillHole = channel.unary_unary(
                 '/mission_control.MissionControl/EndDrillHole',
+                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.AlignHeater = channel.unary_unary(
+                '/mission_control.MissionControl/AlignHeater',
+                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.StartMelting = channel.unary_unary(
+                '/mission_control.MissionControl/StartMelting',
+                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.EndMelting = channel.unary_unary(
+                '/mission_control.MissionControl/EndMelting',
                 request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.CommandResponse.FromString,
                 )
@@ -120,6 +145,12 @@ class MissionControlServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SetHomeZ2(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def SetHomeY(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -127,6 +158,12 @@ class MissionControlServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def Z1Move(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def Z2Move(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -145,6 +182,24 @@ class MissionControlServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def EndDrillHole(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def AlignHeater(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def StartMelting(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def EndMelting(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -195,6 +250,11 @@ def add_MissionControlServicer_to_server(servicer, server):
                     request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
                     response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
             ),
+            'SetHomeZ2': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetHomeZ2,
+                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
             'SetHomeY': grpc.unary_unary_rpc_method_handler(
                     servicer.SetHomeY,
                     request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
@@ -202,6 +262,11 @@ def add_MissionControlServicer_to_server(servicer, server):
             ),
             'Z1Move': grpc.unary_unary_rpc_method_handler(
                     servicer.Z1Move,
+                    request_deserializer=mission__control__pb2.MoveRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'Z2Move': grpc.unary_unary_rpc_method_handler(
+                    servicer.Z2Move,
                     request_deserializer=mission__control__pb2.MoveRequest.FromString,
                     response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
             ),
@@ -217,6 +282,21 @@ def add_MissionControlServicer_to_server(servicer, server):
             ),
             'EndDrillHole': grpc.unary_unary_rpc_method_handler(
                     servicer.EndDrillHole,
+                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'AlignHeater': grpc.unary_unary_rpc_method_handler(
+                    servicer.AlignHeater,
+                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'StartMelting': grpc.unary_unary_rpc_method_handler(
+                    servicer.StartMelting,
+                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'EndMelting': grpc.unary_unary_rpc_method_handler(
+                    servicer.EndMelting,
                     request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
                     response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
             ),
@@ -343,6 +423,23 @@ class MissionControl(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
+    def SetHomeZ2(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/SetHomeZ2',
+            mission__control__pb2.StartCommandRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
     def SetHomeY(request,
             target,
             options=(),
@@ -371,6 +468,23 @@ class MissionControl(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/Z1Move',
+            mission__control__pb2.MoveRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def Z2Move(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/Z2Move',
             mission__control__pb2.MoveRequest.SerializeToString,
             mission__control__pb2.CommandResponse.FromString,
             options, channel_credentials,
@@ -422,6 +536,57 @@ class MissionControl(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/EndDrillHole',
+            mission__control__pb2.StartCommandRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def AlignHeater(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/AlignHeater',
+            mission__control__pb2.StartCommandRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def StartMelting(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/StartMelting',
+            mission__control__pb2.StartCommandRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def EndMelting(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.MissionControl/EndMelting',
             mission__control__pb2.StartCommandRequest.SerializeToString,
             mission__control__pb2.CommandResponse.FromString,
             options, channel_credentials,

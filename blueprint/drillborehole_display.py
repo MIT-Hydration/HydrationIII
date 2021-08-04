@@ -3,7 +3,7 @@ drillborehole_display.py
 Settings and state for drilling borehole
 """
 
-__author__      = "Prakash Manandhar"
+__author__      = "Prakash Manandhar and Eric Bui"
 __copyright__ = "Copyright 2021, Hydration Team"
 __credits__ = ["Prakash Manandhar"]
 __license__ = "Internal"
@@ -30,7 +30,12 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
             [mcpb.DRILLING_HOLE_IDLE, QtWidgets.QLabel("3. Waiting to Start Drill")],
             [mcpb.DRILLING_HOLE_DRILLING_DOWN, QtWidgets.QLabel("4. Drilling Down")],
             [mcpb.DRILLING_HOLE_REAMING_UP, QtWidgets.QLabel("5. Reaming Up")],
-            [mcpb.DRILLING_HOLE_HOMING_Z1, QtWidgets.QLabel("6. Homing Z1")]
+            [mcpb.DRILLING_HOLE_HOMING_Z1, QtWidgets.QLabel("6. Homing Z1")],
+            [mcpb.HEATER_HOLE_MOVING_TO_Z2, QtWidgets.QLabel("7. Aligning Hole to Z2")],
+            [mcpb.HEATER_IDLE, QtWidgets.QLabel("8. Ready to Heat / Lower Heater")],
+            [mcpb.HEATER_LOWERING_DOWN, QtWidgets.QLabel("9. Lowering/Withdrawing Heater")],
+            [mcpb.HEATER_MELTING, QtWidgets.QLabel("10. Melting")],
+            [mcpb.HEATER_HOMING_Z2, QtWidgets.QLabel("11. Homing Z2 (Heater)")],
         ]
 
         self.layout = QtWidgets.QVBoxLayout()
@@ -40,7 +45,7 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
     def _initWidgets(self):
         
         for i in range(len(self.state_labels)):
-            if i%3 == 0:
+            if i%4 == 0:
                 line = QtWidgets.QHBoxLayout()
                 self.layout.addLayout(line)
             line.addWidget (self.state_labels[i][1])
@@ -78,23 +83,80 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
         
         line = QtWidgets.QHBoxLayout()
         self.layout.addLayout(line)
+
+        self.velocity_label = QtWidgets.QLabel("Velocity in For (Both Y and Z) [RPM]")
+        self.velocitys = QtWidgets.QLineEdit("90")
+        line.addWidget (self.velocity_label)
+        line.addWidget (self.velocitys )
+
+        line = QtWidgets.QHBoxLayout()
+        self.layout.addLayout(line)
         
         self.move_z1_button = QtWidgets.QPushButton("Drill Down/Ream Up")
         self.move_z1_button.clicked.connect(self._on_move_z1)
         line.addWidget (self.move_z1_button)
         
-        self.finish_hole_button = QtWidgets.QPushButton("Home Z1 and Finish Hole")
+        self.finish_hole_button = QtWidgets.QPushButton("Home Z1, Goto Heating")
         line.addWidget (self.finish_hole_button)
         self.finish_hole_button.clicked.connect(self._on_finish_hole)
+
+        self.align_button = QtWidgets.QPushButton("Align Heater")
+        line.addWidget (self.align_button)
+        self.align_button.clicked.connect(self._on_align)
+
+        self.move_z2_button = QtWidgets.QPushButton("Move Z2 (Heater)")
+        self.move_z2_button.clicked.connect(self._on_move_z2)
+        line.addWidget (self.move_z2_button)
+
+        line = QtWidgets.QHBoxLayout()
+        self.layout.addLayout(line)
     
+        self.melt_button = QtWidgets.QPushButton("Start Melting and Pumping")
+        self.melt_button.clicked.connect(self._on_melt)
+        line.addWidget (self.melt_button)
+    
+        self.end_melt_button = QtWidgets.QPushButton("End Melt, Home Z2, Finish Hole")
+        self.end_melt_button.clicked.connect(self._on_end_melt)
+        line.addWidget (self.end_melt_button)
+    
+
     @QtCore.Slot(object)
     def _on_move_z1(self):
         timestamp = datetime.now()
         target_z1 = float(self.target_z1.text())
+        target_vel = float(self.velocitys.text())
         self.main_window.log(
             f"[{timestamp}] Attempting to move Z1 by relative"\
-            f" {target_z1:0.4f} [m]")
-        client_thread = client_common.GotoZ1Thread(target_z1)
+            f" {target_z1:0.4f} [m]"\
+            f" {target_vel:0.4f} [RPM]"
+            )
+        client_thread = client_common.GotoZ1Thread(target_z1, target_vel )
+        client_thread.log.connect(self.main_window.on_log)
+        self.threads.append(client_thread)
+        client_thread.start()
+
+    @QtCore.Slot(object)
+    def _on_move_z2(self):
+        timestamp = datetime.now()
+        target_z = float(self.target_z1.text())
+        target_vel = float(self.velocitys.text())
+        self.main_window.log(
+            f"[{timestamp}] Attempting to move Z2 by relative"\
+            f" {target_z:0.4f} [m]"\
+            f" {target_vel:0.4f} [RPM]"
+            )
+        client_thread = client_common.GotoZ2Thread(target_z, target_vel )
+        client_thread.log.connect(self.main_window.on_log)
+        self.threads.append(client_thread)
+        client_thread.start()
+
+    @QtCore.Slot(object)
+    def _on_align(self):
+        timestamp = datetime.now()
+        self.main_window.log(
+            f"[{timestamp}] Attempting to Align Heater"
+            )
+        client_thread = client_common.AlignHeaterThread()
         client_thread.log.connect(self.main_window.on_log)
         self.threads.append(client_thread)
         client_thread.start()
@@ -104,10 +166,13 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
         try:
             timestamp = datetime.now() 
             target_y = float(self.target_y.text())
+            target_vel = float(self.velocitys.text())
+
             self.main_window.log(
                 f"[{timestamp}] Attempting to move Y by relative"\
-                f" {target_y:0.4f} [m]")
-            client_thread = client_common.GotoYThread(target_y)
+                f" {target_y:0.4f} [m]"\
+                f" {target_vel:0.4f} [RPM]")
+            client_thread = client_common.GotoYThread(target_y, target_vel)
             client_thread.log.connect(self.main_window.on_log)
             self.threads.append(client_thread)
             client_thread.start()
@@ -139,6 +204,26 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
         client_thread.done.connect(self._on_hole_done)
         self.threads.append(client_thread)
         client_thread.start()
+
+    @QtCore.Slot(object)
+    def _on_melt(self):
+        timestamp = datetime.now() 
+        self.main_window.log(f"[{timestamp}] Start Melt")
+        client_thread = client_common.StartMeltThread()
+        client_thread.log.connect(self.main_window.on_log)
+        #client_thread.done.connect(self._on_hole_done)
+        self.threads.append(client_thread)
+        client_thread.start()
+
+    @QtCore.Slot(object)
+    def _on_end_melt(self):
+        timestamp = datetime.now() 
+        self.main_window.log(f"[{timestamp}] End Melt")
+        client_thread = client_common.EndMeltThread()
+        client_thread.log.connect(self.main_window.on_log)
+        #client_thread.done.connect(self._on_hole_done)
+        self.threads.append(client_thread)
+        client_thread.start()
     
     def update_status(self, response):
         if (response != None):
@@ -148,21 +233,39 @@ class DrillBoreholeDisplay(QtWidgets.QWidget):
                 self.move_y_button.setEnabled(True)
                 self.new_hole_button.setEnabled(True)
                 self.target_y.setEnabled(True)
+                self.align_button.setEnabled(True)
             else:
                 self.hole_label.setText(f"Current Hole: {len(holes)}")
                 self.move_y_button.setEnabled(False)
                 self.new_hole_button.setEnabled(False)
                 self.target_y.setEnabled(False)
+                self.align_button.setEnabled(False)
 
             if (response.state == mcpb.DRILLING_HOLE_IDLE):
-                self.target_z1.setEnabled(True)
                 self.move_z1_button.setEnabled(True)
                 self.finish_hole_button.setEnabled(True)
             else:
-                self.target_z1.setEnabled(False)
                 self.move_z1_button.setEnabled(False)
                 self.finish_hole_button.setEnabled(False)
 
+            if (response.state == mcpb.HEATER_IDLE) \
+                    or (response.state == mcpb.DRILLING_HOLE_IDLE):
+                self.target_z1.setEnabled(True)
+            else:
+                self.target_z1.setEnabled(False)
+
+            if (response.state == mcpb.HEATER_IDLE):
+                self.move_z2_button.setEnabled(True)
+                self.melt_button.setEnabled(True)
+            else:
+                self.move_z2_button.setEnabled(False)
+                self.melt_button.setEnabled(False)
+
+            if (response.state == mcpb.HEATER_MELTING):
+                self.end_melt_button.setEnabled(True)
+            else:
+                self.end_melt_button.setEnabled(False)
+            
             for l in self.state_labels:
                 if l[0] == response.state:
                     l[1].setStyleSheet("font-style: italic; color: '#ffc107'")
