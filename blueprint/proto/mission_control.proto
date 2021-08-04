@@ -68,6 +68,7 @@ message HeartBeatReply {
     //float rig_torque_z1 = 120;
     string server_version = 50;
     repeated Hole holes = 51;
+    repeated motorstatus = 52;
 }
 
 
