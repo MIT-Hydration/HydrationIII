@@ -77,6 +77,22 @@ message HeartBeatReply {
     repeated Hole holes = 51;
 }
 
+message CoreSensorsHeartBeatResponse {
+    uint64 timestamp = 1;
+    uint64 request_timestamp = 2;
+    float cpu_temperature_degC = 3;
+
+    uint64 last_weight_on_bit_drill_timestamp = 40;
+    float weight_on_bit_drill_N = 41;
+
+    uint64 last_weight_on_bit_heater_timestamp = 50;
+    float weight_on_bit_heater_N = 51;
+
+    uint64 last_power_meter_timestamp = 60;
+    float power_W = 61;
+    float total_current_mA = 62;
+}
+
 
 message Limits {
     uint64 request_timestamp = 1;
@@ -137,10 +153,10 @@ message GotoMajorModesRequest {
 service MissionControl {
     rpc GetMajorModes (GetMajorModesRequest) returns (MajorModesList);
     rpc HeartBeat (HeartBeatRequest) returns (HeartBeatReply);
-    
+
     rpc GetLimits (GetLimitRequest) returns (Limits);
     rpc SetLimits (Limits) returns (CommandResponse);
-    
+
     rpc StartupNext (StartCommandRequest) returns (CommandResponse);
 
     rpc SetHomeZ1 (StartCommandRequest) returns (CommandResponse);
@@ -153,6 +169,7 @@ service MissionControl {
 
     rpc StartDrillHole (StartCommandRequest) returns (CommandResponse);
     rpc EndDrillHole (StartCommandRequest) returns (CommandResponse);
+
     rpc AlignHeater (StartCommandRequest) returns (CommandResponse);
     rpc StartMelting (StartCommandRequest) returns (CommandResponse);
     rpc EndMelting (StartCommandRequest) returns (CommandResponse);
@@ -161,3 +178,7 @@ service MissionControl {
     rpc EmergencyStop (EmergencyStopRequest) returns (CommandResponse);
 }
 
+service CoreSensors {
+    rpc HeartBeat (HeartBeatRequest) returns (CoreSensorsHeartBeatResponse);
+
+}
