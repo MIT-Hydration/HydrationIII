@@ -73,7 +73,17 @@ int homing(bool softHoming, INode &theNode){
   -------------
   softHoming: if true, will move in the positive direction until a key is pressed (simulating a "hard stop" event)
               if false, will move in the positive direction until a hard stop occurs, at which point the motor controller will complete homing automatically. note that for this to happen, the Hard Stop option must be selected in the Clearview under Homing Setup
+  Outputsameters
+  -------------
+  softHoming: if true, will move in the positive direction until a key is pressed (simulating a "hard stop" event)
+              if false, will move in the positive direction until a hard stop occurs, at which point the motor controller will complete homing automatically. note that for this to happen, the Hard Stop option must be selected in the Clearview under Homing Setup
   Outputs
+  -------------
+  return 1: homed successfully
+        -1: did not home
+  */
+  msgUser("Homing starting. Press Enter to proceed with homing.");
+  theNode.Motion.Homing.Initiate();
   -------------
   return 1: homed successfully
         -1: did not home

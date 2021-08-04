@@ -223,6 +223,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             rig_y = position[self.iY],
             major_mode = self.state_machine.getMajorMode(),
             state = self.state_machine.getState(),
+            motorstatus = rig_hardware.motorStatus(),
             server_version = blueprint.HYDRATION_VERSION,
             holes = self.holes)
 

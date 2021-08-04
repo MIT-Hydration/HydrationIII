@@ -53,7 +53,7 @@ class RPiHeartBeat(QtCore.QThread):
                     mission_control_pb2.HeartBeatRequest(request_timestamp = timestamp),
                     timeout = GRPC_CALL_TIMEOUT )
                 print("Mission Control HeartBeat received at: " + str(datetime.now()))
-                print(response)
+                print(response) #whats the response? the things in the HeartBeat in mission control returns?
                 #self.log.emit("HeartBeat received at: " + str(datetime.now()))
                 limits_response = stub.GetLimits (
                     mission_control_pb2.GetLimitRequest(request_timestamp = timestamp),
@@ -64,7 +64,7 @@ class RPiHeartBeat(QtCore.QThread):
             print(info)
             self.log.emit(info)
 
-        self.done.emit(response)
+        self.done.emit(response) #what do these do? 
         self.limits_done.emit(limits_response)    
 
 class EmergencyStopThread(QtCore.QThread):
