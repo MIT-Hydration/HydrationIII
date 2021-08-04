@@ -81,6 +81,14 @@ class AbstractRigHardware(ABC):
         pass
 
     @abstractmethod
+    def homingMotorZ1(self):
+        pass
+
+     @abstractmethod
+    def homingMotorY(self):
+        pass
+
+    @abstractmethod
     def getPosition(self):
         pass
 
@@ -266,7 +274,7 @@ class RigHardware(AbstractRigHardware):
     def motorStatus(self) : 
         responses = [] 
         for i in range(3): 
-            responses.append(HydrationServo.MotorStatus(i))  #need to somehow make the motor status return into the error at hand  
+            responses.append(HydrationServo.motor_status(i))  #need to somehow make the motor status return into the error at hand  
         return responses
 
     def homingMotorZ1(self):

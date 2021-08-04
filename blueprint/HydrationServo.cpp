@@ -68,7 +68,7 @@ int _motor_status(unsigned long i){
         theNode.Status.Alerts.Value().StateStr(alertList, 256);
         printf("      Node has non-estop alerts: %s\n", alertList);
         printf("      Clearing non-serious alerts\n");
-        theNode.Status.AlertsClear(); //require this for future clearalert button
+       // theNode.Status.AlertsClear(); //require this for future clearalert button
 
         // Are there still alerts?
         theNode.Status.Alerts.Refresh();

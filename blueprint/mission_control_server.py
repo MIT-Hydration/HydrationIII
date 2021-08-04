@@ -648,7 +648,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         self.state_machine.transitionState(
             mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS, mcpb.STARTUP_HOMING_Y)
         rig_hardware = HardwareFactory.getRig()
-        rig_hardware.homeY()
+        rig_hardware.homeY() #hello
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
