@@ -183,7 +183,7 @@ int _homing_motor(unsigned long i) { //assumption that the configuration files h
 	theNode.Motion.AddToPosition(-measuredPosition); 
 	theNode.Motion.PosnMeasured.Refresh();
 	printf("Node %ld has already been homed, current position is: \t%8.0f \n", i, theNode.Motion.PosnMeasured.Value());
-  return 1;
+  return 0;
 }
 
 static PyObject *homing_motor(PyObject *self, PyObject *args) {
@@ -193,10 +193,7 @@ static PyObject *homing_motor(PyObject *self, PyObject *args) {
   }
   
   int ret_val = _homing_motor(i);
-  if (ret_val >= 0)
-    Py_RETURN_TRUE;
-  else
-    Py_RETURN_FALSE;
+  return ret_val;
 }
 
 
@@ -313,7 +310,7 @@ static PyObject *set_home(PyObject *self, PyObject *args) {
 static PyMethodDef HydrationServo_methods[] = {
     {"get_position", get_position, METH_VARARGS, "Returns servo position"},
 
-    {"homing_motor", homing_motor, METH_VARARGS, "Homes motor with respective limit switch"},
+    {"homing_motor", homing_motor, METH_VARARGS, "Homes motor with respective limit switch. Returns 0 if successful and -1 if failed."},
     {"motor_status", motor_status, METH_VARARGS, "Refreshes servo status and clears alerts"},
 	{"set_position_unique", set_position_unique, METH_VARARGS, "Returns servo position for Z1 and Y1 in the F04"},
 	{"set_position", set_position, METH_VARARGS, "Sets given servo to given position using MovePosnStart"},
