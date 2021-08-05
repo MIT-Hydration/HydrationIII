@@ -12,7 +12,6 @@ config.read('config.ini')
 
 MC_IP_ADDRESS_PORT = f"0.0.0.0:{config.get('Network', 'GRPCActualPort')}"
 
-
 class Echoer(echo_pb2_grpc.EchoServicer):
 
     def Reply(self, request, context):

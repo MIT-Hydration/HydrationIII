@@ -83,13 +83,13 @@ message CoreSensorsHeartBeatResponse {
     uint64 request_timestamp = 2;
     float cpu_temperature_degC = 3;
 
-    uint64 last_weight_on_bit_drill_timestamp = 40;
+    float last_weight_on_bit_drill_timestamp = 40;
     float weight_on_bit_drill_N = 41;
 
-    uint64 last_weight_on_bit_heater_timestamp = 50;
+    float last_weight_on_bit_heater_timestamp = 50;
     float weight_on_bit_heater_N = 51;
 
-    uint64 last_power_meter_timestamp = 60;
+    float last_power_meter_timestamp = 60;
     float power_W = 61;
     float total_current_mA = 62;
 }
