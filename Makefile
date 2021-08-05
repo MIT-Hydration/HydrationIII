@@ -4,11 +4,17 @@ MODULE := blueprint
 run-mc-server:
 	@python3 -m $(MODULE)
 
+run-cs-server:
+	@python3 -m $(MODULE).core_sensors_server
+
 run-qt-client:
 	@python3 -m $(MODULE).qt_client
 
 run-echo-client:
 	@python3 -m $(MODULE).echo_client
+
+run-cs-client:
+	@python3 -m $(MODULE).core_sensors_client
 
 run-water-pump-test:
 	@python3 -m $(MODULE).test.test_water_pump

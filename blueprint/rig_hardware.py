@@ -27,6 +27,7 @@ Z2Cal = config.getfloat('Rig', 'Z2Cal')
 XCal = config.getfloat('Rig', 'XCal')
 YCal = config.getfloat('Rig', 'YCal')
 HomingError =config.getfloat('Rig', 'HomingError') 
+
 if config.getboolean('Mocks', 'MockRig'):
     iZ1 = 0
     iZ2 = 1
@@ -35,8 +36,10 @@ if config.getboolean('Mocks', 'MockRig'):
 else:
     iZ1 = 0
     iZ2 = 1
-    iX = -2
-    iY = 2
+    iX = 2
+    iY = 3
+
+NMotors = 4
 
 # these indices are used for the current position variables
 kZ1 = 0
@@ -77,7 +80,15 @@ class AbstractRigHardware(ABC):
         return self.gotoPositionY(new_y, vel)
     
     @abstractmethod
+    def motorStatus(self):
+        pass
+
+    @abstractmethod
     def getPosition(self):
+        pass
+
+    @abstractmethod
+    def homeX(self):
         pass
 
     @abstractmethod
@@ -246,7 +257,9 @@ class MockRigHardware(AbstractRigHardware):
 
     def setHomeY(self):
         self.position[3] = 0.0
-#ERIC WRITE ABSTRACT MOCK HARDWARE PART 
+
+    def motorStatus(self):
+        return [0, 0, 0, 0]
 
 class RigHardware(AbstractRigHardware):
     
@@ -258,6 +271,24 @@ class RigHardware(AbstractRigHardware):
         self.prev_pos = self.current_pos.copy()
         self.move_tolerance = config.getfloat(
             "Rig", "MoveDetectionTolerance")
+
+    def motorStatus(self) : 
+        responses = [] 
+        for i in range(NMotors):
+            responses.append(HydrationServo.motor_status(i))  #need to somehow make the motor status return into the error at hand  
+        return responses
+
+    def homingMotorZ1(self):
+        # ensure Z-poisions are zero within tolerance
+        homing_error = config.getfloat("Rig", "HomingError")
+        pos = self.getPosition()
+        if (numpy.abs(pos[iZ1]) > homing_error):
+            return False
+        
+        # stop existing moves
+        self.emergencyStop()
+        HydrationServo.homing_motor(iZ1)
+        return True 
 
     def gotoPositionY(self, y, v):
         # ensure Z-poisions are zero within tolerance
@@ -284,14 +315,39 @@ class RigHardware(AbstractRigHardware):
         return True
 
     def homeY(self):
-        return self.gotoPositionY(0.0)
+        # ensure Z-poisions are zero within tolerance
+        homing_error = config.getfloat("Rig", "HomingError")
+        pos = self.getPosition()
+        if (numpy.abs(pos[kZ1]) > homing_error) or \
+            (numpy.abs(pos[kZ2]) > homing_error):
+            return -1
+        
+        # stop existing moves
+        self.emergencyStop()
+        return HydrationServo.homing_motor(iY)
 
-    def homeZ1(self):
-        return self.gotoPositionZ1(0.0)
-
-    def homeZ2(self):
-        return self.gotoPositionZ2(0.0)
+    def homeX(self):
+        # ensure Z-poisions are zero within tolerance
+        homing_error = config.getfloat("Rig", "HomingError")
+        pos = self.getPosition()
+        if (numpy.abs(pos[kZ1]) > homing_error) or \
+            (numpy.abs(pos[kZ2]) > homing_error):
+            return -1
+        
+        # stop existing moves
+        self.emergencyStop()
+        return HydrationServo.homing_motor(iX)
     
+    def homeZ1(self):
+        # stop existing moves
+        self.emergencyStop()
+        return HydrationServo.homing_motor(iZ1)
+        
+    def homeZ2(self):
+        # stop existing moves
+        self.emergencyStop()
+        return HydrationServo.homing_motor(iZ2)
+        
     def getPosition(self):
         self.prev_pos = self.current_pos.copy()
         z1 = z2 = x = y = 0.0

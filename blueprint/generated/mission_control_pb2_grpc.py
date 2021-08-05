@@ -625,3 +625,64 @@ class MissionControl(object):
             mission__control__pb2.CommandResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+
+class CoreSensorsStub(object):
+    """Missing associated documentation comment in .proto file."""
+
+    def __init__(self, channel):
+        """Constructor.
+
+        Args:
+            channel: A grpc.Channel.
+        """
+        self.HeartBeat = channel.unary_unary(
+                '/mission_control.CoreSensors/HeartBeat',
+                request_serializer=mission__control__pb2.HeartBeatRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CoreSensorsHeartBeatResponse.FromString,
+                )
+
+
+class CoreSensorsServicer(object):
+    """Missing associated documentation comment in .proto file."""
+
+    def HeartBeat(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+
+def add_CoreSensorsServicer_to_server(servicer, server):
+    rpc_method_handlers = {
+            'HeartBeat': grpc.unary_unary_rpc_method_handler(
+                    servicer.HeartBeat,
+                    request_deserializer=mission__control__pb2.HeartBeatRequest.FromString,
+                    response_serializer=mission__control__pb2.CoreSensorsHeartBeatResponse.SerializeToString,
+            ),
+    }
+    generic_handler = grpc.method_handlers_generic_handler(
+            'mission_control.CoreSensors', rpc_method_handlers)
+    server.add_generic_rpc_handlers((generic_handler,))
+
+
+ # This class is part of an EXPERIMENTAL API.
+class CoreSensors(object):
+    """Missing associated documentation comment in .proto file."""
+
+    @staticmethod
+    def HeartBeat(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.CoreSensors/HeartBeat',
+            mission__control__pb2.HeartBeatRequest.SerializeToString,
+            mission__control__pb2.CoreSensorsHeartBeatResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
