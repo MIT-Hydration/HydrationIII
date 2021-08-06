@@ -1,0 +1,16 @@
+authtoken: 1ub1DawoyyxcXTQbfXs5oBS4wH5_7PJ35YLajkgzS5qYWayNC
+tunnels:
+  ssh:
+    proto: tcp
+    remote_addr: 1.tcp.ngrok.io:24624
+    # example forwarding to SSH, you may want to change the port number
+    addr: 1337
+  missioncontrol:
+    proto: tcp
+    remote_addr: 3.tcp.ngrok.io:21496
+    # example forwarding to SSH, you may want to change the port number
+    addr: 50051
+  
+
+
+    
