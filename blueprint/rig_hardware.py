@@ -84,6 +84,10 @@ class AbstractRigHardware(ABC):
         pass
 
     @abstractmethod
+    def clearAlert(self):
+        pass
+
+    @abstractmethod
     def getPosition(self):
         pass
 
@@ -272,11 +276,16 @@ class RigHardware(AbstractRigHardware):
         self.move_tolerance = config.getfloat(
             "Rig", "MoveDetectionTolerance")
 
-    def motorStatus(self) : 
+    def motorStatus(self): 
         responses = [] 
         for i in range(NMotors):
             responses.append(HydrationServo.motor_status(i))  #need to somehow make the motor status return into the error at hand  
         return responses
+
+    def clearAlert(self):
+        for i in range(NMotors): 
+            HydrationServo.clear_alert(i) 
+        return True 
 
     def homingMotorZ1(self):
         # ensure Z-poisions are zero within tolerance

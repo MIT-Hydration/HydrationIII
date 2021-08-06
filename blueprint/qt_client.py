@@ -11,6 +11,7 @@ from PySide6 import QtCore, QtWidgets, QtGui
 from PySide6.QtCore import QTimer, Signal
 
 from qt_material import apply_stylesheet
+from . import client_common
 
 from datetime import datetime, timedelta
 import time
@@ -145,9 +146,12 @@ class MainWindow(QtWidgets.QWidget):
         self._log_display = QtWidgets.QPlainTextEdit()
         self._log_display.setMaximumBlockCount(100)
         self.diagnostics_bar_layout.addWidget(self._log_display, stretch=10)
-        self._log_clear_button = QtWidgets.QPushButton("Clear Log")
+        self._log_clear_button = QtWidgets.QPushButton("Clear Logs")
         self._log_clear_button.clicked.connect(self._clearLog)
         self.diagnostics_bar_layout.addWidget(self._log_clear_button, stretch=1)
+        self._log_clear_alert = QtWidgets.QPushButton("Clear Alert")
+        self._log_clear_alert.clicked.connect(self._clearAlert)
+        self.diagnostics_bar_layout.addWidget(self._log_clear_alert, stretch=1)
         
         self.main_grid_layout.addWidget(
             self.diagnostics_bar_groupbox, 15, 0, 6, 11)
@@ -155,6 +159,20 @@ class MainWindow(QtWidgets.QWidget):
     @QtCore.Slot(object)
     def _clearLog(self):
         self._log_display.clear()
+
+    @QtCore.Slot(object)
+    def _clearAlert(self):
+        timestamp = datetime.now()
+        target_z = float(self.target_z1.text())
+        self.main_window.log(
+            f"[{timestamp}] Clearing Alerts"\
+    
+            )
+        client_thread = client_common.ClearAlert()
+        client_thread.log.connect(self.main_window.on_log)
+        self.threads.append(client_thread)
+        client_thread.start()
+    
 
     def log(self, text):
         self._log_display.insertPlainText(f"\n{text}")
