@@ -1,3 +1,3 @@
 #!/bin/bash
 
-ngrok start ssh -config /usr/local/bin/ngrok.yml
+ngrok start ssh missioncontrol -config /usr/local/bin/ngrok.yml
