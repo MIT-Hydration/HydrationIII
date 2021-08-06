@@ -424,8 +424,8 @@ int connect_clearpath(void) {
 				INode &theNode = myPort.Nodes(iNode);
 				pTheNode[iNode] = &theNode; // store address to the first node
 
-				//theNode.EnableReq(false);				//Ensure Node is disabled before starting
- 				//theNode.Setup.ConfigLoad("Config File path"); //note for Eric, I do not know if two homing nodes are the same as one, note that for loop above, does that mean I'd have to do seperate cofiguration files for each of them? Must experiment at lab
+				theNode.EnableReq(false);				//Ensure Node is disabled before starting
+ 				theNode.Setup.ConfigLoad("clearviewconfiguration.mtr"); //note for Eric, I do not know if two homing nodes are the same as one, note that for loop above, does that mean I'd have to do seperate cofiguration files for each of them? Must experiment at lab
 
 				printf("   Node[%d]: type=%d\n", iNode, theNode.Info.NodeType());
 				printf("            userID: %s\n", theNode.Info.UserID.Value());

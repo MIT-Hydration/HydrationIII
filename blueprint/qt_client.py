@@ -173,11 +173,6 @@ class MainWindow(QtWidgets.QWidget):
         self.threads.append(client_thread)
         client_thread.start()
     
-    def _clearAlert(self): 
-        
-        self._log_display.clear()
-        self._log_display.insertPlainText(f"\n Cleared Alerts")#can I just make a connection to the .cpp file here probably not 
-
 
     def log(self, text):
         self._log_display.insertPlainText(f"\n{text}")

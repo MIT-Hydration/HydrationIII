@@ -112,10 +112,7 @@ message MoveRequest {
     float vel = 3; 
 }
 
-message ClearAlert {
-    uint64 request_timestamp = 1;
-    
-}
+
 
 message CommandResponse {
     uint64 timestamp = 1;
@@ -173,7 +170,7 @@ service MissionControl {
     rpc Z2Move (MoveRequest) returns (CommandResponse);
     rpc YMove (MoveRequest) returns (CommandResponse);
 
-    rpc ClearAlerts (ClearAlert) returns (CommandResponse); 
+    rpc ClearAlerts (StartCommandRequest) returns (CommandResponse); 
 
     rpc StartDrillHole (StartCommandRequest) returns (CommandResponse);
     rpc EndDrillHole (StartCommandRequest) returns (CommandResponse);

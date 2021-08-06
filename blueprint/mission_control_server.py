@@ -291,15 +291,9 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
   
     def ClearAlerts(self, request, context):
             timestamp = int(time.time()*1000)
-            if (self.state_machine.getState() != mcpb.STARTUP_IDLE) and \
-                (self.state_machine.getState() != mcpb.HEATER_IDLE): # do nothing
-                return mcpb.CommandResponse(
-                    request_timestamp = request.request_timestamp,
-                    timestamp = timestamp,
-                    status = mcpb.INVALID_STATE)
-
+           
             rig_hardware = HardwareFactory.getRig()
-            move_success = rig_hardware.clearAlert(request.delta)
+            move_success = rig_hardware.clearAlert()
 
             if move_success:
 
