@@ -90,8 +90,15 @@ int _motor_status(unsigned long i){
 
     
   
-  return 1; // ERIC how to make it return an error instead of a number, one of the errors above. 
+  return alertList; // ERIC how to make it return an error instead of a number, one of the errors above. 
 }
+
+int _clear_alert(unsigned long i){
+	INode &theNode = *(pTheNode[i]);
+	theNode.Status.AlertsClear();
+  return 1;
+}
+
 
 double _get_position(unsigned long i){
   INode &theNode = *(pTheNode[i]);
@@ -161,6 +168,7 @@ int _set_position_unique(unsigned long i, double pos, double vel) {
   theNode.Motion.AccLimit = acc ; //Set Acceleration Limit (RPM/Sec)
   theNode.Motion.VelLimit = vel;	 //Set Velocity Limit (RPM)
   theNode.Motion.MovePosnStart(target, true);
+
   return 1;
 }
 
@@ -243,6 +251,20 @@ static PyObject *set_speed_rpm(PyObject *self, PyObject *args) {
     Py_RETURN_FALSE;
 }
 
+static PyObject *clear_alert(PyObject *self, PyObject *args) {
+  unsigned long i;
+  
+  if (!PyArg_ParseTuple(args, "k", &i)) {
+    return NULL;
+  }
+  
+  int clear_alert = _clear_alert(i);
+  if (clear_alert > 0)
+    Py_RETURN_TRUE;
+  else
+    Py_RETURN_FALSE;
+}
+
 static PyObject *stop_all_motors(PyObject *self, PyObject *args) {
   int ret_val = _stop_all_motors();
   if (ret_val >= 0)
@@ -257,11 +279,7 @@ static PyObject *motor_status(PyObject *self, PyObject *args) {
     return NULL;
   }
   
-  int ret_val = _motor_status(i);
-  if (ret_val >= 0)
-    Py_RETURN_TRUE;
-  else
-    Py_RETURN_FALSE;
+  return PyObject_Str(_motor_status(i));
 }
 
 static PyObject *set_position(PyObject *self, PyObject *args) {
@@ -309,7 +327,7 @@ static PyObject *set_home(PyObject *self, PyObject *args) {
 
 static PyMethodDef HydrationServo_methods[] = {
     {"get_position", get_position, METH_VARARGS, "Returns servo position"},
-
+    {"clear_alert", clear_alert, METH_VARARGS, "Clears Alerts for respective motor"},
     {"homing_motor", homing_motor, METH_VARARGS, "Homes motor with respective limit switch. Returns 0 if successful and -1 if failed."},
     {"motor_status", motor_status, METH_VARARGS, "Refreshes servo status and clears alerts"},
 	{"set_position_unique", set_position_unique, METH_VARARGS, "Returns servo position for Z1 and Y1 in the F04"},
