@@ -32,7 +32,7 @@ char * _motor_status(unsigned long i){
     theNode.Status.Alerts.Refresh();
 
     printf("---------\n");
-    printf(" Checking node %i for Alerts:\n", i);
+    printf(" Checking node %li for Alerts:\n", i);
 
     // Check the status register's "AlertPresent" bit
     // The bit is set true if there are alerts in the alert register
