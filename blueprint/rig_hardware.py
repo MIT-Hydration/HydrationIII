@@ -275,6 +275,7 @@ class RigHardware(AbstractRigHardware):
         self.prev_pos = self.current_pos.copy()
         self.move_tolerance = config.getfloat(
             "Rig", "MoveDetectionTolerance")
+        print("Done initializing rig hardware")
 
     def motorStatus(self): 
         responses = [] 
