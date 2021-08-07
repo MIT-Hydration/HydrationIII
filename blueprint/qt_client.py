@@ -163,16 +163,12 @@ class MainWindow(QtWidgets.QWidget):
     @QtCore.Slot(object)
     def _clearAlert(self):
         timestamp = datetime.now()
-        target_z = float(self.target_z1.text())
-        self.main_window.log(
-            f"[{timestamp}] Clearing Alerts"\
-    
-            )
+        self.log(
+            f"[{timestamp}] Clearing Alerts")
         client_thread = client_common.ClearAlert()
-        client_thread.log.connect(self.main_window.on_log)
+        client_thread.log.connect(self.on_log)
         self.threads.append(client_thread)
         client_thread.start()
-    
 
     def log(self, text):
         self._log_display.insertPlainText(f"\n{text}")
