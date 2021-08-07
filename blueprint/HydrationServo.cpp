@@ -271,7 +271,7 @@ static PyObject *motor_status(PyObject *self, PyObject *args) {
     return NULL;
   }
   
-  return PyObject_Str(_motor_status(i));
+  return PyUnicode_FromString(_motor_status(i));
 }
 
 static PyObject *set_position(PyObject *self, PyObject *args) {
