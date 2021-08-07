@@ -32,7 +32,7 @@ char * _motor_status(unsigned long i){
     theNode.Status.Alerts.Refresh();
 
     printf("---------\n");
-    printf(" Checking node %i for Alerts:\n", iNode);
+    printf(" Checking node %i for Alerts:\n", theNode);
 
     // Check the status register's "AlertPresent" bit
     // The bit is set true if there are alerts in the alert register
@@ -152,8 +152,7 @@ int _set_position(unsigned long i, double pos) {
 int _set_position_unique(unsigned long i, double pos, double vel) {
   INode &theNode = *(pTheNode[i]);
   int32_t target = (int32_t)(pos * CNTS_PER_MM * 1000);
-  int32_t velocity = vel; 
-  int32_t acc = (vel *2 ) 
+  int32_t acc = (vel *2 );
   theNode.Motion.MoveWentDone(); //Clear the rising edge Move done register
   theNode.AccUnit(INode::RPM_PER_SEC);	//Set the units for Acceleration to RPM/SEC
   theNode.VelUnit(INode::RPM);		//Set the units for Velocity to RPM
@@ -193,7 +192,10 @@ static PyObject *homing_motor(PyObject *self, PyObject *args) {
   }
   
   int ret_val = _homing_motor(i);
-  return ret_val;
+  if (ret_val == 0)
+    Py_RETURN_TRUE;
+  else
+    Py_RETURN_FALSE;
 }
 
 
