@@ -19,15 +19,13 @@ SysManager myMgr;	//Create System Manager myMgr
 INode * pTheNode[NUM_MOTORS_MAX] ;       // Pointer to the Node
 unsigned numNodesDetected = -1;
 
-int _motor_status(unsigned long i){ 
+char alertList[256];
 
-    char alertList[256];
+char * _motor_status(unsigned long i){ 
+
     INode &theNode = *(pTheNode[i]); //do i do a copy of stop all motors where the i is == 0  How to make it return an error instead of a number 
 
-
     printf("Checking for Alerts: \n");
-
-  
 
     // make sure our registers are up to date
     theNode.Status.RT.Refresh();
@@ -60,8 +58,6 @@ int _motor_status(unsigned long i){
         printf("      Node exceeded Tracking error limit\n");
       }
 
-      
-
       // Check for more alerts and Clear Alerts
       theNode.Status.Alerts.Refresh();
       if (theNode.Status.Alerts.Value().isInAlert()) {
@@ -85,10 +81,6 @@ int _motor_status(unsigned long i){
       }
 
     }
-    
-  
-
-    
   
   return alertList; // ERIC how to make it return an error instead of a number, one of the errors above. 
 }
