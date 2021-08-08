@@ -1,8 +1,8 @@
 
 [TEK32CS10-20-0]
 Chip Version                   = 1.7.7
-UserID0                        = HydZ1-Drill SCSK-2321S-RQ
-File Written                   = 2021-08-06 21:04:00
+UserID0                        = Hyd SCSK-2321S-RQ
+File Written                   = 2021-08-08 19:16:35
 Writer                         = sFoundation 2.1.31
 PN                             = CPM-SCSK-2321S-RQNA-1-7-D
 UserDesc                       = Hydration Z1 Drill
@@ -62,7 +62,7 @@ KpFactor                       = 1.000000
 KpZFactor                      = 1.000000
 KiFactor                       = 1.000000
 FineTunePosn                   = 19.000000
-TrqLim                         = 0.3999390	;(A)
+TrqLim                         = 19.999390	;(A)
 FldBckPos                      = 2.000122	;(A)
 FldBckPosTC                    = 199.677705	;(msec)
 FldBckNeg                      = 2.000122	;(A)
@@ -73,7 +73,7 @@ HrdStpVel                      = 237.329910	;(ticks/sec)
 HrdStpTrip                     = 79.998779	;(A)
 HrdStpTime                     = 50.038872	;(msec)
 RGenOff                        = 86.000000	;(V)
-HrdStpAltTrqLim                = 0.400122	;(A)
+HrdStpAltTrqLim                = 0.200195	;(A)
 DelayDisable                   = 199.859400	;(msec)
 VRStc                          = 9.999495	;(msec)
 RGenOn                         = 88.000000	;(V)
@@ -111,7 +111,7 @@ OverTempUser                   = 83.000000
 SpdLim                         = 54671.246386	;(ticks/sec)
 RMSStoppedSpeed                = 0.000000	;(ticks/sec)
 InductVolts                    = 220.000000	;(V)
-InductRdg                      = 4.000000
+InductRdg                      = 1.000000
 InductSetup                    = 100.000000
 RMSlim                         = 4.000000
 RMStime                        = 2.985141
