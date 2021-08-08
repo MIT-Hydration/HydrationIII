@@ -75,7 +75,7 @@ message HeartBeatReply {
     //float rig_torque_z1 = 120;
     string server_version = 50;
     repeated Hole holes = 51;
-    repeated int32 motorstatus = 52;
+    repeated string motorstatus = 52;
 }
 
 message CoreSensorsHeartBeatResponse {
@@ -111,6 +111,8 @@ message MoveRequest {
     float delta = 2;
     float vel = 3; 
 }
+
+
 
 message CommandResponse {
     uint64 timestamp = 1;
@@ -167,6 +169,8 @@ service MissionControl {
     rpc Z1Move (MoveRequest) returns (CommandResponse);
     rpc Z2Move (MoveRequest) returns (CommandResponse);
     rpc YMove (MoveRequest) returns (CommandResponse);
+
+    rpc ClearAlerts (StartCommandRequest) returns (CommandResponse); 
 
     rpc StartDrillHole (StartCommandRequest) returns (CommandResponse);
     rpc EndDrillHole (StartCommandRequest) returns (CommandResponse);

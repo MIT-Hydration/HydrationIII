@@ -19,22 +19,20 @@ SysManager myMgr;	//Create System Manager myMgr
 INode * pTheNode[NUM_MOTORS_MAX] ;       // Pointer to the Node
 unsigned numNodesDetected = -1;
 
-int _motor_status(unsigned long i){ 
+char alertList[256];
 
-    char alertList[256];
+char * _motor_status(unsigned long i){ 
+
     INode &theNode = *(pTheNode[i]); //do i do a copy of stop all motors where the i is == 0  How to make it return an error instead of a number 
 
-
     printf("Checking for Alerts: \n");
-
-  
 
     // make sure our registers are up to date
     theNode.Status.RT.Refresh();
     theNode.Status.Alerts.Refresh();
 
     printf("---------\n");
-    printf(" Checking node %i for Alerts:\n", iNode);
+    printf(" Checking node %li for Alerts:\n", i);
 
     // Check the status register's "AlertPresent" bit
     // The bit is set true if there are alerts in the alert register
@@ -60,8 +58,6 @@ int _motor_status(unsigned long i){
         printf("      Node exceeded Tracking error limit\n");
       }
 
-      
-
       // Check for more alerts and Clear Alerts
       theNode.Status.Alerts.Refresh();
       if (theNode.Status.Alerts.Value().isInAlert()) {
@@ -85,13 +81,16 @@ int _motor_status(unsigned long i){
       }
 
     }
-    
   
-
-    
-  
-  return 1; // ERIC how to make it return an error instead of a number, one of the errors above. 
+  return alertList; // ERIC how to make it return an error instead of a number, one of the errors above. 
 }
+
+int _clear_alert(unsigned long i){
+	INode &theNode = *(pTheNode[i]);
+	theNode.Status.AlertsClear();
+  return 1;
+}
+
 
 double _get_position(unsigned long i){
   INode &theNode = *(pTheNode[i]);
@@ -153,14 +152,14 @@ int _set_position(unsigned long i, double pos) {
 int _set_position_unique(unsigned long i, double pos, double vel) {
   INode &theNode = *(pTheNode[i]);
   int32_t target = (int32_t)(pos * CNTS_PER_MM * 1000);
-  int32_t velocity = vel; 
-  int32_t acc = (vel *2 ) 
+  int32_t acc = (vel *2 );
   theNode.Motion.MoveWentDone(); //Clear the rising edge Move done register
   theNode.AccUnit(INode::RPM_PER_SEC);	//Set the units for Acceleration to RPM/SEC
   theNode.VelUnit(INode::RPM);		//Set the units for Velocity to RPM
   theNode.Motion.AccLimit = acc ; //Set Acceleration Limit (RPM/Sec)
   theNode.Motion.VelLimit = vel;	 //Set Velocity Limit (RPM)
   theNode.Motion.MovePosnStart(target, true);
+
   return 1;
 }
 
@@ -193,7 +192,10 @@ static PyObject *homing_motor(PyObject *self, PyObject *args) {
   }
   
   int ret_val = _homing_motor(i);
-  return ret_val;
+  if (ret_val == 0)
+    Py_RETURN_TRUE;
+  else
+    Py_RETURN_FALSE;
 }
 
 
@@ -243,6 +245,20 @@ static PyObject *set_speed_rpm(PyObject *self, PyObject *args) {
     Py_RETURN_FALSE;
 }
 
+static PyObject *clear_alert(PyObject *self, PyObject *args) {
+  unsigned long i;
+  
+  if (!PyArg_ParseTuple(args, "k", &i)) {
+    return NULL;
+  }
+  
+  int clear_alert = _clear_alert(i);
+  if (clear_alert > 0)
+    Py_RETURN_TRUE;
+  else
+    Py_RETURN_FALSE;
+}
+
 static PyObject *stop_all_motors(PyObject *self, PyObject *args) {
   int ret_val = _stop_all_motors();
   if (ret_val >= 0)
@@ -257,11 +273,7 @@ static PyObject *motor_status(PyObject *self, PyObject *args) {
     return NULL;
   }
   
-  int ret_val = _motor_status(i);
-  if (ret_val >= 0)
-    Py_RETURN_TRUE;
-  else
-    Py_RETURN_FALSE;
+  return PyUnicode_FromString(_motor_status(i));
 }
 
 static PyObject *set_position(PyObject *self, PyObject *args) {
@@ -309,7 +321,7 @@ static PyObject *set_home(PyObject *self, PyObject *args) {
 
 static PyMethodDef HydrationServo_methods[] = {
     {"get_position", get_position, METH_VARARGS, "Returns servo position"},
-
+    {"clear_alert", clear_alert, METH_VARARGS, "Clears Alerts for respective motor"},
     {"homing_motor", homing_motor, METH_VARARGS, "Homes motor with respective limit switch. Returns 0 if successful and -1 if failed."},
     {"motor_status", motor_status, METH_VARARGS, "Refreshes servo status and clears alerts"},
 	{"set_position_unique", set_position_unique, METH_VARARGS, "Returns servo position for Z1 and Y1 in the F04"},
@@ -406,8 +418,8 @@ int connect_clearpath(void) {
 				INode &theNode = myPort.Nodes(iNode);
 				pTheNode[iNode] = &theNode; // store address to the first node
 
-				//theNode.EnableReq(false);				//Ensure Node is disabled before starting
- 				//theNode.Setup.ConfigLoad("Config File path"); //note for Eric, I do not know if two homing nodes are the same as one, note that for loop above, does that mean I'd have to do seperate cofiguration files for each of them? Must experiment at lab
+				theNode.EnableReq(false);				//Ensure Node is disabled before starting
+ 				theNode.Setup.ConfigLoad("clearviewconfiguration.mtr"); //note for Eric, I do not know if two homing nodes are the same as one, note that for loop above, does that mean I'd have to do seperate cofiguration files for each of them? Must experiment at lab
 
 				printf("   Node[%d]: type=%d\n", iNode, theNode.Info.NodeType());
 				printf("            userID: %s\n", theNode.Info.UserID.Value());
