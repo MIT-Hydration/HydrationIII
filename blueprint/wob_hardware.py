@@ -13,7 +13,7 @@ config.read('config.ini')
 if config.getboolean('Operating System', 'RunningInRPi'):
     from gpiozero import PWMLED, DigitalInputDevice, DigitalOutputDevice
     import RPi.GPIO as GPIO
-    from . import hx711
+    import hx711
 
 class AbstractWOB(ABC):
 

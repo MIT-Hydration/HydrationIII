@@ -38,25 +38,26 @@ class CoreSensorsController(mission_control_pb2_grpc.CoreSensorsServicer):
         self.power_W = 0
         self.total_current_mA = 0
 
+        self.wob_hardware = HardwareFactory.getWOBSensor()
+        self.power_meter_hardware = HardwareFactory.getPowerMeter()
+
     def HeartBeat(self, request, context):
         timestamp = int(time.time()*1000)
         cpu_temp = HardwareFactory.getMissionControlRPi() \
             .get_cpu_temperature()
 
         try:
-            wob_hardware = HardwareFactory.getWOBSensor()
             
-            wob_reading = wob_hardware.get_force_N()
+            wob_reading = self.wob_hardware.get_force_N()
             self.last_weight_on_bit_drill_timestamp = wob_reading[0]
             self.last_weight_on_bit_drill_N = wob_reading[1]
             
-            power_meter_hardware = HardwareFactory.getPowerMeter()
             
-            power_meter_power_reading = power_meter_hardware.get_active_power_W()
+            power_meter_power_reading = self.power_meter_hardware.get_active_power_W()
             self.last_power_meter_timestamp = power_meter_power_reading[0]
             self.power_W = power_meter_power_reading[1]
             
-            power_meter_current_reading = power_meter_hardware.get_current_mA()
+            power_meter_current_reading = self.power_meter_hardware.get_current_mA()
             self.total_current_mA = power_meter_current_reading[0]
             
         except Exception as e: #return last known
