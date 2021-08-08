@@ -15,9 +15,11 @@ from . import hardware
 
 config = configparser.ConfigParser()
 config.read('config.ini')
+    
+if not config.getboolean('Operating System', 'RunningInCoreSensorsRPi'):
+    import HydrationServo
 
 if config.getboolean('Operating System', 'RunningInRPi'):
-    import HydrationServo
     from gpiozero import PWMLED
     from gpiozero import CPUTemperature
     import RPi.GPIO as GPIO
