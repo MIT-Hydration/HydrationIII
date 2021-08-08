@@ -26,6 +26,7 @@ config = configparser.ConfigParser()
 config.read('config.ini')
         
 from pymodbus.client.sync import ModbusSerialClient
+from pymodbus.payload import BinaryPayloadDecoder
     
 class AbstractPowerMeter(ABC):
 
@@ -93,8 +94,9 @@ class FileWriterThread(threading.Thread):
 
     def run(self):
         self.stopped = False
+        time_start_s = time.time()
         fp = open(f"power_meter_{time_start_s}.csv", "w")
-        keys = power_meter_thread.sensor_readings.keys
+        keys = self.power_meter_thread.sensor_readings.keys()
         for k in keys:
             fp.write(f"{k},")
         fp.write("\n")
@@ -103,7 +105,7 @@ class FileWriterThread(threading.Thread):
         while not self.stopped: #read sensor continuously
             loop_start = time.time()
             for k in keys:
-                fp.write(f"{power_meter_thread.sensor_readings[k]},")
+                fp.write(f"{self.power_meter_thread.sensor_readings[k]},")
             fp.write("\n")
             loop_end = time.time()
             delta_time = loop_end - loop_start

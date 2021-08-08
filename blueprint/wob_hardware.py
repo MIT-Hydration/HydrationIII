@@ -79,7 +79,7 @@ if config.getboolean('Operating System', 'RunningInRPi'):
             self.stopped = False
             time_start_s = time.time()
             fp = open(f"WOB_{time_start_s}.csv", "w")
-            keys = WOB_thread.sensor_readings.keys
+            keys = self.WOB_thread.sensor_readings.keys()
             for k in keys:
                 fp.write(f"{k},")
             fp.write("\n")
@@ -88,7 +88,7 @@ if config.getboolean('Operating System', 'RunningInRPi'):
             while not self.stopped:
                 loop_start = time.time()
                 for k in keys:
-                    fp.write(f"{WOB_thread.sensor_readings[k]},")
+                    fp.write(f"{self.WOB_thread.sensor_readings[k]},")
                 fp.write("\n")
                 loop_end = time.time()
                 delta_time = loop_end - loop_start
