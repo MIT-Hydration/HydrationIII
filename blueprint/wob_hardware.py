@@ -13,6 +13,8 @@ config.read('config.ini')
 if config.getboolean('Operating System', 'RunningInRPi'):
     from gpiozero import PWMLED, DigitalInputDevice, DigitalOutputDevice
     import RPi.GPIO as GPIO
+
+if config.getboolean('Operating System', 'RunningInCoreSensorsRPi'):
     import hx711
 
 class AbstractWOB(ABC):
@@ -29,7 +31,7 @@ class MockWOBSensor(AbstractWOB):
       return [time.time(), -5.0]
 
 
-if config.getboolean('Operating System', 'RunningInRPi'):
+if config.getboolean('Operating System', 'RunningInCoreSensorsRPi'):
 
     class WOBThread(threading.Thread):
 
