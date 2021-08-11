@@ -277,7 +277,7 @@ class FileWriterThread(threading.Thread):
         time_start_s = time.time()
         fp = open(f"rig_{time_start_s}.csv", "w")
         for i in range(NMotors):
-            fp.write(f"pos_{i}_m, torque_{i}_Nm,")
+            fp.write(f"pos_{i}_m, torque_{i}_Percent,")
         fp.write("\n")
         sampling_time = config.getfloat("Rig", "SamplingTime")
 
