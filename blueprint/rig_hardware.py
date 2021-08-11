@@ -142,7 +142,6 @@ class AbstractRigHardware(ABC):
     def gotoPositionZ2(self, z, v):        
         pass
 
-
 class MockRigHardware(AbstractRigHardware):
     def __init__(self):
         #self.position = [-0.4, -0.3, 0.0, 0.50]
@@ -267,6 +266,36 @@ class MockRigHardware(AbstractRigHardware):
     def motorStatus(self):
         return [0, 0, 0, 0]
 
+class FileWriterThread(threading.Thread):
+    def __init__(self, rig_hardware):
+        threading.Thread.__init__(self)
+        self.rig_hardware = rig_hardware
+        self.stopped = True
+
+    def run(self):
+        self.stopped = False
+        time_start_s = time.time()
+        fp = open(f"rig_{time_start_s}.csv", "w")
+        for i in range(NMotors):
+            fp.write(f"pos_{i}_m, torque_{i}_Nm,")
+        fp.write("\n")
+        sampling_time = config.getfloat("Rig", "SamplingTime")
+
+        while not self.stopped: #read sensor continuously
+            loop_start = time.time()
+            for i in range(NMotors):
+                fp.write(f"{self.rig_hardware.getPosition(i)},")
+                fp.write(f"{self.rig_hardware.getTorque(i)},")
+            fp.write("\n")
+            loop_end = time.time()
+            delta_time = loop_end - loop_start
+            if (delta_time < sampling_time):
+                time.sleep(sampling_time - delta_time)
+        fp.close()
+
+    def stop(self):
+        self.stopped = True
+
 class RigHardware(AbstractRigHardware):
     
     def __init__(self):
@@ -278,6 +307,8 @@ class RigHardware(AbstractRigHardware):
         self.move_tolerance = config.getfloat(
             "Rig", "MoveDetectionTolerance")
         print("Done initializing rig hardware")
+        self.file_writer_thread = FileWriterThread(self)
+        self.file_writer_thread.start()
 
     def motorStatus(self): 
         responses = [] 
