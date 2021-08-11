@@ -283,8 +283,9 @@ class FileWriterThread(threading.Thread):
 
         while not self.stopped: #read sensor continuously
             loop_start = time.time()
+            position = self.rig_hardware.getPosition(i)
             for i in range(NMotors):
-                fp.write(f"{self.rig_hardware.getPosition(i)},")
+                fp.write(f"{position[i]},")
                 fp.write(f"{self.rig_hardware.getTorque(i)},")
             fp.write("\n")
             loop_end = time.time()
