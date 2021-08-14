@@ -93,5 +93,5 @@ if __name__ == "__main__":
         delta_time = loop_end - loop_start
         if (delta_time < Ts):
             time.sleep(Ts - delta_time)
-
     rig_h.set_speed_rpm(iZ1, 0)
+    fp.close()
