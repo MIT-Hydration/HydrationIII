@@ -277,13 +277,14 @@ class FileWriterThread(threading.Thread):
         time_start_s = time.time()
         fp = open(f"rig_{time_start_s}.csv", "w")
         for i in range(NMotors):
-            fp.write(f"pos_{i}_m, torque_{i}_Percent,")
+            fp.write(f"time_s,pos_{i}_m,torque_{i}_Percent,")
         fp.write("\n")
         sampling_time = config.getfloat("Rig", "SamplingTime")
 
         while not self.stopped: #read sensor continuously
             loop_start = time.time()
             position = self.rig_hardware.getPosition()
+            fp.write(f"{loop_start},")
             for i in range(NMotors):
                 fp.write(f"{position[i]},")
                 fp.write(f"{self.rig_hardware.getTorque(i)},")

@@ -18,23 +18,19 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi'):
     import hx711
 
 class AbstractWOB(ABC):
-
     @abstractmethod
     # returns a timestamped force reading
     def get_force_N(self):
         pass
     
-
 class MockWOBSensor(AbstractWOB):
-
     def get_force_N(self):
       return [time.time(), -5.0]
 
-
-if config.getboolean('Operating System', 'RunningInCoreSensorsRPi'):
+if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
+   config.getboolean('WOBSensor', 'WOBZ1ConnectedToMotionControlRPi'):
 
     class WOBThread(threading.Thread):
-
         def __init__(self): 
             self.DTPin = config.getint('WOBSensor', 'DTPin')
             self.SCKPin = config.getint('WOBSensor', 'SCKPin')
@@ -70,8 +66,7 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi'):
             self.stopped = True
 
             
-    class FileWriterThread(threading.Thread):
-        
+    class FileWriterThread(threading.Thread): 
         def __init__(self, WOB_thread):
             threading.Thread.__init__(self)
             self.WOB_thread = WOB_thread
@@ -102,8 +97,7 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi'):
         def stop(self):
             self.stopped = True
         
-    class WOBSensor(AbstractWOB):
-            
+    class WOBSensor(AbstractWOB):    
         def __init__(self):
             self.sensor_thread = WOBThread()
             self.file_writer_thread = FileWriterThread(self.sensor_thread)
@@ -113,4 +107,3 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi'):
         def get_force_N(self):
             return [self.sensor_thread.sensor_readings["time_s"],
                     self.sensor_thread.sensor_readings["wob_n"]]
-    
