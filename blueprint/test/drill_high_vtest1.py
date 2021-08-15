@@ -21,7 +21,7 @@ class ControlSystem:
         self.WOBmax = WOBmax
         self.S = 0.0
         self.Ptol = 0.015 # m
-        self.PStopTol = 0.002 # m
+        self.PStopTol = 0.0008 # m
         
     def control(self, Z1, WOB):
         if np.abs(WOB) >= WOBmax:
@@ -67,10 +67,10 @@ if __name__ == "__main__":
     WOB = wob_h.get_force_N()[1]
     
     # control targets down
-    Z1target = -0.080 # m
+    Z1target = 0.00 # m
     #Vmax controlled in CPP code to be VEL_LIM_RPM, 
     # e.g. 600 // (600.0/60.0)*(2.0/1000.0) == 0.02 == 2 cm/sec
-    WOBtarget = -100
+    WOBtarget = 100
     WOBmax = 150 # always positive
     Ptol = 0.001 # m
 
