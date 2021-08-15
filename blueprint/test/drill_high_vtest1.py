@@ -65,7 +65,7 @@ if __name__ == "__main__":
     wob_h = HardwareFactory.getWOBSensor()
     
     # control targets down
-    Z1target = -0.7 # m
+    Z1target = -0.1 # m
     #Vmax controlled in CPP code to be VEL_LIM_RPM, 
     # e.g. 600 // (600.0/60.0)*(2.0/1000.0) == 0.02 == 2 cm/sec
     WOBtarget = -100

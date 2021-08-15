@@ -19,6 +19,9 @@ run-cs-client:
 run-water-pump-test:
 	@python3 -m $(MODULE).test.test_water_pump
 
+run-drill-high-v-test:
+	@python3 -m $(MODULE).test.drill_high_vtest1
+
 hydration-servo:
 	@python3 blueprint/setup-HydrationServo.py build_ext --inplace
 
