@@ -442,3 +442,6 @@ class RigHardware(AbstractRigHardware):
     
     def setHomeY(self):
         HydrationServo.set_home(iY)
+
+    def set_speed_rpm(self, i, rpm):
+        HydrationServo.set_speed_rpm(i, rpm)
