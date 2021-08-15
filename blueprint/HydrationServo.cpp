@@ -25,59 +25,59 @@ char * _motor_status(unsigned long i){
 
     INode &theNode = *(pTheNode[i]); //do i do a copy of stop all motors where the i is == 0  How to make it return an error instead of a number 
 
-    printf("Checking for Alerts: \n");
+    //printf("Checking for Alerts: \n");
 
     // make sure our registers are up to date
     theNode.Status.RT.Refresh();
     theNode.Status.Alerts.Refresh();
 
-    printf("---------\n");
-    printf(" Checking node %li for Alerts:\n", i);
+    //printf("---------\n");
+    //printf(" Checking node %li for Alerts:\n", i);
 
     // Check the status register's "AlertPresent" bit
     // The bit is set true if there are alerts in the alert register
     if (!theNode.Status.RT.Value().cpm.AlertPresent) {
-      printf("   Node has no alerts!\n");
+      //printf("   Node has no alerts!\n");
     }
     //Check to see if the node experienced torque saturation
     if (theNode.Status.HadTorqueSaturation()) {
-      printf("      Node has experienced torque saturation since last checking\n");
+      //printf("      Node has experienced torque saturation since last checking\n");
     }
     // get an alert register reference, check the alert register directly for alerts
     if (theNode.Status.Alerts.Value().isInAlert()) {
       // get a copy of the alert register bits and a text description of all bits set
       theNode.Status.Alerts.Value().StateStr(alertList, 256);
-      printf("   Node has alerts! Alerts:\n%s\n", alertList);
+      //printf("   Node has alerts! Alerts:\n%s\n", alertList);
 
       // can access specific alerts using the method below
       if (theNode.Status.Alerts.Value().cpm.Common.EStopped) {
-        printf("      Node is e-stopped: Clearing E-Stop\n");
+        //printf("      Node is e-stopped: Clearing E-Stop\n");
         theNode.Motion.NodeStopClear();
       }
       if (theNode.Status.Alerts.Value().cpm.TrackingShutdown) {
-        printf("      Node exceeded Tracking error limit\n");
+        //printf("      Node exceeded Tracking error limit\n");
       }
 
       // Check for more alerts and Clear Alerts
       theNode.Status.Alerts.Refresh();
       if (theNode.Status.Alerts.Value().isInAlert()) {
         theNode.Status.Alerts.Value().StateStr(alertList, 256);
-        printf("      Node has non-estop alerts: %s\n", alertList);
-        printf("      Clearing non-serious alerts\n");
+        //printf("      Node has non-estop alerts: %s\n", alertList);
+        //printf("      Clearing non-serious alerts\n");
        // theNode.Status.AlertsClear(); //require this for future clearalert button
 
         // Are there still alerts?
         theNode.Status.Alerts.Refresh();
         if (theNode.Status.Alerts.Value().isInAlert()) {
           theNode.Status.Alerts.Value().StateStr(alertList, 256);
-          printf("   Node has serious, non-clearing alerts: %s\n", alertList);
+          //printf("   Node has serious, non-clearing alerts: %s\n", alertList);
         }
         else {
-          printf("   Node %d: all alerts have been cleared\n", theNode.Info.Ex.Addr());
+          //printf("   Node %d: all alerts have been cleared\n", theNode.Info.Ex.Addr());
         }
       }
       else {
-        printf("   Node %d: all alerts have been cleared\n", theNode.Info.Ex.Addr());
+        //printf("   Node %d: all alerts have been cleared\n", theNode.Info.Ex.Addr());
       }
 
     }
@@ -133,7 +133,7 @@ int _set_speed_rpm(unsigned long i, double speed){
   theNode.Motion.VelLimit = VEL_LIM_RPM;	 //Set Velocity Limit (RPM)
   theNode.Motion.MoveVelStart(speed);
   double speed_mps = (speed / 60)*THREAD_PITCH;
-  printf("Speed set to %lf RPM (%lf m/s)\n", speed, speed_mps);
+  //printf("Speed set to %lf RPM (%lf m/s)\n", speed, speed_mps);
   return 1;
 }
 

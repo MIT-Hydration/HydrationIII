@@ -63,15 +63,17 @@ def checkAndClearMotorStatus(rig_h):
 if __name__ == "__main__":
     rig_h = HardwareFactory.getRig()
     wob_h = HardwareFactory.getWOBSensor()
+    WOB = wob_h.get_force_N()[1]
     
     # control targets down
-    Z1target = -0.1 # m
+    Z1target = 0.001 # m
     #Vmax controlled in CPP code to be VEL_LIM_RPM, 
     # e.g. 600 // (600.0/60.0)*(2.0/1000.0) == 0.02 == 2 cm/sec
     WOBtarget = -100
     WOBmax = 150 # always positive
+    Ptol = 0.001 # m
 
-    current_pos = rig.getPosition()
+    current_pos = rig_h.getPosition()
     z1 = current_pos[iZ1]
     z1err = Z1target - z1
    
@@ -79,9 +81,11 @@ if __name__ == "__main__":
     time_start = time.time()
     fp = open(f"Vcommand_{time_start}.csv", "w")
     fp.write('UD,time_s,Vcommand_mps,Vcommand_RPM\n')
-    while np.abs(z1err) < Ptol:
+    
+    print(f"WOB = {WOB} N")
+    while np.abs(z1err) > Ptol:
         loop_start = time.time()
-        WOB = wob_h.get_force_N()
+        WOB = wob_h.get_force_N()[1]
         current_pos = rig_h.getPosition()
         z1 = current_pos[0]
         Vcommand = control_system.control(z1, WOB)
@@ -103,11 +107,13 @@ if __name__ == "__main__":
         delta_time = loop_end - loop_start
         if (delta_time < Ts):
             time.sleep(Ts - delta_time)
+        z1err = Z1target - z1
 
     rig_h.set_speed_rpm(iZ1, 0)
 
     print("Reached target, moving up")
     time.sleep(1.0)
+    exit(-1)
 
     # control targets down
     Z1target = 0.01 # m
@@ -116,15 +122,15 @@ if __name__ == "__main__":
     WOBtarget = 100
     WOBmax = 150 # always positive
 
-    current_pos = rig.getPosition()
+    current_pos = rig_h.getPosition()
     z1 = current_pos[iZ1]
     z1err = Z1target - z1
    
     control_system = ControlSystem(Z1target, WOBtarget, WOBmax)
     time_start = time.time()
-    while np.abs(z1err) < Ptol:
+    while np.abs(z1err) > Ptol:
         loop_start = time.time()
-        WOB = wob_h.get_force_N()
+        WOB = wob_h.get_force_N()[1]
         current_pos = rig_h.getPosition()
         z1 = current_pos[0]
         Vcommand = control_system.control(z1, WOB)
@@ -146,6 +152,7 @@ if __name__ == "__main__":
         delta_time = loop_end - loop_start
         if (delta_time < Ts):
             time.sleep(Ts - delta_time)
+        z1err = Z1target - z1
     
     rig_h.set_speed_rpm(iZ1, 0)
     fp.close()
