@@ -7,9 +7,9 @@ import numpy as np
 
 # control parameters
 Ts = 0.1 # control loop runs every 0.1 second
-Pv = 0.03/500
-Iv = Pv/10
-Pz = 0.333333
+Pv = 0.01/500
+Iv = Pv/20
+Pz = 0.1
 
 class ControlSystem:
     def __init__(self, Z1target, WOBtarget, WOBmax):
@@ -36,6 +36,7 @@ class ControlSystem:
             return 0.0 # stop if we are within target position tolerance
 
         if np.abs(Perr) < self.Ptol:
+            print("Near destination, stopping")
             V3 = self.Pz*Perr
         else:
             V3 = self.Pv*WOBerr + self.S
