@@ -12,35 +12,38 @@ Iv = Pv/10
 Pz = 0.03
 
 class ControlSystem:
-    def __init__(self, Z1target, Vtarget, WOBtarget, WOBmax):
+    def __init__(self, Z1target, WOBtarget, WOBmax):
         self.Pv = Pv
         self.Iv = Iv
         self.Pz = Pz
         self.Z1target = Z1target
-        self.Vtarget = Vtarget
         self.WOBtarget = WOBtarget
         self.WOBmax = WOBmax
         self.S = 0.0
-        self.Ptol = 0.010 # m
+        self.Ptol = 0.015 # m
+        self.PStopTol = 0.002 # m
         
     def control(self, Z1, WOB):
         if np.abs(WOB) >= WOBmax:
+            self.S = self.S/2.0
             return 0.0 # try to stop if we hit WOBmax
         
         WOBerr = self.WOBtarget - WOB
         self.S = self.S + self.Iv*WOBerr
         Perr = self.Z1target - Z1
-        
+
+        if np.abs(Perr) < self.PStopTol:
+            return 0.0 # stop if we are within target position tolerance
+
         if np.abs(Perr) < self.Ptol:
             V3 = self.Pz*Perr
         else:
             V3 = self.Pv*WOBerr + self.S
             
-        return V3   
+        return V3 
 
 # control targets
 Z1target = -0.7 # m
-Vtarget = -0.01 # m/s
 #Vmax controlled in CPP code to be VEL_LIM_RPM, 
 # e.g. 600 // (600.0/60.0)*(2.0/1000.0) == 0.02 == 2 cm/sec
 WOBtarget = -100
@@ -73,7 +76,7 @@ if __name__ == "__main__":
     z1 = current_pos[0]
     z1err = Z1target - z1
    
-    control_system = ControlSystem(Z1target, Vtarget, WOBtarget, WOBmax)
+    control_system = ControlSystem(Z1target, WOBtarget, WOBmax)
     fp = open(f"Vcommand_{time.time()}.csv", "w")
     fp.write('time_s,Vcommand_mps,Vcommand_RPM\n')
     while np.abs(z1err) < Ptol:

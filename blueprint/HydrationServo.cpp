@@ -8,7 +8,7 @@ using namespace sFnd;
 #define INIT_TIMEOUT	1000	//Initialize timeout
 
 #define ACC_LIM_RPM_PER_SEC	300
-#define VEL_LIM_RPM			600 // (600.0/60.0)*(2.0/1000.0) == 0.02 == 2 cm/sec 
+#define VEL_LIM_RPM			1200 // (1200.0/60.0)*(2.0/1000.0) == 0.04 == 4 cm/sec 
 #define CNTS_PER_MM			400
 #define RPM_PER_MM_PER_SECOND			30
 #define THREAD_PITCH (2.0/1000.0) // meters (2 mm pitch)
