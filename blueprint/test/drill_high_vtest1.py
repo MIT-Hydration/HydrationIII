@@ -7,8 +7,8 @@ import numpy as np
 
 # control parameters
 Ts = 0.1 # control loop runs every 0.1 second
-Pv = 0.01/500
-Iv = Pv/20
+Pv = 0.02/500
+Iv = Pv/15
 Pz = 0.1
 
 class ControlSystem:
@@ -67,10 +67,10 @@ if __name__ == "__main__":
     WOB = wob_h.get_force_N()[1]
     
     # control targets down
-    Z1target = 0.01 # m
+    Z1target = -0.08 # m
     #Vmax controlled in CPP code to be VEL_LIM_RPM, 
     # e.g. 600 // (600.0/60.0)*(2.0/1000.0) == 0.02 == 2 cm/sec
-    WOBtarget = 100
+    WOBtarget = -100
     WOBmax = 150 # always positive
     Ptol = 0.001 # m
 
@@ -81,7 +81,7 @@ if __name__ == "__main__":
     control_system = ControlSystem(Z1target, WOBtarget, WOBmax)
     time_start = time.time()
     fp = open(f"Vcommand_{time_start}.csv", "w")
-    fp.write('UD,time_s,Vcommand_mps,Vcommand_RPM\n')
+    fp.write('UD,target_m,time_s,Vcommand_mps,Vcommand_RPM\n')
     
     print(f"WOB = {WOB} N")
     while np.abs(z1err) > Ptol:
@@ -92,8 +92,8 @@ if __name__ == "__main__":
         Vcommand = control_system.control(z1, WOB)
         Vcommand_rpm = (Vcommand*60)/Z1_THREAD_PITCH
         zTorque = rig_h.getTorque(iZ1)
-        fp.write(f'D,{loop_start},{Vcommand},{Vcommand_rpm}\n')
-        print(f"D {loop_start - time_start:0.3f}s: z={z1:0.3f}m, WB={WOB:0.3f}N,"\
+        fp.write(f'D,{Z1target},{loop_start},{Vcommand},{Vcommand_rpm}\n')
+        print(f"D {loop_start - time_start:0.3f}s: tz={Z1target:0.3f}m, z={z1:0.3f}m, WB={WOB:0.3f}N,"\
               f" T={zTorque:0.1f}p,"\
               f" Vc={Vcommand:0.5f}m/s, {Vcommand_rpm:0.1f}RPM")
         
@@ -114,8 +114,7 @@ if __name__ == "__main__":
 
     print("Reached target, moving up")
     time.sleep(1.0)
-    exit(-1)
-
+    
     # control targets down
     Z1target = 0.00 # m
     #Vmax controlled in CPP code to be VEL_LIM_RPM, 
@@ -137,8 +136,8 @@ if __name__ == "__main__":
         Vcommand = control_system.control(z1, WOB)
         Vcommand_rpm = (Vcommand*60)/Z1_THREAD_PITCH
         zTorque = rig_h.getTorque(iZ1)
-        fp.write(f'U,{loop_start},{Vcommand},{Vcommand_rpm}\n')
-        print(f"U {loop_start - time_start:0.3f}s: z={z1:0.3f}m, WB={WOB:0.3f}N,"\
+        fp.write(f'U,{Z1target},{loop_start},{Vcommand},{Vcommand_rpm}\n')
+        print(f"U {loop_start - time_start:0.3f}s: tz={Z1target:0.3f}m, z={z1:0.3f}m, WB={WOB:0.3f}N,"\
               f" T={zTorque:0.1f}p,"\
               f" Vc={Vcommand:0.5f}m/s, {Vcommand_rpm:0.1f}RPM")
         
