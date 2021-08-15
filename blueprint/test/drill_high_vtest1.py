@@ -69,7 +69,7 @@ if __name__ == "__main__":
     Z1target = 0.001 # m
     #Vmax controlled in CPP code to be VEL_LIM_RPM, 
     # e.g. 600 // (600.0/60.0)*(2.0/1000.0) == 0.02 == 2 cm/sec
-    WOBtarget = -100
+    WOBtarget = 100
     WOBmax = 150 # always positive
     Ptol = 0.001 # m
 
