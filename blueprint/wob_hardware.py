@@ -16,6 +16,8 @@ if config.getboolean('Operating System', 'RunningInRPi'):
 
 if config.getboolean('Operating System', 'RunningInCoreSensorsRPi'):
     import hx711
+elif config.getboolean('WOBSensor', 'WOBZ1ConnectedToMotionControlRPi'):
+    from . import hx711
 
 class AbstractWOB(ABC):
     @abstractmethod
