@@ -22,6 +22,9 @@ run-water-pump-test:
 run-drill-high-v-test:
 	@python3 -m $(MODULE).test.drill_high_vtest1
 
+run-drill-origin:
+	@python3 -m $(MODULE).test.drill_back_to_origin
+
 hydration-servo:
 	@python3 blueprint/setup-HydrationServo.py build_ext --inplace
 
