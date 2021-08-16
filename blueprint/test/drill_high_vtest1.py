@@ -7,7 +7,7 @@ import numpy as np
 
 # control parameters
 Ts = 0.1 # control loop runs every 0.1 second
-Pv = 0.02/500
+Pv = 0.01/500
 Iv = Pv/15
 Pz = 0.1
 
