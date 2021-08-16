@@ -22,6 +22,7 @@ class ControlSystem:
         self.S = 0.0
         self.Ptol = 0.015 # m
         self.PStopTol = 0.0008 # m
+        self.VMax = 0.01/3 # m/s
         
     def control(self, Z1, WOB):
         if np.abs(WOB) >= WOBmax:
@@ -40,8 +41,9 @@ class ControlSystem:
             V3 = self.Pz*Perr
         else:
             V3 = self.Pv*WOBerr + self.S
-            
-        return V3 
+        
+        Vlimited = min(self.VMax, np.abs(V3))
+        return Vlimited*np.sign(V3) 
 
 Z1_THREAD_PITCH = (2.0/1000.0) # == 2 mm 
 iZ1 = 0
