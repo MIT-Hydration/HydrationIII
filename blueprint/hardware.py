@@ -48,9 +48,9 @@ class HardwareFactory:
         cls._lock.acquire()
         if cls.pump is None:
             if (config.getboolean('Mocks', 'MockWaterPump')):
-                cls.pump = MockPump()
+                cls.pump = PumpHardware.MockPump()
             else:
-                cls.pump = Pump()
+                cls.pump = PumpHardware.Pump()
         cls._lock.release()
         return cls.pump
     
