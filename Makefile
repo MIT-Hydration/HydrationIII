@@ -19,6 +19,9 @@ run-cs-client:
 run-water-pump-test:
 	@python3 -m $(MODULE).test.test_water_pump
 
+run-water-pump-keyb:
+	@python3 -m $(MODULE).test.test_water_pump_keyboard
+
 run-drill-high-v-test:
 	@python3 -m $(MODULE).test.drill_high_vtest1
 
