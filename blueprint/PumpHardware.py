@@ -160,7 +160,7 @@ class Pump(AbstractPump):
     if config.getboolean('Operating System', 'RunningInRPi'):
         pump_pwm = PWMLED(PUL)
     speed_rpm = 0
-    MAX_RPM = 150
+    MAX_RPM = 250
     MOTOR_PULSES_PER_REV = 400
     LITERS_PER_REV = 0.055
     if config.getboolean('Operating System', 'RunningInRPi'):
