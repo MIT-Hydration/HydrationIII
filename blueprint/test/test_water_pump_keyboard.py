@@ -31,13 +31,16 @@ def main(stdscr):
         if ch == 'f':
             current_direction = 1
             current_speed = 250
+            pump.set_direction(current_direction)
+        
         elif ch == 'r':
             current_direction = 0
             current_speed = 250
+            pump.set_direction(current_direction)
+        
         elif (ch == 's') or (ch == 'e'):
             current_speed = 0
         
-        pump.set_direction(current_direction)
         pump.set_speed_pom(current_speed)
     
         if ch == 'e':
