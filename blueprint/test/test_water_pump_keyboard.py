@@ -41,7 +41,7 @@ def main(stdscr):
         elif (ch == 's') or (ch == 'e'):
             current_speed = 0
         
-        pump.set_speed_pom(current_speed)
+        pump.set_speed_rpm(current_speed)
     
         if ch == 'e':
             break
