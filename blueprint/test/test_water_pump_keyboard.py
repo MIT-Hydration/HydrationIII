@@ -9,13 +9,14 @@ def main(stdscr):
     pump = HardwareFactory.getWaterPump()
     
     current_speed = 0
+    current_direction = 0
     pump.set_speed_rpm(current_speed)
     
     stdscr.nodelay(True)
     while(True):
         time.sleep(0.1)
         stdscr.addstr(0, 0, f'Press "f" for forward at 250 RPM, "r" for reverse at 250 RPM, "s" for stop, "e" for exit')
-        stdscr.addstr(1, 0, f'Current Speed == {current_speed} RPM (positive forward, negative reverse)')
+        stdscr.addstr(1, 0, f'Current Speed == {current_speed} RPM, direction == {current_direction} (1 forward, 0 reverse)')
         
         ch = stdscr.getch()
         if ch == -1:
@@ -28,13 +29,16 @@ def main(stdscr):
             continue
 
         if ch == 'f':
+            current_direction = 1
             current_speed = 250
         elif ch == 'r':
-            current_speed = -250
+            current_direction = 0
+            current_speed = 250
         elif (ch == 's') or (ch == 'e'):
             current_speed = 0
         
-        pump.set_speed_rpm(current_speed)
+        pump.set_direction(current_direction)
+        pump.set_speed_pom(current_speed)
     
         if ch == 'e':
             break
