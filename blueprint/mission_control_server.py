@@ -18,7 +18,8 @@ class StateMachine:
 
         self.start_up_states = {
             mcpb.STARTUP_IDLE: mcpb.STARTUP_MISSION_CLOCK_STARTED,
-            mcpb.STARTUP_MISSION_CLOCK_STARTED: mcpb.STARTUP_HOMING_Z1,
+            mcpb.STARTUP_MISSION_CLOCK_STARTED: mcpb.STARTUP_HOME_Y_COMPLETED,
+            #mcpb.STARTUP_MISSION_CLOCK_STARTED: mcpb.STARTUP_HOMING_Z1,
             mcpb.STARTUP_HOMING_Z1: mcpb.STARTUP_HOME_Z1_COMPLETED,
             mcpb.STARTUP_HOME_Z1_COMPLETED: mcpb.STARTUP_HOMING_Z2,
             mcpb.STARTUP_HOMING_Z2: mcpb.STARTUP_HOME_Z2_COMPLETED,
