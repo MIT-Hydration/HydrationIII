@@ -92,8 +92,8 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
                 loop_end = time.time()
                 loop_start_int = int(loop_start)%10
                 if loop_start_int == 0:
-                    print(f"[t (s), WOB (N)] = {self.WOB_thread.sensor_readings["time_s"]}, "\
-                          f"{self.WOB_thread.sensor_readings["wob_n"]}")
+                    print(f"[t (s), WOB (N)] = {self.WOB_thread.sensor_readings['time_s']}, "\
+                          f"{self.WOB_thread.sensor_readings['wob_n']}")
                 delta_time = loop_end - loop_start
                 if (delta_time < sampling_time):
                     time.sleep(sampling_time - delta_time)
