@@ -107,6 +107,12 @@ class FileWriterThread(threading.Thread):
             for k in keys:
                 fp.write(f"{self.power_meter_thread.sensor_readings[k]},")
             fp.write("\n")
+
+            loop_start_int = (int(loop_start))%10
+            if loop_start_int == 0:
+                print(f"[t (s), Power (W)] = {self.power_meter_thread.sensor_readings['time_s']}, "\
+                        f"{self.power_meter_thread.sensor_readings['active_power_W']}")
+            
             loop_end = time.time()
             delta_time = loop_end - loop_start
             if (delta_time < sampling_time):
