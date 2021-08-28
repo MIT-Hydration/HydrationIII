@@ -90,6 +90,9 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
                     fp.write(f"{self.WOB_thread.sensor_readings[k]},")
                 fp.write("\n")
                 loop_end = time.time()
+                loop_start_int = int(loop_start)%10
+                if loop_start_int == 0:
+                    print(f"[t, WOB] = {self.WOB_thread.sensor_readings[0]}, {self.WOB_thread.sensor_readings[1]}")
                 delta_time = loop_end - loop_start
                 if (delta_time < sampling_time):
                     time.sleep(sampling_time - delta_time)
