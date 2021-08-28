@@ -536,11 +536,14 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         if (state == mcpb.STARTUP_IDLE):
             return self._startMissionClock(request, context)
         elif (state == mcpb.STARTUP_MISSION_CLOCK_STARTED):
-            return self._StartHomeZ1(request, context)
-        elif (state == mcpb.STARTUP_HOME_Z1_COMPLETED):
-            return self._StartHomeZ2(request, context)
-        elif (state == mcpb.STARTUP_HOME_Z2_COMPLETED):
-            return self._StartHomeY(request, context)
+            self.state_machine.transitionState(
+                mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS, mcpb.STARTUP_HOME_Y_COMPLETED)
+            return True
+        #     return self._StartHomeZ1(request, context)
+        # elif (state == mcpb.STARTUP_HOME_Z1_COMPLETED):
+        #     return self._StartHomeZ2(request, context)
+        # elif (state == mcpb.STARTUP_HOME_Z2_COMPLETED):
+        #     return self._StartHomeY(request, context)
         
         else:
             return mcpb.CommandResponse(
