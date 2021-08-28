@@ -18,7 +18,8 @@ class StateMachine:
 
         self.start_up_states = {
             mcpb.STARTUP_IDLE: mcpb.STARTUP_MISSION_CLOCK_STARTED,
-            mcpb.STARTUP_MISSION_CLOCK_STARTED: mcpb.STARTUP_HOMING_Z1,
+            mcpb.STARTUP_MISSION_CLOCK_STARTED: mcpb.STARTUP_HOME_Y_COMPLETED,
+            #mcpb.STARTUP_MISSION_CLOCK_STARTED: mcpb.STARTUP_HOMING_Z1,
             mcpb.STARTUP_HOMING_Z1: mcpb.STARTUP_HOME_Z1_COMPLETED,
             mcpb.STARTUP_HOME_Z1_COMPLETED: mcpb.STARTUP_HOMING_Z2,
             mcpb.STARTUP_HOMING_Z2: mcpb.STARTUP_HOME_Z2_COMPLETED,
@@ -127,6 +128,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
     def HeartBeat(self, request, context):
         timestamp = int(time.time()*1000)
+        print ("HeartBeat command received...")
         cpu_temp = HardwareFactory.getMissionControlRPi() \
             .get_cpu_temperature()
 
@@ -534,11 +536,14 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         if (state == mcpb.STARTUP_IDLE):
             return self._startMissionClock(request, context)
         elif (state == mcpb.STARTUP_MISSION_CLOCK_STARTED):
-            return self._StartHomeZ1(request, context)
-        elif (state == mcpb.STARTUP_HOME_Z1_COMPLETED):
-            return self._StartHomeZ2(request, context)
-        elif (state == mcpb.STARTUP_HOME_Z2_COMPLETED):
-            return self._StartHomeY(request, context)
+            self.state_machine.transitionState(
+                mcpb.MAJOR_MODE_STARTUP_DIAGNOSTICS, mcpb.STARTUP_HOME_Y_COMPLETED)
+            return True
+        #     return self._StartHomeZ1(request, context)
+        # elif (state == mcpb.STARTUP_HOME_Z1_COMPLETED):
+        #     return self._StartHomeZ2(request, context)
+        # elif (state == mcpb.STARTUP_HOME_Z2_COMPLETED):
+        #     return self._StartHomeY(request, context)
         
         else:
             return mcpb.CommandResponse(
