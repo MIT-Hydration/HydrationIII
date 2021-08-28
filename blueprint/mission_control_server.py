@@ -128,6 +128,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
 
     def HeartBeat(self, request, context):
         timestamp = int(time.time()*1000)
+        print ("HeartBeat command received...")
         cpu_temp = HardwareFactory.getMissionControlRPi() \
             .get_cpu_temperature()
 
