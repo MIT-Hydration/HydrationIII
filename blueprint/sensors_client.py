@@ -17,14 +17,17 @@ from datetime import datetime, timedelta
 import time
 import configparser
 
-from . import mode_display, status_display, startup_diagnostics_display, limits_display
-from . import hole_position_display, drillborehole_display
+from . import sensors_status_display
 import blueprint
 
 config = configparser.ConfigParser()
 config.read('config.ini')
 
 RPI_IP_ADDRESS_PORT = \
+    f"{config.get('Network', 'CoreSensorsRPiAddress')}:" \
+    f"{config.get('Network', 'CoreSensorsGRPCPort')}"
+
+MOTOR_IP_ADDRESS_PORT = \
     f"{config.get('Network', 'MissionControlRPiIPAddress')}:" \
     f"{config.get('Network', 'GRPCPort')}"
 
@@ -33,40 +36,55 @@ HEARTBEAT_TIMEOUT   = \
 GRPC_CALL_TIMEOUT   = \
     config.getint('Network', 'GRPCTimeout')
 
-
 class RPiHeartBeat(QtCore.QThread):
-    done = Signal(object)
+    sensors_done = Signal(object)
+    motor_done = Signal(object)
     log = Signal(object)
-    limits_done = Signal(object)
 
     def __init__(self):
         QtCore.QThread.__init__(self)
         
     def run(self):
         global RPI_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
-        response = None
-        limits_response = None
+        sensors_response = None
+        motor_response = None
         try:
             timestamp = int(time.time()*1000)
             with grpc.insecure_channel(RPI_IP_ADDRESS_PORT) as channel:
-                stub = mission_control_pb2_grpc.MissionControlStub(channel)
-                response = stub.HeartBeat (
+                stub = mission_control_pb2_grpc.CoreSensorsStub(channel)
+                sensors_response = stub.HeartBeat (
                     mission_control_pb2.HeartBeatRequest(request_timestamp = timestamp),
                     timeout = GRPC_CALL_TIMEOUT )
-                print("Mission Control HeartBeat received at: " + str(datetime.now()))
-                print(response) #whats the response? the things in the HeartBeat in mission control returns?
+                print("Sensors HeartBeat received at: " + str(datetime.now()))
+                print(sensors_response) 
                 #self.log.emit("HeartBeat received at: " + str(datetime.now()))
-                limits_response = stub.GetLimits (
-                    mission_control_pb2.GetLimitRequest(request_timestamp = timestamp),
-                    timeout = GRPC_CALL_TIMEOUT )
                 
         except Exception as e:
             info = f"Error connecting to Server at: {RPI_IP_ADDRESS_PORT}: + {str(e)}"
             print(info)
             self.log.emit(info)
 
-        self.done.emit(response) #what do these do? 
-        self.limits_done.emit(limits_response)    
+
+        self.sensors_done.emit(sensors_response) 
+
+        # try:
+        #     timestamp = int(time.time()*1000)
+        #     with grpc.insecure_channel(MOTOR_IP_ADDRESS_PORT) as channel:
+        #         stub = mission_control_pb2_grpc.MissionControlStub(channel)
+        #         motor_response = stub.HeartBeat (
+        #             mission_control_pb2.HeartBeatRequest(request_timestamp = timestamp),
+        #             timeout = GRPC_CALL_TIMEOUT )
+        #         print("Mission Control HeartBeat received at: " + str(datetime.now()))
+        #         print(motor_response) 
+        #         #self.log.emit("HeartBeat received at: " + str(datetime.now()))
+                
+        # except Exception as e:
+        #     info = f"Error connecting to Server at: {MOTOR_IP_ADDRESS_PORT}: + {str(e)}"
+        #     print(info)
+        #     self.log.emit(info)
+
+        # self.motor_done.emit(motor_response) 
+  
 
 class EmergencyStopThread(QtCore.QThread):
     done = Signal(object)
@@ -75,11 +93,11 @@ class EmergencyStopThread(QtCore.QThread):
         QtCore.QThread.__init__(self)
         
     def run(self):
-        global RPI_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
+        global MOTOR_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
         response = None
         try:
             timestamp = int(time.time()*1000)
-            with grpc.insecure_channel(RPI_IP_ADDRESS_PORT) as channel:
+            with grpc.insecure_channel(MOTOR_IP_ADDRESS_PORT) as channel:
                 stub = mission_control_pb2_grpc.MissionControlStub(channel)
                 response = stub.EmergencyStop (
                     mission_control_pb2.EmergencyStopRequest(
@@ -106,17 +124,6 @@ class MainWindow(QtWidgets.QWidget):
         self.emergency_button.clicked.connect \
             (self.emergency_stop)
 
-    def _initModeDisplay(self):
-        self.mode_groupbox = QtWidgets.QGroupBox("Mode Selection")
-        self.mode_layout = QtWidgets.QVBoxLayout()
-        self.mode_groupbox.setLayout(self.mode_layout)
-        self.main_grid_layout.addWidget(
-            self.mode_groupbox, 1, 0, 2, 1)
-
-        self.mode_display = mode_display.ModeDisplay(self,
-            self.mode_layout)
-        self.heartbeat_receivers.append(self.mode_display)
-  
     def _initStatusDisplay(self):
         self.status_groupbox = QtWidgets.QGroupBox("System Status")
         self.status_layout = QtWidgets.QVBoxLayout()
@@ -124,19 +131,9 @@ class MainWindow(QtWidgets.QWidget):
         self.main_grid_layout.addWidget(
             self.status_groupbox, 4, 0, 10, 1)
 
-        self.status_display = status_display.StatusDisplay(
+        self.status_display = sensors_status_display.SensorsStatusDisplay(
             self.status_layout)
-        self.heartbeat_receivers.append(self.status_display)
-  
-
-    def _initDiagnostics(self):
-        self.startup_diagnostics_groupbox = QtWidgets.QGroupBox("P01 Startup and Diagnostics")
-        
-        self.major_mode_tab.addTab(
-            self.startup_diagnostics_groupbox, "P01")
-        self.startup_display = startup_diagnostics_display.StartupDiagnosticsDisplay(
-            self, self.startup_diagnostics_groupbox)
-        self.heartbeat_receivers.append(self.startup_display)
+        self.sensors_heartbeat_receivers.append(self.status_display)
 
     def _initDiagnosticsBar(self):
         self.diagnostics_bar_groupbox = QtWidgets.QGroupBox(
@@ -172,47 +169,19 @@ class MainWindow(QtWidgets.QWidget):
 
     def log(self, text):
         self._log_display.insertPlainText(f"\n{text}")
-
-    def _initLimits(self):
-        self.limits_groupbox = QtWidgets.QGroupBox("P01 Limits")
-        self.limits_layout = QtWidgets.QFormLayout()
-        self.limits_groupbox.setLayout(self.limits_layout)
-        self.main_grid_layout.addWidget(
-            self.limits_groupbox, 0, 8, 3, 3)
-
-        self.limits_display = limits_display.LimitsDisplay(self.limits_layout)  
-        self.limit_receivers.append(self.limits_display)   
-
-    def _initDrillBorehole(self):
-        self.drillborehole_groupbox = QtWidgets.QGroupBox("P04 Drill Borehole")
-        self.major_mode_tab.addTab(
-            self.drillborehole_groupbox, "P04")
-
-        self.drillborehole_display = drillborehole_display.DrillBoreholeDisplay(
-            self, self.drillborehole_groupbox)
-
-        self.heartbeat_receivers.append(self.drillborehole_display)
         
         
     def __init__(self):
         super(MainWindow, self).__init__()
         self.threads = []
-        self.limit_receivers = []
-        self.heartbeat_receivers = []
+        self.sensors_heartbeat_receivers = []
+        self.motor_heartbeat_receivers = []
 
         self.main_grid_layout = QtWidgets.QGridLayout()
-        self.major_mode_tab = QtGui.QTabWidget()
-        self.main_grid_layout.addWidget(self.major_mode_tab, 0, 1, 3, 7)
-
+        
         self._initEmergencyStop()
-        self._initModeDisplay()
         self._initStatusDisplay()
 
-        self._initDiagnostics()
-        self._initDrillBorehole()
-        
-        self._initLimits()
-        self._initHolePos()
         self._initDiagnosticsBar()
         self.setLayout(self.main_grid_layout)
         
@@ -220,23 +189,6 @@ class MainWindow(QtWidgets.QWidget):
         self.heartbeat_timer.timeout.connect(self.onHeartBeat)
         self.startHeartBeatTimer()
 
-    # def closeEvent(self, event):
-    #     for th in self.threads:
-    #         th.wait()
-    #     event.accept() # let the window close
-
-    def _initHolePos(self):
-        self.hole_pos_groupbox = QtWidgets.QGroupBox("Rig Holes and Position")
-        self.hole_pos_layout = QtWidgets.QGridLayout()
-        self.hole_pos_groupbox.setLayout(self.hole_pos_layout)
-        self.main_grid_layout.addWidget(
-            self.hole_pos_groupbox, 4, 1, 10, 10)
-
-        self.hole_pos_display = hole_position_display.HolePositionDisplay(
-            self, self.hole_pos_layout
-        )
-        self.limit_receivers.append(self.hole_pos_display) 
-        self.heartbeat_receivers.append(self.hole_pos_display) 
 
     def emergency_stop(self):
         client_thread = EmergencyStopThread()
@@ -255,28 +207,28 @@ class MainWindow(QtWidgets.QWidget):
 
     def onHeartBeat(self):
         client_thread = RPiHeartBeat()
-        client_thread.done.connect(self.on_heartbeat_received)
+        client_thread.sensors_done.connect(self.on_sensors_heartbeat_received)
         client_thread.log.connect(self.on_log)
-        client_thread.limits_done.connect(self.on_limit_received)
+        client_thread.motor_done.connect(self.on_motor_heartbeat_received)
         self.threads.append(client_thread)
         client_thread.start()
 
 
     @QtCore.Slot(object)
-    def on_limit_received(self, response):
-        for r in self.limit_receivers:
-            r.update_limits(response)
+    def on_sensors_heartbeat_received(self, response):
+        for r in self.sensors_heartbeat_receivers:
+            try:
+                r.update_sensors_status(response)
+            except AttributeError as e:
+                self.log("Missing attributte in update_status: " + str(e))
+            except Exception as e:
+                self.log(str(e))
 
     @QtCore.Slot(object)
-    def on_heartbeat_received(self, response):
-        if response != None:
-            if response.major_mode == mission_control_pb2.MAJOR_MODE_DRILL_BOREHOLE:
-                self.major_mode_tab.setCurrentIndex(1)
-            else:
-                self.major_mode_tab.setCurrentIndex(0)
-        for r in self.heartbeat_receivers:
+    def on_motor_heartbeat_received(self, response):
+        for r in self.motor_heartbeat_receivers:
             try:
-                r.update_status(response)
+                r.update_motor_status(response)
             except AttributeError as e:
                 self.log("Missing attributte in update_status: " + str(e))
             except Exception as e:
@@ -285,10 +237,6 @@ class MainWindow(QtWidgets.QWidget):
     @QtCore.Slot(object)
     def on_log(self, text):
         self.log(text)
-
-    def on_data_ready(self, data):
-        print(data)
-        self.list_widget.addItem(data)
 
     def startHeartBeatTimer(self):
         global HEARTBEAT_TIMEOUT
