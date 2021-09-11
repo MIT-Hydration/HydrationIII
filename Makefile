@@ -10,6 +10,9 @@ run-cs-server:
 run-qt-client:
 	@python3 -m $(MODULE).qt_client
 
+run-sensors-client:
+	@python3 -m $(MODULE).sensors_client
+
 run-echo-client:
 	@python3 -m $(MODULE).echo_client
 
