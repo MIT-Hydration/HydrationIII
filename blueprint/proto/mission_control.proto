@@ -92,6 +92,9 @@ message CoreSensorsHeartBeatResponse {
     float last_power_meter_timestamp = 60;
     float power_W = 61;
     float total_current_mA = 62;
+
+    string server_version = 70;
+    
 }
 
 
