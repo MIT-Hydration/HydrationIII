@@ -33,7 +33,8 @@ class CoreSensorsController(mission_control_pb2_grpc.CoreSensorsServicer):
 
         self.last_weight_on_bit_drill_timestamp = 0
         self.weight_on_bit_drill_N = 0
-
+        self.weight_on_bit_heater_N = 0
+        
         self.last_power_meter_timestamp = 0
         self.power_W = 0
         self.total_current_mA = 0
@@ -49,9 +50,13 @@ class CoreSensorsController(mission_control_pb2_grpc.CoreSensorsServicer):
         try:
             
             wob_reading = self.wob_hardware.get_force_N()
+            wob_reading_heater = self.wob_hardware.get_force_heater_N()
+            
             self.last_weight_on_bit_drill_timestamp = wob_reading[0]
             self.last_weight_on_bit_drill_N = wob_reading[1]
             
+            self.last_weight_on_bit_heater_timestamp = wob_reading[0]
+            self.last_weight_on_bit_heater_N = wob_reading_heater[1]
             
             power_meter_power_reading = self.power_meter_hardware.get_active_power_W()
             self.last_power_meter_timestamp = power_meter_power_reading[0]
@@ -70,11 +75,13 @@ class CoreSensorsController(mission_control_pb2_grpc.CoreSensorsServicer):
             cpu_temperature_degC = cpu_temp,
             last_weight_on_bit_drill_timestamp = self.last_weight_on_bit_drill_timestamp,
             weight_on_bit_drill_N = self.weight_on_bit_drill_N,
+            last_weight_on_bit_heater_timestamp = self.last_weight_on_bit_heater_timestamp,
+            weight_on_bit_heater_N = self.weight_on_bit_heater_N,
             last_power_meter_timestamp = self.last_power_meter_timestamp,
             power_W = self.power_W, 
-            total_current_mA = self.total_current_mA
+            total_current_mA = self.total_current_mA,
+            server_version = blueprint.HYDRATION_VERSION
             )
-
 IP_ADDRESS_PORT = f"0.0.0.0:{config.get('Network', 'GRPCActualPort')}"
 
 class CoreSensorsServer:

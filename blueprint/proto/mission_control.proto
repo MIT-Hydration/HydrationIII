@@ -85,7 +85,7 @@ message CoreSensorsHeartBeatResponse {
 
     float last_weight_on_bit_drill_timestamp = 40;
     float weight_on_bit_drill_N = 41;
-
+    
     float last_weight_on_bit_heater_timestamp = 50;
     float weight_on_bit_heater_N = 51;
 
