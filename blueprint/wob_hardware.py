@@ -25,9 +25,16 @@ class AbstractWOB(ABC):
     def get_force_N(self):
         pass
     
+    def get_force_heater_N(self):
+        pass
+
 class MockWOBSensor(AbstractWOB):
     def get_force_N(self):
       return [time.time(), -5.0]
+
+    def get_force_heater_N(self):
+      return [time.time(), -15.0]
+
 
 if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
    config.getboolean('WOBSensor', 'WOBZ1ConnectedToMotionControlRPi'):

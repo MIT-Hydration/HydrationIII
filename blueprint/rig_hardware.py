@@ -38,10 +38,10 @@ if config.getboolean('Mocks', 'MockRig'):
 else:
     iZ1 = 0
     iZ2 = 1
-    iX = 2
-    iY = 3
+    iX = -1
+    iY = 2
 
-NMotors = 4
+NMotors = 3
 
 # these indices are used for the current position variables
 kZ1 = 0
