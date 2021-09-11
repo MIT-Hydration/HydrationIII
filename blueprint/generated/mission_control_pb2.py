@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x15mission_control.proto\x12\x0fmission_control\"-\n\x10HeartBeatRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"\xd4\x03\n\x0eHeartBeatReply\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\"\n\x19number_of_servos_detected\x18\xe9\x07 \x01(\r\x12\x1c\n\x14\x63pu_temperature_degC\x18\x06 \x01(\x02\x12*\n\x05state\x18G \x01(\x0e\x32\x1b.mission_control.SystemMode\x12/\n\nmajor_mode\x18\x46 \x01(\x0e\x32\x1b.mission_control.SystemMode\x12\x17\n\x0fmission_time_ms\x18\x08 \x01(\x04\x12\x1b\n\x13zdrill_servo_moving\x18\t \x01(\x08\x12\x1c\n\x14zheater_servo_moving\x18\n \x01(\x08\x12\x16\n\x0ey_servo_moving\x18\x0c \x01(\x08\x12\r\n\x05rig_y\x18\x65 \x01(\x02\x12\x12\n\nrig_zdrill\x18\x66 \x01(\x02\x12\x13\n\x0brig_zheater\x18g \x01(\x02\x12\x16\n\x0eserver_version\x18\x32 \x01(\t\x12$\n\x05holes\x18\x33 \x03(\x0b\x32\x15.mission_control.Hole\x12\x13\n\x0bmotorstatus\x18\x34 \x03(\t\"\xd1\x02\n\x1c\x43oreSensorsHeartBeatResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\x1c\n\x14\x63pu_temperature_degC\x18\x03 \x01(\x02\x12*\n\"last_weight_on_bit_drill_timestamp\x18( \x01(\x02\x12\x1d\n\x15weight_on_bit_drill_N\x18) \x01(\x02\x12+\n#last_weight_on_bit_heater_timestamp\x18\x32 \x01(\x02\x12\x1e\n\x16weight_on_bit_heater_N\x18\x33 \x01(\x02\x12\"\n\x1alast_power_meter_timestamp\x18< \x01(\x02\x12\x0f\n\x07power_W\x18= \x01(\x02\x12\x18\n\x10total_current_mA\x18> \x01(\x02\"W\n\x06Limits\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\x0f\n\x07\x61ir_gap\x18\x02 \x01(\x02\x12\x0e\n\x06max_z1\x18\x03 \x01(\x02\x12\x11\n\tice_depth\x18\x04 \x01(\x02\",\n\x0fGetLimitRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"D\n\x0bMoveRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\r\n\x05\x64\x65lta\x18\x02 \x01(\x02\x12\x0b\n\x03vel\x18\x03 \x01(\x02\"o\n\x0f\x43ommandResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12.\n\x06status\x18\x03 \x01(\x0e\x32\x1e.mission_control.CommandReport\"1\n\x14\x45mergencyStopRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"0\n\x13StartCommandRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"1\n\x14GetMajorModesRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"b\n\x0eMajorModesList\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\r\n\x05modes\x18\x03 \x03(\x05\x12\x13\n\x0bmode_labels\x18\x04 \x03(\t\"f\n\x04Hole\x12\r\n\x05order\x18\x03 \x01(\x05\x12\x0b\n\x03x_m\x18\x04 \x01(\x02\x12\x0b\n\x03y_m\x18\x05 \x01(\x02\x12\x0f\n\x07max_z_m\x18\x06 \x01(\x02\x12\x10\n\x08water_ml\x18\x07 \x01(\x02\x12\x12\n\ndiameter_m\x18\x08 \x01(\x02\"a\n\x15GotoMajorModesRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12-\n\x08new_mode\x18\x02 \x01(\x0e\x32\x1b.mission_control.SystemMode*\xc8\x04\n\nSystemMode\x12\x0b\n\x07UNKNOWN\x10\x00\x12\"\n\x1eMAJOR_MODE_STARTUP_DIAGNOSTICS\x10\x64\x12\x1e\n\x19MAJOR_MODE_DRILL_BOREHOLE\x10\x90\x03\x12\x10\n\x0cSTARTUP_IDLE\x10\x65\x12!\n\x1dSTARTUP_MISSION_CLOCK_STARTED\x10\x66\x12\x15\n\x11STARTUP_HOMING_Z1\x10g\x12\x1d\n\x19STARTUP_HOME_Z1_COMPLETED\x10h\x12\x15\n\x11STARTUP_HOMING_Z2\x10i\x12\x1d\n\x19STARTUP_HOME_Z2_COMPLETED\x10j\x12\x14\n\x10STARTUP_HOMING_Y\x10k\x12\x1c\n\x18STARTUP_HOME_Y_COMPLETED\x10l\x12\x0f\n\nDRILL_IDLE\x10\x91\x03\x12\x13\n\x0e\x44RILL_MOVING_Y\x10\x92\x03\x12\x17\n\x12\x44RILLING_HOLE_IDLE\x10\x94\x03\x12 \n\x1b\x44RILLING_HOLE_DRILLING_DOWN\x10\x95\x03\x12\x1d\n\x18\x44RILLING_HOLE_REAMING_UP\x10\x96\x03\x12\x1c\n\x17\x44RILLING_HOLE_HOMING_Z1\x10\x97\x03\x12\x1d\n\x18HEATER_HOLE_MOVING_TO_Z2\x10\x98\x03\x12\x10\n\x0bHEATER_IDLE\x10\x99\x03\x12\x19\n\x14HEATER_LOWERING_DOWN\x10\x9a\x03\x12\x13\n\x0eHEATER_MELTING\x10\x9b\x03\x12\x15\n\x10HEATER_HOMING_Z2\x10\x9d\x03*E\n\rCommandReport\x12\x0c\n\x08\x45XECUTED\x10\x00\x12\x11\n\rINVALID_STATE\x10\x01\x12\x13\n\x0f\x45XECUTION_ERROR\x10\x02\x32\xbf\x0c\n\x0eMissionControl\x12W\n\rGetMajorModes\x12%.mission_control.GetMajorModesRequest\x1a\x1f.mission_control.MajorModesList\x12O\n\tHeartBeat\x12!.mission_control.HeartBeatRequest\x1a\x1f.mission_control.HeartBeatReply\x12\x46\n\tGetLimits\x12 .mission_control.GetLimitRequest\x1a\x17.mission_control.Limits\x12\x46\n\tSetLimits\x12\x17.mission_control.Limits\x1a .mission_control.CommandResponse\x12U\n\x0bStartupNext\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12S\n\tSetHomeZ1\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12S\n\tSetHomeZ2\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12R\n\x08SetHomeY\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12H\n\x06Z1Move\x12\x1c.mission_control.MoveRequest\x1a .mission_control.CommandResponse\x12H\n\x06Z2Move\x12\x1c.mission_control.MoveRequest\x1a .mission_control.CommandResponse\x12G\n\x05YMove\x12\x1c.mission_control.MoveRequest\x1a .mission_control.CommandResponse\x12U\n\x0b\x43learAlerts\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12X\n\x0eStartDrillHole\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12V\n\x0c\x45ndDrillHole\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12U\n\x0b\x41lignHeater\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12V\n\x0cStartMelting\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12T\n\nEndMelting\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12Y\n\rGotoMajorMode\x12&.mission_control.GotoMajorModesRequest\x1a .mission_control.CommandResponse\x12X\n\rEmergencyStop\x12%.mission_control.EmergencyStopRequest\x1a .mission_control.CommandResponse2l\n\x0b\x43oreSensors\x12]\n\tHeartBeat\x12!.mission_control.HeartBeatRequest\x1a-.mission_control.CoreSensorsHeartBeatResponseb\x06proto3'
+  serialized_pb=b'\n\x15mission_control.proto\x12\x0fmission_control\"-\n\x10HeartBeatRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"\xd4\x03\n\x0eHeartBeatReply\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\"\n\x19number_of_servos_detected\x18\xe9\x07 \x01(\r\x12\x1c\n\x14\x63pu_temperature_degC\x18\x06 \x01(\x02\x12*\n\x05state\x18G \x01(\x0e\x32\x1b.mission_control.SystemMode\x12/\n\nmajor_mode\x18\x46 \x01(\x0e\x32\x1b.mission_control.SystemMode\x12\x17\n\x0fmission_time_ms\x18\x08 \x01(\x04\x12\x1b\n\x13zdrill_servo_moving\x18\t \x01(\x08\x12\x1c\n\x14zheater_servo_moving\x18\n \x01(\x08\x12\x16\n\x0ey_servo_moving\x18\x0c \x01(\x08\x12\r\n\x05rig_y\x18\x65 \x01(\x02\x12\x12\n\nrig_zdrill\x18\x66 \x01(\x02\x12\x13\n\x0brig_zheater\x18g \x01(\x02\x12\x16\n\x0eserver_version\x18\x32 \x01(\t\x12$\n\x05holes\x18\x33 \x03(\x0b\x32\x15.mission_control.Hole\x12\x13\n\x0bmotorstatus\x18\x34 \x03(\t\"\xe9\x02\n\x1c\x43oreSensorsHeartBeatResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\x1c\n\x14\x63pu_temperature_degC\x18\x03 \x01(\x02\x12*\n\"last_weight_on_bit_drill_timestamp\x18( \x01(\x02\x12\x1d\n\x15weight_on_bit_drill_N\x18) \x01(\x02\x12+\n#last_weight_on_bit_heater_timestamp\x18\x32 \x01(\x02\x12\x1e\n\x16weight_on_bit_heater_N\x18\x33 \x01(\x02\x12\"\n\x1alast_power_meter_timestamp\x18< \x01(\x02\x12\x0f\n\x07power_W\x18= \x01(\x02\x12\x18\n\x10total_current_mA\x18> \x01(\x02\x12\x16\n\x0eserver_version\x18\x46 \x01(\t\"W\n\x06Limits\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\x0f\n\x07\x61ir_gap\x18\x02 \x01(\x02\x12\x0e\n\x06max_z1\x18\x03 \x01(\x02\x12\x11\n\tice_depth\x18\x04 \x01(\x02\",\n\x0fGetLimitRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"D\n\x0bMoveRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12\r\n\x05\x64\x65lta\x18\x02 \x01(\x02\x12\x0b\n\x03vel\x18\x03 \x01(\x02\"o\n\x0f\x43ommandResponse\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12.\n\x06status\x18\x03 \x01(\x0e\x32\x1e.mission_control.CommandReport\"1\n\x14\x45mergencyStopRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"0\n\x13StartCommandRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"1\n\x14GetMajorModesRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\"b\n\x0eMajorModesList\x12\x11\n\ttimestamp\x18\x01 \x01(\x04\x12\x19\n\x11request_timestamp\x18\x02 \x01(\x04\x12\r\n\x05modes\x18\x03 \x03(\x05\x12\x13\n\x0bmode_labels\x18\x04 \x03(\t\"f\n\x04Hole\x12\r\n\x05order\x18\x03 \x01(\x05\x12\x0b\n\x03x_m\x18\x04 \x01(\x02\x12\x0b\n\x03y_m\x18\x05 \x01(\x02\x12\x0f\n\x07max_z_m\x18\x06 \x01(\x02\x12\x10\n\x08water_ml\x18\x07 \x01(\x02\x12\x12\n\ndiameter_m\x18\x08 \x01(\x02\"a\n\x15GotoMajorModesRequest\x12\x19\n\x11request_timestamp\x18\x01 \x01(\x04\x12-\n\x08new_mode\x18\x02 \x01(\x0e\x32\x1b.mission_control.SystemMode*\xc8\x04\n\nSystemMode\x12\x0b\n\x07UNKNOWN\x10\x00\x12\"\n\x1eMAJOR_MODE_STARTUP_DIAGNOSTICS\x10\x64\x12\x1e\n\x19MAJOR_MODE_DRILL_BOREHOLE\x10\x90\x03\x12\x10\n\x0cSTARTUP_IDLE\x10\x65\x12!\n\x1dSTARTUP_MISSION_CLOCK_STARTED\x10\x66\x12\x15\n\x11STARTUP_HOMING_Z1\x10g\x12\x1d\n\x19STARTUP_HOME_Z1_COMPLETED\x10h\x12\x15\n\x11STARTUP_HOMING_Z2\x10i\x12\x1d\n\x19STARTUP_HOME_Z2_COMPLETED\x10j\x12\x14\n\x10STARTUP_HOMING_Y\x10k\x12\x1c\n\x18STARTUP_HOME_Y_COMPLETED\x10l\x12\x0f\n\nDRILL_IDLE\x10\x91\x03\x12\x13\n\x0e\x44RILL_MOVING_Y\x10\x92\x03\x12\x17\n\x12\x44RILLING_HOLE_IDLE\x10\x94\x03\x12 \n\x1b\x44RILLING_HOLE_DRILLING_DOWN\x10\x95\x03\x12\x1d\n\x18\x44RILLING_HOLE_REAMING_UP\x10\x96\x03\x12\x1c\n\x17\x44RILLING_HOLE_HOMING_Z1\x10\x97\x03\x12\x1d\n\x18HEATER_HOLE_MOVING_TO_Z2\x10\x98\x03\x12\x10\n\x0bHEATER_IDLE\x10\x99\x03\x12\x19\n\x14HEATER_LOWERING_DOWN\x10\x9a\x03\x12\x13\n\x0eHEATER_MELTING\x10\x9b\x03\x12\x15\n\x10HEATER_HOMING_Z2\x10\x9d\x03*E\n\rCommandReport\x12\x0c\n\x08\x45XECUTED\x10\x00\x12\x11\n\rINVALID_STATE\x10\x01\x12\x13\n\x0f\x45XECUTION_ERROR\x10\x02\x32\xbf\x0c\n\x0eMissionControl\x12W\n\rGetMajorModes\x12%.mission_control.GetMajorModesRequest\x1a\x1f.mission_control.MajorModesList\x12O\n\tHeartBeat\x12!.mission_control.HeartBeatRequest\x1a\x1f.mission_control.HeartBeatReply\x12\x46\n\tGetLimits\x12 .mission_control.GetLimitRequest\x1a\x17.mission_control.Limits\x12\x46\n\tSetLimits\x12\x17.mission_control.Limits\x1a .mission_control.CommandResponse\x12U\n\x0bStartupNext\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12S\n\tSetHomeZ1\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12S\n\tSetHomeZ2\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12R\n\x08SetHomeY\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12H\n\x06Z1Move\x12\x1c.mission_control.MoveRequest\x1a .mission_control.CommandResponse\x12H\n\x06Z2Move\x12\x1c.mission_control.MoveRequest\x1a .mission_control.CommandResponse\x12G\n\x05YMove\x12\x1c.mission_control.MoveRequest\x1a .mission_control.CommandResponse\x12U\n\x0b\x43learAlerts\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12X\n\x0eStartDrillHole\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12V\n\x0c\x45ndDrillHole\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12U\n\x0b\x41lignHeater\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12V\n\x0cStartMelting\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12T\n\nEndMelting\x12$.mission_control.StartCommandRequest\x1a .mission_control.CommandResponse\x12Y\n\rGotoMajorMode\x12&.mission_control.GotoMajorModesRequest\x1a .mission_control.CommandResponse\x12X\n\rEmergencyStop\x12%.mission_control.EmergencyStopRequest\x1a .mission_control.CommandResponse2l\n\x0b\x43oreSensors\x12]\n\tHeartBeat\x12!.mission_control.HeartBeatRequest\x1a-.mission_control.CoreSensorsHeartBeatResponseb\x06proto3'
 )
 
 _SYSTEMMODE = _descriptor.EnumDescriptor(
@@ -143,8 +143,8 @@ _SYSTEMMODE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1674,
-  serialized_end=2258,
+  serialized_start=1698,
+  serialized_end=2282,
 )
 _sym_db.RegisterEnumDescriptor(_SYSTEMMODE)
 
@@ -174,8 +174,8 @@ _COMMANDREPORT = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=2260,
-  serialized_end=2329,
+  serialized_start=2284,
+  serialized_end=2353,
 )
 _sym_db.RegisterEnumDescriptor(_COMMANDREPORT)
 
@@ -455,6 +455,13 @@ _CORESENSORSHEARTBEATRESPONSE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='server_version', full_name='mission_control.CoreSensorsHeartBeatResponse.server_version', index=10,
+      number=70, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -468,7 +475,7 @@ _CORESENSORSHEARTBEATRESPONSE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=561,
-  serialized_end=898,
+  serialized_end=922,
 )
 
 
@@ -520,8 +527,8 @@ _LIMITS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=900,
-  serialized_end=987,
+  serialized_start=924,
+  serialized_end=1011,
 )
 
 
@@ -552,8 +559,8 @@ _GETLIMITREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=989,
-  serialized_end=1033,
+  serialized_start=1013,
+  serialized_end=1057,
 )
 
 
@@ -598,8 +605,8 @@ _MOVEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1035,
-  serialized_end=1103,
+  serialized_start=1059,
+  serialized_end=1127,
 )
 
 
@@ -644,8 +651,8 @@ _COMMANDRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1105,
-  serialized_end=1216,
+  serialized_start=1129,
+  serialized_end=1240,
 )
 
 
@@ -676,8 +683,8 @@ _EMERGENCYSTOPREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1218,
-  serialized_end=1267,
+  serialized_start=1242,
+  serialized_end=1291,
 )
 
 
@@ -708,8 +715,8 @@ _STARTCOMMANDREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1269,
-  serialized_end=1317,
+  serialized_start=1293,
+  serialized_end=1341,
 )
 
 
@@ -740,8 +747,8 @@ _GETMAJORMODESREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1319,
-  serialized_end=1368,
+  serialized_start=1343,
+  serialized_end=1392,
 )
 
 
@@ -793,8 +800,8 @@ _MAJORMODESLIST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1370,
-  serialized_end=1468,
+  serialized_start=1394,
+  serialized_end=1492,
 )
 
 
@@ -860,8 +867,8 @@ _HOLE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1470,
-  serialized_end=1572,
+  serialized_start=1494,
+  serialized_end=1596,
 )
 
 
@@ -899,8 +906,8 @@ _GOTOMAJORMODESREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1574,
-  serialized_end=1671,
+  serialized_start=1598,
+  serialized_end=1695,
 )
 
 _HEARTBEATREPLY.fields_by_name['state'].enum_type = _SYSTEMMODE
@@ -1025,8 +1032,8 @@ _MISSIONCONTROL = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=2332,
-  serialized_end=3931,
+  serialized_start=2356,
+  serialized_end=3955,
   methods=[
   _descriptor.MethodDescriptor(
     name='GetMajorModes',
@@ -1231,8 +1238,8 @@ _CORESENSORS = _descriptor.ServiceDescriptor(
   index=1,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=3933,
-  serialized_end=4041,
+  serialized_start=3957,
+  serialized_end=4065,
   methods=[
   _descriptor.MethodDescriptor(
     name='HeartBeat',
