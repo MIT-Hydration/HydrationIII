@@ -69,7 +69,7 @@ class MockRelayTriac(AbstractRelayTriac):
         self.triacLevel = val
         
 class FileWriterThread(threading.Thread): 
-    def __init__(self, relay_traic):
+    def __init__(self, relay_triac):
         threading.Thread.__init__(self)
         self.relay_triac = relay_triac
         self.stopped = True

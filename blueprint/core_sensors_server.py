@@ -70,15 +70,13 @@ class CoreSensorsController(mission_control_pb2_grpc.CoreSensorsServicer):
             info = f"[Error] {str(e)}"
             print(info)
 
-        #relay_triac = HardwareFactory.getRelayTriac()
-
         return mcpb.CoreSensorsHeartBeatResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
             cpu_temperature_degC = cpu_temp,
-            #triac_level = relay_triac.getTriacLevel(),
-            #drill_on = relay_triac.getDrill(),
-            #heater_on = relay_triac.getHeater(),
+            triac_level = self.relay_triac.getTriacLevel(),
+            drill_on = self.relay_triac.getDrill(),
+            heater_on = self.relay_triac.getHeater(),
             last_weight_on_bit_drill_timestamp = self.last_weight_on_bit_drill_timestamp,
             weight_on_bit_drill_N = self.weight_on_bit_drill_N,
             last_weight_on_bit_heater_timestamp = self.last_weight_on_bit_heater_timestamp,
