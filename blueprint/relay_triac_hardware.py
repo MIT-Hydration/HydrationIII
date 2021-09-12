@@ -32,11 +32,11 @@ class AbstractRelayTriac(ABC):
         pass
     
     @abstractmethod
-    def gettriacLevel(self):
+    def getTriacLevel(self):
         pass
 
     @abstractmethod
-    def settriacLevel(self, val):
+    def setTriacLevel(self, val):
         pass
 
 class MockRelayTriac(AbstractRelayTriac):
@@ -62,10 +62,10 @@ class MockRelayTriac(AbstractRelayTriac):
             self.heater = False
         self.drill = val
     
-    def gettriacLevel(self):
+    def getTriacLevel(self):
         return self.triacLevel
 
-    def settriacLevel(self, val):
+    def setTriacLevel(self, val):
         self.triacLevel = val
         
 class FileWriterThread(threading.Thread): 
