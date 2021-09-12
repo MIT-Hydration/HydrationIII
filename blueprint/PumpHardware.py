@@ -158,14 +158,10 @@ class MockPump(AbstractPump):
 class Pump(AbstractPump):
     duration = 400
     delay = 0.0000001
-    if config.getboolean('Operating System', 'RunningInRPi'):
-        pump_pwm = PWMLED(PUL)
     speed_rpm = 0
     MAX_RPM = 250
     MOTOR_PULSES_PER_REV = 400
     LITERS_PER_REV = 0.055
-    if config.getboolean('Operating System', 'RunningInRPi'):
-        direction_pin = DigitalOutputDevice(DIR)
         
     class FlowSensorThread(threading.Thread):
         N = 1000
@@ -231,6 +227,9 @@ class Pump(AbstractPump):
         return 240
 
     def __init__(self):
+        if config.getboolean('Operating System', 'RunningInRPi'):
+            self.direction_pin = DigitalOutputDevice(DIR)
+            self.pump_pwm = PWMLED(PUL)
         self.pump_pwm.value = 0.0
         self.set_direction(1)
         self.sensor_thread.start()
