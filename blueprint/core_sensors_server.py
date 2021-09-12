@@ -47,7 +47,7 @@ class CoreSensorsController(mission_control_pb2_grpc.CoreSensorsServicer):
         cpu_temp = HardwareFactory.getMissionControlRPi() \
             .get_cpu_temperature()
 
-        #relay_triac = HardwareFactory.getRelayTriac()
+        relay_triac = HardwareFactory.getRelayTriac()
 
         try:
             

@@ -118,6 +118,7 @@ class HardwareFactory:
             if (config.getboolean('Mocks', 'MockRelayTriac')):
                 cls.relay_triac = relay_triac_hardware.MockRelayTriac()
             else:
+                print("Getting actual RelayTriac...")
                 cls.relay_triac = relay_triac_hardware.RelayTriac()
         cls._lock.release()
         return cls.relay_triac
