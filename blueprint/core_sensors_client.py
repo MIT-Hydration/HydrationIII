@@ -32,6 +32,5 @@ def run():
         print("Core Sensors HeartBeat received at: " + str(datetime.now()))
         print(response) #whats the response? the things in the HeartBeat in mission control returns?
         
-
 if __name__ == '__main__':
     run()
