@@ -19,7 +19,8 @@ if config.getboolean('Operating System', 'RunningInRPi'):
     from gpiozero import PWMLED
     from gpiozero import CPUTemperature
 
-from . import RPiHardware, rig_hardware, PumpHardware, TachometerHardware, wob_hardware, power_meter_hardware
+from . import RPiHardware, rig_hardware, PumpHardware, TachometerHardware
+from . import relay_triac_hardware, wob_hardware, power_meter_hardware
 
 class HardwareFactory:
 
@@ -30,6 +31,7 @@ class HardwareFactory:
     wob = None
     tachometer = None
     power_meter = None
+    relay_triac = None
     _lock = threading.Lock()
 
     #@classmethod
@@ -108,5 +110,17 @@ class HardwareFactory:
                 cls.power_meter = power_meter_hardware.PowerMeter()
         cls._lock.release()
         return cls.power_meter
+
+    @classmethod
+    def getRelayTriac(cls):
+        cls._lock.acquire()
+        if cls.relay_triac is None:
+            if (config.getboolean('Mocks', 'MockRelayTriac')):
+                cls.relay_triac = relay_triac_hardware.MockRelayTriac()
+            else:
+                cls.relay_triac = relay_triac_hardware.RelayTriac()
+        cls._lock.release()
+        return cls.relay_triac
+    
     
 
