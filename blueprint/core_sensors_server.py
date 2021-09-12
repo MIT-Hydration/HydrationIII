@@ -126,7 +126,7 @@ class CoreSensorsController(mission_control_pb2_grpc.CoreSensorsServicer):
     def SetTriacLevel(self, request, context):
         timestamp = int(time.time()*1000)
         relay_triac = HardwareFactory.getRelayTriac()
-        relay_triac.setTraicLevel(request.value)
+        relay_triac.setTriacLevel(request.value)
         return mcpb.CommandResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,

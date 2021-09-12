@@ -32,11 +32,11 @@ class AbstractRelayTriac(ABC):
         pass
     
     @abstractmethod
-    def getTraicLevel(self):
+    def gettriacLevel(self):
         pass
 
     @abstractmethod
-    def setTraicLevel(self, val):
+    def settriacLevel(self, val):
         pass
 
 class MockRelayTriac(AbstractRelayTriac):
@@ -62,10 +62,10 @@ class MockRelayTriac(AbstractRelayTriac):
             self.heater = False
         self.drill = val
     
-    def getTraicLevel(self):
+    def gettriacLevel(self):
         return self.triacLevel
 
-    def setTraicLevel(self, val):
+    def settriacLevel(self, val):
         self.triacLevel = val
         
 class FileWriterThread(threading.Thread): 
@@ -86,7 +86,7 @@ class FileWriterThread(threading.Thread):
         
         while not self.stopped:
             loop_start = time.time()
-            fp.write(f"{loop_start},{self.relay_triac.traic}," \
+            fp.write(f"{loop_start},{self.relay_triac.triac}," \
                      f"{self.relay_triac.drill},{self.relay_triac.heater}\n")
             loop_end = time.time()
             delta_time = loop_end - loop_start
@@ -130,8 +130,8 @@ class RelayTriac(AbstractRelayTriac):
         else:
             self.heater.on()
 
-    def getTraicLevel(self):
+    def getTriacLevel(self):
         return self.triac.value
 
-    def setTraicLevel(self, val):
+    def setTriacLevel(self, val):
         self.triac.value = val
