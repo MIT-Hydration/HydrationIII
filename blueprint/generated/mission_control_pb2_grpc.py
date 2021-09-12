@@ -674,12 +674,67 @@ class CoreSensorsStub(object):
                 request_serializer=mission__control__pb2.HeartBeatRequest.SerializeToString,
                 response_deserializer=mission__control__pb2.CoreSensorsHeartBeatResponse.FromString,
                 )
+        self.DrillOn = channel.unary_unary(
+                '/mission_control.CoreSensors/DrillOn',
+                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.DrillOff = channel.unary_unary(
+                '/mission_control.CoreSensors/DrillOff',
+                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.HeaterOn = channel.unary_unary(
+                '/mission_control.CoreSensors/HeaterOn',
+                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.HeaterOff = channel.unary_unary(
+                '/mission_control.CoreSensors/HeaterOff',
+                request_serializer=mission__control__pb2.StartCommandRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
+        self.SetTriacLevel = channel.unary_unary(
+                '/mission_control.CoreSensors/SetTriacLevel',
+                request_serializer=mission__control__pb2.TriacRequest.SerializeToString,
+                response_deserializer=mission__control__pb2.CommandResponse.FromString,
+                )
 
 
 class CoreSensorsServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def HeartBeat(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DrillOn(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DrillOff(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def HeaterOn(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def HeaterOff(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetTriacLevel(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -692,6 +747,31 @@ def add_CoreSensorsServicer_to_server(servicer, server):
                     servicer.HeartBeat,
                     request_deserializer=mission__control__pb2.HeartBeatRequest.FromString,
                     response_serializer=mission__control__pb2.CoreSensorsHeartBeatResponse.SerializeToString,
+            ),
+            'DrillOn': grpc.unary_unary_rpc_method_handler(
+                    servicer.DrillOn,
+                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'DrillOff': grpc.unary_unary_rpc_method_handler(
+                    servicer.DrillOff,
+                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'HeaterOn': grpc.unary_unary_rpc_method_handler(
+                    servicer.HeaterOn,
+                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'HeaterOff': grpc.unary_unary_rpc_method_handler(
+                    servicer.HeaterOff,
+                    request_deserializer=mission__control__pb2.StartCommandRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
+            ),
+            'SetTriacLevel': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetTriacLevel,
+                    request_deserializer=mission__control__pb2.TriacRequest.FromString,
+                    response_serializer=mission__control__pb2.CommandResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -717,5 +797,90 @@ class CoreSensors(object):
         return grpc.experimental.unary_unary(request, target, '/mission_control.CoreSensors/HeartBeat',
             mission__control__pb2.HeartBeatRequest.SerializeToString,
             mission__control__pb2.CoreSensorsHeartBeatResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def DrillOn(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.CoreSensors/DrillOn',
+            mission__control__pb2.StartCommandRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def DrillOff(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.CoreSensors/DrillOff',
+            mission__control__pb2.StartCommandRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def HeaterOn(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.CoreSensors/HeaterOn',
+            mission__control__pb2.StartCommandRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def HeaterOff(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.CoreSensors/HeaterOff',
+            mission__control__pb2.StartCommandRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetTriacLevel(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/mission_control.CoreSensors/SetTriacLevel',
+            mission__control__pb2.TriacRequest.SerializeToString,
+            mission__control__pb2.CommandResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
