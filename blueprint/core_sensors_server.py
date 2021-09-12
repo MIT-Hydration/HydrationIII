@@ -41,6 +41,7 @@ class CoreSensorsController(mission_control_pb2_grpc.CoreSensorsServicer):
 
         self.wob_hardware = HardwareFactory.getWOBSensor()
         self.power_meter_hardware = HardwareFactory.getPowerMeter()
+        self.relay_triac = HardwareFactory.getRelayTriac()
 
     def HeartBeat(self, request, context):
         timestamp = int(time.time()*1000)
