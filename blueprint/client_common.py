@@ -29,6 +29,11 @@ MC_IP_ADDRESS_PORT = \
     f"{config.get('Network', 'MissionControlRPiIPAddress')}:" \
     f"{config.get('Network', 'GRPCPort')}"
 
+CS_IP_ADDRESS_PORT = \
+    f"{config.get('Network', 'CoreSensorsRPiIPAddress')}:" \
+    f"{config.get('Network', 'CoreSensorsGRPCPort')}"
+
+
 GRPC_CALL_TIMEOUT   = \
     config.getint('Network', 'GRPCTimeout')
 
@@ -238,6 +243,80 @@ class GotoThread(QtCore.QThread):
 
     def _request_response(self, stub):
         pass
+
+
+class RelayThread(QtCore.QThread):   
+    done = Signal(object)
+    log = Signal(object)
+    
+    def __init__(self, drill_or_heater, val):
+        QtCore.QThread.__init__(self)
+        self.drill_or_heater = (drill_or_heater == "Drill")
+        self.val = val 
+        
+    def run(self):
+        global CS_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
+        response = None
+        #print(f"Moving to {self.z}")
+        try:
+            timestamp = int(time.time()*1000)
+            with grpc.insecure_channel(CS_IP_ADDRESS_PORT) as channel:
+                stub = mission_control_pb2_grpc.CoreSensorsStub(channel)
+                if self.drill_or_heater:
+                    if self.val:
+                        response = stub.DrillOn (
+                            mission_control_pb2.StartCommandRequest(
+                                request_timestamp = timestamp),
+                                timeout = GRPC_CALL_TIMEOUT )   
+                    else:
+                        response = stub.DrillOff (
+                            mission_control_pb2.StartCommandRequest(
+                                request_timestamp = timestamp),
+                                timeout = GRPC_CALL_TIMEOUT ) 
+                else:
+                    if self.val:
+                        response = stub.HeaterOn (
+                            mission_control_pb2.StartCommandRequest(
+                                request_timestamp = timestamp),
+                                timeout = GRPC_CALL_TIMEOUT )   
+                    else:
+                        response = stub.HeaterOff (
+                            mission_control_pb2.StartCommandRequest(
+                                request_timestamp = timestamp),
+                                timeout = GRPC_CALL_TIMEOUT ) 
+        except Exception as e:
+            info = f"[Error] {str(e)}"
+            self.log.emit(info)
+        if response != None:
+            self.log.emit(response)
+        self.done.emit(response)
+
+class TriacThread(QtCore.QThread):   
+    done = Signal(object)
+    log = Signal(object)
+    
+    def __init__(self, val):
+        QtCore.QThread.__init__(self)
+        self.val = val 
+        
+    def run(self):
+        global CS_IP_ADDRESS_PORT, GRPC_CALL_TIMEOUT
+        response = None
+        try:
+            timestamp = int(time.time()*1000)
+            with grpc.insecure_channel(CS_IP_ADDRESS_PORT) as channel:
+                stub = mission_control_pb2_grpc.CoreSensorsStub(channel)
+                response = stub.SetTriacLevel (
+                    mission_control_pb2.TriacRequest(
+                        request_timestamp = timestamp),
+                        value = self.val,
+                        timeout = GRPC_CALL_TIMEOUT ) 
+        except Exception as e:
+            info = f"[Error] {str(e)}"
+            self.log.emit(info)
+        if response != None:
+            self.log.emit(response)
+        self.done.emit(response)
 
 class ClearAlert(QtCore.QThread):    
     done = Signal(object)

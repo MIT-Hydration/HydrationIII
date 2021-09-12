@@ -23,6 +23,7 @@ from .generated import mission_control_pb2, mission_control_pb2_grpc
 class RelayTriacControl:
 
     def __init__(self, groupbox):
+        self.threads = []
         self.groupbox = groupbox
         self.layout = QtWidgets.QVBoxLayout()
         self.groupbox.setLayout(self.layout)
@@ -43,48 +44,28 @@ class RelayTriacControl:
         self.layout.addWidget(triac_level_textbox)
         self.layout.addWidget(set_triac_button)
         
-        
-    def _update_bool(self, i, name, check_value):
-        if (self.status_list[i][0] != name):
-            raise IndexError(f"{name} not at right index")
-        self.checkboxes[i].setChecked(check_value)
+    def _drill_on(self):
+        client_thread = client_common.RelayThread("Drill", True)
+        self.threads.append(client_thread)
+        client_thread.start() 
     
-    def _update_value(self, i, v, fstr, name, check_value):
-        if (self.status_list[i][0] != name):
-            raise IndexError(f"{name} not at right index")
-        self.checkboxes[i].setChecked(True)
-        if (self.status_list[i][1]):
-            self.values[i].setText(fstr%v)
-            if check_value:
-                if (v < self.status_list[i][2]):
-                    self.values[i].setStyleSheet("font-weight: bold; color: '#17a2b8'")
-                elif (v < self.status_list[i][3]):
-                    self.values[i].setStyleSheet("font-weight: bold; color: '#ffc107'")
-                else: 
-                    self.values[i].setStyleSheet("font-weight: bold; color: '#dc3545'") 
+    def _drill_off(self):
+        client_thread = client_common.RelayThread("Drill", False)
+        self.threads.append(client_thread)
+        client_thread.start() 
+
+    def _heater_on(self):
+        client_thread = client_common.RelayThread("Heater", True)
+        self.threads.append(client_thread)
+        client_thread.start() 
+    
+    def _heater_off(self):
+        client_thread = client_common.TriacThread(float(self.triac_level_textbox.text()))
+        self.threads.append(client_thread)
+        client_thread.start() 
+
+    
         
 
-    def update_status(self, response):
-        if (response != None):
-            self._update_bool(0, "System HeartBeat", True)
-            for i in range(1, len(self.checkboxes)):
-                self.checkboxes[i].setChecked(False)
-            
-            self._update_bool(1, "Z1 (Drill) servo", response.zdrill_servo_moving)
-            self._update_bool(2, "Z2 (Drill) servo", response.zheater_servo_moving)
-            self._update_bool(3, "Y servo", response.y_servo_moving)
-            
-            self._update_value(4, response.cpu_temperature_degC,
-                                 "%0.2f [degC]", "CPU Temp (degC)", True)
-            mission_time = timedelta(milliseconds=int(response.mission_time_ms / 1000)*1000)
-            self._update_value(5, str(mission_time), "%s", "Mission Time (H:M:S)", False)
-            rtt_time = response.timestamp - response.request_timestamp
-            self._update_value(6, rtt_time, "%0.2f [ms]", "Round Trip Time (ms)", True)
-            self._update_value(7, response.server_version, 
-                "%s", "Server Version", False)
-            
-            
-        else:
-            for c in self.checkboxes:
-                c.setChecked(False)
+    
 
