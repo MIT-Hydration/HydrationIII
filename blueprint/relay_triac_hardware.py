@@ -101,18 +101,19 @@ class FileWriterThread(threading.Thread):
 class RelayTriac(AbstractRelayTriac):    
     def __init__(self):
         self.file_writer_thread = FileWriterThread(self)
-        self.file_writer_thread.start()
-
+        
         self.triac = PWMLED(config.getint('RelayAndTriac', 'TriacGPIOPin'))
         self.drill = DigitalOutputDevice(config.getint('RelayAndTriac', 'DrillRelayPin'))
         self.heater = DigitalOutputDevice(config.getint('RelayAndTriac', 'HeaterRelayPin'))
         self.triac.value = 0.0
         self.drill.off()
         self.heater.off()
+        
+        self.file_writer_thread.start()
         print("Finished initializing RelayTriac...")
 
     def getHeater(self):
-        return False #self.heater.value
+        return self.heater.value
     
     def setHeater(self, val):
         if val:
@@ -122,7 +123,7 @@ class RelayTriac(AbstractRelayTriac):
             self.heater.off()
 
     def getDrill(self):
-        return False #self.drill.value
+        return self.drill.value
     
     def setDrill(self, val):
         if val:
@@ -132,7 +133,7 @@ class RelayTriac(AbstractRelayTriac):
             self.heater.on()
 
     def getTriacLevel(self):
-        return 0.0 #self.triac.value
+        return self.triac.value
 
     def setTriacLevel(self, val):
         self.triac.value = val
