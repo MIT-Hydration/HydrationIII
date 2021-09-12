@@ -82,6 +82,9 @@ message CoreSensorsHeartBeatResponse {
     uint64 timestamp = 1;
     uint64 request_timestamp = 2;
     float cpu_temperature_degC = 3;
+    float triac_level = 4;
+    bool drill_on = 5;
+    bool heater_on = 6;
 
     float last_weight_on_bit_drill_timestamp = 40;
     float weight_on_bit_drill_N = 41;
@@ -186,7 +189,16 @@ service MissionControl {
     rpc EmergencyStop (EmergencyStopRequest) returns (CommandResponse);
 }
 
+message TriacRequest {
+    uint64 request_timestamp = 1;
+    float value = 2;
+}
+
 service CoreSensors {
     rpc HeartBeat (HeartBeatRequest) returns (CoreSensorsHeartBeatResponse);
-
+    rpc DrillOn (StartCommandRequest) returns (CommandResponse);
+    rpc DrillOff (StartCommandRequest) returns (CommandResponse);
+    rpc HeaterOn (StartCommandRequest) returns (CommandResponse);
+    rpc HeaterOff (StartCommandRequest) returns (CommandResponse);
+    rpc SetTriacLevel (TriacRequest) returns (CommandResponse); 
 }
