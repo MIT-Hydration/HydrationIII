@@ -306,13 +306,14 @@ class TriacThread(QtCore.QThread):
             timestamp = int(time.time()*1000)
             with grpc.insecure_channel(CS_IP_ADDRESS_PORT) as channel:
                 stub = mission_control_pb2_grpc.CoreSensorsStub(channel)
+                
                 response = stub.SetTriacLevel (
                     mission_control_pb2.TriacRequest(
-                        request_timestamp = timestamp),
-                        value = self.val,
+                        request_timestamp = timestamp,
+                        value = self.val),
                         timeout = GRPC_CALL_TIMEOUT ) 
         except Exception as e:
-            info = f"[Error] {str(e)}"
+            info = f"[Error Here] {str(e)}"
             self.log.emit(info)
         if response != None:
             self.log.emit(response)

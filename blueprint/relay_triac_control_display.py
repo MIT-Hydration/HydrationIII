@@ -23,8 +23,9 @@ from . import client_common
 
 class RelayTriacControl:
 
-    def __init__(self, groupbox):
+    def __init__(self, groupbox, _on_log):
         self.threads = []
+        self._on_log = _on_log
         self.groupbox = groupbox
         self.layout = QtWidgets.QVBoxLayout()
         self.groupbox.setLayout(self.layout)
@@ -73,7 +74,10 @@ class RelayTriacControl:
         client_thread.start() 
     
     def _set_triac(self):
-        client_thread = client_common.TriacThread(float(self.triac_level_textbox.text()))
+        val = float(self.triac_level_textbox.text())
+        print(f"setting triac to {val}")
+        client_thread = client_common.TriacThread(val)
+        client_thread.log.connect(self._on_log)
         self.threads.append(client_thread)
         client_thread.start() 
 

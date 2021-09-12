@@ -141,7 +141,7 @@ class MainWindow(QtWidgets.QWidget):
             self.relay_groupbox, 0, 1, 5, 1)
 
         self.relay_triac_display = relay_triac_control_display.RelayTriacControl(
-            self.relay_groupbox)
+            self.relay_groupbox, self.on_log)
         
     def _initDiagnosticsBar(self):
         self.diagnostics_bar_groupbox = QtWidgets.QGroupBox(

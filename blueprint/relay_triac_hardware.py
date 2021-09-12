@@ -103,8 +103,10 @@ class RelayTriac(AbstractRelayTriac):
         self.file_writer_thread = FileWriterThread(self)
         
         self.triac = PWMLED(config.getint('RelayAndTriac', 'TriacGPIOPin'))
-        self.drill = DigitalOutputDevice(config.getint('RelayAndTriac', 'DrillRelayPin'))
-        self.heater = DigitalOutputDevice(config.getint('RelayAndTriac', 'HeaterRelayPin'))
+        self.drill = DigitalOutputDevice(
+            config.getint('RelayAndTriac', 'DrillRelayPin'), active_high = False)
+        self.heater = DigitalOutputDevice(
+            config.getint('RelayAndTriac', 'HeaterRelayPin'), active_high = False)
         self.triac.value = 0.0
         self.drill.off()
         self.heater.off()
