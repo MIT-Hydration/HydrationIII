@@ -122,7 +122,7 @@ class RelayTriac(AbstractRelayTriac):
             self.heater.off()
 
     def getDrill(self):
-        return self.drill.value
+        return False #self.drill.value
     
     def setDrill(self, val):
         if val:
