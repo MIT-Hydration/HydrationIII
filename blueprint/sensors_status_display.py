@@ -32,6 +32,9 @@ class SensorsStatusDisplay:
             ("Motor HeartBeat", False),
             ("Core Sensors CPU Temp (degC)", True, 60, 75),
             ("Motor CPU Temp (degC)", True, 60, 75),
+            ("Drill On", False),
+            ("Heater On", False),
+            ("Triac Level", True, 0.25, 0.75),
             ("Mission Time (H:M:S)", True, 80*60*60*1000, 100*60*60*1000),
             ("Sensors Round Trip Time (ms)", True, 300, 5000),
             ("Motor Round Trip Time (ms)", True, 300, 5000),
@@ -89,9 +92,14 @@ class SensorsStatusDisplay:
             
             self._update_value(2, response.cpu_temperature_degC,
                                  "%0.2f [degC]", "Core Sensors CPU Temp (degC)", True)
+
+            self._update_bool(4, "Drill On", response.drill_on)
+            self._update_bool(5, "Heater On", response.heater_on)
+            self._update_value(6, response.triac_level, "Triac Level", True)
+
             rtt_time = response.timestamp - response.request_timestamp
-            self._update_value(5, rtt_time, "%0.2f [ms]", "Sensors Round Trip Time (ms)", True)
-            self._update_value(7, response.server_version, 
+            self._update_value(8, rtt_time, "%0.2f [ms]", "Sensors Round Trip Time (ms)", True)
+            self._update_value(10, response.server_version, 
                 "%s", "Sensors Server Version", False)
             
         else:
