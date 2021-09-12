@@ -20,7 +20,8 @@ DIR = 27
 ENA = 22  # Controller Enable Bit (High to Enable / LOW to Disable).
 SIG = 26  # Pin receiving the Hall Effect signal
 
-if config.getboolean('Operating System', 'RunningInRPi'):
+if config.getboolean('Operating System', 'RunningInRPi') \
+    and not config.getboolean('Operating System', 'RunningInCoreSensorsRPi'):
     GPIO.setmode(GPIO.BCM)
 
     #GPIO.setup(PUL, GPIO.OUT)

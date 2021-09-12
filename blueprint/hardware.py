@@ -49,7 +49,8 @@ class HardwareFactory:
     def getWaterPump(cls):
         cls._lock.acquire()
         if cls.pump is None:
-            if (config.getboolean('Mocks', 'MockWaterPump')):
+            if (config.getboolean('Mocks', 'MockWaterPump') or \
+                config.getboolean('Operating System', 'RunningInCoreSensorsRPi')):
                 cls.pump = PumpHardware.MockPump()
             else:
                 cls.pump = PumpHardware.Pump()
