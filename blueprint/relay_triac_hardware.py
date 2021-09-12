@@ -113,7 +113,7 @@ class RelayTriac(AbstractRelayTriac):
         print("Finished initializing RelayTriac...")
 
     def getHeater(self):
-        return self.heater.value
+        return (self.heater.value > 0)
     
     def setHeater(self, val):
         if val:
@@ -123,7 +123,7 @@ class RelayTriac(AbstractRelayTriac):
             self.heater.off()
 
     def getDrill(self):
-        return self.drill.value
+        return (self.drill.value > 0)
     
     def setDrill(self, val):
         if val:

@@ -30,7 +30,7 @@ MC_IP_ADDRESS_PORT = \
     f"{config.get('Network', 'GRPCPort')}"
 
 CS_IP_ADDRESS_PORT = \
-    f"{config.get('Network', 'CoreSensorsRPiIPAddress')}:" \
+    f"{config.get('Network', 'CoreSensorsRPiAddress')}:" \
     f"{config.get('Network', 'CoreSensorsGRPCPort')}"
 
 

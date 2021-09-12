@@ -95,7 +95,7 @@ class SensorsStatusDisplay:
 
             self._update_bool(4, "Drill On", response.drill_on)
             self._update_bool(5, "Heater On", response.heater_on)
-            self._update_value(6, response.triac_level, "Triac Level", True)
+            self._update_value(6, response.triac_level, "%0.2f", "Triac Level", True)
 
             rtt_time = response.timestamp - response.request_timestamp
             self._update_value(8, rtt_time, "%0.2f [ms]", "Sensors Round Trip Time (ms)", True)

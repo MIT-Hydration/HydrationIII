@@ -17,7 +17,7 @@ from datetime import datetime, timedelta
 import time
 import configparser
 
-from . import sensors_status_display
+from . import sensors_status_display, relay_triac_control_display
 import blueprint
 
 config = configparser.ConfigParser()
@@ -129,12 +129,20 @@ class MainWindow(QtWidgets.QWidget):
         self.status_layout = QtWidgets.QVBoxLayout()
         self.status_groupbox.setLayout(self.status_layout)
         self.main_grid_layout.addWidget(
-            self.status_groupbox, 4, 0, 10, 1)
+            self.status_groupbox, 1, 0, 5, 1)
 
         self.status_display = sensors_status_display.SensorsStatusDisplay(
             self.status_layout)
         self.sensors_heartbeat_receivers.append(self.status_display)
 
+    def _initRelayControl(self):
+        self.relay_groupbox = QtWidgets.QGroupBox("Relay Triac")
+        self.main_grid_layout.addWidget(
+            self.relay_groupbox, 0, 1, 5, 1)
+
+        self.relay_triac_display = relay_triac_control_display.RelayTriacControl(
+            self.relay_groupbox)
+        
     def _initDiagnosticsBar(self):
         self.diagnostics_bar_groupbox = QtWidgets.QGroupBox(
             f"Log/Diagnostics (Client Version: {blueprint.HYDRATION_VERSION})")
@@ -181,6 +189,7 @@ class MainWindow(QtWidgets.QWidget):
         
         self._initEmergencyStop()
         self._initStatusDisplay()
+        self._initRelayControl()
 
         self._initDiagnosticsBar()
         self.setLayout(self.main_grid_layout)

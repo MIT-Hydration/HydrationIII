@@ -19,6 +19,7 @@ import time
 
 import grpc
 from .generated import mission_control_pb2, mission_control_pb2_grpc
+from . import client_common
 
 class RelayTriacControl:
 
@@ -30,19 +31,26 @@ class RelayTriacControl:
         self.layout.addWidget(QtWidgets.QLabel("Drill"))
         self.drill_on_button = QtWidgets.QPushButton("Drill On")
         self.drill_off_button = QtWidgets.QPushButton("Drill Off")
-        self.layout.addWidget(drill_on_button)
-        self.layout.addWidget(drill_off_button)
+        self.layout.addWidget(self.drill_on_button)
+        self.layout.addWidget(self.drill_off_button)
         self.layout.addWidget(QtWidgets.QLabel("Heater"))
         self.heater_on_button = QtWidgets.QPushButton("Heater On")
         self.heater_off_button = QtWidgets.QPushButton("Heater Off")
-        self.layout.addWidget(heater_on_button)
-        self.layout.addWidget(heater_off_button)
+        self.layout.addWidget(self.heater_on_button)
+        self.layout.addWidget(self.heater_off_button)
         self.layout.addWidget(QtWidgets.QLabel("Triac [0 to 1]"))
         
         self.triac_level_textbox = QtWidgets.QLineEdit("0.0")
         self.set_triac_button = QtWidgets.QPushButton("Set Triac")
-        self.layout.addWidget(triac_level_textbox)
-        self.layout.addWidget(set_triac_button)
+        self.layout.addWidget(self.triac_level_textbox)
+        self.layout.addWidget(self.set_triac_button)
+
+        self.drill_on_button.clicked.connect(self._drill_on)
+        self.drill_off_button.clicked.connect(self._drill_off)
+        self.heater_on_button.clicked.connect(self._heater_on)
+        self.heater_off_button.clicked.connect(self._heater_off)
+        self.set_triac_button.clicked.connect(self._set_triac)
+        
         
     def _drill_on(self):
         client_thread = client_common.RelayThread("Drill", True)
@@ -60,6 +68,11 @@ class RelayTriacControl:
         client_thread.start() 
     
     def _heater_off(self):
+        client_thread = client_common.RelayThread("Heater", False)
+        self.threads.append(client_thread)
+        client_thread.start() 
+    
+    def _set_triac(self):
         client_thread = client_common.TriacThread(float(self.triac_level_textbox.text()))
         self.threads.append(client_thread)
         client_thread.start() 
