@@ -269,6 +269,7 @@ class RelayThread(QtCore.QThread):
                                 request_timestamp = timestamp),
                                 timeout = GRPC_CALL_TIMEOUT )   
                     else:
+                        print("Turning Drill Off...")
                         response = stub.DrillOff (
                             mission_control_pb2.StartCommandRequest(
                                 request_timestamp = timestamp),
