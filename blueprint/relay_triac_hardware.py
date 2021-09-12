@@ -11,9 +11,8 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 if config.getboolean('Operating System', 'RunningInRPi'):
-    from gpiozero import PWMLED, DigitalInputDevice, DigitalOutputDevice
-    import RPi.GPIO as GPIO
-
+    from gpiozero import PWMLED, DigitalOutputDevice
+    
 class AbstractRelayTriac(ABC):
     @abstractmethod
     # returns whether the heater is on or not
@@ -79,23 +78,16 @@ class FileWriterThread(threading.Thread):
         self.stopped = False
         time_start_s = time.time()
         fp = open(f"RelayTriac_{time_start_s}.csv", "w")
-        keys = self.WOB_thread.sensor_readings.keys()
+        keys = ["time_s", "triac_level", "drill", "heater"]
         for k in keys:
             fp.write(f"{k},")
         fp.write("\n")
-        sampling_time = config.getfloat("WOBSensor", "SamplingTime")
+        sampling_time = config.getfloat("RelayAndTriac", "SamplingTime")
         
         while not self.stopped:
             loop_start = time.time()
-            for k in keys:
-                fp.write(f"{self.WOB_thread.sensor_readings[k]},")
-            fp.write("\n")
-            loop_start_int = (int(loop_start))%10
-            if loop_start_int == 0:
-                print(f"[t (s), WOB (N), WOBHEATER (N)] = "\
-                        f"{self.WOB_thread.sensor_readings['time_s']}, "\
-                        f"{self.WOB_thread.sensor_readings['wob_n']}," \
-                        f"{self.WOB_thread.sensor_readings['wob_heater_n']}")
+            fp.write(f"{loop_start},{self.relay_triac.traic}," \
+                     f"{self.relay_triac.drill},{self.relay_triac.heater}\n")
             loop_end = time.time()
             delta_time = loop_end - loop_start
             if (delta_time < sampling_time):
@@ -111,24 +103,35 @@ class RelayTriac(AbstractRelayTriac):
         self.file_writer_thread = FileWriterThread(self)
         self.file_writer_thread.start()
 
+        self.triac = PWMLED(config.getint('RelayAndTriac', 'TriacGPIOPin'))
+        self.drill = DigitalOutputDevice(config.getint('RelayAndTriac', 'DrillRelayPin'))
+        self.heater = DigitalOutputDevice(config.getint('RelayAndTriac', 'HeaterRelayPin'))
+        self.triac.value = 0.0
+        self.drill.off()
+        self.heater.off()
+
     def getHeater(self):
-        return self.heater
+        return self.heater.value
     
     def setHeater(self, val):
         if val:
-            self.drill = False
-        self.heater = val
+            self.drill.off()
+            self.heater.on()
+        else:
+            self.heater.off()
 
     def getDrill(self):
-        return self.drill
+        return self.drill.value
     
     def setDrill(self, val):
         if val:
-            self.heater = False
-        self.drill = val
-    
+            self.drill.on()
+            self.heater.off()
+        else:
+            self.heater.on()
+
     def getTraicLevel(self):
-        return self.triacLevel
+        return self.triac.value
 
     def setTraicLevel(self, val):
-        self.triacLevel = val
+        self.triac.value = val
