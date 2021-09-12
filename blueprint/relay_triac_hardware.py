@@ -112,7 +112,7 @@ class RelayTriac(AbstractRelayTriac):
         print("Finished initializing RelayTriac...")
 
     def getHeater(self):
-        return self.heater.value
+        return False #self.heater.value
     
     def setHeater(self, val):
         if val:
