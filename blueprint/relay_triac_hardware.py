@@ -136,4 +136,5 @@ class RelayTriac(AbstractRelayTriac):
         return self.triac.value
 
     def setTriacLevel(self, val):
+        print(f"Setting triac level to: {val}")
         self.triac.value = val
