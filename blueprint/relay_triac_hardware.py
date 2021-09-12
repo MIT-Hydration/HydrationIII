@@ -132,7 +132,7 @@ class RelayTriac(AbstractRelayTriac):
             self.heater.on()
 
     def getTriacLevel(self):
-        return self.triac.value
+        return 0.0 #self.triac.value
 
     def setTriacLevel(self, val):
         self.triac.value = val
