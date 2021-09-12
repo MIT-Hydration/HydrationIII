@@ -109,6 +109,7 @@ class RelayTriac(AbstractRelayTriac):
         self.triac.value = 0.0
         self.drill.off()
         self.heater.off()
+        print("Finished initializing RelayTriac...")
 
     def getHeater(self):
         return self.heater.value
