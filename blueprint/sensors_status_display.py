@@ -40,6 +40,9 @@ class SensorsStatusDisplay:
             ("Motor Round Trip Time (ms)", True, 300, 5000),
             ("Sensors Server Version", True, 300, 5000),
             ("Motor Server Version", True, 300, 5000),
+            ("WOB Drill (N)", True, 100, 150),
+            ("WOB Heater (N)", True, 100, 150),
+            ("Current (mA)", True, 500, 900),
         ]
         self.checkboxes = [None] * len(self.status_list)
         self.values = [None] * len(self.status_list)
@@ -101,6 +104,13 @@ class SensorsStatusDisplay:
             self._update_value(8, rtt_time, "%0.2f [ms]", "Sensors Round Trip Time (ms)", True)
             self._update_value(10, response.server_version, 
                 "%s", "Sensors Server Version", False)
+
+            self._update_value(12, response.weight_on_bit_drill_N,
+                 "%0.2f", "WOB Drill (N)", True)
+            self._update_value(13, response.weight_on_bit_heater_N,
+                 "%0.2f", "WOB Heater (N)", True)
+            self._update_value(14, response.total_current_mA,
+                 "%0.2f", "Current (mA)", True)
             
         else:
             for c in self.checkboxes:

@@ -64,7 +64,7 @@ class CoreSensorsController(mission_control_pb2_grpc.CoreSensorsServicer):
         self.power_W = power_meter_power_reading[1]
         
         power_meter_current_reading = self.power_meter_hardware.get_current_mA()
-        self.total_current_mA = power_meter_current_reading[0]
+        self.total_current_mA = power_meter_current_reading[1]
             
         # except Exception as e: #return last known
         #     info = f"[Error] {str(e)}"
@@ -77,13 +77,13 @@ class CoreSensorsController(mission_control_pb2_grpc.CoreSensorsServicer):
             triac_level = self.relay_triac.getTriacLevel(),
             drill_on = self.relay_triac.getDrill(),
             heater_on = self.relay_triac.getHeater(),
-            last_weight_on_bit_drill_timestamp = self.last_weight_on_bit_drill_timestamp,
-            weight_on_bit_drill_N = self.weight_on_bit_drill_N,
-            last_weight_on_bit_heater_timestamp = self.last_weight_on_bit_heater_timestamp,
-            weight_on_bit_heater_N = self.weight_on_bit_heater_N,
-            last_power_meter_timestamp = self.last_power_meter_timestamp,
-            power_W = self.power_W, 
-            total_current_mA = self.total_current_mA,
+            last_weight_on_bit_drill_timestamp = wob_reading[0],
+            weight_on_bit_drill_N = wob_reading[1],
+            last_weight_on_bit_heater_timestamp = wob_reading_heater[0],
+            weight_on_bit_heater_N = wob_reading_heater[1],
+            last_power_meter_timestamp = power_meter_power_reading[0],
+            power_W = power_meter_power_reading[1], 
+            total_current_mA = power_meter_current_reading[1],
             server_version = blueprint.HYDRATION_VERSION
             )
 
