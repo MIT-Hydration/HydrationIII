@@ -47,6 +47,8 @@ class CoreSensorsController(mission_control_pb2_grpc.CoreSensorsServicer):
         cpu_temp = HardwareFactory.getMissionControlRPi() \
             .get_cpu_temperature()
 
+        relay_triac = HardwareFactory.getRelayTriac()
+
         try:
             
             wob_reading = self.wob_hardware.get_force_N()
@@ -73,6 +75,9 @@ class CoreSensorsController(mission_control_pb2_grpc.CoreSensorsServicer):
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
             cpu_temperature_degC = cpu_temp,
+            triac_level = relay_triac.getTriacLevel(),
+            drill_on = relay_triac.getDrill(),
+            heater_on = relay_triac.getHeater(),
             last_weight_on_bit_drill_timestamp = self.last_weight_on_bit_drill_timestamp,
             weight_on_bit_drill_N = self.weight_on_bit_drill_N,
             last_weight_on_bit_heater_timestamp = self.last_weight_on_bit_heater_timestamp,
@@ -82,6 +87,52 @@ class CoreSensorsController(mission_control_pb2_grpc.CoreSensorsServicer):
             total_current_mA = self.total_current_mA,
             server_version = blueprint.HYDRATION_VERSION
             )
+
+    def DrillOn(self, request, context):
+        timestamp = int(time.time()*1000)
+        relay_triac = HardwareFactory.getRelayTriac()
+        relay_triac.setDrill(True) 
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)
+
+    def DrillOff(self, request, context):
+        timestamp = int(time.time()*1000)
+        relay_triac = HardwareFactory.getRelayTriac()
+        relay_triac.setDrill(False) 
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)
+
+    def HeaterOn(self, request, context):
+        timestamp = int(time.time()*1000)
+        relay_triac = HardwareFactory.getRelayTriac()
+        relay_triac.setHeater(True) 
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)
+
+    def HeaterOff(self, request, context):
+        timestamp = int(time.time()*1000)
+        relay_triac = HardwareFactory.getRelayTriac()
+        relay_triac.setHeater(False) 
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)
+    
+    def SetTriacLevel(self, request, context):
+        timestamp = int(time.time()*1000)
+        relay_triac = HardwareFactory.getRelayTriac()
+        relay_triac.setTraicLevel(request.value)
+        return mcpb.CommandResponse(
+            request_timestamp = request.request_timestamp,
+            timestamp = timestamp,
+            status = mcpb.EXECUTED)
+
 IP_ADDRESS_PORT = f"0.0.0.0:{config.get('Network', 'GRPCActualPort')}"
 
 class CoreSensorsServer:
