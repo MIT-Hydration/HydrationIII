@@ -86,7 +86,7 @@ class FileWriterThread(threading.Thread):
         
         while not self.stopped:
             loop_start = time.time()
-            fp.write(f"{loop_start},{self.relay_triac.triac}," \
+            fp.write(f"{loop_start},{self.relay_triac.getTriacLevel()}," \
                      f"{self.relay_triac.getDrill()},{self.relay_triac.getHeater()}\n")
             loop_end = time.time()
             delta_time = loop_end - loop_start
