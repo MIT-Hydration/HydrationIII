@@ -42,6 +42,7 @@ class CoreSensorsController(mission_control_pb2_grpc.CoreSensorsServicer):
         self.wob_hardware = HardwareFactory.getWOBSensor()
         self.power_meter_hardware = HardwareFactory.getPowerMeter()
         self.relay_triac = HardwareFactory.getRelayTriac()
+        self.imu = HardwareFactory.getIMU()
 
     def HeartBeat(self, request, context):
         timestamp = int(time.time()*1000)
@@ -70,6 +71,8 @@ class CoreSensorsController(mission_control_pb2_grpc.CoreSensorsServicer):
         #     info = f"[Error] {str(e)}"
         #     print(info)
 
+        imu_readings = self.imu.get_sensor_readings()
+
         return mcpb.CoreSensorsHeartBeatResponse(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
@@ -77,6 +80,15 @@ class CoreSensorsController(mission_control_pb2_grpc.CoreSensorsServicer):
             triac_level = self.relay_triac.getTriacLevel(),
             drill_on = self.relay_triac.getDrill(),
             heater_on = self.relay_triac.getHeater(),
+ 
+            imu_timestamp_s = imu_readings["time_s"],
+            imu_gx_deg_p_s = imu_readings["Gx_deg_p_sec"],
+            imu_gy_deg_p_s = imu_readings["Gy_deg_p_sec"],
+            imu_gz_deg_p_s = imu_readings["Gz_deg_p_sec"],
+            imu_ax_g = imu_readings["Ax_g"],
+            imu_ay_g = imu_readings["Ay_g"],
+            imu_az_g = imu_readings["Az_g"],
+
             last_weight_on_bit_drill_timestamp = wob_reading[0],
             weight_on_bit_drill_N = wob_reading[1],
             last_weight_on_bit_heater_timestamp = wob_reading_heater[0],

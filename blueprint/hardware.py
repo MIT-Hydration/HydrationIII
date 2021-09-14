@@ -21,6 +21,8 @@ if config.getboolean('Operating System', 'RunningInRPi'):
 
 from . import RPiHardware, rig_hardware, PumpHardware, TachometerHardware
 from . import relay_triac_hardware, wob_hardware, power_meter_hardware
+from . import AccelGyroHardware
+
 
 class HardwareFactory:
 
@@ -32,6 +34,7 @@ class HardwareFactory:
     tachometer = None
     power_meter = None
     relay_triac = None
+    imu = None
     _lock = threading.Lock()
 
     #@classmethod
@@ -123,6 +126,15 @@ class HardwareFactory:
                 cls.relay_triac = relay_triac_hardware.RelayTriac()
         cls._lock.release()
         return cls.relay_triac
+
+    @classmethod
+    def getIMU(cls):
+        cls._lock.acquire()
+        if cls.imu is None:
+            cls.imu = AccelGyroHardware.AccelGyro()
+        cls._lock.release()
+        return cls.imu
+
     
     
 

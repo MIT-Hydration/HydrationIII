@@ -15,7 +15,7 @@ __status__ = "Production"
 from PySide6 import QtCore, QtWidgets, QtGui
 
 from datetime import datetime, timedelta
-import time
+import time, numpy
 
 import grpc
 from .generated import mission_control_pb2, mission_control_pb2_grpc
@@ -43,6 +43,7 @@ class SensorsStatusDisplay:
             ("WOB Drill (N)", True, 100, 150),
             ("WOB Heater (N)", True, 100, 150),
             ("Current (mA)", True, 500, 900),
+            ("Accel (g)", True, 1.2, 4.0),
         ]
         self.checkboxes = [None] * len(self.status_list)
         self.values = [None] * len(self.status_list)
@@ -111,6 +112,11 @@ class SensorsStatusDisplay:
                  "%0.2f", "WOB Heater (N)", True)
             self._update_value(14, response.total_current_mA,
                  "%0.2f", "Current (mA)", True)
+
+            accel = numpy.sqrt(
+                response.imu_ax*response.imu_ax + \
+                response.imu_ay*response.imu_ay + \
+                response.imu_az*response.imu_az )
             
         else:
             for c in self.checkboxes:

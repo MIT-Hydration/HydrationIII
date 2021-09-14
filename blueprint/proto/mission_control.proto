@@ -86,6 +86,14 @@ message CoreSensorsHeartBeatResponse {
     bool drill_on = 5;
     bool heater_on = 6;
 
+    float imu_timestamp_s = 10;
+    float imu_gx_deg_p_s = 11;
+    float imu_gy_deg_p_s = 12;
+    float imu_gz_deg_p_s = 13;
+    float imu_ax_g = 14;
+    float imu_ay_g = 15;
+    float imu_az_g = 16;
+
     float last_weight_on_bit_drill_timestamp = 40;
     float weight_on_bit_drill_N = 41;
     
