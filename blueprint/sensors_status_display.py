@@ -40,9 +40,9 @@ class SensorsStatusDisplay:
             ("Motor Round Trip Time (ms)", True, 300, 5000),
             ("Sensors Server Version", True, 300, 5000),
             ("Motor Server Version", True, 300, 5000),
-            ("WOB Drill (N)", True, 100, 150),
-            ("WOB Heater (N)", True, 100, 150),
-            ("Current (mA)", True, 500, 900),
+            ("WOB Drill (N)", True, 100, 140),
+            ("WOB Heater (N)", True, 30, 50),
+            ("Current (mA)", True, 6000, 8000),
             ("Accel (g)", True, 1.2, 4.0),
         ]
         self.checkboxes = [None] * len(self.status_list)

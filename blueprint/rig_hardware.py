@@ -339,7 +339,7 @@ class RigHardware(AbstractRigHardware):
         # ensure Z-poisions are zero within tolerance
         homing_error = config.getfloat("Rig", "HomingError")
         pos = self.getPosition()
-        if (numpy.abs(pos[kZ1]) > homing_error) or (numpy.abs(pos[kZ2]) > homing_error):
+        if (pos[kZ1] < -homing_error) or (pos[kZ2] < -homing_error):
             return False
         
         # stop existing moves
