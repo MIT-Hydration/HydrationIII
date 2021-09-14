@@ -74,17 +74,20 @@ class AccelGyroThread(threading.Thread):
         self.stopped = True
 
     def _read_raw_data(self, addr):
-	    #Accelero and Gyro value are 16-bit
-        high = self.bus.read_byte_data(self.Device_Address, addr)
-        low = self.bus.read_byte_data(self.Device_Address, addr+1)
-    
-        #concatenate higher and lower value
-        value = ((high << 8) | low)
+        try:
+            #Accelero and Gyro value are 16-bit
+            high = self.bus.read_byte_data(self.Device_Address, addr)
+            low = self.bus.read_byte_data(self.Device_Address, addr+1)
         
-        #to get signed value from mpu6050
-        if(value > 32768):
-                value = value - 65536
-        return value
+            #concatenate higher and lower value
+            value = ((high << 8) | low)
+            
+            #to get signed value from mpu6050
+            if(value > 32768):
+                    value = value - 65536
+            return value
+        except e:
+            return 0
 
     def run(self):
         self.stopped = False
