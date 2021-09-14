@@ -40,7 +40,7 @@ class AccelGyroThread(threading.Thread):
     
     def _MPU_Init(self):
         self.bus = smbus.SMBus(1) 	# or bus = smbus.SMBus(0) for older version boards
-        Device_Address = 0x68   # MPU6050 device address
+        self.Device_Address = 0x68   # MPU6050 device address
 
         #write to sample rate register
         self.bus.write_byte_data(Device_Address, SMPLRT_DIV, 7)
@@ -75,8 +75,8 @@ class AccelGyroThread(threading.Thread):
 
     def _read_raw_data(self, addr):
 	    #Accelero and Gyro value are 16-bit
-        high = self.bus.read_byte_data(Device_Address, addr)
-        low = self.bus.read_byte_data(Device_Address, addr+1)
+        high = self.bus.read_byte_data(self.Device_Address, addr)
+        low = self.bus.read_byte_data(self.Device_Address, addr+1)
     
         #concatenate higher and lower value
         value = ((high << 8) | low)
