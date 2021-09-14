@@ -126,19 +126,17 @@ class MainWindow(QtWidgets.QWidget):
 
     def _initStatusDisplay(self):
         self.status_groupbox = QtWidgets.QGroupBox("System Status")
-        self.status_layout = QtWidgets.QVBoxLayout()
-        self.status_groupbox.setLayout(self.status_layout)
         self.main_grid_layout.addWidget(
-            self.status_groupbox, 1, 0, 5, 1)
+            self.status_groupbox, 0, 1, 6, 10)
 
         self.status_display = sensors_status_display.SensorsStatusDisplay(
-            self.status_layout)
+            self.status_groupbox)
         self.sensors_heartbeat_receivers.append(self.status_display)
 
     def _initRelayControl(self):
         self.relay_groupbox = QtWidgets.QGroupBox("Relay Triac")
         self.main_grid_layout.addWidget(
-            self.relay_groupbox, 0, 1, 5, 1)
+            self.relay_groupbox, 1, 0, 5, 1)
 
         self.relay_triac_display = relay_triac_control_display.RelayTriacControl(
             self.relay_groupbox, self.on_log)
@@ -264,6 +262,7 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     #apply_stylesheet(app, theme='light_blue.xml')
     apply_stylesheet(app, theme='dark_teal.xml')
+    
     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps)
     

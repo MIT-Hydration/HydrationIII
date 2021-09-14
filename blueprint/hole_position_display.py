@@ -35,8 +35,8 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.main_window = main_window
         self.threads = []
         self.layout = layout
-        self.HOLE_DISPLAY_WIDTH = 4
-        self.TARGET_DISPLAY_WIDTH = 4
+        self.HOLE_DISPLAY_WIDTH = 1
+        self.TARGET_DISPLAY_WIDTH = 7
         self.Z_DISPLAY_WIDTH = 1
         self.DISPLAY_HEIGHT = 10
         self._init_hole_display()
@@ -100,8 +100,8 @@ class HolePositionDisplay(QtWidgets.QWidget):
 
         self.layout.addWidget(self.goto_z2, 2, start_h+2, 1, 2)
 
-        self.cur_pos_label = QtWidgets.QLabel("Current Position (Z1, Z2, Y) [m]")
-        self.cur_pos_label.setStyleSheet("color: '#ffc107'")
+        self.cur_pos_label = QtWidgets.QLabel("Current Position (Z1, Z2, Y)\n(00.000 00.000 00.000) [m]")
+        self.cur_pos_label.setStyleSheet("font-weight: bold; color: '#ffc107'; font-size: 25pt;")
         self.layout.addWidget(self.cur_pos_label, 5, start_h, 1, 4)
 
         self.set_home = QtWidgets.QPushButton("Set Current as Origin (Z1, Z2, Y)")
@@ -197,7 +197,7 @@ class HolePositionDisplay(QtWidgets.QWidget):
             self.z2_drill_pos_rect.setRect( 0.010, z2, 0.025, -z2+0.15)
         
             self.cur_pos_label.setText(
-                f"Current Position (Z1, Z2, Y) = ({z1:0.3f}, {z2:0.3f}, {y:0.3f}) [m]")
+                f"Current Position (Z1, Z2, Y)\n({z1:0.3f}, {z2:0.3f}, {y:0.3f}) [m]")
 
             if (response.state != mission_control_pb2.STARTUP_IDLE):
                 self.set_home.setEnabled(False)
