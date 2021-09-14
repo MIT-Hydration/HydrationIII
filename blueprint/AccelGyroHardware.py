@@ -86,7 +86,7 @@ class AccelGyroThread(threading.Thread):
             if(value > 32768):
                     value = value - 65536
             return value
-        except e:
+        except:
             return 0
 
     def run(self):
