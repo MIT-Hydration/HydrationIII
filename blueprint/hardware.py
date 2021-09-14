@@ -24,7 +24,6 @@ from . import RPiHardware, rig_hardware, PumpHardware
 from . import relay_triac_hardware, wob_hardware, power_meter_hardware
 from . import AccelGyroHardware
 
-
 class HardwareFactory:
 
     #drill = None
