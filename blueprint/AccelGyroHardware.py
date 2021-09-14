@@ -43,19 +43,19 @@ class AccelGyroThread(threading.Thread):
         Device_Address = 0x68   # MPU6050 device address
 
         #write to sample rate register
-        bus.write_byte_data(Device_Address, SMPLRT_DIV, 7)
+        self.bus.write_byte_data(Device_Address, SMPLRT_DIV, 7)
         
         #Write to power management register
-        bus.write_byte_data(Device_Address, PWR_MGMT_1, 1)
+        self.bus.write_byte_data(Device_Address, PWR_MGMT_1, 1)
         
         #Write to Configuration register
-        bus.write_byte_data(Device_Address, CONFIG, 0)
+        self.bus.write_byte_data(Device_Address, CONFIG, 0)
         
         #Write to Gyro configuration register
-        bus.write_byte_data(Device_Address, GYRO_CONFIG, 24)
+        self.bus.write_byte_data(Device_Address, GYRO_CONFIG, 24)
         
         #Write to interrupt enable register
-        bus.write_byte_data(Device_Address, INT_ENABLE, 1)
+        self.bus.write_byte_data(Device_Address, INT_ENABLE, 1)
     
     def __init__(self):  
         self.sampling_time = config.getfloat('AccelGyro', 'SamplingTime')
