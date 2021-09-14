@@ -1,4 +1,4 @@
-from ..hardware import HardwareFactory
+from ..PumpHardware import PumpHardware
 import time
 from curses import wrapper
 
@@ -6,7 +6,7 @@ def main(stdscr):
     # Clear screen
     stdscr.clear()
 
-    pump = HardwareFactory.getWaterPump()
+    pump = PumpHardware.Pump()
     
     current_speed = 0
     current_direction = 0
