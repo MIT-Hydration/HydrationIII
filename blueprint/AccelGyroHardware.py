@@ -103,9 +103,10 @@ class AccelGyroThread(threading.Thread):
             gyro_z = self._read_raw_data(GYRO_ZOUT_H)
             
             #Full scale range +/- 250 degree/C as per sensitivity scale factor
-            Ax = acc_x/16384.0
-            Ay = acc_y/16384.0
-            Az = acc_z/16384.0
+            ACCEL_CAL = 15499.2
+            Ax = acc_x/ACCEL_CAL
+            Ay = acc_y/ACCEL_CAL
+            Az = acc_z/ACCEL_CAL
             
             Gx = gyro_x/131.0
             Gy = gyro_y/131.0

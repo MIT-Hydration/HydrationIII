@@ -114,9 +114,12 @@ class SensorsStatusDisplay:
                  "%0.2f", "Current (mA)", True)
 
             accel = numpy.sqrt(
-                response.imu_ax*response.imu_ax + \
-                response.imu_ay*response.imu_ay + \
-                response.imu_az*response.imu_az )
+                response.imu_ax_g*response.imu_ax_g + \
+                response.imu_ay_g*response.imu_ay_g + \
+                response.imu_az_g*response.imu_az_g )
+
+            self._update_value(15, accel,
+                 "%0.3f", "Accel (g)", True)
             
         else:
             for c in self.checkboxes:
