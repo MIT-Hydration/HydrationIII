@@ -19,7 +19,8 @@ if config.getboolean('Operating System', 'RunningInRPi'):
     from gpiozero import PWMLED
     from gpiozero import CPUTemperature
 
-from . import RPiHardware, rig_hardware, PumpHardware, TachometerHardware
+from . import RPiHardware, rig_hardware, PumpHardware 
+#from . import TachometerHardware
 from . import relay_triac_hardware, wob_hardware, power_meter_hardware
 from . import AccelGyroHardware
 
@@ -71,16 +72,16 @@ class HardwareFactory:
         cls._lock.release()
         return cls.wob
 
-    @classmethod
-    def getTachometer(cls):
-        cls._lock.acquire()
-        if cls.tachometer is None:
-            if (config.getboolean('Mocks', 'MockTachometer')):
-                cls.tachometer = MockTachometer()
-            else:
-                cls.tachometer = Tachometer()
-        cls._lock.release()
-        return cls.tachometer
+    # @classmethod
+    # def getTachometer(cls):
+    #     cls._lock.acquire()
+    #     if cls.tachometer is None:
+    #         if (config.getboolean('Mocks', 'MockTachometer')):
+    #             cls.tachometer = MockTachometer()
+    #         else:
+    #             cls.tachometer = Tachometer()
+    #     cls._lock.release()
+    #     return cls.tachometer
         
     @classmethod
     def getMissionControlRPi(cls):
