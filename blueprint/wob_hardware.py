@@ -46,7 +46,7 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
             self.DTPinHeater = config.getint('WOBSensor', 'DTPinHeater')
             self.SCKPinHeater = config.getint('WOBSensor', 'SCKPinHeater')
             
-            self.wob_sensor = hx711.HX711(self.DTPin, self.SCKPin)
+            #self.wob_sensor = hx711.HX711(self.DTPin, self.SCKPin)
             self.wob_sensor_heater = hx711.HX711(self.DTPinHeater, self.SCKPinHeater)
             
             self.referenceWOBUnit = \
