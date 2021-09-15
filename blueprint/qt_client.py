@@ -244,6 +244,12 @@ class MainWindow(QtWidgets.QWidget):
         client_thread.done.connect(self.on_emergency_stop_done)
         client_thread.start()
         self.emergency_button.setText("Attempting Emergency Stop [ESC]")
+        client_thread = client_common.RelayThread("Drill", False)
+        self.threads.append(client_thread)
+        client_thread.start() 
+        client_thread = client_common.RelayThread("Heater", False)
+        self.threads.append(client_thread)
+        client_thread.start() 
 
     def keyPressEvent(self, event):
         if (event.key() == QtCore.Qt.Key_Escape):

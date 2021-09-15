@@ -81,8 +81,9 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
             while not self.stopped:
                 loop_start = time.time()
                 self.sensor_readings["wob_n"] = self.wob_sensor.get_weight(self.DTPin)
-                self.sensor_readings["wob_heater_n"] = \
-                    self.wob_sensor_heater.get_weight(self.DTPinHeater)
+                #self.sensor_readings["wob_heater_n"] = \
+                #    self.wob_sensor_heater.get_weight(self.DTPinHeater)
+                self.sensor_readings["wob_heater_n"] = 0
                 loop_end = time.time()
                 self.sensor_readings["time_s"] = loop_start
                 delta_time = loop_end - loop_start
