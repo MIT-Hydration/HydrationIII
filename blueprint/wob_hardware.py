@@ -41,8 +41,8 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
 
     class WOBThread(threading.Thread):
         def __init__(self): 
-            self.DTPin = config.getint('WOBSensor', 'DTPin')
-            self.SCKPin = config.getint('WOBSensor', 'SCKPin')
+            #self.DTPin = config.getint('WOBSensor', 'DTPin')
+            #self.SCKPin = config.getint('WOBSensor', 'SCKPin')
             self.DTPinHeater = config.getint('WOBSensor', 'DTPinHeater')
             self.SCKPinHeater = config.getint('WOBSensor', 'SCKPinHeater')
             
@@ -56,10 +56,10 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
                 config.getfloat('WOBSensor', 'CalReadingHeater') \
                     / config.getfloat('WOBSensor', 'CalNewtonsHeater')
             
-            self.wob_sensor.set_reading_format("MSB", "MSB")
-            self.wob_sensor.set_reference_unit(self.referenceWOBUnit)
-            self.wob_sensor.reset()
-            self.wob_sensor.tare()
+            # self.wob_sensor.set_reading_format("MSB", "MSB")
+            # self.wob_sensor.set_reference_unit(self.referenceWOBUnit)
+            # self.wob_sensor.reset()
+            # self.wob_sensor.tare()
             self.wob_sensor_heater.set_reading_format("MSB", "MSB")
             self.wob_sensor_heater.set_reference_unit(self.referenceWOBUnit)
             self.wob_sensor_heater.reset()
