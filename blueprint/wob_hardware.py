@@ -154,7 +154,7 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
                     print(f"[t (s), WOB (N), t(s), WOBHEATER (N)] = "\
                           f"{self.WOB_thread.sensor_readings['time_s']}, "\
                           f"{self.WOB_thread.sensor_readings['wob_n']}," \
-                          f"{self.WOB_heater_thread.sensor_readings['time_s']}, "\    
+                          f"{self.WOB_heater_thread.sensor_readings['time_s']}, "\
                           f"{self.WOB_heater_thread.sensor_readings['wob_heater_n']}")
                 loop_end = time.time()
                 delta_time = loop_end - loop_start
