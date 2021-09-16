@@ -92,7 +92,7 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
                     / config.getfloat('WOBSensor', 'CalNewtonsHeater')
             
             self.wob_sensor_heater.set_reading_format("MSB", "MSB")
-            self.wob_sensor_heater.set_reference_unit(self.referenceWOBUnit)
+            self.wob_sensor_heater.set_reference_unit(self.referenceWOBUnitHeater)
             self.wob_sensor_heater.reset()
             self.wob_sensor_heater.tare()
             
