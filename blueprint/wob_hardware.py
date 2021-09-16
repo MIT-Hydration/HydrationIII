@@ -43,33 +43,22 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
         def __init__(self): 
             self.DTPin = config.getint('WOBSensor', 'DTPin')
             self.SCKPin = config.getint('WOBSensor', 'SCKPin')
-            self.DTPinHeater = config.getint('WOBSensor', 'DTPinHeater')
-            self.SCKPinHeater = config.getint('WOBSensor', 'SCKPinHeater')
             
             self.wob_sensor = hx711.HX711(self.DTPin, self.SCKPin)
-            self.wob_sensor_heater = hx711.HX711(self.DTPinHeater, self.SCKPinHeater)
             
             self.referenceWOBUnit = \
                 config.getfloat('WOBSensor', 'CalReading') \
                     / config.getfloat('WOBSensor', 'CalNewtons')
-            self.referenceWOBUnitHeater = \
-                config.getfloat('WOBSensor', 'CalReadingHeater') \
-                    / config.getfloat('WOBSensor', 'CalNewtonsHeater')
             
             self.wob_sensor.set_reading_format("MSB", "MSB")
             self.wob_sensor.set_reference_unit(self.referenceWOBUnit)
             self.wob_sensor.reset()
             self.wob_sensor.tare()
-            self.wob_sensor_heater.set_reading_format("MSB", "MSB")
-            self.wob_sensor_heater.set_reference_unit(self.referenceWOBUnit)
-            self.wob_sensor_heater.reset()
-            self.wob_sensor_heater.tare()
             
             self.sampling_time = config.getfloat('WOBSensor', 'SamplingTime')
             self.sensor_readings = {
                 "time_s": 0.0,
                 "wob_n": 0.0,  
-                "wob_heater_n": 0.0, 
             }
 
             threading.Thread.__init__(self)
@@ -82,9 +71,47 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
                 loop_start = time.time()
                 self.sensor_readings["wob_n"] = self.wob_sensor.get_weight(self.DTPin)
                 
+                loop_end = time.time()
+                self.sensor_readings["time_s"] = loop_start
+                delta_time = loop_end - loop_start
+                if (delta_time < self.sampling_time):
+                    time.sleep(self.sampling_time - delta_time)
+
+        def stop(self):
+            self.stopped = True
+
+    class WOBHeaterThread(threading.Thread):
+        def __init__(self): 
+            self.DTPinHeater = config.getint('WOBSensor', 'DTPinHeater')
+            self.SCKPinHeater = config.getint('WOBSensor', 'SCKPinHeater')
+            
+            self.wob_sensor_heater = hx711.HX711(self.DTPinHeater, self.SCKPinHeater)
+            
+            self.referenceWOBUnitHeater = \
+                config.getfloat('WOBSensor', 'CalReadingHeater') \
+                    / config.getfloat('WOBSensor', 'CalNewtonsHeater')
+            
+            self.wob_sensor_heater.set_reading_format("MSB", "MSB")
+            self.wob_sensor_heater.set_reference_unit(self.referenceWOBUnit)
+            self.wob_sensor_heater.reset()
+            self.wob_sensor_heater.tare()
+            
+            self.sampling_time = config.getfloat('WOBSensor', 'SamplingTime')
+            self.sensor_readings = {
+                "time_s": 0.0,
+                "wob_heater_n": 0.0, 
+            }
+
+            threading.Thread.__init__(self)
+            self.stopped = True
+
+        def run(self):
+            self.stopped = False
+            
+            while not self.stopped:
+                loop_start = time.time()
                 self.sensor_readings["wob_heater_n"] = \
                     self.wob_sensor_heater.get_weight(self.DTPinHeater)
-                
                 loop_end = time.time()
                 self.sensor_readings["time_s"] = loop_start
                 delta_time = loop_end - loop_start
@@ -96,9 +123,10 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
 
             
     class FileWriterThread(threading.Thread): 
-        def __init__(self, WOB_thread):
+        def __init__(self, WOB_thread, WOB_heater_thread):
             threading.Thread.__init__(self)
             self.WOB_thread = WOB_thread
+            self.WOB_heater_thread = WOB_heater_thread
             self.stopped = True
             
         def run(self):
@@ -106,7 +134,10 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
             time_start_s = time.time()
             fp = open(f"WOB_{time_start_s}.csv", "w")
             keys = self.WOB_thread.sensor_readings.keys()
+            keys_header = self.WOB_heater_thread.sensor_readings.keys()
             for k in keys:
+                fp.write(f"{k},")
+            for k in keys_heater:
                 fp.write(f"{k},")
             fp.write("\n")
             sampling_time = config.getfloat("WOBSensor", "SamplingTime")
@@ -115,13 +146,16 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
                 loop_start = time.time()
                 for k in keys:
                     fp.write(f"{self.WOB_thread.sensor_readings[k]},")
+                for k in keys_heater:
+                    fp.write(f"{self.WOB_heater_thread.sensor_readings[k]},")
                 fp.write("\n")
                 loop_start_int = (int(loop_start))%10
                 if loop_start_int == 0:
-                    print(f"[t (s), WOB (N), WOBHEATER (N)] = "\
+                    print(f"[t (s), WOB (N), t(s), WOBHEATER (N)] = "\
                           f"{self.WOB_thread.sensor_readings['time_s']}, "\
                           f"{self.WOB_thread.sensor_readings['wob_n']}," \
-                          f"{self.WOB_thread.sensor_readings['wob_heater_n']}")
+                          f"{self.WOB_heater_thread.sensor_readings['time_s']}, "\    
+                          f"{self.WOB_heater_thread.sensor_readings['wob_heater_n']}")
                 loop_end = time.time()
                 delta_time = loop_end - loop_start
                 if (delta_time < sampling_time):
@@ -135,7 +169,9 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
     class WOBSensor(AbstractWOB):    
         def __init__(self):
             self.sensor_thread = WOBThread()
-            self.file_writer_thread = FileWriterThread(self.sensor_thread)
+            self.sensor_heater_thread = WOBHeaterThread()
+            self.file_writer_thread = FileWriterThread(
+                self.sensor_thread, self.sensor_heater_thread)
             self.sensor_thread.start()
             self.file_writer_thread.start()
 
@@ -144,5 +180,5 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
                     self.sensor_thread.sensor_readings["wob_n"]]
 
         def get_force_heater_N(self):
-            return [self.sensor_thread.sensor_readings["time_s"],
-                    self.sensor_thread.sensor_readings["wob_heater_n"]]
+            return [self.sensor_heater_thread.sensor_readings["time_s"],
+                    self.sensor_heater_thread.sensor_readings["wob_heater_n"]]
