@@ -96,7 +96,7 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
             self.wob_sensor_heater.reset()
             self.wob_sensor_heater.tare()
             
-            self.sampling_time = config.getfloat('WOBSensor', 'SamplingTime')
+            self.sampling_time = config.getfloat('WOBSensor', 'SamplingTime')*10
             self.sensor_readings = {
                 "time_heater_s": 0.0,
                 "wob_heater_n": 0.0, 
