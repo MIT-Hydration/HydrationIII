@@ -98,7 +98,7 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
             
             self.sampling_time = config.getfloat('WOBSensor', 'SamplingTime')
             self.sensor_readings = {
-                "time_s": 0.0,
+                "time_heater_s": 0.0,
                 "wob_heater_n": 0.0, 
             }
 
@@ -113,7 +113,7 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
                 self.sensor_readings["wob_heater_n"] = \
                     self.wob_sensor_heater.get_weight(self.DTPinHeater)
                 loop_end = time.time()
-                self.sensor_readings["time_s"] = loop_start
+                self.sensor_readings["time_heater_s"] = loop_start
                 delta_time = loop_end - loop_start
                 if (delta_time < self.sampling_time):
                     time.sleep(self.sampling_time - delta_time)
@@ -154,7 +154,7 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
                     print(f"[t (s), WOB (N), t(s), WOBHEATER (N)] = "\
                           f"{self.WOB_thread.sensor_readings['time_s']}, "\
                           f"{self.WOB_thread.sensor_readings['wob_n']}," \
-                          f"{self.WOB_heater_thread.sensor_readings['time_s']}, "\
+                          f"{self.WOB_heater_thread.sensor_readings['time_heater_s']}, "\
                           f"{self.WOB_heater_thread.sensor_readings['wob_heater_n']}")
                 loop_end = time.time()
                 delta_time = loop_end - loop_start
