@@ -134,7 +134,7 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
             time_start_s = time.time()
             fp = open(f"WOB_{time_start_s}.csv", "w")
             keys = self.WOB_thread.sensor_readings.keys()
-            keys_header = self.WOB_heater_thread.sensor_readings.keys()
+            keys_heater = self.WOB_heater_thread.sensor_readings.keys()
             for k in keys:
                 fp.write(f"{k},")
             for k in keys_heater:
