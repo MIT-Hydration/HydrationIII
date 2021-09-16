@@ -41,12 +41,12 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
 
     class WOBThread(threading.Thread):
         def __init__(self): 
-            #self.DTPin = config.getint('WOBSensor', 'DTPin')
-            #self.SCKPin = config.getint('WOBSensor', 'SCKPin')
+            self.DTPin = config.getint('WOBSensor', 'DTPin')
+            self.SCKPin = config.getint('WOBSensor', 'SCKPin')
             self.DTPinHeater = config.getint('WOBSensor', 'DTPinHeater')
             self.SCKPinHeater = config.getint('WOBSensor', 'SCKPinHeater')
             
-            #self.wob_sensor = hx711.HX711(self.DTPin, self.SCKPin)
+            self.wob_sensor = hx711.HX711(self.DTPin, self.SCKPin)
             self.wob_sensor_heater = hx711.HX711(self.DTPinHeater, self.SCKPinHeater)
             
             self.referenceWOBUnit = \
@@ -56,10 +56,10 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
                 config.getfloat('WOBSensor', 'CalReadingHeater') \
                     / config.getfloat('WOBSensor', 'CalNewtonsHeater')
             
-            # self.wob_sensor.set_reading_format("MSB", "MSB")
-            # self.wob_sensor.set_reference_unit(self.referenceWOBUnit)
-            # self.wob_sensor.reset()
-            # self.wob_sensor.tare()
+            self.wob_sensor.set_reading_format("MSB", "MSB")
+            self.wob_sensor.set_reference_unit(self.referenceWOBUnit)
+            self.wob_sensor.reset()
+            self.wob_sensor.tare()
             self.wob_sensor_heater.set_reading_format("MSB", "MSB")
             self.wob_sensor_heater.set_reference_unit(self.referenceWOBUnit)
             self.wob_sensor_heater.reset()
@@ -80,12 +80,12 @@ if config.getboolean('Operating System', 'RunningInCoreSensorsRPi') or \
             
             while not self.stopped:
                 loop_start = time.time()
-                #self.sensor_readings["wob_n"] = self.wob_sensor.get_weight(self.DTPin)
+                self.sensor_readings["wob_n"] = self.wob_sensor.get_weight(self.DTPin)
                 self.sensor_readings["wob_n"] = 0
                 
                 self.sensor_readings["wob_heater_n"] = \
                     self.wob_sensor_heater.get_weight(self.DTPinHeater)
-                #self.sensor_readings["wob_heater_n"] = 0
+                self.sensor_readings["wob_heater_n"] = 0
                 loop_end = time.time()
                 self.sensor_readings["time_s"] = loop_start
                 delta_time = loop_end - loop_start
