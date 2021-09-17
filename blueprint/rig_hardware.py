@@ -266,6 +266,9 @@ class MockRigHardware(AbstractRigHardware):
     def motorStatus(self):
         return [0, 0, 0, 0]
 
+    def clearAlert(self):
+        return True 
+
 class FileWriterThread(threading.Thread):
     def __init__(self, rig_hardware):
         threading.Thread.__init__(self)
