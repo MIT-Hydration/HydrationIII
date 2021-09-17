@@ -264,7 +264,7 @@ class MockRigHardware(AbstractRigHardware):
         self.position[3] = 0.0
 
     def motorStatus(self):
-        return [0, 0, 0, 0]
+        return ["0", "0", "0", "0"]
 
     def clearAlert(self):
         return True 
