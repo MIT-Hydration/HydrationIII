@@ -254,7 +254,7 @@ class HolePositionDisplay(QtWidgets.QWidget):
     def _on_speed_change(self):
         #print("Changing speed")
         target_vel = float(self.target_speed.text())
-        vel_z1 = (target_vel/30.0)*Z1Cal
+        vel_z1 = (target_vel/30.0)*Z2Cal
         vel_z2 = (target_vel/30.0)*Z2Cal
         vel_y = (target_vel/30.0)*YCal
         self.speed_units.setText(
