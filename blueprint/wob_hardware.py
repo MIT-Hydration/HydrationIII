@@ -115,8 +115,7 @@ class FileWriterThread(threading.Thread):
 class WOBSensor(AbstractWOB):    
     def __init__(self):
         self.sensor_thread = WOBThread()
-        self.file_writer_thread = FileWriterThread(
-            self.sensor_thread, self.sensor_heater_thread)
+        self.file_writer_thread = FileWriterThread(self.sensor_thread)
         self.sensor_thread.start()
         self.file_writer_thread.start()
 
