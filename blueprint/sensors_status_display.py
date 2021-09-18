@@ -33,7 +33,7 @@ class SensorsStatusDisplay:
             ("Sens CPU T", True, 60, 75),
             ("Motor CPU T", True, 60, 75),
             ("Sens Ser Ver", True, 300, 5000),
-            ("Moto Ser Ver", True, 300, 5000),
+            ("Motor Ser Ver", True, 300, 5000),
             ("Mission Time (H:M:S)", True, 80*60*60*1000, 100*60*60*1000),
             ("Sensors RTT", True, 300, 5000),
             ("Motor RTT", True, 300, 5000),
@@ -111,7 +111,7 @@ class SensorsStatusDisplay:
     def update_sensors_status(self, response):
         if (response != None):
             self._update_bool(0, "Sens HeartBeat", True)
-            for i in range(1, len(self.checkboxes)):
+            for i in [2, 4, 7, 9, 10, 11, 12, 14, 15]:
                 self.checkboxes[i].setChecked(False)
             
             self._update_value(2, response.cpu_temperature_degC,
@@ -140,6 +140,29 @@ class SensorsStatusDisplay:
 
             self._update_value(15, accel,
                  "%03.2f [g]", "Accel", True)
+            
+        else:
+            for c in self.checkboxes:
+                c.setChecked(False)
+
+
+    def update_motor_status(self, response):
+        if (response != None):
+            self._update_bool(1, "Motor HeartBeat", True)
+            
+            for i in [3, 5, 8, 13]:
+                self.checkboxes[i].setChecked(False)
+            
+            self._update_value(3, response.cpu_temperature_degC,
+                                 "%0.1f [degC]", "Motor CPU T", True)
+            
+            rtt_time = response.timestamp - response.request_timestamp
+            self._update_value(5, response.server_version, 
+                "%s", "Motor Ser Ver", False)
+            
+            self._update_value(8, rtt_time, "%04.0f [ms]", "Motor RTT", True)
+            self._update_value(13, response.weight_on_bit_heater_N,
+                  "%04.0f [N]", "WOB Heater", True)
             
         else:
             for c in self.checkboxes:

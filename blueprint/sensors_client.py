@@ -68,23 +68,23 @@ class RPiHeartBeat(QtCore.QThread):
 
         self.sensors_done.emit(sensors_response) 
 
-        # try:
-        #     timestamp = int(time.time()*1000)
-        #     with grpc.insecure_channel(MOTOR_IP_ADDRESS_PORT) as channel:
-        #         stub = mission_control_pb2_grpc.MissionControlStub(channel)
-        #         motor_response = stub.HeartBeat (
-        #             mission_control_pb2.HeartBeatRequest(request_timestamp = timestamp),
-        #             timeout = GRPC_CALL_TIMEOUT )
-        #         print("Mission Control HeartBeat received at: " + str(datetime.now()))
-        #         print(motor_response) 
-        #         #self.log.emit("HeartBeat received at: " + str(datetime.now()))
+        try:
+            timestamp = int(time.time()*1000)
+            with grpc.insecure_channel(MOTOR_IP_ADDRESS_PORT) as channel:
+                stub = mission_control_pb2_grpc.MissionControlStub(channel)
+                motor_response = stub.HeartBeat (
+                    mission_control_pb2.HeartBeatRequest(request_timestamp = timestamp),
+                    timeout = GRPC_CALL_TIMEOUT )
+                print("Mission Control HeartBeat received at: " + str(datetime.now()))
+                print(motor_response) 
+                #self.log.emit("HeartBeat received at: " + str(datetime.now()))
                 
-        # except Exception as e:
-        #     info = f"Error connecting to Server at: {MOTOR_IP_ADDRESS_PORT}: + {str(e)}"
-        #     print(info)
-        #     self.log.emit(info)
+        except Exception as e:
+            info = f"Error connecting to Server at: {MOTOR_IP_ADDRESS_PORT}: + {str(e)}"
+            print(info)
+            self.log.emit(info)
 
-        # self.motor_done.emit(motor_response) 
+        self.motor_done.emit(motor_response) 
   
 
 class EmergencyStopThread(QtCore.QThread):
@@ -133,6 +133,7 @@ class MainWindow(QtWidgets.QWidget):
         self.status_display = sensors_status_display.SensorsStatusDisplay(
             self.status_groupbox)
         self.sensors_heartbeat_receivers.append(self.status_display)
+        self.motor_heartbeat_receivers.append(self.status_display)
 
     def _initRelayControl(self):
         self.relay_groupbox = QtWidgets.QGroupBox("Relay Triac")
