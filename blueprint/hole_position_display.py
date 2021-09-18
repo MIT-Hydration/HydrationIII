@@ -18,6 +18,7 @@ import pyqtgraph as pg
 import configparser
 from . import client_common
 from .generated import mission_control_pb2
+from datetime import datetime
 
 config = configparser.ConfigParser(
     converters={'list': lambda x: [i.strip() for i in x.split(',')]})
@@ -71,13 +72,13 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.layout.addWidget(QtWidgets.QLabel("Relative Motion (During Startup Idle)"), 0, start_h, 1, 4)
         
         self.layout.addWidget(QtWidgets.QLabel("Speed (RPM)"), 0, start_h + 2, 1, 1)
-        self.target_speed = QtWidgets.QLineEdit("")
+        self.target_speed = QtWidgets.QLineEdit("30")
         self.target_speed.setValidator(QtGui.QDoubleValidator())
         self.layout.addWidget(self.target_speed, 0, start_h + 3, 1, 1)
         
         self.layout.addWidget(QtWidgets.QLabel("Y [m]: "), 3, start_h, 1, 1)
 
-        self.target_y = QtWidgets.QLineEdit("")
+        self.target_y = QtWidgets.QLineEdit("0.0")
         self.target_y.setValidator(QtGui.QDoubleValidator())
         
         self.layout.addWidget(self.target_y, 3, start_h + 1, 1, 1)
@@ -88,7 +89,7 @@ class HolePositionDisplay(QtWidgets.QWidget):
 
         self.layout.addWidget(QtWidgets.QLabel("Z1 [m]: "), 1, start_h, 1, 1)
         
-        self.target_z1 = QtWidgets.QLineEdit("")
+        self.target_z1 = QtWidgets.QLineEdit("0.0")
         self.target_z1.setValidator(QtGui.QDoubleValidator())
         self.layout.addWidget(self.target_z1, 1, start_h + 1, 1, 1)
         
@@ -96,7 +97,7 @@ class HolePositionDisplay(QtWidgets.QWidget):
         
         self.layout.addWidget(QtWidgets.QLabel("Z2 [m]: "), 1, start_h + 2, 1, 1)
         
-        self.target_z2 = QtWidgets.QLineEdit("")
+        self.target_z2 = QtWidgets.QLineEdit("0.0")
         self.target_z1.setValidator(QtGui.QDoubleValidator())
         self.layout.addWidget(self.target_z2, 1, start_h + 3, 1, 1)
 
