@@ -78,7 +78,7 @@ class StateMachine:
 class MissionController(mission_control_pb2_grpc.MissionControlServicer):
     
     def __init__(self):
-        self.air_gap = 0.05
+        self.air_gap = 0.01
         self.max_z1  = 0.85
         self.ice_depth = 0.3
         self.state_machine = StateMachine()

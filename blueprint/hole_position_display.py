@@ -30,6 +30,10 @@ RIG_UNITS = config.get('Rig', 'Units')
 HeaterDeltaXY = config.getlist("Rig", "HeaterDeltaXY")
 HeaterDeltaXY = [float(HeaterDeltaXY[0]), float(HeaterDeltaXY[1])]
 
+Z1Cal = Z_LENGTH = config.getfloat('Rig', 'Z1Cal')
+Z2Cal = Z_LENGTH = config.getfloat('Rig', 'Z2Cal')
+YCal = Z_LENGTH = config.getfloat('Rig', 'YCal')
+
 class HolePositionDisplay(QtWidgets.QWidget):
     def __init__(self, main_window, layout):
         global X_LENGTH, Y_LENGTH, RIG_UNITS
@@ -43,6 +47,7 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self._init_hole_display()
         self._init_target()
         self._init_z1_display()
+        self._on_speed_change()
         
     def _init_hole_display(self):
         global X_LENGTH, Y_LENGTH, RIG_UNITS
@@ -69,13 +74,17 @@ class HolePositionDisplay(QtWidgets.QWidget):
 
     def _init_target(self):
         start_h = self.HOLE_DISPLAY_WIDTH + 1
-        self.layout.addWidget(QtWidgets.QLabel("Relative Motion (During Startup Idle)"), 0, start_h, 1, 4)
+        self.layout.addWidget(QtWidgets.QLabel("Relative Motion (During Startup Idle)"), 0, start_h, 1, 2)
         
         self.layout.addWidget(QtWidgets.QLabel("Speed (RPM)"), 0, start_h + 2, 1, 1)
         self.target_speed = QtWidgets.QLineEdit("30")
         self.target_speed.setValidator(QtGui.QDoubleValidator())
         self.layout.addWidget(self.target_speed, 0, start_h + 3, 1, 1)
         
+        self.speed_units = QtWidgets.QLabel("Speed Conversions:\nZ1 = \nZ2 = \nY = ")
+        self.layout.addWidget(self.speed_units, 0, start_h + 4, 1, 1)
+        self.target_speed.textChanged.connect(self._on_speed_change)
+
         self.layout.addWidget(QtWidgets.QLabel("Y [m]: "), 3, start_h, 1, 1)
 
         self.target_y = QtWidgets.QLineEdit("0.0")
@@ -92,7 +101,6 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.target_z1 = QtWidgets.QLineEdit("0.0")
         self.target_z1.setValidator(QtGui.QDoubleValidator())
         self.layout.addWidget(self.target_z1, 1, start_h + 1, 1, 1)
-        
         
         
         self.layout.addWidget(QtWidgets.QLabel("Z2 [m]: "), 1, start_h + 2, 1, 1)
@@ -119,7 +127,8 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.set_home.clicked.connect(self._set_home)
         self.layout.addWidget(self.set_home, 6, start_h, 1, 4)
 
-        self.align_button = QtWidgets.QPushButton("Align Heater (Preset Speed 300 RPM)")
+        self.align_button = QtWidgets.QPushButton(
+            f"Align Heater (Preset Speed 300 RPM, Preset Y = {HeaterDeltaXY[1]} meters)")
         self.layout.addWidget(self.align_button, 7, start_h, 1, 4)
         self.align_button.clicked.connect(self._on_align)
 
@@ -241,7 +250,17 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.threads.append(client_thread)
         client_thread.start()
     
-    
+    @QtCore.Slot(object)
+    def _on_speed_change(self):
+        print("Changing speed")
+        target_vel = float(self.target_speed.text())
+        vel_z1 = (target_vel/30.0)*Z1Cal
+        vel_z2 = (target_vel/30.0)*Z2Cal
+        vel_y = (target_vel/30.0)*YCal
+        self.speed_units.setText(
+            f"Speed Conversions:\nZ1 = {vel_z1:0.1f} [mm/s]\nZ2 = {vel_z2:0.1f} [mm/s]\nY = {vel_y:0.1f} [mm/s]")
+        
+
     def update_limits(self, response):
         global Z_LENGTH
         if response != None:
