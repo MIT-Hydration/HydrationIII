@@ -86,7 +86,6 @@ class FileWriterThread(threading.Thread):
         else:
             fp = open(f"WOB_Heater_{time_start_s}.csv", "w")
         keys = self.WOB_thread.sensor_readings.keys()
-        keys_heater = self.WOB_heater_thread.sensor_readings.keys()
         for k in keys:
             fp.write(f"{k},")
         fp.write("\n")
