@@ -439,6 +439,11 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         rig_hardware = HardwareFactory.getRig()
         move_success = rig_hardware.movePositionY(-HeaterDeltaXY[1], 300)  
 
+        return mcpb.CommandResponse(
+                    request_timestamp = request.request_timestamp,
+                    timestamp = timestamp,
+                    status = mcpb.EXECUTED)
+
         # if move_success:
         #     self.last_y_move = timestamp
         #     if self.state_machine.getState() == mcpb.HEATER_HOLE_MOVING_TO_Z2:
