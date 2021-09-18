@@ -119,7 +119,7 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.set_home.clicked.connect(self._set_home)
         self.layout.addWidget(self.set_home, 6, start_h, 1, 4)
 
-        self.align_button = QtWidgets.QPushButton("Align Heater")
+        self.align_button = QtWidgets.QPushButton("Align Heater (Preset Speed 300 RPM)")
         self.layout.addWidget(self.align_button, 7, start_h, 1, 4)
         self.align_button.clicked.connect(self._on_align)
 

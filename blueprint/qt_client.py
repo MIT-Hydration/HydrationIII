@@ -208,8 +208,8 @@ class MainWindow(QtWidgets.QWidget):
         self._initModeDisplay()
         self._initStatusDisplay()
 
-        self._initDiagnostics()
-        self._initDrillBorehole()
+        #self._initDiagnostics()
+        #self._initDrillBorehole()
         
         self._initLimits()
         self._initHolePos()
