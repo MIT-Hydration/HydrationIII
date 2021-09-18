@@ -30,17 +30,18 @@ class StatusDisplay:
         self.status_list = [
             ("System HeartBeat", False),
             ("Z1 (Drill) servo", False),
-            ("Z2 (Drill) servo", False),
+            ("Z2 (Heater) servo", False),
             ("Y servo", False),
-            ("CPU T (dC)", True, 60, 75),
+            ("CPU T", True, 60, 75),
             ("Mis. Time (H:M:S)", True, 80*60*60*1000, 100*60*60*1000),
-            ("RTT (ms)", True, 300, 5000),
+            ("Round Trip", True, 300, 5000),
             ("Server Version", True, 300, 5000),
         ]
         self.checkboxes = [None] * len(self.status_list)
         self.values = [None] * len(self.status_list)
         self.layout = layout
         self.layout.setSpacing(0.5)
+        self.layout.addItem(QtWidgets.QSpacerItem(200, 0, QtWidgets.QSizePolicy.Fixed))
         self._initStatusWidgets()
         
     def _addStatus(self, i):
@@ -87,15 +88,15 @@ class StatusDisplay:
                 self.checkboxes[i].setChecked(False)
             
             self._update_bool(1, "Z1 (Drill) servo", response.zdrill_servo_moving)
-            self._update_bool(2, "Z2 (Drill) servo", response.zheater_servo_moving)
+            self._update_bool(2, "Z2 (Heater) servo", response.zheater_servo_moving)
             self._update_bool(3, "Y servo", response.y_servo_moving)
             
             self._update_value(4, response.cpu_temperature_degC,
-                                 "%0.2f [degC]", "CPU T (dC)", True)
+                                 "%0.2f [degC]", "CPU T", True)
             mission_time = timedelta(milliseconds=int(response.mission_time_ms / 1000)*1000)
             self._update_value(5, str(mission_time), "%s", "Mis. Time (H:M:S)", False)
             rtt_time = response.timestamp - response.request_timestamp
-            self._update_value(6, rtt_time, "%0.2f [ms]", "RTT (ms)", True)
+            self._update_value(6, rtt_time, "%0.2f [ms]", "Round Trip", True)
             self._update_value(7, response.server_version, 
                 "%s", "Server Version", False)
             

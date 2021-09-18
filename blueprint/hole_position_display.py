@@ -30,9 +30,9 @@ RIG_UNITS = config.get('Rig', 'Units')
 HeaterDeltaXY = config.getlist("Rig", "HeaterDeltaXY")
 HeaterDeltaXY = [float(HeaterDeltaXY[0]), float(HeaterDeltaXY[1])]
 
-Z1Cal = Z_LENGTH = config.getfloat('Rig', 'Z1Cal')
-Z2Cal = Z_LENGTH = config.getfloat('Rig', 'Z2Cal')
-YCal = Z_LENGTH = config.getfloat('Rig', 'YCal')
+Z1Cal = config.getfloat('Rig', 'Z1Cal')
+Z2Cal = config.getfloat('Rig', 'Z2Cal')
+YCal = config.getfloat('Rig', 'YCal')
 
 class HolePositionDisplay(QtWidgets.QWidget):
     def __init__(self, main_window, layout):
@@ -119,9 +119,9 @@ class HolePositionDisplay(QtWidgets.QWidget):
 
         self.layout.addWidget(self.goto_z2, 2, start_h+2, 1, 2)
 
-        self.cur_pos_label = QtWidgets.QLabel("Current Position (Z1, Z2, Y)\n(00.000 00.000 00.000) [m]")
+        self.cur_pos_label = QtWidgets.QLabel("Current Position (Z1, Z2, Y) = (00.000 00.000 00.000) [m]")
         self.cur_pos_label.setStyleSheet("font-weight: bold; color: '#ffc107'; font-size: 25pt;")
-        self.layout.addWidget(self.cur_pos_label, 5, start_h, 1, 10)
+        self.layout.addWidget(self.cur_pos_label, 5, start_h, 1, 5)
 
         self.set_home = QtWidgets.QPushButton("Set Current as Origin (Z1, Z2, Y)")
         self.set_home.clicked.connect(self._set_home)
@@ -162,7 +162,7 @@ class HolePositionDisplay(QtWidgets.QWidget):
         global X_LENGTH, Z_LENGTH, RIG_UNITS
         zplot.showGrid(x = False, y = True, alpha = 1.0)
         zplot.setXRange(-0.0, 0.0, padding=0)
-        zplot.setYRange(-Z_LENGTH + 0.05, 0.15, padding=0)
+        zplot.setYRange(-Z_LENGTH - 0.05, 0.15, padding=0)
         zplot.getAxis('left').setLabel(f'{label} {RIG_UNITS}')
         zplot.setMaximumWidth(120)
         self.layout.addWidget(zplot, 0, start_h, 
@@ -201,7 +201,7 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.z2_drill_pos_rect.setPen(pg.mkPen(None))
         self.z2_drill_pos_rect.setBrush(pg.mkBrush('#ff4041'))
         self.z1plot.addItem(self.z2_drill_pos_rect)
-
+        
         self._init_z_display(self.z1plot,  
             self.HOLE_DISPLAY_WIDTH + self.TARGET_DISPLAY_WIDTH + 1,
             'Z1 and Z2')
@@ -224,7 +224,7 @@ class HolePositionDisplay(QtWidgets.QWidget):
             self.z2_drill_pos_rect.setRect( 0.010, z2, 0.025, -z2+0.15)
         
             self.cur_pos_label.setText(
-                f"Current Position (Z1, Z2, Y)\n({z1:0.3f}, {z2:0.3f}, {y:0.3f}) [m]")
+                f"Current Position (Z1, Z2, Y) = ({z1:0.3f}, {z2:0.3f}, {y:0.3f}) [m]")
 
             if (response.state != mission_control_pb2.STARTUP_IDLE):
                 self.set_home.setEnabled(False)
@@ -252,7 +252,7 @@ class HolePositionDisplay(QtWidgets.QWidget):
     
     @QtCore.Slot(object)
     def _on_speed_change(self):
-        print("Changing speed")
+        #print("Changing speed")
         target_vel = float(self.target_speed.text())
         vel_z1 = (target_vel/30.0)*Z1Cal
         vel_z2 = (target_vel/30.0)*Z2Cal
@@ -260,7 +260,6 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.speed_units.setText(
             f"Speed Conversions:\nZ1 = {vel_z1:0.1f} [mm/s]\nZ2 = {vel_z2:0.1f} [mm/s]\nY = {vel_y:0.1f} [mm/s]")
         
-
     def update_limits(self, response):
         global Z_LENGTH
         if response != None:

@@ -52,13 +52,9 @@ class CoreSensorsController(mission_control_pb2_grpc.CoreSensorsServicer):
         #try:
             
         wob_reading = self.wob_hardware.get_force_N()
-        wob_reading_heater = self.wob_hardware.get_force_heater_N()
         
         self.last_weight_on_bit_drill_timestamp = wob_reading[0]
         self.last_weight_on_bit_drill_N = wob_reading[1]
-        
-        self.last_weight_on_bit_heater_timestamp = wob_reading[0]
-        self.last_weight_on_bit_heater_N = wob_reading_heater[1]
         
         power_meter_power_reading = self.power_meter_hardware.get_active_power_W()
         self.last_power_meter_timestamp = power_meter_power_reading[0]
@@ -91,8 +87,6 @@ class CoreSensorsController(mission_control_pb2_grpc.CoreSensorsServicer):
 
             last_weight_on_bit_drill_timestamp = wob_reading[0],
             weight_on_bit_drill_N = wob_reading[1],
-            last_weight_on_bit_heater_timestamp = wob_reading_heater[0],
-            weight_on_bit_heater_N = wob_reading_heater[1],
             last_power_meter_timestamp = power_meter_power_reading[0],
             power_W = power_meter_power_reading[1], 
             total_current_mA = power_meter_current_reading[1],

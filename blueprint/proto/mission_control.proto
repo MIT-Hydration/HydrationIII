@@ -76,6 +76,9 @@ message HeartBeatReply {
     string server_version = 50;
     repeated Hole holes = 51;
     repeated string motorstatus = 52;
+
+    float last_weight_on_bit_heater_timestamp = 20;
+    float weight_on_bit_heater_N = 21;
 }
 
 message CoreSensorsHeartBeatResponse {
@@ -97,9 +100,6 @@ message CoreSensorsHeartBeatResponse {
     float last_weight_on_bit_drill_timestamp = 40;
     float weight_on_bit_drill_N = 41;
     
-    float last_weight_on_bit_heater_timestamp = 50;
-    float weight_on_bit_heater_N = 51;
-
     float last_power_meter_timestamp = 60;
     float power_W = 61;
     float total_current_mA = 62;

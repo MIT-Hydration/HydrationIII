@@ -93,7 +93,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
         self.iZ2 = 1
         self.iX = 2
         self.iY = 3
-
+        self.wob_hardware = HardwareFactory.getWOBSensor()
         self.move_time_buffer = config.getint("Rig", "MoveTimeBuffer")
         
     def GetMajorModes(self, request, context):
@@ -212,6 +212,7 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
                 )
         
         position = rig_hardware.getPosition()
+        wob_reading = self.wob_hardware.get_force_N()
         return mcpb.HeartBeatReply(
             request_timestamp = request.request_timestamp,
             timestamp = timestamp,
@@ -227,6 +228,8 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             state = self.state_machine.getState(),
             motorstatus = rig_hardware.motorStatus(),
             server_version = blueprint.HYDRATION_VERSION,
+            last_weight_on_bit_heater_timestamp = wob_reading[0],
+            weight_on_bit_heater_N = wob_reading[1],
             holes = self.holes)
 
     def GetLimits(self, request, context):
