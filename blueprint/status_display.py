@@ -32,9 +32,9 @@ class StatusDisplay:
             ("Z1 (Drill) servo", False),
             ("Z2 (Drill) servo", False),
             ("Y servo", False),
-            ("CPU Temp (degC)", True, 60, 75),
-            ("Mission Time (H:M:S)", True, 80*60*60*1000, 100*60*60*1000),
-            ("Round Trip Time (ms)", True, 300, 5000),
+            ("CPU T (dC)", True, 60, 75),
+            ("Mis. Time (H:M:S)", True, 80*60*60*1000, 100*60*60*1000),
+            ("RTT (ms)", True, 300, 5000),
             ("Server Version", True, 300, 5000),
         ]
         self.checkboxes = [None] * len(self.status_list)
@@ -91,11 +91,11 @@ class StatusDisplay:
             self._update_bool(3, "Y servo", response.y_servo_moving)
             
             self._update_value(4, response.cpu_temperature_degC,
-                                 "%0.2f [degC]", "CPU Temp (degC)", True)
+                                 "%0.2f [degC]", "CPU T (dC)", True)
             mission_time = timedelta(milliseconds=int(response.mission_time_ms / 1000)*1000)
-            self._update_value(5, str(mission_time), "%s", "Mission Time (H:M:S)", False)
+            self._update_value(5, str(mission_time), "%s", "Mis. Time (H:M:S)", False)
             rtt_time = response.timestamp - response.request_timestamp
-            self._update_value(6, rtt_time, "%0.2f [ms]", "Round Trip Time (ms)", True)
+            self._update_value(6, rtt_time, "%0.2f [ms]", "RTT (ms)", True)
             self._update_value(7, response.server_version, 
                 "%s", "Server Version", False)
             

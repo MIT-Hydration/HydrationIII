@@ -22,7 +22,7 @@ from .generated import mission_control_pb2
 config = configparser.ConfigParser(
     converters={'list': lambda x: [i.strip() for i in x.split(',')]})
 config.read('config.ini')
-X_LENGTH = config.getfloat('Rig', 'XLength')
+X_LENGTH = 0.1 #config.getfloat('Rig', 'XLength')
 Y_LENGTH = config.getfloat('Rig', 'YLength')
 Z_LENGTH = config.getfloat('Rig', 'ZLength')
 RIG_UNITS = config.get('Rig', 'Units')
@@ -36,7 +36,7 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.threads = []
         self.layout = layout
         self.HOLE_DISPLAY_WIDTH = 1
-        self.TARGET_DISPLAY_WIDTH = 7
+        self.TARGET_DISPLAY_WIDTH = 10
         self.Z_DISPLAY_WIDTH = 1
         self.DISPLAY_HEIGHT = 10
         self._init_hole_display()
@@ -61,16 +61,24 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.plot.addItem(self.holes_scatter)
         self.plot.addItem(self.scatter)
         self.plot.addItem(self.heater_scatter)
+        self.plot.setMaximumWidth(120)
+        
         self.layout.addWidget(self.plot, 0, 0, 
             self.DISPLAY_HEIGHT, self.HOLE_DISPLAY_WIDTH)
 
     def _init_target(self):
         start_h = self.HOLE_DISPLAY_WIDTH + 1
         self.layout.addWidget(QtWidgets.QLabel("Relative Motion (During Startup Idle)"), 0, start_h, 1, 4)
+        
+        self.layout.addWidget(QtWidgets.QLabel("Speed (RPM)"), 0, start_h + 2, 1, 1)
+        self.target_speed = QtWidgets.QLineEdit("")
+        self.target_speed.setValidator(QtGui.QDoubleValidator())
+        self.layout.addWidget(self.target_speed, 0, start_h + 3, 1, 1)
+        
         self.layout.addWidget(QtWidgets.QLabel("Y [m]: "), 3, start_h, 1, 1)
 
         self.target_y = QtWidgets.QLineEdit("")
-        #self.target_y.setValidator(QtGui.QDoubleValidator())
+        self.target_y.setValidator(QtGui.QDoubleValidator())
         
         self.layout.addWidget(self.target_y, 3, start_h + 1, 1, 1)
 
@@ -81,13 +89,15 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.layout.addWidget(QtWidgets.QLabel("Z1 [m]: "), 1, start_h, 1, 1)
         
         self.target_z1 = QtWidgets.QLineEdit("")
-        #self.target_z1.setValidator(QtGui.QDoubleValidator())
+        self.target_z1.setValidator(QtGui.QDoubleValidator())
         self.layout.addWidget(self.target_z1, 1, start_h + 1, 1, 1)
+        
+        
         
         self.layout.addWidget(QtWidgets.QLabel("Z2 [m]: "), 1, start_h + 2, 1, 1)
         
         self.target_z2 = QtWidgets.QLineEdit("")
-        #self.target_z1.setValidator(QtGui.QDoubleValidator())
+        self.target_z1.setValidator(QtGui.QDoubleValidator())
         self.layout.addWidget(self.target_z2, 1, start_h + 3, 1, 1)
 
         self.goto_z1 = QtWidgets.QPushButton("Move Z1")
@@ -102,26 +112,29 @@ class HolePositionDisplay(QtWidgets.QWidget):
 
         self.cur_pos_label = QtWidgets.QLabel("Current Position (Z1, Z2, Y)\n(00.000 00.000 00.000) [m]")
         self.cur_pos_label.setStyleSheet("font-weight: bold; color: '#ffc107'; font-size: 25pt;")
-        self.layout.addWidget(self.cur_pos_label, 5, start_h, 1, 4)
+        self.layout.addWidget(self.cur_pos_label, 5, start_h, 1, 10)
 
         self.set_home = QtWidgets.QPushButton("Set Current as Origin (Z1, Z2, Y)")
         self.set_home.clicked.connect(self._set_home)
         self.layout.addWidget(self.set_home, 6, start_h, 1, 4)
 
     def _goto_y(self):
-        client_thread = client_common.GotoYThread(float(self.target_y.text()), 300)
+        target_vel = float(self.target_speed.text())
+        client_thread = client_common.GotoYThread(float(self.target_y.text()), target_vel)
         self.threads.append(client_thread)
         client_thread.start()
         
     def _goto_z1(self):
+        target_vel = float(self.target_speed.text())
         client_thread = client_common.GotoZ1Thread(
-            float(self.target_z1.text()), 300)
+            float(self.target_z1.text()), target_vel)
         self.threads.append(client_thread)
         client_thread.start() 
     
     def _goto_z2(self):
+        target_vel = float(self.target_speed.text())
         client_thread = client_common.GotoZ2Thread(
-            float(self.target_z2.text()), 300)
+            float(self.target_z2.text()), target_vel)
         self.threads.append(client_thread)
         client_thread.start() 
 
