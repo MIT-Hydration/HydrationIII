@@ -18,7 +18,7 @@ INCORESENSORS = config.getboolean('Operating System', 'RunningInCoreSensorsRPi')
 
 if INCORESENSORS:
     import hx711
-elif config.getboolean('WOBSensor', 'WOBZ1ConnectedToMotionControlRPi'):
+else:
     from . import hx711
 
 class AbstractWOB(ABC):
