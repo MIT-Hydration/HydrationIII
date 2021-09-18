@@ -22,7 +22,12 @@ def cleanAndExit():
     print("Bye!")
     sys.exit()
 
-hx = hx711.HX711(5, 6)
+PIN1 = 22
+PIN2 = 23
+#PIN1 = 5
+#PIN2 = 6
+
+hx = hx711.HX711(PIN1, PIN2)
 
 # I've found out that, for some reason, the order of the bytes is not always the same between versions of python, numpy and the hx711 itself.
 # Still need to figure out why does it change.
@@ -62,7 +67,7 @@ while True:
         # print binary_string + " " + np_arr8_string
         
         # Prints the weight. Comment if you're debbuging the MSB and LSB issue.
-        val = hx.get_weight(5)
+        val = hx.get_weight(PIN1)
         print(val)
 
         # To get weight from both channels (if you have load cells hooked up 
