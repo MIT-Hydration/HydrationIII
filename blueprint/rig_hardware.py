@@ -41,6 +41,8 @@ else:
     iX = -1
     iY = 2
 
+MotorMap = [0, 1, 3]
+
 NMotors = 3
 
 # these indices are used for the current position variables
@@ -290,7 +292,7 @@ class FileWriterThread(threading.Thread):
             position = self.rig_hardware.getPosition()
             fp.write(f"{loop_start},")
             for i in range(NMotors):
-                fp.write(f"{position[i]},")
+                fp.write(f"{position[MotorMap[i]]},")
                 fp.write(f"{self.rig_hardware.getTorque(i)},")
             fp.write("\n")
             loop_end = time.time()
