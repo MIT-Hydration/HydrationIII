@@ -118,6 +118,10 @@ class HolePositionDisplay(QtWidgets.QWidget):
         self.set_home.clicked.connect(self._set_home)
         self.layout.addWidget(self.set_home, 6, start_h, 1, 4)
 
+        self.align_button = QtWidgets.QPushButton("Align Heater")
+        self.layout.addWidget(self.align_button, 7, start_h, 1, 4)
+        self.align_button.clicked.connect(self._on_align)
+
     def _goto_y(self):
         target_vel = float(self.target_speed.text())
         client_thread = client_common.GotoYThread(float(self.target_y.text()), target_vel)
@@ -225,6 +229,18 @@ class HolePositionDisplay(QtWidgets.QWidget):
                 self.goto_z2.setEnabled(True)
                 
         
+    @QtCore.Slot(object)
+    def _on_align(self):
+        timestamp = datetime.now()
+        self.main_window.log(
+            f"[{timestamp}] Attempting to Align Heater"
+            )
+        client_thread = client_common.AlignHeaterThread()
+        client_thread.log.connect(self.main_window.on_log)
+        self.threads.append(client_thread)
+        client_thread.start()
+    
+    
     def update_limits(self, response):
         global Z_LENGTH
         if response != None:
