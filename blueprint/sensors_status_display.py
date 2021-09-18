@@ -130,8 +130,6 @@ class SensorsStatusDisplay:
                 "Triac Level", True)
             self._update_value(12, response.weight_on_bit_drill_N,
                  "%04.0f [N]", "WOB Drill", True)
-            self._update_value(13, response.weight_on_bit_heater_N,
-                 "%04.0f [N]", "WOB Heater", True)
             self._update_value(14, response.total_current_mA,
                  "%05.0f [mA]", "Current", True)
 
