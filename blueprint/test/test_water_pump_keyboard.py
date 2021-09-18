@@ -1,4 +1,4 @@
-from ..PumpHardware import PumpHardware
+from .. import PumpHardware
 import time
 from curses import wrapper
 
