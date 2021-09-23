@@ -226,7 +226,7 @@ class HolePositionDisplay(QtWidgets.QWidget):
             self.z2_drill_pos_rect.setRect( 0.010, z2, 0.025, -z2+0.15)
         
             self.cur_pos_label.setText(
-                f"Current Position (Z1, Z2, Y) = ({z1:0.3f}, {z2:0.3f}, {y:0.3f}) [m]"\
+                f"Current Position (Z1, Z2, Y) = ({z1:0.3f}, {z2:0.3f}, {y:0.3f}) [m]\n"\
                    f"Torque (Z1, Z2, Y) = ("\
                        f"{response.torque_z1_percent:0.0f}, "
                        f"{response.torque_z2_percent:0.0f}, "
