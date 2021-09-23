@@ -228,9 +228,9 @@ class HolePositionDisplay(QtWidgets.QWidget):
             self.cur_pos_label.setText(
                 f"Current Position (Z1, Z2, Y) = ({z1:0.3f}, {z2:0.3f}, {y:0.3f}) [m]\n"\
                    f"Torque (Z1, Z2, Y) = ("\
-                       f"{response.torque_z1_percent:02.0f}, "
-                       f"{response.torque_z2_percent:02.0f}, "
-                       f"{ response.torque_y_percent:02.0f}) [%]")
+                       f"{response.torque_z1_percent:03.0f}, "
+                       f"{response.torque_z2_percent:03.0f}, "
+                       f"{ response.torque_y_percent:03.0f}) [%]")
 
             if (response.state != mission_control_pb2.STARTUP_IDLE):
                 self.set_home.setEnabled(False)
