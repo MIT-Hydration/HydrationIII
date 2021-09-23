@@ -32,6 +32,8 @@ ACCEL_ZOUT_H = 0x3F
 GYRO_XOUT_H  = 0x43
 GYRO_YOUT_H  = 0x45
 GYRO_ZOUT_H  = 0x47
+REG_ACCEL_CONFIG = 0x1C
+ACCEL_RANGE_16G = 0x18
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -50,6 +52,10 @@ class AccelGyroThread(threading.Thread):
         
         #Write to Configuration register
         self.bus.write_byte_data(self.Device_Address, CONFIG, 0)
+        
+        #Write to Accel Range Configuration register
+        # 0 == +/- 2g, 1 == +/- 4g, 2 == +/- 8g, 3 == +/- 16g, 
+        self.bus.write_byte_data(self.Device_Address, REG_ACCEL_CONFIG, 3)
         
         #Write to Gyro configuration register
         self.bus.write_byte_data(self.Device_Address, GYRO_CONFIG, 24)
