@@ -230,6 +230,9 @@ class MissionController(mission_control_pb2_grpc.MissionControlServicer):
             server_version = blueprint.HYDRATION_VERSION,
             last_weight_on_bit_heater_timestamp = wob_reading[0],
             weight_on_bit_heater_N = wob_reading[1],
+            torque_z1_percent = rig_hardware.getTorque(0),
+            torque_z2_percent = rig_hardware.getTorque(1),
+            torque_y_percent = rig_hardware.getTorque(2),
             holes = self.holes)
 
     def GetLimits(self, request, context):

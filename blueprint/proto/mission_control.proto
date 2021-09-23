@@ -79,6 +79,11 @@ message HeartBeatReply {
 
     float last_weight_on_bit_heater_timestamp = 20;
     float weight_on_bit_heater_N = 21;
+
+    float torque_z1_percent = 61;
+    float torque_z2_percent = 62;
+    float torque_y_percent = 63;
+    
 }
 
 message CoreSensorsHeartBeatResponse {

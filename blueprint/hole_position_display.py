@@ -119,7 +119,9 @@ class HolePositionDisplay(QtWidgets.QWidget):
 
         self.layout.addWidget(self.goto_z2, 2, start_h+2, 1, 2)
 
-        self.cur_pos_label = QtWidgets.QLabel("Current Position (Z1, Z2, Y) = (00.000 00.000 00.000) [m]")
+        self.cur_pos_label = QtWidgets.QLabel(
+            "Current Position (Z1, Z2, Y) = (00.000 00.000 00.000) [m]\n"\
+                "Torque (Z1, Z2, Y) = (00.000 00.000 00.000) [%]")
         self.cur_pos_label.setStyleSheet("font-weight: bold; color: '#ffc107'; font-size: 25pt;")
         self.layout.addWidget(self.cur_pos_label, 5, start_h, 1, 5)
 
@@ -224,7 +226,11 @@ class HolePositionDisplay(QtWidgets.QWidget):
             self.z2_drill_pos_rect.setRect( 0.010, z2, 0.025, -z2+0.15)
         
             self.cur_pos_label.setText(
-                f"Current Position (Z1, Z2, Y) = ({z1:0.3f}, {z2:0.3f}, {y:0.3f}) [m]")
+                f"Current Position (Z1, Z2, Y) = ({z1:0.3f}, {z2:0.3f}, {y:0.3f}) [m]"\
+                   f"Torque (Z1, Z2, Y) = ("\
+                       f"{response.torque_z1_percent:0.0f}, "
+                       f"{response.torque_z2_percent:0.0f}, "
+                       f"{ response.torque_y_percent:0.0f}) [%]")
 
             if (response.state != mission_control_pb2.STARTUP_IDLE):
                 self.set_home.setEnabled(False)
