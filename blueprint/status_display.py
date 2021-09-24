@@ -96,6 +96,8 @@ class StatusDisplay:
             mission_time = timedelta(milliseconds=int(response.mission_time_ms / 1000)*1000)
             self._update_value(5, str(mission_time), "%s", "Mis. Time (H:M:S)", False)
             rtt_time = response.timestamp - response.request_timestamp
+            if rtt_time < 0:
+                rtt_time = -1
             self._update_value(6, rtt_time, "%0.2f [ms]", "Round Trip", True)
             self._update_value(7, response.server_version, 
                 "%s", "Server Version", False)
